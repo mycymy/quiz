@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主管护师·题库大全</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            color: #333;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-number {
+            font-size: 1.1rem;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .card-desc {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .card-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            color: #666;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 主管护师·题库大全</h1>
+            <p>选择您需要练习的科目，点击按钮在新页面打开</p>
+        </div>
+        
+        <div class="grid">
+            <!-- 第1组：基础知识 -->
+            <div class="card">
+                <div class="card-number">📖 第1组</div>
+                <div class="card-title">基础知识</div>
+                <div class="card-desc">单科第1科 · 1000题<br>包含生理学、病理学、药理学等基础医学知识</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 练习模式</span>
+                </div>
+                <a href="https://mycym.github.io/quiz/" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第2组：相关专业知识 -->
+            <div class="card">
+                <div class="card-number">📗 第2组</div>
+                <div class="card-title">相关专业知识</div>
+                <div class="card-desc">单科第2科 · 1000题<br>包含护理管理、医院感染、健康教育、中医基础等</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 练习模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第3组：专业知识 -->
+            <div class="card">
+                <div class="card-number">📘 第3组</div>
+                <div class="card-title">专业知识</div>
+                <div class="card-desc">单科第3科 · 1000题<br>包含内科护理学、外科护理学、妇产科护理学等</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 练习模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第4组：专业实践能力 -->
+            <div class="card">
+                <div class="card-number">📙 第4组</div>
+                <div class="card-title">专业实践能力</div>
+                <div class="card-desc">单科第4科 · 1000题<br>包含基础护理学、护理技术、急救护理等</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 练习模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第5组：基础知识(二) -->
+            <div class="card">
+                <div class="card-number">📕 第5组</div>
+                <div class="card-title">基础知识(二)</div>
+                <div class="card-desc">单科第5科 · 1000题<br>包含人体解剖学、生物化学、微生物学等</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 练习模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第6组：相关专业知识(二) -->
+            <div class="card">
+                <div class="card-number">📒 第6组</div>
+                <div class="card-title">相关专业知识(二)</div>
+                <div class="card-desc">单科第6科 · 1000题<br>包含护理心理学、护理伦理学、社区护理等</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 练习模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第7组：专业知识(二) -->
+            <div class="card">
+                <div class="card-number">📓 第7组</div>
+                <div class="card-title">专业知识(二)</div>
+                <div class="card-desc">单科第7科 · 1000题<br>包含儿科护理学、老年护理学、康复护理等</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 练习模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第8组：专业实践能力(二) -->
+            <div class="card">
+                <div class="card-number">📔 第8组</div>
+                <div class="card-title">专业实践能力(二)</div>
+                <div class="card-desc">单科第8科 · 1000题<br>包含危重症护理、围手术期护理、疼痛护理等</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 练习模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第9组：综合模拟(一) -->
+            <div class="card">
+                <div class="card-number">📰 第9组</div>
+                <div class="card-title">综合模拟(一)</div>
+                <div class="card-desc">单科第9科 · 1000题<br>包含历年真题、高频考点、易错题集</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 考试模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+            
+            <!-- 第10组：综合模拟(二) -->
+            <div class="card">
+                <div class="card-number">📋 第10组</div>
+                <div class="card-title">综合模拟(二)</div>
+                <div class="card-desc">单科第10科 · 1000题<br>包含冲刺密卷、押题精练、考点预测</div>
+                <div class="card-info">
+                    <span>📊 1000题</span>
+                    <span>⏱️ 考试模式</span>
+                </div>
+                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>📢 提示：点击按钮后将在新标签页打开对应题库</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                🔗 当前已上线题库：<a href="https://mycym.github.io/quiz/" target="_blank" rel="noopener noreferrer">基础知识（第1组）</a>
+                <span class="badge">可访问</span>
+            </p>
+            <p style="margin-top: 15px; color: #999; font-size: 0.8rem;">
+                ⚡ 其他链接需要替换为实际部署地址
+            </p>
+        </div>
+    </div>
+
+    <!-- 添加Font Awesome图标支持（可选） -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
