@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>主管护师·题库大全</title>
+    <title>主管护师·题库大全 + 考试倒计时</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             width: 100%;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 30px;
@@ -33,7 +33,7 @@
         
         .header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
         
         .header h1 {
@@ -52,6 +52,143 @@
             letter-spacing: 1px;
         }
         
+        /* 倒计时卡片 */
+        .countdown-section {
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .countdown-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .countdown-title i {
+            font-size: 2rem;
+        }
+        
+        .exam-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .exam-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .exam-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .exam-date {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .exam-time {
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* 打卡区域 */
+        .checkin-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .checkin-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .checkin-stats {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .checkin-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .checkin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .checkin-btn:active {
+            transform: translateY(0);
+        }
+        
+        .checkin-btn.checked {
+            background: #28a745;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        /* 题库网格 */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -152,16 +289,6 @@
             color: #666;
         }
         
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        
         .badge {
             display: inline-block;
             padding: 4px 12px;
@@ -184,6 +311,19 @@
             .grid {
                 grid-template-columns: 1fr;
             }
+            
+            .checkin-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .checkin-info {
+                flex-direction: column;
+            }
+            
+            .exam-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -194,6 +334,42 @@
             <p>选择您需要练习的科目，点击按钮在新页面打开</p>
         </div>
         
+        <!-- 倒计时区域 -->
+        <div class="countdown-section">
+            <div class="countdown-title">
+                <i>⏰</i> 2026年主管护师考试倒计时
+            </div>
+            
+            <div class="exam-grid" id="countdownGrid">
+                <!-- 倒计时将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 打卡区域 -->
+            <div class="checkin-section" id="checkinSection">
+                <div class="checkin-info">
+                    <div style="font-size: 2.5rem;">📅</div>
+                    <div>
+                        <h3 style="margin-bottom: 5px;">今日学习打卡</h3>
+                        <p style="opacity: 0.8;">坚持打卡，考试必胜！</p>
+                    </div>
+                </div>
+                
+                <div class="checkin-stats" id="checkinStats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalDays">0</div>
+                        <div class="stat-label">累计打卡</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="continuousDays">0</div>
+                        <div class="stat-label">连续打卡</div>
+                    </div>
+                </div>
+                
+                <button class="checkin-btn" id="checkinBtn" onclick="handleCheckin()">📌 立即打卡</button>
+            </div>
+        </div>
+        
+        <!-- 题库网格 -->
         <div class="grid">
             <!-- 第1组：基础知识 -->
             <div class="card">
@@ -204,7 +380,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 练习模式</span>
                 </div>
-                <a href="https://mycymy.github.io/quiz/quizzghs01.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs01.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第2组：相关专业知识 -->
@@ -216,7 +392,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 练习模式</span>
                 </div>
-                <a href="https://mycymy.github.io/quiz/quizzghs02.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs02.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第3组：专业知识 -->
@@ -228,7 +404,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 练习模式</span>
                 </div>
-                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs03.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第4组：专业实践能力 -->
@@ -240,7 +416,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 练习模式</span>
                 </div>
-                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs04.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第5组：基础知识(二) -->
@@ -252,7 +428,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 练习模式</span>
                 </div>
-                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs05.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第6组：相关专业知识(二) -->
@@ -264,7 +440,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 练习模式</span>
                 </div>
-                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs06.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第7组：专业知识(二) -->
@@ -276,7 +452,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 练习模式</span>
                 </div>
-                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs07.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第8组：专业实践能力(二) -->
@@ -288,7 +464,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 练习模式</span>
                 </div>
-                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs08.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第9组：综合模拟(一) -->
@@ -300,7 +476,7 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 考试模式</span>
                 </div>
-                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs09.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
             
             <!-- 第10组：综合模拟(二) -->
@@ -312,38 +488,168 @@
                     <span>📊 1000题</span>
                     <span>⏱️ 考试模式</span>
                 </div>
-                <a href="#" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycym.github.io/quiz/quizzghs10.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
         </div>
         
-<div class="footer">
-    <p>📢 提示：点击按钮后将在新标签页打开对应题库</p>
-    
-    <div style="margin-top: 20px; font-size: 0.95rem; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; background: #f8f9fa; padding: 20px; border-radius: 15px;">
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs01.html" target="_blank" rel="noopener noreferrer"><strong>基础知识（第1组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上线</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs02.html" target="_blank" rel="noopener noreferrer"><strong>相关专业知识（第2组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上线</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs03.html" target="_blank" rel="noopener noreferrer"><strong>专业知识（第3组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs04.html" target="_blank" rel="noopener noreferrer"><strong>专业实践能力（第4组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs05.html" target="_blank" rel="noopener noreferrer"><strong>基础知识（二）（第5组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs06.html" target="_blank" rel="noopener noreferrer"><strong>相关专业知识（二）（第6组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs07.html" target="_blank" rel="noopener noreferrer"><strong>专业知识（二）（第7组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs08.html" target="_blank" rel="noopener noreferrer"><strong>专业实践能力（二）（第8组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs09.html" target="_blank" rel="noopener noreferrer"><strong>综合模拟（一）（第9组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-        <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs10.html" target="_blank" rel="noopener noreferrer"><strong>综合模拟（二）（第10组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-    </div>
-    
-    <div style="margin-top: 20px; display: flex; justify-content: center; gap: 30px; color: #666; font-size: 0.9rem;">
-        <span><span style="display: inline-block; width: 12px; height: 12px; background: #28a745; border-radius: 50%; margin-right: 5px;"></span> 已上线可访问</span>
-        <span><span style="display: inline-block; width: 12px; height: 12px; background: #ffc107; border-radius: 50%; margin-right: 5px;"></span> 待上传</span>
-    </div>
-    
-    <p style="margin-top: 20px; color: #999; font-size: 0.85rem; border-top: 1px solid #eee; padding-top: 15px;">
-        ⚡ 点击上方链接可在新标签页打开对应题库 | 第1-2组已上线，第3-10组请上传对应文件
-    </p>
-</div>
+        <!-- Footer -->
+        <div class="footer">
+            <p>📢 提示：点击按钮后将在新标签页打开对应题库</p>
+            
+            <div style="margin-top: 20px; font-size: 0.95rem; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; background: #f8f9fa; padding: 20px; border-radius: 15px;">
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs01.html" target="_blank" rel="noopener noreferrer"><strong>基础知识（第1组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上线</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs02.html" target="_blank" rel="noopener noreferrer"><strong>相关专业知识（第2组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上传</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs03.html" target="_blank" rel="noopener noreferrer"><strong>专业知识（第3组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs04.html" target="_blank" rel="noopener noreferrer"><strong>专业实践能力（第4组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs05.html" target="_blank" rel="noopener noreferrer"><strong>基础知识（二）（第5组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs06.html" target="_blank" rel="noopener noreferrer"><strong>相关专业知识（二）（第6组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs07.html" target="_blank" rel="noopener noreferrer"><strong>专业知识（二）（第7组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs08.html" target="_blank" rel="noopener noreferrer"><strong>专业实践能力（二）（第8组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs09.html" target="_blank" rel="noopener noreferrer"><strong>综合模拟（一）（第9组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+                <div style="min-width: 200px;">🔗 <a href="https://mycym.github.io/quiz/quizzghs10.html" target="_blank" rel="noopener noreferrer"><strong>综合模拟（二）（第10组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 30px; color: #666; font-size: 0.9rem;">
+                <span><span style="display: inline-block; width: 12px; height: 12px; background: #28a745; border-radius: 50%; margin-right: 5px;"></span> 已上线可访问</span>
+                <span><span style="display: inline-block; width: 12px; height: 12px; background: #ffc107; border-radius: 50%; margin-right: 5px;"></span> 待上传</span>
+            </div>
+            
+            <p style="margin-top: 20px; color: #999; font-size: 0.85rem; border-top: 1px solid #eee; padding-top: 15px;">
+                ⚡ 点击上方链接可在新标签页打开对应题库 | 第1-2组已上线
+            </p>
+        </div>
     </div>
 
-    <!-- 添加Font Awesome图标支持（可选） -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- 倒计时和打卡功能JavaScript -->
+    <script>
+        // 考试时间配置（根据图片信息）
+        const examDates = [
+            { name: '基础知识', date: '2026-04-18', time: '8:30-10:00', dateLabel: '4月18日' },
+            { name: '相关专业知识', date: '2026-04-18', time: '10:45-12:15', dateLabel: '4月18日' },
+            { name: '专业知识', date: '2026-04-19', time: '14:00-15:30', dateLabel: '4月19日' },
+            { name: '专业实践能力(一)', date: '2026-04-25', time: '8:30-10:00', dateLabel: '4月25日' },
+            { name: '专业实践能力(二)', date: '2026-04-26', time: '16:15-17:45', dateLabel: '4月26日' }
+        ];
+
+        // 初始化倒计时
+        function updateCountdown() {
+            const now = new Date();
+            const grid = document.getElementById('countdownGrid');
+            grid.innerHTML = '';
+            
+            examDates.forEach(exam => {
+                const examDate = new Date(exam.date);
+                examDate.setHours(0, 0, 0, 0);
+                
+                const diffTime = examDate - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                const card = document.createElement('div');
+                card.className = 'exam-card';
+                
+                let statusHtml = '';
+                if (diffDays < 0) {
+                    statusHtml = `<div class="countdown-number" style="color: #ff6b6b;">已结束</div>`;
+                } else if (diffDays === 0) {
+                    statusHtml = `<div class="countdown-number" style="color: #f9ca24;">今天考试</div>`;
+                } else {
+                    statusHtml = `
+                        <div class="countdown-number">${diffDays}</div>
+                        <div class="countdown-label">天后开考</div>
+                    `;
+                }
+                
+                card.innerHTML = `
+                    <div class="exam-name">${exam.name}</div>
+                    <div class="exam-date">${exam.dateLabel}</div>
+                    <div class="exam-time">⏰ ${exam.time}</div>
+                    ${statusHtml}
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // 打卡功能
+        function handleCheckin() {
+            const today = new Date().toDateString();
+            const checkinBtn = document.getElementById('checkinBtn');
+            
+            // 获取本地存储的打卡数据
+            let checkinData = JSON.parse(localStorage.getItem('checkinData')) || {
+                total: 0,
+                continuous: 0,
+                lastDate: null
+            };
+            
+            // 检查今天是否已经打卡
+            if (checkinData.lastDate === today) {
+                alert('今天已经打卡过了，明天再来吧！');
+                return;
+            }
+            
+            // 检查是否是连续打卡
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toDateString();
+            
+            if (checkinData.lastDate === yesterdayStr) {
+                checkinData.continuous += 1;
+            } else {
+                checkinData.continuous = 1;
+            }
+            
+            // 更新数据
+            checkinData.total += 1;
+            checkinData.lastDate = today;
+            
+            // 保存到本地存储
+            localStorage.setItem('checkinData', JSON.stringify(checkinData));
+            
+            // 更新显示
+            updateCheckinDisplay(checkinData);
+            
+            // 按钮样式变化
+            checkinBtn.classList.add('checked');
+            checkinBtn.innerHTML = '✅ 今日已打卡';
+            
+            alert('打卡成功！继续加油！');
+        }
+
+        // 更新打卡显示
+        function updateCheckinDisplay(data) {
+            document.getElementById('totalDays').textContent = data.total;
+            document.getElementById('continuousDays').textContent = data.continuous;
+            
+            const today = new Date().toDateString();
+            const checkinBtn = document.getElementById('checkinBtn');
+            
+            if (data.lastDate === today) {
+                checkinBtn.classList.add('checked');
+                checkinBtn.innerHTML = '✅ 今日已打卡';
+            } else {
+                checkinBtn.classList.remove('checked');
+                checkinBtn.innerHTML = '📌 立即打卡';
+            }
+        }
+
+        // 初始化
+        function init() {
+            // 倒计时每秒更新
+            updateCountdown();
+            setInterval(updateCountdown, 1000 * 60 * 60); // 每小时更新一次
+            
+            // 初始化打卡数据
+            const checkinData = JSON.parse(localStorage.getItem('checkinData')) || {
+                total: 0,
+                continuous: 0,
+                lastDate: null
+            };
+            updateCheckinDisplay(checkinData);
+        }
+
+        // 页面加载完成后执行
+        window.onload = init;
+    </script>
 </body>
 </html>
