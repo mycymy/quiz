@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>主管护师·相关专业知识题库</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 12px;
+        }
+        #app {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 20px 18px;
+            margin: 10px 0 30px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #0b3b5c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-left: 8px solid #2a7faa;
+            padding-left: 16px;
+        }
+        h1 small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #4b5563;
+            margin-left: auto;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: #e6f0f9;
+            padding: 14px 12px;
+            border-radius: 28px;
+            justify-content: center;
+        }
+        .mode-btn {
+            background: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            flex: 1 0 auto;
+            font-size: 0.95rem;
+        }
+        .mode-btn.active {
+            background: #2a7faa;
+            color: white;
+            box-shadow: 0 8px 14px -6px #2a7faacc;
+            border-color: #1f5a7a;
+        }
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin: 18px 0 14px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 12px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            flex: 1 1 auto;
+            justify-content: center;
+            background: #f8fafc;
+        }
+        .btn.primary {
+            background: #2a7faa;
+            border-color: #1e5f82;
+            color: white;
+        }
+        .btn.warning {
+            background: #f97316;
+            border-color: #c2410c;
+            color: white;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 12px 20px;
+            background: #fff3cd;
+            border-radius: 40px;
+            border: 1px solid #ffeeba;
+        }
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #856404;
+        }
+        .question-panel {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 24px 18px;
+            box-shadow: inset 0 1px 4px #e2e8f0, 0 6px 12px -8px #94a3b8;
+            border: 1px solid #e9eef3;
+        }
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #dbeafe;
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: #1e3a8a;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .q-type {
+            background: #e2f3e4;
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: #166534;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .q-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.5;
+            margin: 20px 0 18px;
+            color: #0a1e2f;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 40px;
+            border: 1px solid #dee7ef;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+        .option-item.selected {
+            background: #e0f2fe;
+            border-color: #0369a1;
+            box-shadow: 0 0 0 2px #bae6fd;
+        }
+        .option-prefix {
+            font-weight: 700;
+            background: white;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+        }
+        .option-item.selected .option-prefix {
+            background: #0369a1;
+            border-color: #0369a1;
+            color: white;
+        }
+        .option-content {
+            flex: 1;
+            font-size: 1.06rem;
+            line-height: 1.4;
+            color: #0f2b40;
+        }
+        .answer-area {
+            margin: 24px 0 12px;
+            background: #f1f5f9;
+            border-radius: 24px;
+            padding: 16px 18px;
+        }
+        .correct-badge {
+            background: #22c55e;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        .wrong-badge {
+            background: #ef4444;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .explanation {
+            margin-top: 12px;
+            color: #2c3e50;
+            font-size: 1rem;
+            background: white;
+            padding: 14px;
+            border-radius: 24px;
+        }
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 10px;
+            color: #4b5563;
+        }
+        .wrong-book {
+            background: #fff1f0;
+            padding: 18px;
+            border-radius: 30px;
+            margin-top: 20px;
+            border: 1px solid #ffccc7;
+        }
+        .wrong-item {
+            padding: 12px;
+            border-bottom: 1px dashed #fbb9b5;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .wrong-item:hover {
+            background: #ffe4e2;
+        }
+        .exam-result {
+            background: white;
+            border-radius: 28px;
+            padding: 24px;
+            margin: 20px 0;
+            border: 2px solid #2a7faa;
+        }
+        .exam-result h2 {
+            color: #0b3b5c;
+            margin-bottom: 15px;
+        }
+        .exam-result h3 {
+            margin: 15px 0 10px;
+            color: #b91c1c;
+        }
+        .wrong-answer {
+            background: #fff1f0;
+            padding: 15px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        footer {
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1>📚 主管护师·相关专业知识 <small>单科第2科</small></h1>
+
+    <!-- 模式切换工具栏 -->
+    <div class="toolbar">
+        <button class="mode-btn" :class="{active: mode === 'order'}" @click="switchMode('order')">📋 顺序</button>
+        <button class="mode-btn" :class="{active: mode === 'random'}" @click="switchMode('random')">🎲 随机</button>
+        <button class="mode-btn" :class="{active: mode === 'exam'}" @click="switchMode('exam')">✍️ 模拟</button>
+        <button class="mode-btn" :class="{active: mode === 'wrong'}" @click="switchMode('wrong')">📌 错题本</button>
+    </div>
+
+    <!-- 上一题/查看答案/下一题 -->
+    <div class="action-btns">
+        <button class="btn" @click="previousQuestion" :disabled="atFirst">◀ 上一题</button>
+        <button class="btn primary" @click="toggleAnswer">{{ showAnswer ? '隐藏答案' : '查看答案' }}</button>
+        <button class="btn" @click="nextQuestion" :disabled="atLast">下一题 ▶</button>
+    </div>
+
+    <!-- 模拟考试计时器栏（只在模拟考试未结束时显示） -->
+    <div v-if="mode === 'exam' && !examFinished" class="exam-info">
+        <span class="timer">⏱️ 剩余时间: {{ formattedTime }}</span>
+        <button class="btn primary" @click="finishExam">📤 交卷</button>
+    </div>
+
+    <!-- 非错题模式下的辅助操作（标记错题、随机跳题） -->
+    <div class="action-btns" v-if="mode !== 'wrong'">
+        <button class="btn warning" @click="markWrong">📕 标记错题</button>
+        <button class="btn" @click="randomJump">🎯 随机跳题</button>
+    </div>
+
+    <!-- 题目卡片 -->
+    <div class="question-panel" v-if="currentQuestion">
+        <div class="q-header">
+            <span class="q-num">第 {{ index+1 }}/{{ total }} 题</span>
+            <span class="q-type">{{ currentQuestion.type === 'single' ? '单选题' : '共用备选答案' }}</span>
+        </div>
+        <div class="q-text">{{ currentQuestion.Q }}</div>
+
+        <div class="options">
+            <div v-for="(opt, idx) in currentQuestion.options" :key="idx"
+                 class="option-item"
+                 :class="{selected: userSelections[currentRawIndex] === String.fromCharCode(65+idx)}"
+                 @click="selectOption(String.fromCharCode(65+idx))">
+                <span class="option-prefix">{{ String.fromCharCode(65+idx) }}</span>
+                <span class="option-content">{{ opt }}</span>
+            </div>
+        </div>
+
+        <div class="answer-area" v-if="showAnswer">
+            <div>
+                <span class="correct-badge" v-if="userSelections[currentRawIndex] === currentQuestion.answer">✓ 回答正确</span>
+                <span class="wrong-badge" v-else-if="userSelections[currentRawIndex] && userSelections[currentRawIndex] !== currentQuestion.answer">✗ 回答错误</span>
+                <span style="font-weight:600; margin-left:8px;">正确答案：{{ currentQuestion.answer }}</span>
+            </div>
+            <div class="explanation" v-if="currentQuestion.explain">
+                <strong>📖 解析：</strong> {{ currentQuestion.explain }}
+            </div>
+            <div class="explanation" v-else>
+                <span style="color:#6b7280;">（本题无解析，可自行记录）</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度统计 -->
+    <div class="progress">
+        <span>已完成: {{ answeredCount }}/{{ total }}</span>
+        <span>正确: {{ correctCount }}</span>
+        <span>错题本: {{ wrongList.length }}</span>
+    </div>
+
+    <!-- 错题本详情（错题模式下显示） -->
+    <div class="wrong-book" v-if="mode === 'wrong'">
+        <h3 style="color:#b91c1c; margin-bottom:16px;">❌ 我的错题 ({{ wrongList.length }})</h3>
+        <div v-if="wrongList.length === 0" style="color: #4b5563;">还没有错题，继续加油！</div>
+        <div v-for="(id, idx) in wrongList" :key="idx" class="wrong-item" @click="jumpToWrongQuestion(id)">
+            <span style="font-weight:500;">题号 {{ id+1 }}：</span> {{ questions[id].Q.substring(0,26) }}…
+            <span style="color:#a5a; margin-left:8px;">[{{ questions[id].answer }}]</span>
+        </div>
+        <!-- 清空错题本按钮（可选） -->
+        <button v-if="wrongList.length > 0" class="btn warning" @click="clearWrongSet" style="margin-top:15px;">🧹 清空错题本</button>
+    </div>
+
+    <!-- 考试成绩单（交卷后显示） -->
+    <div v-if="showExamResult" class="exam-result">
+        <h2>📊 模拟考试成绩</h2>
+        <p>得分: {{ examScore }} / {{ total }} ({{ (examScore/total*100).toFixed(1) }}%)</p>
+        <p>正确题数: {{ correctCount }}</p>
+        <p>错题数: {{ wrongList.length }}</p>
+        <div v-if="wrongList.length > 0">
+            <h3>❌ 错题解析</h3>
+            <div v-for="(rawId, idx) in wrongList" :key="idx" class="wrong-answer">
+                <p><strong>题号 {{ rawId+1 }}:</strong> {{ questions[rawId].Q }}</p>
+                <p><span style="color:red;">您的答案: {{ userSelections[rawId] || '未答' }}</span> → <span style="color:green;">正确答案: {{ questions[rawId].answer }}</span></p>
+                <p>📖 解析: {{ questions[rawId].explain || '无解析' }}</p>
+                <hr>
+            </div>
+        </div>
+        <button class="btn primary" @click="switchMode('order')">返回练习模式</button>
+    </div>
+
+    <footer>⭐ 主管护师 相关专业知识1000题 · 题库</footer>
+</div>
+
+<!-- 引入Vue -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    (function() {
+        // ---------- 请在此处替换为您真实的题库数据 ----------
+        // 每道题格式：{ Q: "题干", options: ["选项A","B","C","D","E"], answer: "A", explain: "解析", type: "single" }
+        const questionsData = [
+            // 示例题目（实际使用时请替换）
+     /* 1 */ { Q: "授权的原则不包括", options: ["视能授权", "公平竞争", "合理合法", "监督控制", "权责对等"], answer: "B", explain: "授权的原则包括视能授权、合理合法、监督控制、权责对等。", type: "single" },
+/* 2 */ { Q: "考虑到很多老年人听力不好，演讲时使用扩音器是遵循了健康传播原则的", options: ["准确性原则", "针对性原则", "速度快原则", "经济性原则", "指导性原则"], answer: "B", explain: "针对性原则强调针对具体受者、具体情况选择传播途径。", type: "single" },
+/* 3 */ { Q: "消毒剂效果监测方法错误的是", options: ["消毒剂生物监测每季度1次", "灭菌剂生物监测每月1次", "含氯消毒剂化学监测每天1次", "过氧乙酸化学监测每天1次", "戊二醛化学监测每天1次"], answer: "E", explain: "戊二醛化学监测应不少于每周1次。", type: "single" },
+/* 4 */ { Q: "易使回答者感到困惑，应尽量避免使用的提问形式是", options: ["封闭式提问", "开放式提问", "探索式提问", "偏向式提问", "复合式提问"], answer: "E", explain: "复合式提问包含多个问题，易使回答者困惑。", type: "single" },
+/* 5 */ { Q: "有关隔离室的设置，正确的是", options: ["可适用于多重耐药菌感染的患者", "空气传播疾病患者病室应注意灭蚊", "如无单独房间，传染病患者也可住同一室，但床距应保持1m以上", "保护性隔离患者病室应保持负压", "室内空气应直接排出室外"], answer: "A", explain: "多重耐药菌感染患者应采取接触隔离。", type: "single" },
+/* 6 */ { Q: "对危害健康行为的特点，描述不正确的是", options: ["稳定性", "明显性", "危害性", "规律性", "习得性"], answer: "D", explain: "规律性属于促进健康行为的特点。", type: "single" },
+/* 7 */ { Q: "五脏中主要表现在血液生成和血液运行两个方面关系的是", options: ["心与肺", "心与肝", "心与肾", "肝与脾", "心与脾"], answer: "E", explain: "心主行血，脾主生血统血，二者在血液生成和运行方面关系密切。", type: "single" },
+/* 8 */ { Q: "需要行下一台手术时，外科医生的手应", options: ["换一副无菌手套即可", "用无菌生理盐水冲洗", "无须处理，直接进行下一台手术", "重新行卫生手消毒", "重新行外科手消毒"], answer: "E", explain: "不同患者手术之间应重新行外科手消毒。", type: "single" },
+/* 9 */ { Q: "男，52岁。因肝硬化、食管胃底静脉曲张破裂出血入院，患者有18年每天喝半斤白酒的习惯，入院后护士评估其病情后计划将其纳入一个健康教育研究中，患者在得知自己作为被研究和观察对象时表现出异乎寻常的行为。此现象称为", options: ["雷诺效应", "首因效应", "认知效应", "霍桑效应", "刻板效应"], answer: "D", explain: "霍桑效应指人们得知被研究而表现出异乎寻常的行为。", type: "single" },
+/* 10 */ { Q: "临床护理组织方式不包括", options: ["个案护理", "功能制护理", "特色护理", "责任制护理", "小组护理"], answer: "C", explain: "特色护理不是临床护理组织方式。", type: "single" },
+/* 11 */ { Q: "医院感染目标监测的最佳方法是", options: ["医院实验室细菌培养阳性病例回顾", "临床医师填报的病例", "专职人员到病室前瞻性调查", "病室监控护士报告病例", "到病案室从出院病历中查阅病例"], answer: "C", explain: "专职人员到病室前瞻性调查是目标监测的最佳方法。", type: "single" },
+/* 12 */ { Q: "护患沟通的主要反馈机制是", options: ["提问", "倾听", "重复", "使用附加语", "澄清"], answer: "C", explain: "重复是护患沟通的主要反馈机制。", type: "single" },
+/* 13 */ { Q: "医院感染不包括", options: ["医院工作人员在医院内获得的感染", "新生儿经产道分娩时获得的感染", "入院时已处于潜伏期的感染", "在医院内获得出院后发生的感染", "手术后输血造成的病毒感染"], answer: "C", explain: "入院时已处于潜伏期的感染不属于医院感染。", type: "single" },
+/* 14 */ { Q: "对于“土”的特性，正确的描述是", options: ["炎上", "肃革", "寒润", "曲直", "稼稿"], answer: "E", explain: "土爰稼穑，具有生化、承载、受纳的特性。", type: "single" },
+/* 15 */ { Q: "在健康教育的评价过程中，由于偶然因素，测试对象的某种特征水平过高，但在以后的测试中又恢复到原有水平的现象，属于偏倚因素中的", options: ["时间因素", "信息因素", "回归因素", "选择因素", "暴露因素"], answer: "C", explain: "回归因素指偶然因素导致的过高或过低水平在后续测试中恢复的现象。", type: "single" },
+/* 16 */ { Q: "护士与昏迷患者间适用的关系模式是", options: ["主动-被动型模式", "指导-合作型模式", "指导-被动型模式", "共享参与型模式", "被动参与型模式"], answer: "A", explain: "主动-被动型模式适用于昏迷、休克、精神病等患者。", type: "single" },
+/* 17 */ { Q: "流行性出血热“三痛”是指", options: ["头痛、眼眶痛、腰痛", "头痛、眼眶痛、骨关节疼痛", "头痛、眼眶痛、肌痛", "头痛、腰痛、骨关节疼痛", "头痛、腰痛、肌痛"], answer: "A", explain: "流行性出血热三痛为头痛、眼眶痛、腰痛。", type: "single" },
+/* 18 */ { Q: "对病毒性肝炎患者使用过的化纤织物，最好的消毒方法是", options: ["环氧乙烷气体灭菌", "紫外线照射", "氯胺喷雾", "过氧乙酸浸泡", "压力蒸汽灭菌"], answer: "A", explain: "环氧乙烷气体灭菌适用于不耐热、不耐湿的物品。", type: "single" },
+/* 19 */ { Q: "在时间消耗相等的情况下，为提高时间利用率和有效性而进行的一系列活动是指", options: ["决策", "目标管理", "计划", "时间管理", "评估"], answer: "D", explain: "时间管理是指在时间消耗相等的情况下提高时间利用率和有效性。", type: "single" },
+/* 20 */ { Q: "男，43岁。右下腹疼痛难忍2小时。经检查诊断为急性阑尾炎，急诊行阑尾切除术，手术顺利，术后第7天，发现伤口有淡黄色液体渗出。手术医师告知是由缝合切口的羊肠线不吸收所致，在临床中较为少见。经过近一个月的继续治疗，患者痊愈出院。根据《医疗事故处理条例》规定，该患者“近一个月才得以痊愈”这一客观后果，应当属于", options: ["二级医疗事故", "三级医疗事故", "四级医疗事故", "因不可抗力而造成的不良后果", "因患者体质特殊而发生的医疗意外"], answer: "E", explain: "羊肠线不吸收属于患者体质特殊导致的医疗意外。", type: "single" },
+/* 21 */ { Q: "内源性医院感染的原因是", options: ["患者自身抵抗力增强,对本身固有的细菌感受性下降", "患者自身抵抗力增强,对本身固有的细菌感受性增强", "患者自身抵抗力下降,对本身固有的细菌感受性增强", "患者自身抵抗力下降,对本身固有的细菌感受性下降", "患者自身抵抗力不变,对本身固有的细菌感受性改变"], answer: "C", explain: "内源性感染是患者自身抵抗力下降，对自身固有细菌感受性增强所致。", type: "single" },
+/* 22 */ { Q: "某病房护士长在管理病房过程中，不妨碍下属履行职责，以便充分调动下属工作的积极性，体现了组织设计的", options: ["责权一致原则", "目标统一原则", "有效管理幅度原则", "集权与分权相结合原则", "分工协作原则"], answer: "D", explain: "集权与分权相结合原则强调不妨碍下属履行职责，调动积极性。", type: "single" },
+/* 23 */ { Q: "根据标准预防概念，不具有传染性的物质是", options: ["血液", "大便", "分泌物", "尿液", "汗液"], answer: "E", explain: "标准预防中，汗液不具有传染性。", type: "single" },
+/* 24 */ { Q: "抗生素应用疗程，错误的是", options: ["预防性用药手术结束后3小时内使用", "急性感染症状消失后继续用药2~3天", "脓毒症患者体温正常后7~10天再停药", "术前1小时静脉给予1次足量抗生素", "严重感染疗程可达4~8周"], answer: "A", explain: "预防性用药应在术前0.5-1小时使用，而非术后。", type: "single" },
+/* 25 */ { Q: "PDCA循环管理的关键在于", options: ["计划阶段", "执行阶段", "检查阶段", "处理阶段", "反馈阶段"], answer: "D", explain: "PDCA循环的关键在于处理阶段，总结经验教训。", type: "single" },
+/* 26 */ { Q: "抗菌药物的应用方法正确的是", options: ["选择有针对性的一种抗生素治疗难治性感染", "将药敏试验结果作为常规的抗生素药物选择依据", "长期应用抗生素者，应长期联合服用制霉菌素以防止真菌二重感染", "大环内酯类抗生素采用间歇给药方法", "氨基糖苷类抗生素可与β-内酰胺类抗生素同瓶滴注"], answer: "B", explain: "药敏试验结果应作为常规抗生素选择依据。", type: "single" },
+/* 27 */ { Q: "在社区糖尿病健康知识的小组座谈中，参加小组讨论的适宜人数为", options: ["2~5人", "6~10人", "11~15人", "16~20人", "21~25人"], answer: "B", explain: "小组讨论适宜人数为6~10人。", type: "single" },
+/* 28 */ { Q: "根据阴阳学说，事物的质变过程称为", options: ["阴阳消长", "阴阳对立", "阴平阳秘", "阴阳互根", "阴阳转化"], answer: "E", explain: "阴阳转化指事物在发展到一定阶段时，阴阳性质发生质变的过程。", type: "single" },
+/* 29 */ { Q: "根据《综合医院组织编制原则试行草案》规定，500张床位以上的医院，病床与工作人员之比为", options: ["1:1.3~1:1.4", "1:1.4~1:1.5", "1:1.6~1:1.7", "1:1.8~1:1.9", "1:2.0~1:2.1"], answer: "C", explain: "500张床位以上医院，病床与工作人员之比为1:1.6~1:1.7。", type: "single" },
+/* 30 */ { Q: "可以表示组织结构模式的方式是", options: ["职位报告、职位说明书、组织图", "职位报告、审核报告、组织说明书", "组织手册、组织图、组织表格", "组织图、组织手册、职位说明书", "组织图、审核报告、职位说明书"], answer: "D", explain: "组织结构模式可通过组织图、组织手册、职位说明书表示。", type: "single" },
+/* 31 */ { Q: "关于社区护理质量管理的基本方法，错误的是", options: ["社区护理质量管理的基本方法包括标准化管理、评价和缺陷控制", "社区护理质量标准可分为国际标准、国家标准、行业标准等", "社区卫生服务中心可根据自身条件制订本中心的质量标准", "社区护理质量评价包括医护人员自我评价和社区居民评价", "社区护理质量缺陷控制是指预防和控制各种大的护理差错和事故"], answer: "E", explain: "质量缺陷控制包括预防和控制各种护理缺陷，不仅限于大的差错事故。", type: "single" },
+/* 32 */ { Q: "从组织的整体出发，全面考虑、统筹规划，体现了计划工作的", options: ["弹性原则", "可考核性原则", "重点原则", "系统性原则", "创新原则"], answer: "D", explain: "系统性原则要求从组织整体出发，全面考虑、统筹规划。", type: "single" },
+/* 33 */ { Q: "发现医院感染散发病例时，报告医院感染管理科的时间是", options: ["2小时内", "12小时内", "24小时内", "6小时内", "48小时内"], answer: "C", explain: "发现医院感染散发病例应在24小时内报告。", type: "single" },
+/* 34 */ { Q: "由于某些因素影响，人体某些部位正常菌群的结构和数量发生暂时性的变动，是指", options: ["原位菌群一度失调", "原位菌群二度失调", "原位菌群三度失调", "横向转移", "纵向转移"], answer: "A", explain: "一度失调指菌群结构和数量发生暂时性变动。", type: "single" },
+/* 35 */ { Q: "健康教育的重要策略之一是", options: ["初级卫生保健", "社区卫生服务", "健康促进", "爱国卫生运动", "卫生监督"], answer: "C", explain: "健康促进是健康教育的重要策略。", type: "single" },
+/* 36 */ { Q: "人类行为的构成要素不包括", options: ["行为主体", "行为客体", "行为环境", "行为目标", "行为结果"], answer: "D", explain: "行为目标不是人类行为的构成要素。", type: "single" },
+/* 37 */ { Q: "预防老年患者医院感染，错误的措施是", options: ["加强生活护理，保持口腔和会阴清洁", "协助患者进行增加肺活量的训练", "严格执行探视制度和消毒隔离制度", "保持病房环境清洁，空气清新", "长期服用小剂量抗生素以预防感染发生"], answer: "E", explain: "长期服用抗生素预防感染是错误的，易导致耐药。", type: "single" },
+/* 38 */ { Q: "计划的步骤排序正确的是", options: ["评估形势一确定目标一比较方案一发展可选项方案一选定方案一编制预算", "评估形势一确定目标一发展可选项方案一比较方案一选定方案一编制预算", "确定目标一评估形势一发展可选项方案一比较方案一选定方案一编制预算", "确定目标一评估形势一比较方案一发展可选项方案一选定方案一编制预算", "确定目标一评估形势一比较方案一发展可选项方案一编制预算一选定方案"], answer: "B", explain: "计划步骤正确顺序：评估形势-确定目标-发展可选方案-比较方案-选定方案-编制预算。", type: "single" },
+/* 39 */ { Q: "健康教育计划中目标与目的区别在于", options: ["目的是目标的具体体现", "目标是目的的具体体现", "目标是预期达到的最终结果", "目的一般用指标描述", "目标一般具有宏观性"], answer: "B", explain: "目标是目的的具体体现，更加具体可测量。", type: "single" },
+/* 40 */ { Q: "组织各资源要素中占首要地位的是", options: ["信息资源", "财力资源", "物力资源", "人力资源", "文化资源"], answer: "D", explain: "人力资源在组织各资源要素中占首要地位。", type: "single" },
+/* 41 */ { Q: "属于社会状况评估的是", options: ["青霉素过敏史", "姓名、性别、年龄", "民族、职业、入院方式", "入院前性格外向，善于交流", "经济状况良好，家庭关系和睦"], answer: "E", explain: "经济状况和家庭关系属于社会状况评估。", type: "single" },
+/* 42 */ { Q: "关于健康教育目标的叙述，正确的是", options: ["以建立健康行为为目标", "以传播知识为目标", "以促进健康为目标", "以预防疾病为目标", "以制订传播策略为目标"], answer: "A", explain: "健康教育的目标是建立健康行为。", type: "single" },
+/* 43 */ { Q: "男，32岁。因单纯十二指肠溃疡入院，入院后做胃大部切除术，术后死于脓毒症。说法正确的是", options: ["患者死因与医院感染无关", "医院感染是直接死亡原因", "患者的情况不属于医院感染", "死亡原因与手术大小有关", "死亡原因与麻醉有关"], answer: "B", explain: "术后脓毒症属于医院感染，是直接死亡原因。", type: "single" },
+/* 44 */ { Q: "直接影响男子排精生理功能的是", options: ["心主神明与肝主藏血的关系", "肝主疏泄与肾主封藏的关系", "脾主运化与肝主疏泄的关系", "肺主治节与肾主封藏的关系", "肝主藏血与肾主藏精的关系"], answer: "B", explain: "肝主疏泄与肾主封藏的关系直接影响男子排精。", type: "single" },
+/* 45 */ { Q: "领导效能的内容不包括", options: ["时间效能", "用人效能", "决策办事效能", "组织整体贡献效能", "结构效能"], answer: "E", explain: "领导效能包括时间效能、用人效能、决策办事效能、组织整体贡献效能。", type: "single" },
+/* 46 */ { Q: "健康教育诊断中，社会环境诊断指标不包括", options: ["入学率、文盲率", "人均年收入水平和人均住房面积", "卫生法规、政策的建立和执行情况", "医疗卫生服务机构专业人员组成和设备条件", "目标人群生活环境的物理、经济、文化和疾病状况"], answer: "D", explain: "医疗卫生服务机构专业人员组成和设备条件属于资源诊断，不是社会环境诊断。", type: "single" },
+/* 47 */ { Q: "可引起艾滋病传播的行为是", options: ["同桌进餐", "近距离交谈", "拥抱和握手", "共用注射器", "共同乘车"], answer: "D", explain: "共用注射器可引起艾滋病传播。", type: "single" },
+/* 48 */ { Q: "管理的核心职能为", options: ["计划", "组织", "领导", "控制", "人员管理"], answer: "C", explain: "领导是管理的核心职能。", type: "single" },
+/* 49 */ { Q: "交流中可使用的时空语是", options: ["眼神", "服饰", "姿势", "语调", "设施"], answer: "E", explain: "时空语包括环境布局、设施等。", type: "single" },
+/* 50 */ { Q: "美国管理学家莱金建议，为了提高时间的利用率，每个人都需要确定今后5年、今后半年及现阶段要达到的目标，并确定目标的优先次序。这种时间管理方法是", options: ["四象限时间管理法", "记录统计法", "区域管理法", "ABC时间管理法", "拟定时间进度表"], answer: "D", explain: "ABC时间管理法由莱金提出，强调确定目标优先次序。", type: "single" },
+/* 51 */ { Q: "构成非权力性影响力的因素不包括", options: ["品格因素", "才能因素", "感情因素", "资历因素", "知识因素"], answer: "D", explain: "资历因素属于权力性影响力。", type: "single" },
+/* 52 */ { Q: "决策的步骤拟定方案通常的2条途径是", options: ["评估与比较", "评估与创造", "咨询与创造", "经验与比较", "经验与创造"], answer: "E", explain: "拟定方案的2条途径是经验与创造。", type: "single" },
+/* 53 */ { Q: "将信息译成接收者能够理解的一系列符号的步骤是", options: ["传递信息", "编码", "解码", "反馈", "信息源"], answer: "B", explain: "编码是将信息译成接收者能理解的符号。", type: "single" },
+/* 54 */ { Q: "协调工作的重要基础是", options: ["勤于沟通", "目标导向", "整体优化", "利益一致", "灵活处理"], answer: "A", explain: "勤于沟通是协调工作的重要基础。", type: "single" },
+/* 55 */ { Q: "根据纠正偏差措施的作用环节不同，采取的相应控制措施有", options: ["质量控制", "定期控制", "整体控制", "间接控制", "前馈控制"], answer: "E", explain: "前馈控制是在计划实施前采取预防措施。", type: "single" },
+/* 56 */ { Q: "主受纳与腐熟水谷的腑脏是", options: ["小肠", "胆", "大肠", "胃", "三焦"], answer: "D", explain: "胃主受纳与腐熟水谷。", type: "single" },
+/* 57 */ { Q: "根据健康教育诊断，高可变性行为不包括", options: ["社会不赞成的行为", "正处在发展时期的行为", "与文化传统不相关的行为", "与生活传统不相关的行为", "与生活方式和风俗习惯密切相关的行为"], answer: "E", explain: "与生活方式和风俗习惯密切相关的行为属于低可变性行为。", type: "single" },
+/* 58 */ { Q: "对人员管理的意义描述，错误的是", options: ["可以选聘、使用优秀人才", "可达到人尽其才的目的", "可充分调动人员积极性", "可提供人力资源储备", "可以杜绝人员犯错误"], answer: "E", explain: "人员管理不能杜绝人员犯错误。", type: "single" },
+/* 59 */ { Q: "肾阴亏虚的临床表现不包括", options: ["小便清长", "腰酸腿软", "头晕耳鸣", "舌红少苔", "少寐健忘"], answer: "A", explain: "小便清长是肾阳虚的表现。", type: "single" },
+/* 60 */ { Q: "职权从组织上层流向组织基层，其组织结构类型是", options: ["直线型组织结构", "综合型组织结构", "主导型组织结构", "职能型组织结构", "直线-参谋型组织结构"], answer: "A", explain: "直线型组织结构中职权从上层流向基层。", type: "single" },
+/* 61 */ { Q: "医院感染控制的关键环节不包括", options: ["控制传染源", "加强预防性用药", "保护易感人群", "切断传播途径", "严格消毒灭菌和执行无菌操作技术"], answer: "B", explain: "加强预防性用药不是医院感染控制的关键环节。", type: "single" },
+/* 62 */ { Q: "护理组织中最高层次的文化是", options: ["护理环境", "护理专业形象", "护理哲理", "护理道德规范", "护理制度"], answer: "C", explain: "护理哲理是护理组织文化的最高层次。", type: "single" },
+/* 63 */ { Q: "人类行为区别于动物行为的重要标志是", options: ["随意性", "独立性", "目的性", "可塑性", "差异性"], answer: "C", explain: "目的性是人类行为区别于动物行为的重要标志。", type: "single" },
+/* 64 */ { Q: "关于煮沸消毒，说法错误的是", options: ["海拔每增高300m，应延长消毒时间2分钟", "水中加入碳酸氢钠可提高沸点", "水中加入碳酸氢钠有去污和防锈作用", "物品消毒后应及时取出，置于无菌容器中", "海拔每增高300m，应延长消毒时间1分钟"], answer: "E", explain: "海拔每增高300m，应延长消毒时间2分钟。", type: "single" },
+/* 65 */ { Q: "健康促进领域不包括", options: ["制订促进健康的公共政策", "创造支持环境", "加强社区活动", "发展个人技能", "协调人类与环境的战略"], answer: "E", explain: "协调人类与环境的战略不是健康促进的五大领域。", type: "single" },
+/* 66 */ { Q: "人体内的正常菌群大部分是", options: ["需氧菌", "厌氧菌", "寄生菌", "杆菌", "球菌"], answer: "B", explain: "人体正常菌群大部分是厌氧菌。", type: "single" },
+/* 67 */ { Q: "针对阴阳偏衰应遵循的治疗原则是", options: ["扶正祛邪", "调整脏腑", "调整气血", "损其有余", "补其不足"], answer: "E", explain: "阴阳偏衰应补其不足。", type: "single" },
+/* 68 */ { Q: "护士的绩效考核由所在护理单元护士长进行。护理单元护士长的考核由科护士长进行。这种方式属于绩效考核的", options: ["自我评价", "同行评价", "下属评价", "直接领导评价", "360度评价"], answer: "D", explain: "直接领导评价是由上级对下级进行考核。", type: "single" },
+/* 69 */ { Q: "原位菌群三度失调的主要原因是", options: ["免疫功能低下", "大量应用广谱抗菌药物", "慢性病诱发", "介入治疗与各种导管应用", "体弱"], answer: "B", explain: "大量应用广谱抗菌药物是原位菌群三度失调的主要原因。", type: "single" },
+/* 70 */ { Q: "某三甲医院护理管理人员设置护理岗位时，设计的层次为护理部主任（1人）一名病区护士长（20人）一护士（1000人）。这种设计中存在的缺点不包括", options: ["护理部主任不易决策", "病区护士长管理的护士较多", "护士长的管理可能失控", "护理部主任负担过重", "管理费用较高"], answer: "A", explain: "这种设计层次少，护理部主任权力集中，易于决策。", type: "single" },
+/* 71 */ { Q: "患者健康教育的重点是", options: ["门诊教育", "咨询教育", "入院教育", "病房教育", "出院教育"], answer: "D", explain: "病房教育是患者健康教育的重点。", type: "single" },
+/* 72 */ { Q: "目标管理的基本精神是", options: ["员工参与管理", "强调有效地反馈", "以自我管理为中心", "重视成果", "强调自我评价"], answer: "C", explain: "目标管理的基本精神是以自我管理为中心。", type: "single" },
+/* 73 */ { Q: "关于炭疽的描述，正确的是", options: ["传染源是蚊蝇", "炭疽芽胞杆菌芽胞的抵抗力强，能耐受煮沸30分钟", "炭疽芽胞杆菌繁殖体对热不敏感", "炭疽芽胞杆菌芽胞在泥土中可生存10年以上", "患有炭疽的病畜可以解剖"], answer: "D", explain: "炭疽芽胞杆菌芽胞在泥土中可生存10年以上。", type: "single" },
+/* 74 */ { Q: "属于封闭式提问的问题是", options: ["经过这么多天的治疗，您感觉怎么样？", "您是糖尿病患者吗？", "您为什么不愿意选择手术治疗呢？", "您的血液检查结果如何？", "您手术后感觉怎么样？"], answer: "B", explain: "封闭式提问答案有限定，如“是”或“否”。", type: "single" },
+/* 75 */ { Q: "津液输布运行的主要通道是", options: ["淋巴", "经络", "三焦", "神经", "脏腑"], answer: "C", explain: "三焦是津液输布运行的主要通道。", type: "single" },
+/* 76 */ { Q: "医院护理部为提高全院护理服务质量，准备采用目标管理的方法提高护理人员的护理技术操作水平。关于目标的描述，最有效的是", options: ["全体护理人员的护理技术操作合格率达90%以上", "提高全体护理人员的护理技术操作合格率", "1年内提高全体护理人员的护理技术操作合格率", "1年内使全体护理人员的护理技术操作合格率达90%以上", "提高全体护理人员的护理技术操作水平"], answer: "D", explain: "有效的目标应具体、可测量、有时间限制。", type: "single" },
+/* 77 */ { Q: "结核分枝杆菌对外界环境的适应性强，但不耐热。可杀灭结核分枝杆菌的是", options: ["30℃，15分钟", "40℃，10分钟", "50℃，15分钟", "60℃，10分钟", "60℃，15分钟"], answer: "E", explain: "结核分枝杆菌在60℃15分钟可被杀灭。", type: "single" },
+/* 78 */ { Q: "冬天给小区里的老年人讲解冬季保健知识属于", options: ["学校健康教育", "职业人群健康教育", "医院健康教育", "社区健康教育", "易感人群健康教育"], answer: "D", explain: "在社区对老年人进行健康教育属于社区健康教育。", type: "single" },
+/* 79 */ { Q: "沟通中的“几种媒介相互冲突”，属于", options: ["发送者障碍", "接收者障碍", "沟通通道障碍", "编码障碍", "反馈障碍"], answer: "C", explain: "几种媒介相互冲突属于沟通通道障碍。", type: "single" },
+/* 80 */ { Q: "须选用高水平消毒法消毒的微生物污染的物品不包括", options: ["细菌芽胞", "亲脂病毒", "真菌孢子", "分枝杆菌", "肝炎病毒"], answer: "B", explain: "亲脂病毒对消毒剂敏感，中水平消毒即可。", type: "single" },
+/* 81 */ { Q: "戊型肝炎病毒的传播途径是", options: ["消化道传播", "接触传播", "蚊叮咬传播", "血液-体液传播", "呼吸道传播"], answer: "A", explain: "戊型肝炎经消化道传播。", type: "single" },
+/* 82 */ { Q: "关于“气化”的叙述，正确的是", options: ["气的升降出入运动", "气的温煦作用使水化为气", "气能化水，水又能化为气", "气能生血，血又能生气", "气的运动而产生的各种变化"], answer: "E", explain: "气化是指通过气的运动而产生的各种变化。", type: "single" },
+/* 83 */ { Q: "非传染病患者用过的医疗物品和器材的消毒程序是", options: ["清洗→去污→消毒或灭菌", "清洗→消毒或灭菌→去污", "去污→清洗→消毒或灭菌", "去污→消毒或灭菌→清洗", "消毒或灭菌→去污→清洗"], answer: "C", explain: "正确程序为先去污，再清洗，最后消毒或灭菌。", type: "single" },
+/* 84 */ { Q: "护理人力资源管理的内容不包括", options: ["培训教育", "组织建设", "人才开发", "人员选择", "人员规划"], answer: "B", explain: "组织建设不属于护理人力资源管理。", type: "single" },
+/* 85 */ { Q: "共享信息的最基本传播形式是", options: ["人际传播", "群体传播", "大众传播", "社区传播", "自我传播"], answer: "A", explain: "人际传播是共享信息的最基本传播形式。", type: "single" },
+/* 86 */ { Q: "通过电视、报刊、宣传册等手段传播健康信息属于", options: ["人际传播", "群体传播", "大众传播", "社区传播", "自我传播"], answer: "C", explain: "通过电视、报刊等媒介传播属于大众传播。", type: "single" },
+/* 87 */ { Q: "每年年末常规进行全身体检属于", options: ["一级预防", "二级预防", "三级预防", "早期预防", "中期预防"], answer: "B", explain: "体检属于二级预防，早期发现疾病。", type: "single" },
+/* 88 */ { Q: "某公司定期组织员工爬山、锻炼身体，属于", options: ["一级预防", "二级预防", "三级预防", "早期预防", "中期预防"], answer: "A", explain: "锻炼身体属于一级预防，促进健康。", type: "single" },
+/* 89 */ { Q: "社区护士指导40岁以上女性进行乳房自检，属于", options: ["一级预防", "二级预防", "三级预防", "早期预防", "中期预防"], answer: "B", explain: "乳房自检属于二级预防，早期发现疾病。", type: "single" },
+/* 90 */ { Q: "WHO提出的安全注射标准是", options: ["接受注射者安全，注射操作者安全", "提倡介入性方法，尽量减少非介入性方法", "注射操作者安全，环境安全", "接受注射者安全，注射操作者安全，环境安全", "严格无菌操作和洗手，做好消毒隔离"], answer: "D", explain: "WHO安全注射标准包括接受注射者、操作者和环境安全。", type: "single" },
+/* 91 */ { Q: "预防介入性感染最基本的重要措施是", options: ["接受注射者安全，注射操作者安全", "提倡介入性方法，尽量减少非介入性方法", "注射操作者安全，环境安全", "接受注射者安全，注射操作者安全，环境安全", "严格无菌操作和洗手，做好消毒隔离"], answer: "E", explain: "严格无菌操作和洗手是最基本的预防措施。", type: "single" },
+/* 92 */ { Q: "在格林模式中，产生行为的动机、愿望和诱发因素，称为", options: ["环境因素", "倾向因素", "学习因素", "促成因素", "强化因素"], answer: "B", explain: "倾向因素是产生行为动机、愿望和诱发因素。", type: "single" },
+/* 93 */ { Q: "在格林模式中，激励行为维持、发展或减弱的因素，称为", options: ["环境因素", "倾向因素", "学习因素", "促成因素", "强化因素"], answer: "E", explain: "强化因素是激励行为维持、发展或减弱的因素。", type: "single" },
+/* 94 */ { Q: "在格林模式中，使行为动机和愿望得以实现的因素，称为", options: ["环境因素", "倾向因素", "学习因素", "促成因素", "强化因素"], answer: "D", explain: "促成因素是使行为动机和愿望得以实现的因素。", type: "single" },
+/* 95 */ { Q: "对组织管理进行了系统的研究，被公认为“管理过程之父”的是", options: ["库尔特·卢因", "彼得·德鲁克", "法约尔", "西蒙", "梅奥"], answer: "C", explain: "法约尔被称为“管理过程之父”。", type: "single" },
+/* 96 */ { Q: "发现决定工作效率最重要的是人际关系和安全感，强调护理管理者要建立良好的人际关系的是", options: ["库尔特·卢因", "彼得·德鲁克", "法约尔", "西蒙", "梅奥"], answer: "E", explain: "梅奥的人际关系理论强调人际关系和安全感。", type: "single" },
+/* 97 */ { Q: "提出群体力学理论的心理学家是", options: ["库尔特·卢因", "彼得·德鲁克", "法约尔", "西蒙", "梅奥"], answer: "A", explain: "库尔特·卢因提出群体力学理论。", type: "single" },
+/* 98 */ { Q: "ISO9001质量管理体系属于", options: ["全面质量管理", "PDCA管理", "QUACERS管理", "分层次管理", "标准化管理"], answer: "E", explain: "ISO9001属于标准化管理。", type: "single" },
+/* 99 */ { Q: "管理模式中，被称为戴明循环的是", options: ["全面质量管理", "PDCA管理", "QUACERS管理", "分层次管理", "标准化管理"], answer: "B", explain: "PDCA循环又称为戴明循环。", type: "single" },
+/* 100 */ { Q: "预防医疗事故最有效的管理方法是", options: ["全面质量管理", "PDCA管理", "QUACERS管理", "分层次管理", "标准化管理"], answer: "C", explain: "QUACERS管理模式可有效预防医疗事故。", type: "single" },
+/* 101 */ { Q: "发生医院感染危险性相对最低的人群是", options: ["长期住院患者", "新生儿", "择期手术的患者", "免疫功能低下的患者", "卧床患者"], answer: "C", explain: "择期手术患者住院时间短，感染危险性相对较低。", type: "single" },
+/* 102 */ { Q: "评判护理质量缺陷的主要依据是", options: ["主任不满意", "护士长不满意", "患者不满意", "护士不满意", "医生不满意"], answer: "C", explain: "患者满意是评判护理质量缺陷的主要依据。", type: "single" },
+/* 103 */ { Q: "组织文化的核心是", options: ["以人为本", "组织的价值观", "软性管理", "增强群体凝聚力", "组织的调适功能"], answer: "B", explain: "组织价值观是组织文化的核心。", type: "single" },
+/* 104 */ { Q: "护士在工作时未认真核对，将患者液体输注错误，但及时发现未造成不良后果，属于", options: ["一级医疗事故", "二级医疗事故", "三级医疗事故", "四级医疗事故", "护理缺陷"], answer: "E", explain: "未造成不良后果属于护理缺陷。", type: "single" },
+/* 105 */ { Q: "男，61岁。有43年吸烟和饮酒史，患高血压15年，需要长期服药控制血压，但平时经常不遵医嘱定时到医院复查，也不能按时服药，甚至有时还会自行停止服药。其危害健康行为属于", options: ["日常危害健康行为十不良疾病行为", "日常危害健康行为十致病性行为模式", "日常危害健康行为十违规行为", "致病性行为模式十不良疾病行为", "致病性行为模式十违规行为"], answer: "D", explain: "吸烟饮酒为致病性行为模式，不遵医嘱为不良疾病行为。", type: "single" },
+/* 106 */ { Q: "计划工作中确定目标的三要素包括", options: ["时间、空间、数量", "时间、空间、价值", "时间、内容、数量", "空间、价值、数量", "空间、价值、内容"], answer: "C", explain: "目标的三要素是时间、内容、数量。", type: "single" },
+/* 107 */ { Q: "有关知识与行为的描述，正确的是", options: ["拥有健康行为的知识就会采纳相应的促进健康的行为", "知识和行为没有关系，如几乎人人都知道吸烟危害健康的知识，但仍有很多人吸烟", "知识是行为产生的基础，是行为产生的必要条件，但不是充分条件", "知识是行为产生的后果", "知识是行为改变的动力"], answer: "C", explain: "知识是行为的基础和必要条件，但不是充分条件。", type: "single" },
+/* 108 */ { Q: "学校健康教育的对象不包括", options: ["大学生", "中学生", "小学生", "学龄前儿童", "婴幼儿"], answer: "E", explain: "婴幼儿不属于学校健康教育对象。", type: "single" },
+/* 109 */ { Q: "消毒灭菌手术器械时首选", options: ["等离子体灭菌", "压力蒸汽灭菌", "电离辐射灭菌", "2%戊二醛浸泡灭菌", "紫外线照射消毒"], answer: "B", explain: "手术器械首选压力蒸汽灭菌。", type: "single" },
+/* 110 */ { Q: "关于护理人员排班的基本原则，正确的是", options: ["满足需求原则指满足患者的一切需求", "节约原则指夜班工作量小，尽量安排工作资历低的人员", "效率原则指在保证基本治疗完成的前提下，尽量减少人力", "公平原则指各班次、节假日排班时首先应保证公平", "结构合理原则指排班时应注意新老护士的合理搭配"], answer: "E", explain: "结构合理原则要求新老护士合理搭配。", type: "single" },
+/* 111 */ { Q: "幼儿对微生物易感性高的主要原因是", options: ["细菌容易发生定植与移位", "免疫系统发育不成熟", "正常菌群容易失调", "自我保护能力低", "缺乏生物屏障"], answer: "B", explain: "幼儿免疫系统发育不成熟，易感性高。", type: "single" },
+/* 112 */ { Q: "终末质量评价指标不包括", options: ["年压疮发生数", "出院患者对护理工作满意度", "护理差错发生率", "年流感发生数", "年计划发表论文数"], answer: "E", explain: "年计划发表论文数不属于终末质量评价指标。", type: "single" },
+/* 113 */ { Q: "健康传播的目的是受传者在接受信息后能发生系列改变，其改变不包括", options: ["群体的知识", "态度", "行为", "情感", "信念"], answer: "D", explain: "情感不是健康传播目的的改变内容。", type: "single" },
+/* 114 */ { Q: "健康促进的基本策略是", options: ["调整、倡导、支持", "调整、支持、赋权", "倡导、赋权、协调", "倡导、支持、协调", "倡导、赋权、支持"], answer: "D", explain: "健康促进的基本策略是倡导、支持、协调。", type: "single" },
+/* 115 */ { Q: "肾主纳气，是指肾可摄纳", options: ["元气", "清气", "肺气", "肾气", "精气"], answer: "C", explain: "肾主纳气是指肾可摄纳肺气。", type: "single" },
+/* 116 */ { Q: "某医院设置了院长、护理部、医务科、内科、外科等，该医院的组织结构属于", options: ["直线-职能型组织结构", "分部制组织结构", "职能型组织结构", "矩阵型组织结构", "直线型组织结构"], answer: "A", explain: "设有职能部门的组织结构属于直线-职能型。", type: "single" },
+/* 117 */ { Q: "目标管理中，执行阶段的内容包括", options: ["制订目标、职责分工、协议授权", "确定目标、调节平衡、总结经验", "制订目标、调节平衡、反馈控制", "咨询指导、调节平衡、反馈控制", "咨询指导、考评成果、奖惩兑现"], answer: "D", explain: "目标管理执行阶段包括咨询指导、调节平衡、反馈控制。", type: "single" },
+/* 118 */ { Q: "人们能通过无意模仿周围人群的行为来发展自己的行为，这属于影响行为形成的", options: ["个人因素", "环境因素", "学习因素", "教育因素", "遗传因素"], answer: "C", explain: "无意模仿属于学习因素。", type: "single" },
+/* 119 */ { Q: "肌内注射时，关于皮肤消毒的叙述，错误的是", options: ["消毒方法以注射或穿刺部位为中心，由内向外消毒", "用无菌棉签蘸含有效碘5000mg/L消毒剂消毒1遍", "消毒时手不能接触消毒部位皮肤", "无菌棉签边消毒边旋转", "无菌棉签蘸消毒剂后前端必须保持向下"], answer: "B", explain: "肌内注射皮肤消毒应消毒2遍。", type: "single" },
+/* 120 */ { Q: "与疾病发生、发展变化及转归的机制相关的是", options: ["病因", "病位", "病性", "病机", "病势"], answer: "D", explain: "病机是疾病发生、发展变化及转归的机制。", type: "single" },
+/* 121 */ { Q: "具有“一气一病”致病特点的是", options: ["外感六淫", "内生五邪", "疫病邪气", "七情内伤", "继发病因"], answer: "C", explain: "疫疠邪气具有一气一病的致病特点。", type: "single" },
+/* 122 */ { Q: "健康传播的特点不包括", options: ["传递的是健康信息", "具有明确的目的性", "具有一定的盈利性", "传播者属于专门的技术人才", "以健康为中心"], answer: "C", explain: "健康传播不以盈利为目的。", type: "single" },
+/* 123 */ { Q: "患者向护士进行保健品咨询时，护士按照自己了解的情况如实介绍，并针对其身体情况做了分析，最后护士应", options: ["强调不要吃保健品", "建议患者根据介绍自己选择", "告诉患者自己从不吃保健品", "告诉患者花钱买保健品不值得", "建议患者买某一种保健品"], answer: "B", explain: "护士应客观介绍，让患者自己选择。", type: "single" },
+/* 124 */ { Q: "外源性感染不包括", options: ["病原体来源于工作人员污染的手", "病原体来源于病房空气", "病原体来源于自身口腔", "病原体来源于探视者", "病原体来源于其他患者"], answer: "C", explain: "病原体来源于自身口腔属于内源性感染。", type: "single" },
+/* 125 */ { Q: "控制医院感染最简单、最有效、最方便、最经济的方法是", options: ["手卫生", "环境卫生", "抗菌药物的合理使用", "传染病的防控", "消毒与灭菌"], answer: "A", explain: "手卫生是最简单、有效、方便、经济的控制感染方法。", type: "single" },
+/* 126 */ { Q: "流行性出血热的控制方法不包括", options: ["疫情监测", "灭鼠、防鼠", "积极治疗", "全面消毒", "灭蝇、防蝇"], answer: "E", explain: "流行性出血热与蝇无关，不需灭蝇。", type: "single" },
+/* 127 */ { Q: "“血之余”是指", options: ["发", "爪", "毛", "唇", "面"], answer: "A", explain: "发为血之余。", type: "single" },
+/* 128 */ { Q: "某人性情急躁、雄心勃勃、时间紧迫感强。其行为模式属于", options: ["A型", "B型", "C型", "AB型", "O型"], answer: "A", explain: "A型行为特征为性情急躁、时间紧迫感强。", type: "single" },
+/* 129 */ { Q: "“条条大道通罗马”，说明达成目标有多种途径，而这句话对于沟通的启示是", options: ["创造良好的沟通环境", "充分利用反馈机制", "使用恰当的沟通方式", "强化沟通能力", "学会有效聆听"], answer: "C", explain: "多种途径强调使用恰当的沟通方式。", type: "single" },
+/* 130 */ { Q: "医院感染的危险因素不包括", options: ["各种介入治疗", "母婴同室", "滥用抗生素", "气管切开", "使用呼吸机"], answer: "B", explain: "母婴同室不是医院感染的危险因素。", type: "single" },
+/* 131 */ { Q: "属于形象传播的是", options: ["标本", "座谈", "幻灯", "书籍", "录像"], answer: "A", explain: "标本属于形象传播。", type: "single" },
+/* 132 */ { Q: "护士配备是否合理并不影响", options: ["护士的工作强度", "护理质量", "医院管理与卫生管理部门要求的一致性", "医院的经济效益", "对患者的服务水准"], answer: "D", explain: "护士配备与医院经济效益无直接关系。", type: "single" },
+/* 133 */ { Q: "健康教育处方的形式属于", options: ["医嘱", "咨询", "口头教育", "书信", "宣传资料"], answer: "A", explain: "健康教育处方以医嘱形式开具。", type: "single" },
+/* 134 */ { Q: "健康教育学相关基础理论学科不包括", options: ["行为科学理论", "传播学理论", "医学科学理论", "管理科学理论", "伦理学理论"], answer: "E", explain: "伦理学理论不是健康教育学的基础理论。", type: "single" },
+/* 135 */ { Q: "医院感染不包括", options: ["无明确潜伏期，入院48小时后发生的感染", "皮肤黏膜开放性伤口，虽无炎症表现，但存在细菌定植", "医务人员在医院工作时获得的感染", "新生儿经母体产道时获得的感染", "由于诊疗措施激活的潜在性感染"], answer: "B", explain: "细菌定植不属于感染。", type: "single" },
+/* 136 */ { Q: "根据《医院感染管理规范（试行）》，医院感染监测报率应低于", options: ["5%", "10%", "15%", "20%", "25%"], answer: "B", explain: "医院感染监测报率应低于10%。", type: "single" },
+/* 137 */ { Q: "在婴幼儿保健方面，妈妈们更愿意相信医务人员的指导，而不是街头小报的指导，体现了受者的", options: ["求真心理", "求近心理", "求短心理", "求新心理", "求情厌教"], answer: "A", explain: "相信专业指导体现了求真心理。", type: "single" },
+/* 138 */ { Q: "完整的信息沟通过程包括", options: ["发送者、信息内容、沟通渠道、接收者、分析、解码", "发送者、信息内容、沟通渠道、接收者、解码、反馈", "发送者、编码、沟通渠道、信息内容、解码、反馈", "发送者、编码、信息内容、沟通渠道、分析、解码", "发送者、编码、沟通渠道、接收者、解码、反馈"], answer: "E", explain: "沟通要素包括发送者、编码、渠道、接收者、解码、反馈。", type: "single" },
+/* 139 */ { Q: "健康教育的基础活动是", options: ["知识传播", "信念转变", "技能训练", "行为干预", "效果评价"], answer: "D", explain: "行为干预是健康教育的基础活动。", type: "single" },
+/* 140 */ { Q: "需要暂时回避对方难以回答的问题时，社区护士可采取", options: ["肯定性反馈", "否定性反馈", "非语言形式反馈", "模糊性反馈", "中性反馈"], answer: "D", explain: "模糊性反馈可用于回避难以回答的问题。", type: "single" },
+/* 141 */ { Q: "时间管理最重要的意义是", options: ["及时处理突发事件", "激励员工的事业心", "有利于监督检查", "提高工作效率", "提高管理能力"], answer: "D", explain: "时间管理最重要的意义是提高工作效率。", type: "single" },
+/* 142 */ { Q: "护理人员管理的基本原则不包括", options: ["公平竞争的原则", "系统管理的原则", "职务要求明确的原则", "一切服从管理人员决策的原则", "用人之长的原则"], answer: "D", explain: "一切服从管理人员决策的原则不是人员管理原则。", type: "single" },
+/* 143 */ { Q: "有效聆听的要素不正确的是", options: ["只倾听不说话", "表示兴趣", "控制情绪", "站在对方的立场", "不随意评论"], answer: "A", explain: "有效聆听需要适时回应，不只是倾听不说话。", type: "single" },
+/* 144 */ { Q: "属于不良疾病行为的是", options: ["吸烟", "酗酒", "讳疾忌医", "暴饮暴食", "缺乏锻炼"], answer: "C", explain: "讳疾忌医属于不良疾病行为。", type: "single" },
+/* 145 */ { Q: "最易在新生儿室形成暴发流行的病原体是", options: ["葡萄球菌", "肺炎链球菌", "脑膜炎球菌", "链球菌", "乙型肝炎病毒"], answer: "A", explain: "葡萄球菌最易在新生儿室暴发流行。", type: "single" },
+/* 146 */ { Q: "某二级医院共开设床位300张，根据1989年原卫生部颁布的《医院分级管理办法（试行草案）》，其卫生技术人员应有", options: ["315人", "420人", "168人", "225人", "356人"], answer: "A", explain: "二级医院病床与工作人员之比为1:1.3-1:1.5，300张床位应有390-450人。", type: "single" },
+/* 147 */ { Q: "关于合理使用抗菌药物的叙述，错误的是", options: ["严格掌握抗菌药物使用的适应证和禁忌证", "预防和减少抗菌药物的不良反应", "根据细菌药敏试验结果及药物代谢动力学特征严格选择药物和给药途径", "采用适宜的药物、剂量、疗程和给药方法，避免耐药性发生", "对于感染高风险人群可及早给予抗菌药物，预防感染发生"], answer: "E", explain: "预防性使用抗菌药物应严格掌握指征，不可随意使用。", type: "single" },
+/* 148 */ { Q: "关于抗菌药物的管理，错误的是", options: ["实行分级管理", "合理使用抗菌药物", "有针对性地选择一种抗生素治疗感染，避免无指征的联合用药", "病因未明的严重感染可联合使用抗生素", "预防性使用抗生素的时间应为72小时"], answer: "E", explain: "预防性使用抗生素时间应短，一般不超过24小时。", type: "single" },
+/* 149 */ { Q: "关于艾滋病的描述，错误的是", options: ["艾滋病患者、HIV感染者是HIV的主要传染源", "HIV急性期患者不具备传染性，无任何症状", "用于杀灭HBV的消毒剂完全可以杀灭HIV", "艾滋病防治工作的方针为预防为主，防治结合", "确诊HIV感染要通过HIV抗体确证试验的验证"], answer: "B", explain: "HIV急性期患者具有传染性，可出现症状。", type: "single" },
+/* 150 */ { Q: "属阳虚则寒的是", options: ["实寒", "实热", "虚寒", "虚热", "假寒"], answer: "C", explain: "阳虚则寒是指虚寒。", type: "single" },
+/* 151 */ { Q: "津液范畴不包括", options: ["胃液", "肠液", "血液", "泪液", "涕液"], answer: "C", explain: "血液不属于津液范畴，津液是体内正常水液的总称。", type: "single" },
+/* 152 */ { Q: "医院健康教育的意义不包括", options: ["消除致病因素", "心理治疗", "降低医疗成本", "密切医患关系", "提高患者对医院文化的了解"], answer: "E", explain: "提高患者对医院文化的了解不是医院健康教育的主要意义。", type: "single" },
+/* 153 */ { Q: "女工实现母乳喂养行为的倾向因素是", options: ["禁止在医院销售代乳品", "家庭成员的支持", "认为母乳比代乳品好", "医护人员提供合理正确的哺乳指导", "单位给予哺乳时间，1小时/天"], answer: "C", explain: "倾向因素是产生行为动机和愿望的因素，认为母乳好属于倾向因素。", type: "single" },
+/* 154 */ { Q: "某医院有2位等待肾移植的患者，其中一位是25岁农民，因外伤致双肾破裂。另一位是因长期肾炎而致肾衰竭的65岁教授。可供医务人员决策时考虑的标准不包括", options: ["年龄", "预期寿命", "免疫相容性", "身体的整体功能", "患者的社会地位"], answer: "E", explain: "医疗决策不应考虑患者的社会地位。", type: "single" },
+/* 155 */ { Q: "女，6岁。爱探究、好攻击、喜欢表现自我。此表现属于人类行为发展阶段的", options: ["被动发展阶段", "主动发展阶段", "自主发展阶段", "巩固发展阶段", "综合发展阶段"], answer: "B", explain: "主动发展阶段（3-12岁）表现为爱探究、好攻击、喜欢表现自我。", type: "single" },
+/* 156 */ { Q: "著名的“霍桑试验”对管理理论的主要贡献是证明了", options: ["人的从众心理", "人是“经济人”", "人是“社会人”", "人具有二重性", "人是“自然人”"], answer: "C", explain: "霍桑试验证明人是“社会人”。", type: "single" },
+/* 157 */ { Q: "非语言传播中，属于同类语言的是", options: ["服饰", "体态", "语调", "姿势", "手势"], answer: "C", explain: "同类语言指说话的语调、节奏等。", type: "single" },
+/* 158 */ { Q: "关于直线型组织结构的特点，叙述错误的是", options: ["组织关系简明", "各部门目标清晰", "适用于规模较大的组织", "容易造成最高领导人滥用权力的倾向", "便于评价各部门或个人对组织目标的贡献"], answer: "C", explain: "直线型组织结构适用于规模较小的组织。", type: "single" },
+/* 159 */ { Q: "在中医理论中，属于热证的表现是", options: ["大便溏薄", "小便短赤", "小便清长", "口不渴", "面色苍白"], answer: "B", explain: "小便短赤是热证的表现。", type: "single" },
+/* 160 */ { Q: "关于目标管理的正确叙述是", options: ["目标数越多越好", "目标应明确、恰当", "全部交给下级完成", "目标数越少越好", "未实现目标应严惩"], answer: "B", explain: "目标应明确、恰当，便于考核。", type: "single" },
+/* 161 */ { Q: "群体传播时“舆论领袖”对人们的认知和行为改变具有", options: ["领导作用", "引导作用", "主导作用", "辅助作用", "主要作用"], answer: "B", explain: "舆论领袖在群体传播中起引导作用。", type: "single" },
+/* 162 */ { Q: "健康信息传播的主体是", options: ["传播者", "信息", "传播途径", "受者", "环境"], answer: "A", explain: "传播者是健康信息传播的主体。", type: "single" },
+/* 163 */ { Q: "护理工作组织方式不包括", options: ["小组护理", "责任制护理", "循证护理", "功能制护理", "个案护理"], answer: "C", explain: "循证护理是工作方法，不是组织方式。", type: "single" },
+/* 164 */ { Q: "高可变性行为的特点是", options: ["形成时间较长", "与文化传统密切相关", "属于传统生活方式", "正处于发展时期", "尚无成功改变实例"], answer: "D", explain: "正处于发展时期的行为属于高可变性行为。", type: "single" },
+/* 165 */ { Q: "计划职能中最为关键的职能是", options: ["计划制订职能", "决策职能", "预测职能", "修订职能", "控制职能"], answer: "B", explain: "决策是计划职能中最为关键的职能。", type: "single" },
+/* 166 */ { Q: "决定人类本能行为的主要因素是人的", options: ["生物性", "成长性", "学习性", "社会性", "适应性"], answer: "A", explain: "本能行为主要由生物性决定。", type: "single" },
+/* 167 */ { Q: "韦伯在他的代表作《社会组织与经济组织理论》一书中提出的是", options: ["科学管理理论", "权变理论", "群体力学理论", "行政组织理论", "人本原理"], answer: "D", explain: "韦伯提出行政组织理论。", type: "single" },
+/* 168 */ { Q: "医院一般环境的处理原则是", options: ["以清洁为主", "以化学消毒为主", "以灭菌为主", "以清除医疗垃圾为主", "以清除传染源为主"], answer: "A", explain: "医院一般环境以清洁为主。", type: "single" },
+/* 169 */ { Q: "火邪、燥邪、暑邪的共同致病特点是", options: ["炎上", "伤津", "失血", "生风", "气虚"], answer: "B", explain: "火邪、燥邪、暑邪都易伤津耗液。", type: "single" },
+/* 170 */ { Q: "男，47岁。头晕、头痛1周，以高血压收治入院。测血压180/100mmHg，责任护士对患者及其家属行高血压饮食、药物治疗的健康宣教。其健康教育类型属于", options: ["入院健康教育", "病房健康教育", "出院健康教育", "随诊健康教育", "门诊健康教育"], answer: "B", explain: "住院期间的健康教育属于病房健康教育。", type: "single" },
+/* 171 */ { Q: "某二级医院的护理管理架构是护理部主任一科护士长一病区护士长。该医院护理管理的层次数是", options: ["5级", "4级", "3级", "2级", "1级"], answer: "C", explain: "护理部主任、科护士长、病区护士长为3个层次。", type: "single" },
+/* 172 */ { Q: "组织沟通的作用不包括", options: ["联系", "激励", "创新", "控制", "反馈"], answer: "C", explain: "创新不是组织沟通的主要作用。", type: "single" },
+/* 173 */ { Q: "某地医院收治一例炭疽患者，现处理该患者产生的医疗废物，正确的做法是", options: ["消毒2小时后，深埋地下2m", "焚烧处理", "过氧乙酸熏蒸消毒", "环氧乙烷消毒", "置于双层黑色不透水塑料袋内"], answer: "B", explain: "炭疽患者的医疗废物应焚烧处理。", type: "single" },
+/* 174 */ { Q: "三焦的别称是", options: ["孤府", "玄府", "精明之府", "髓之府", "血之府"], answer: "A", explain: "三焦被称为孤府。", type: "single" },
+/* 175 */ { Q: "“知一信一行模式”中，知、信、行三者之间的关系是", options: ["知是基础、信是目标、行是动力", "知是动力、信是基础、行是目标", "知是目标、信是动力、行是基础", "知是基础、信是动力、行是目标", "知是目标、信是基础、行是动力"], answer: "D", explain: "知是基础，信是动力，行是目标。", type: "single" },
+/* 176 */ { Q: "某护士护理一位肺结核患者，关于治疗后产生的废弃物和有机垃圾的处理方法，正确的是", options: ["深埋2m以下", "置双层黑色密封塑料袋内", "用浓度为4000mg/L有效含氯消毒剂处理后丢弃", "环氧乙烷熏蒸后丢弃", "焚烧处理"], answer: "E", explain: "结核患者的废弃物应焚烧处理。", type: "single" },
+/* 177 */ { Q: "关于授权的解释，正确的是", options: ["授权是让别人去做原本属于自己的事情", "授权是将自身的权力授予下属", "授权者自身有监督权和最终责任", "授权者将自身的部分监督职能授予下属", "授权最根本的准则是合理合法"], answer: "C", explain: "授权者仍保留监督权和最终责任。", type: "single" },
+/* 178 */ { Q: "消毒不耐热、不耐湿物品时可选用", options: ["环氧乙烷气体灭菌", "紫外线消毒", "压力蒸汽灭菌", "消毒剂浸泡消毒", "电离辐射灭菌"], answer: "A", explain: "环氧乙烷适用于不耐热、不耐湿物品的灭菌。", type: "single" },
+/* 179 */ { Q: "中医的五脏是", options: ["胆、胃、小肠、大肠、膀胱", "心、肝、胆、肺、肾", "心、肝、脾、肺、肾", "脑、髓、骨、脉、胆", "胆、胃、小肠、脾、肺、肾"], answer: "C", explain: "五脏包括心、肝、脾、肺、肾。", type: "single" },
+/* 180 */ { Q: "医院感染中，尿路感染的主要致病菌是", options: ["表皮葡萄球菌", "不动杆菌", "大肠埃希菌", "支原体", "衣原体"], answer: "C", explain: "尿路感染的主要致病菌是大肠埃希菌。", type: "single" },
+/* 181 */ { Q: "某护士在下班途中看到一位突发心脏骤停的患者倒在路边，便立即上前为患者进行心肺复苏，从而挽救了患者的生命。护士长在科室早会上对其给予口头表扬。护士长行使的权力是", options: ["决策权", "指挥权", "用人权", "经济权", "奖罚权"], answer: "E", explain: "口头表扬行使了奖罚权。", type: "single" },
+/* 182 */ { Q: "主管部门检查护士是否持证上岗属于", options: ["前馈控制", "同期控制", "过程控制", "反馈控制", "结果控制"], answer: "A", explain: "持证上岗检查是在事前进行的控制，属于前馈控制。", type: "single" },
+/* 183 */ { Q: "Ⅰ类区域物品表面消毒效果的监测结果判定，消毒合格标准为", options: ["细菌总数≤5CFU/cm²，且不得检出致病菌", "细菌总数≤10CFU/cm²，且不得检出致病菌", "细菌总数≤15CFU/cm²，且不得检出致病菌", "细菌总数≤20CFU/cm²，且不得检出致病菌", "细菌总数≤25CFU/cm²，且不得检出致病菌"], answer: "A", explain: "Ⅰ类区域物品表面消毒合格标准为≤5CFU/cm²。", type: "single" },
+/* 184 */ { Q: "Ⅱ类区域物品表面消毒效果的监测结果判定，消毒合格标准为", options: ["细菌总数≤5CFU/cm²，且不得检出致病菌", "细菌总数≤10CFU/cm²，且不得检出致病菌", "细菌总数≤15CFU/cm²，且不得检出致病菌", "细菌总数≤20CFU/cm²，且不得检出致病菌", "细菌总数≤25CFU/cm²，且不得检出致病菌"], answer: "B", explain: "Ⅱ类区域物品表面消毒合格标准为≤10CFU/cm²。", type: "single" },
+/* 185 */ { Q: "Ⅲ类区域物品表面消毒效果的监测结果判定，消毒合格标准为", options: ["细菌总数≤5CFU/cm²，且不得检出致病菌", "细菌总数≤10CFU/cm²，且不得检出致病菌", "细菌总数≤15CFU/cm²，且不得检出致病菌", "细菌总数≤20CFU/cm²，且不得检出致病菌", "细菌总数≤25CFU/cm²，且不得检出致病菌"], answer: "C", explain: "Ⅲ类区域物品表面消毒合格标准为≤15CFU/cm²。", type: "single" },
+/* 186 */ { Q: "组织设计的原则中，“管理者必须在稳定与动态变化之间寻求一种平衡”是指", options: ["责权一致的原则", "有效管理幅度的原则", "集权与分权相结合的原则", "稳定性与适应性相结合的原则", "目标统一的原则"], answer: "D", explain: "稳定性与适应性相结合的原则要求在稳定与变化之间寻求平衡。", type: "single" },
+/* 187 */ { Q: "组织设计的原则中，“主管人员直接管理下属的人数应是适当的”是指", options: ["责权一致的原则", "有效管理幅度的原则", "集权与分权相结合的原则", "稳定性与适应性相结合的原则", "目标统一的原则"], answer: "B", explain: "有效管理幅度原则强调主管人员直接管理下属的人数应适当。", type: "single" },
+/* 188 */ { Q: "组织设计的原则中，“职位的职权和职责要对等一致”是指", options: ["责权一致的原则", "有效管理幅度的原则", "集权与分权相结合的原则", "稳定性与适应性相结合的原则", "目标统一的原则"], answer: "A", explain: "责权一致原则强调职权和职责要对等一致。", type: "single" },
+/* 189 */ { Q: "采取接触隔离的疾病是", options: ["戊型肝炎", "人感染高致病性禽流感", "艾滋病", "多重耐药菌感染", "流行性腮腺炎"], answer: "D", explain: "多重耐药菌感染应采取接触隔离。", type: "single" },
+/* 190 */ { Q: "采取严密隔离的疾病是", options: ["戊型肝炎", "人感染高致病性禽流感", "艾滋病", "多重耐药菌感染", "流行性腮腺炎"], answer: "B", explain: "人感染高致病性禽流感应采取严密隔离。", type: "single" },
+/* 191 */ { Q: "从分析社会问题入手，确定社会环境和生活质量问题属于", options: ["社会诊断", "行为诊断", "环境诊断", "管理与政策诊断", "流行病学诊断"], answer: "A", explain: "社会诊断从分析社会问题入手，确定社会环境和生活质量问题。", type: "single" },
+/* 192 */ { Q: "根据格林模式，评估开展健康教育的资源属于", options: ["社会诊断", "行为诊断", "环境诊断", "管理与政策诊断", "流行病学诊断"], answer: "D", explain: "管理与政策诊断评估开展健康教育的资源。", type: "single" },
+/* 193 */ { Q: "客观地确定目标人群的主要健康问题以及引起健康问题的行为因素和环境因素属于", options: ["社会诊断", "行为诊断", "环境诊断", "管理与政策诊断", "流行病学诊断"], answer: "E", explain: "流行病学诊断确定目标人群的主要健康问题及影响因素。", type: "single" },
+/* 194 */ { Q: "确定导致目标人群疾病或健康问题发生的行为危险因素，区别引起疾病或健康问题的行为与非行为因素属于", options: ["社会诊断", "行为诊断", "环境诊断", "管理与政策诊断", "流行病学诊断"], answer: "B", explain: "行为诊断确定导致健康问题的行为危险因素。", type: "single" },
+/* 195 */ { Q: "皮肤及黏膜表层的细菌向深层转移属于", options: ["深层转移", "横向转移", "纵向转移", "种植转移", "淋巴转移"], answer: "C", explain: "细菌从表层向深层转移属于纵向转移。", type: "single" },
+/* 196 */ { Q: "下消化道细菌向上消化道转移属于", options: ["深层转移", "横向转移", "纵向转移", "种植转移", "淋巴转移"], answer: "B", explain: "细菌在同一系统不同部位转移属于横向转移。", type: "single" },
+/* 197 */ { Q: "科学管理理论的基本出发点为", options: ["提高劳动生产率", "实行科学化管理", "调动人的积极性", "体现公平的分配制度", "建立健全的管理系统"], answer: "A", explain: "科学管理理论的基本出发点是提高劳动生产率。", type: "single" },
+/* 198 */ { Q: "人际关系理论的核心为", options: ["提高劳动生产率", "实行科学化管理", "调动人的积极性", "体现公平的分配制度", "建立健全的管理系统"], answer: "C", explain: "人际关系理论的核心是调动人的积极性。", type: "single" },
+/* 199 */ { Q: "40%甲醛熏蒸适用于", options: ["病室物品表面擦拭消毒", "传染病室的终末消毒", "注射前皮肤消毒", "破伤风患者鼻咽分泌物消毒", "冲洗阴道、膀胱及伤口黏膜创面消毒"], answer: "B", explain: "甲醛熏蒸适用于传染病室的终末消毒。", type: "single" },
+/* 200 */ { Q: "含氯消毒剂搅拌消毒可用于", options: ["病室物品表面擦拭消毒", "传染病室的终末消毒", "注射前皮肤消毒", "破伤风患者鼻咽分泌物消毒", "冲洗阴道、膀胱及伤口黏膜创面消毒"], answer: "D", explain: "含氯消毒剂可用于破伤风患者鼻咽分泌物的消毒。", type: "single" },
+/* 201 */ { Q: "针对社区居民的健康问题，常用于答疑解难、帮助其澄清观念的人际传播形式是", options: ["咨询", "交谈", "劝服", "指导", "教育"], answer: "A", explain: "咨询是针对社区居民健康问题答疑解难、帮助澄清观念的人际传播形式。", type: "single" },
+/* 202 */ { Q: "具有“泌别清浊”功能的脏腑是", options: ["胃", "大肠", "小肠", "肺", "胆"], answer: "C", explain: "小肠具有泌别清浊的功能。", type: "single" },
+/* 203 */ { Q: "占生殖器结核90%~100%的是", options: ["卵巢结核", "宫颈结核", "输卵管结核", "盆腔腹膜结核", "子宫内膜结核"], answer: "C", explain: "输卵管结核占生殖器结核90%~100%。", type: "single" },
+/* 204 */ { Q: "讯息与信息的关系是", options: ["讯息就是信息", "讯息与信息无关", "讯息是具体信息", "信息是具体讯息", "信息是讯息的载体"], answer: "C", explain: "讯息是信息的具体表现形式。", type: "single" },
+/* 205 */ { Q: "术前应预防性应用抗生素的手术是", options: ["输卵管结扎术", "胃大部切除术", "各种人造物置换术", "胆囊切除术", "甲状腺手术"], answer: "C", explain: "人造物置换术应预防性应用抗生素。", type: "single" },
+/* 206 */ { Q: "某社区55岁以上的老年人高血压的控制率在3年内提高30%，此描述属于健康教育计划的", options: ["目的", "目标", "原则", "结果", "体现"], answer: "B", explain: "具体可测量的描述属于目标。", type: "single" },
+/* 207 */ { Q: "个案护理的主要优点是", options: ["分工明确，节省人力", "24小时负责制，文字书写任务过重", "护士间容易沟通，护理系统性、连续性好", "对患者观察全面，护患关系融洽", "有利于实施整体护理，对护士能力要求较高"], answer: "D", explain: "个案护理的优点是能对患者进行全面观察，护患关系融洽。", type: "single" },
+/* 208 */ { Q: "对流行性出血热发热期患者的便器、衣物等生活用品消毒应使用", options: ["75%乙醇", "0.5%碘伏", "0.5%醋酸氯已定", "0.5%过氧乙酸", "1%过氧化氢"], answer: "D", explain: "流行性出血热患者的物品应用0.5%过氧乙酸消毒。", type: "single" },
+/* 209 */ { Q: "有关炭疽的叙述正确的是", options: ["传染源是蚊蝇", "炭疽芽胞杆菌芽胞能耐受煮沸5分钟", "炭疽芽胞杆菌繁殖体对热不敏感", "炭疽芽胞杆菌芽胞在泥土中可生存10年以上", "患有炭疽的家畜允许解剖"], answer: "D", explain: "炭疽芽胞杆菌芽胞在泥土中可生存10年以上。", type: "single" },
+/* 210 */ { Q: "某医院儿科10天内共收住患儿40例，其中新生儿病房10例，有2例发生轮状病毒感染。则新生儿轮状病毒感染的罹患率为", options: ["5%", "10%", "15%", "20%", "25%"], answer: "D", explain: "罹患率=2/10×100%=20%。", type: "single" },
+/* 211 */ { Q: "人们的生活方式实际上是人们", options: ["在一般场合下的行为表现", "在特殊场合下的行为表现", "埋藏在心底的自我意识", "日常的行为习惯", "外显的某些行为"], answer: "D", explain: "生活方式是人们日常的行为习惯。", type: "single" },
+/* 212 */ { Q: "“水脏”是指", options: ["脾", "心", "肺", "肝", "肾"], answer: "E", explain: "肾被称为水脏。", type: "single" },
+/* 213 */ { Q: "与视、听、言、动的强弱关系最密切的气是", options: ["元气", "宗气", "营气", "卫气", "中气"], answer: "B", explain: "宗气与视、听、言、动的强弱关系最密切。", type: "single" },
+/* 214 */ { Q: "对多重耐药细菌感染的患者，应采取的措施不包括", options: ["尽可能安排单人单间", "有专用的隔离标识", "限制探视人员", "限制患者的活动范围、减少转运", "进入室内的工作人员应戴高效防护口罩"], answer: "E", explain: "多重耐药菌感染采取接触隔离，不需戴高效防护口罩。", type: "single" },
+/* 215 */ { Q: "护理组织文化的核心是", options: ["护理理念", "护理程序", "整体护理", "护理价值观", "护理服务观"], answer: "D", explain: "护理价值观是护理组织文化的核心。", type: "single" },
+/* 216 */ { Q: "临床科室出现医院感染流行或暴发时，措施不当的是", options: ["查找感染源", "对感染患者和周围人群开展详细的流行病学调查", "必要时隔离患者甚至暂停接收患者", "彻底消毒病室空气", "总结经验，制订防范措施"], answer: "D", explain: "出现暴发时，应查找原因，但彻底消毒空气不是首要措施。", type: "single" },
+/* 217 */ { Q: "能反映其在计划实施前就采取预防措施的是", options: ["定期控制", "间接控制", "前馈控制", "资金控制", "人员控制"], answer: "C", explain: "前馈控制是在计划实施前采取预防措施。", type: "single" },
+/* 218 */ { Q: "女，45岁。确诊为乳腺癌，拟行乳腺癌根治术。术前护士为其备皮时未给予遮挡，患者拒绝备皮。护士的行为侵犯了患者的", options: ["知情权", "隐私权", "健康权", "选择权", "个人空间控制权"], answer: "B", explain: "未给予遮挡侵犯了患者的隐私权。", type: "single" },
+/* 219 */ { Q: "男，19岁，大二学生。同宿舍同学感染肺结核使其感到害怕，并在日常生活中保持充足睡眠和适量的体育锻炼。他的这种行为属于", options: ["避开有害危险行为", "日常健康行为", "戒除不良嗜好行为", "预警行为", "违规行为"], answer: "A", explain: "保持充足睡眠和适量锻炼属于避开有害环境行为。", type: "single" },
+/* 220 */ { Q: "通过肺的气化，排出体内浊气主要依靠肺的", options: ["宣发功能", "朝百脉功能", "通调水道功能", "主治节功能", "肃降功能"], answer: "A", explain: "肺的宣发功能排出体内浊气。", type: "single" },
+/* 221 */ { Q: "护理健康教育学的产生，在护理工作中实现的4个重要突破不包括", options: ["护理理念", "护理领域", "护理模式", "护理程序", "护理工作性质"], answer: "D", explain: "护理程序不是护理健康教育学带来的突破。", type: "single" },
+/* 222 */ { Q: "治病求本的“本”指的是", options: ["症状", "原发病", "邪气", "新病", "继发病"], answer: "B", explain: "治病求本的本指原发病。", type: "single" },
+/* 223 */ { Q: "目标管理的特点不包括", options: ["员工参与管理", "以自我管理为中心", "注重员工满意度", "强调自我评价", "重视成果"], answer: "C", explain: "目标管理不强调员工满意度。", type: "single" },
+/* 224 */ { Q: "护理人才的结构中，属于个体结构的是", options: ["学历结构", "品德结构", "专业结构", "能级结构", "年龄结构"], answer: "B", explain: "品德结构属于个体结构。", type: "single" },
+/* 225 */ { Q: "属于高度危险性物品的是", options: ["压舌板", "痰盂、便器和餐具", "活体组织检查钳", "胃肠道内镜和喉镜", "呼吸机和麻醉机管道"], answer: "C", explain: "活体组织检查钳属于高度危险性物品。", type: "single" },
+/* 226 */ { Q: "人类抓握行为的形成阶段是", options: ["自主发展阶段", "被动发展阶段", "主动发展阶段", "调整发展阶段", "巩固发展阶段"], answer: "B", explain: "抓握行为在被动发展阶段形成。", type: "single" },
+/* 227 */ { Q: "属于原位菌群二度失调的是", options: ["正常菌群在原有部位发生了数量的暂时性变化", "正常菌群在原有部位发生了种类结构的暂时性变化", "正常菌群在原有部位发生了病理性波动", "正常菌群转移到另一部位定植或定居", "可逆性失调"], answer: "C", explain: "二度失调是病理性波动。", type: "single" },
+/* 228 */ { Q: "PDCA循环中，“将成功的经验形成标准，将失败的教训进行总结”的阶段是", options: ["计划阶段", "执行阶段", "反馈阶段", "检查阶段", "处理阶段"], answer: "E", explain: "处理阶段将成功经验形成标准，失败教训进行总结。", type: "single" },
+/* 229 */ { Q: "健康教育的传播方法不包括", options: ["语言教学法", "文字教学法", "形象教学法", "综合教学法", "技能教学法"], answer: "E", explain: "技能教学法不是健康教育的传播方法。", type: "single" },
+/* 230 */ { Q: "最易出现气机郁滞的内脏是", options: ["心", "肺", "脾", "肝", "肾"], answer: "D", explain: "肝最易出现气机郁滞。", type: "single" },
+/* 231 */ { Q: "有关消毒的描述，最准确的是", options: ["用物理或化学方法杀灭除芽胞外的所有致病微生物", "用物理或化学方法杀灭包括芽胞在内的所有致病微生物", "用物理方法清除污染物表面的有机物和污迹、尘埃", "用物理或化学方法清除或杀灭全部活的微生物", "用于处理要穿透皮肤或黏膜进入无菌组织的器材"], answer: "A", explain: "消毒指杀灭除芽胞外的所有致病微生物。", type: "single" },
+/* 232 */ { Q: "关于组织有效沟通原则的叙述，错误的是", options: ["信息明确原则", "及时性原则", "书面沟通原则", "组织结构完整性原则", "重视交谈与倾听技巧的原则"], answer: "C", explain: "有效沟通原则不包括书面沟通原则。", type: "single" },
+/* 233 */ { Q: "领导者非权力性影响力的特点是", options: ["对下属具有强迫性", "下属表现出被动服从", "影响力广泛而持久", "随职位升高而增强", "激励作用受到限制"], answer: "C", explain: "非权力性影响力的特点是影响力广泛而持久。", type: "single" },
+/* 234 */ { Q: "使用中紫外线灯的强度应不低于", options: ["30μW/cm²", "50μW/cm²", "70μW/cm²", "80μW/cm²", "100μW/cm²"], answer: "C", explain: "使用中紫外线灯强度应不低于70μW/cm²。", type: "single" },
+/* 235 */ { Q: "体现系统原理管理思想的是", options: ["管理活动中以做好人的工作为根本", "管理活动中重视处理人际关系", "管理活动要把握全局、总体规划", "管理活动要注重讲求实效", "管理活动要强调成本控制"], answer: "C", explain: "系统原理强调把握全局、总体规划。", type: "single" },
+/* 236 */ { Q: "护理部主任在安排医院护士岗位培训时，直接向某病区护士下发培训任务。该护理部主任违背的沟通原则是", options: ["信息明确", "组织结构完整性", "及时性", "非正式沟通策略", "重视交谈与倾听技巧"], answer: "B", explain: "直接向下级下发任务违背了组织结构完整性原则。", type: "single" },
+/* 237 */ { Q: "属于间接护理项目的是", options: ["晨间护理", "测量体温", "请领物品", "肌内注射", "静脉输液"], answer: "C", explain: "请领物品属于间接护理项目。", type: "single" },
+/* 238 */ { Q: "“水之上源”是", options: ["脾", "心", "肺", "肝", "肾"], answer: "C", explain: "肺为水之上源。", type: "single" },
+/* 239 */ { Q: "组织结构设计的主体阶段是", options: ["确立组织目标", "划分业务工作", "组织结构的基本框架设计", "确定职责和权限", "组织运作方式设计"], answer: "C", explain: "组织结构的基本框架设计是主体阶段。", type: "single" },
+/* 240 */ { Q: "感染链的组成是", options: ["传染源、传播途径、感染症状", "传播途径、易感人群、感染部位", "易感人群、传染源、病原体毒力", "宿主的免疫力、传染源、病原体毒力", "传染源、传播途径及易感人群"], answer: "E", explain: "感染链由传染源、传播途径、易感人群组成。", type: "single" },
+/* 241 */ { Q: "医院对重点项目开展目标监测的期限不应", options: ["<6个月", "<1年", "<2年", "<3年", "<18个月"], answer: "B", explain: "目标监测期限不应少于1年。", type: "single" },
+/* 242 */ { Q: "现代社会中，组织传播已发展成为一个独立的研究领域，即", options: ["社会传媒学", "社会关系学", "公共传媒学", "公共关系学", "沟通交流学"], answer: "D", explain: "组织传播发展成公共关系学。", type: "single" },
+/* 243 */ { Q: "某医院护理部为制订5年护理发展规划，采用SWOT法对该院的外部条件和内部条件进行了全面分析，是计划步骤中的", options: ["分析评估", "确定目标", "比较各种方案", "发展可选方案", "制订辅助计划"], answer: "A", explain: "SWOT分析属于评估形势阶段。", type: "single" },
+/* 244 */ { Q: "新年开始，急诊科护士制订新一年护理管理目标。护士拿出护理部的护理管理目标认真阅读，并根据护理部的要求制订了急诊的工作计划和目标。这种做法遵循的原则是", options: ["管理层次的原则", "有效管理幅度的原则", "责权一致的原则", "精干高效的原则", "任务与目标一致的原则"], answer: "E", explain: "根据护理部目标制订科室目标，遵循任务与目标一致原则。", type: "single" },
+/* 245 */ { Q: "通过阅读患者的病历、分析病史及其健康影响因素来评估患者健康需求的方法是", options: ["直接评估法", "间接评估法", "病历评估法", "非语言评估法", "语言评估法"], answer: "B", explain: "通过病历分析属于间接评估法。", type: "single" },
+/* 246 */ { Q: "拔罐疗法适用的病证是", options: ["急性腰扭伤", "外感风寒，风寒湿痹", "重度营养不良", "肾衰竭", "白血病"], answer: "B", explain: "拔罐适用于外感风寒、风寒湿痹。", type: "single" },
+/* 247 */ { Q: "属阳的部位是", options: ["腹部", "胸部", "筋骨", "皮肤", "双腿内侧"], answer: "D", explain: "皮肤属阳。", type: "single" },
+/* 248 */ { Q: "在目标管理过程中，有关制订目标注意事项的描述，正确的是", options: ["目标数目宜多，包括所有的工作特征", "目标应数量化或具体化，以便于考核", "个人目标与组织目标要高度一致", "目标没有明确的期限要求", "目标设定应具有高挑战性"], answer: "B", explain: "目标应具体化、数量化，便于考核。", type: "single" },
+/* 249 */ { Q: "健康教育步骤的第一步是", options: ["预期目标的制订", "健康教育诊断", "健康教育计划", "健康教育干预", "健康教育评价"], answer: "B", explain: "健康教育诊断是健康教育的第一步。", type: "single" },
+/* 250 */ { Q: "引起内源性感染的病原体是来自", options: ["医院自身环境中存在的致病菌", "患者体内或体表的正常菌群或条件致病菌", "医院内工作人员携带的致病菌", "由探视人员带到院内的致病菌", "感染部位分离出的致病菌"], answer: "B", explain: "内源性感染的病原体来自患者自身的正常菌群或条件致病菌。", type: "single" },
+/* 251 */ { Q: "某护士误将甲床患者的青霉素输注给乙床患者，造成乙床患者因青霉素过敏死亡。该事件属于", options: ["一级医疗事故", "二级医疗事故", "三级医疗事故", "四级医疗事故", "护理缺陷"], answer: "A", explain: "造成患者死亡属于一级医疗事故。", type: "single" },
+/* 252 */ { Q: "在抗感染药物使用过程中，护士的职责不包括", options: ["严格遵医嘱执行", "观察患者用药后的反应", "做好各种标本的留取和送检工作", "注意配伍禁忌和配制要求", "严格掌握药物使用适应证"], answer: "E", explain: "掌握药物使用适应证是医生的职责。", type: "single" },
+/* 253 */ { Q: "护理操作工作制度及操作规程的做法错误的是", options: ["加压输液时守护患者", "值班医生不在，护士根据经验自行开药", "严格执行查对制度", "严格执行交接班制度", "严格执行无菌操作"], answer: "B", explain: "护士不能自行开药。", type: "single" },
+/* 254 */ { Q: "属于群众性卫生组织的是", options: ["卫生部医政司", "中国红十字会", "计划生育门诊部", "某大学护理学院", "护理研究院"], answer: "B", explain: "中国红十字会属于群众性卫生组织。", type: "single" },
+/* 255 */ { Q: "铺无菌盘的操作方法正确的是", options: ["用手取出无菌巾后将剩余无菌巾包好，注明开包日期和时间", "操作者的双手不可触及无菌巾的内面", "折叠无菌巾上层呈扇形，开口向内，放入无菌物品", "双手捏住无菌巾上层两角内外面下拉覆盖无菌物品", "铺好的无菌盘12小时内有效并注明铺盘日期和时间"], answer: "B", explain: "双手不可触及无菌巾内面。", type: "single" },
+/* 256 */ { Q: "属于模糊性反馈行为的是", options: ["点头", "微笑", "摇头", "插入“是吗”“哦”等语言", "插入“是的”“对，是这样”等语言"], answer: "D", explain: "“是吗”“哦”属于模糊性反馈。", type: "single" },
+/* 257 */ { Q: "科室护士长为了提高护理人员的技术操作水平，每月对护士进行技术操作考核，对考核优秀的护士给予肯定和表扬，对考核不合格的护士给予批评。该科室护士长所采用的主要激励理论是", options: ["需要层次理论", "归因理论", "强化理论", "双因素理论", "公平理论"], answer: "C", explain: "表扬和批评属于强化理论。", type: "single" },
+/* 258 */ { Q: "为强化组织规章，规范下属的态度、语言和行为而进行的教育活动是", options: ["教导", "教训", "训导", "教育", "启发"], answer: "C", explain: "训导是为强化组织规章，规范下属的态度、语言和行为。", type: "single" },
+/* 259 */ { Q: "关于非正式组织的叙述，正确的是", options: ["具有明确的分工", "具有明确的组织目标", "能够促进组织的崩溃", "具有正式的组织结构和职务关系", "是在组织成员情感相投的基础上成立的"], answer: "E", explain: "非正式组织是在情感相投的基础上自发形成的。", type: "single" },
+/* 260 */ { Q: "女，30岁。经阴道顺利分娩一男婴，于产后第4天出院，回家后（产后第5天）产妇外阴切口裂开并出现脓性分泌物，应诊断为", options: ["外阴切口感染", "会阴裂伤感染", "不属于医院感染", "外阴切口感染，属于医院感染", "手术部位感染"], answer: "D", explain: "出院后发生的与分娩有关的感染属于医院感染。", type: "single" },
+/* 261 */ { Q: "口腔中唾液链球菌能产生过氧化氢，杀死白喉杆菌与脑膜炎奈瑟菌，这属于人体正常菌群生理作用的", options: ["营养作用", "免疫调节作用", "定植抵抗力作用", "生物屏障作用", "化学作用"], answer: "C", explain: "杀死其他细菌属于定植抵抗力作用。", type: "single" },
+/* 262 */ { Q: "按照管理者控制和改进工作的不同方式，控制可分为", options: ["质量控制与资金控制", "间接控制和直接控制", "日常控制和定期控制", "专项控制和全面控制", "技术控制和人员控制"], answer: "B", explain: "按控制和改进工作方式分为间接控制和直接控制。", type: "single" },
+/* 263 */ { Q: "与不健康的生活方式有关的疾病是", options: ["白化病", "色盲", "唐氏综合征", "艾滋病", "血友病"], answer: "D", explain: "艾滋病与不健康生活方式有关。", type: "single" },
+/* 264 */ { Q: "关于健康教育特点的描述，正确的是", options: ["以改善生活和工作环境条件因素来达到预防疾病、促进健康的目的", "以消除或减少不健康的行为因素来达到预防疾病、促进健康的目的", "以改善卫生服务因素来达到预防疾病、促进健康的目的", "以增加医疗卫生经费投入来达到预防疾病、促进健康的目的", "以加强对目标人群的技能培训来达到预防疾病、促进健康的目的"], answer: "B", explain: "健康教育以消除或减少不健康行为因素为目的。", type: "single" },
+/* 265 */ { Q: "按决策的重要性划分，“为完成目标而制订的组织未来一段较短时间内的具体行动方案”称", options: ["宏观决策", "战术决策", "全局决策", "战略决策", "集体决策"], answer: "B", explain: "战术决策是短期具体行动方案。", type: "single" },
+/* 266 */ { Q: "医院Ⅱ类区域空气消毒合格的细菌总数标准为", options: ["≤500CFU/m³", "≤400CFU/m³", "≤300CFU/m³", "≤200CFU/m³", "≤100CFU/m³"], answer: "D", explain: "Ⅱ类区域空气细菌总数≤200CFU/m³。", type: "single" },
+/* 267 */ { Q: "某护士为HBsAg(+)的患者抽血时不慎被针头刺伤手指，当时按照“针头刺伤处理指南”处理了伤口，为预防感染最应该给该护士注射的药物是", options: ["破伤风抗毒素", "抗病毒血清", "广谱抗生素", "免疫球蛋白", "白蛋白"], answer: "D", explain: "乙肝暴露后应注射免疫球蛋白。", type: "single" },
+/* 268 */ { Q: "在管理方法中，经济方法的缺点是", options: ["管理效果受决策者水平限制", "易导致只顾经济利益的倾向", "易犯官僚主义的错误", "不利于提高经济效益", "不利于提高工作效率"], answer: "B", explain: "经济方法易导致只顾经济利益的倾向。", type: "single" },
+/* 269 */ { Q: "健康教育内容分类中，健康生活方式知识属于", options: ["精神卫生知识", "疾病防治知识", "就诊知识", "卫生常识", "行为训练知识"], answer: "D", explain: "健康生活方式知识属于卫生常识。", type: "single" },
+/* 270 */ { Q: "负责管理护士考核工作的部门是", options: ["国家卫生部", "预防机构", "医学专业组织", "县级以上地方人民政府卫生行政部门", "县级以上医疗机构评审委员会"], answer: "D", explain: "县级以上卫生行政部门负责护士考核管理。", type: "single" },
+/* 271 */ { Q: "ICU管理原则不包括", options: ["定期消毒空气和环境", "对患者实施必要的保护性措施", "限定探视时间和探视人数", "提倡介入性监护方法", "严格执行消毒隔离措施"], answer: "D", explain: "ICU应尽量减少介入性监护方法。", type: "single" },
+/* 272 */ { Q: "手卫生包括", options: ["外科手消毒", "内科手消毒", "隔离消毒", "皮肤消毒", "黏膜消毒"], answer: "A", explain: "手卫生包括外科手消毒和卫生手消毒。", type: "single" },
+/* 273 */ { Q: "控制感染最简单、直接、有效的手段是", options: ["加强抗感染教育", "控制或消灭感染源", "切断传播途径", "保护易感宿主", "有效药物治疗"], answer: "C", explain: "切断传播途径是最简单、直接、有效的控制感染手段。", type: "single" },
+/* 274 */ { Q: "“提供安全舒适的生活和工作条件”是健康促进五大行动领域中的", options: ["制订促进健康的公共政策", "创造支持性环境", "发展个人技能", "加强社区活动", "调整卫生服务方向"], answer: "B", explain: "创造支持性环境包括提供安全舒适的生活和工作条件。", type: "single" },
+/* 275 */ { Q: "健康教育处方适用于", options: ["门诊慢性病患者", "入院时的患者", "住院的患者", "即将出院的患者", "术后康复期的患者"], answer: "A", explain: "健康教育处方适用于门诊慢性病患者。", type: "single" },
+/* 276 */ { Q: "低可变性行为是", options: ["处在发展时期的行为", "社会反对的行为", "既往有成功改变实例的行为", "与传统生活方式关系不大的行为", "根植于传统文化或生活方式中的行为"], answer: "E", explain: "根植于传统文化或生活方式中的行为属于低可变性行为。", type: "single" },
+/* 277 */ { Q: "环境清洁与消毒原则和方法错误的是", options: ["清洁程序遵循从污到洁的原则", "采用湿拖把清洁，避免灰尘飞扬", "一般环境以清洁为主", "特殊的环境可选用消毒剂消毒", "所有卫生用具用后要消毒、洗净、晾干"], answer: "A", explain: "清洁程序应遵循从洁到污的原则。", type: "single" },
+/* 278 */ { Q: "在健康教育评价过程中，目标人群因得知自己正在被观察而表现出行为异常从而影响了评价效果。此现象称为", options: ["时间效应", "霍桑效应", "暗示效应", "回归效应", "偶然效应"], answer: "B", explain: "霍桑效应指因被观察而行为异常的现象。", type: "single" },
+/* 279 */ { Q: "健康传播者在制订传播信息、选择传播途径时，应重点考虑受者的", options: ["生理特点和状况", "心理特点和动机", "文化程度", "经济状况", "兴趣爱好"], answer: "C", explain: "文化程度是选择传播途径时应重点考虑的因素。", type: "single" },
+/* 280 */ { Q: "“君子不器”体现的管理思想是", options: ["社会管理思想", "系统管理思想", "战略管理思想", "统筹管理思想", "用人管理思想"], answer: "E", explain: "“君子不器”体现用人管理思想。", type: "single" },
+/* 281 */ { Q: "属于清洁区的是", options: ["医务人员办公室", "分诊处", "检验室", "走廊", "配餐间"], answer: "A", explain: "医务人员办公室属于清洁区。", type: "single" },
+/* 282 */ { Q: "“肾为气之根”体现的功能是", options: ["肾主藏精", "肾主生长、发育", "肾主生殖", "肾主水液代谢", "肾主纳气"], answer: "E", explain: "肾为气之根体现肾主纳气的功能。", type: "single" },
+/* 283 */ { Q: "对目标人群因健康教育项目所导致的相关行为及其影响因素变化的评价是", options: ["形成评价", "过程评价", "效应评价", "结局评价", "总结评价"], answer: "C", explain: "效应评价是对行为及影响因素变化的评价。", type: "single" },
+/* 284 */ { Q: "评价计划设计阶段进行目标人群选择、策略确定、方法设计的是", options: ["形成评价", "过程评价", "效应评价", "结局评价", "总结评价"], answer: "A", explain: "形成评价是在计划设计阶段进行的评价。", type: "single" },
+/* 285 */ { Q: "护士给患者发放健康教育手册属于", options: ["口头传播", "文字传播", "影像传播", "电子媒介传播", "形象传播"], answer: "B", explain: "发放手册属于文字传播。", type: "single" },
+/* 286 */ { Q: "社区为痛风患者举办“痛风的护理”主题讲座属于", options: ["口头传播", "文字传播", "影像传播", "电子媒介传播", "形象传播"], answer: "A", explain: "讲座属于口头传播。", type: "single" },
+/* 287 */ { Q: "在橱窗中陈列食物金字塔模型提倡健康饮食属于", options: ["口头传播", "文字传播", "影像传播", "电子媒介传播", "形象传播"], answer: "E", explain: "模型展示属于形象传播。", type: "single" },
+/* 288 */ { Q: "组织文化具有管理功能的前提条件为", options: ["文化性", "综合性", "整合性", "自觉性", "实践性"], answer: "C", explain: "整合性是组织文化具有管理功能的前提。", type: "single" },
+/* 289 */ { Q: "组织文化区别于组织其他内容的根本点为", options: ["文化性", "综合性", "整合性", "自觉性", "实践性"], answer: "A", explain: "文化性是组织文化区别于其他内容的根本点。", type: "single" },
+/* 290 */ { Q: "“系统的功能大于各个个体的功效之和”是指系统的", options: ["整体性", "目的性", "相关性", "层次性", "环境适应性"], answer: "A", explain: "整体性指系统功能大于各要素功能之和。", type: "single" },
+/* 291 */ { Q: "“一个要素的变化，会引起另一个要素的变化”是指系统的", options: ["整体性", "目的性", "相关性", "层次性", "环境适应性"], answer: "C", explain: "相关性指各要素相互联系、相互影响。", type: "single" },
+/* 292 */ { Q: "艾滋病的传播途径有", options: ["消化道传播", "血液-体液传播", "呼吸道传播", "鼠咬或蚊虫叮咬", "共用浴具"], answer: "B", explain: "艾滋病主要通过血液-体液传播。", type: "single" },
+/* 293 */ { Q: "甲型肝炎的主要传播途径有", options: ["消化道传播", "血液-体液传播", "呼吸道传播", "鼠咬或蚊虫叮咬", "共用浴具"], answer: "A", explain: "甲型肝炎经消化道传播。", type: "single" },
+/* 294 */ { Q: "过氧乙酸属于", options: ["清洁剂", "高效消毒剂", "灭菌剂", "中效消毒剂", "低效消毒剂"], answer: "C", explain: "过氧乙酸属于灭菌剂。", type: "single" },
+/* 295 */ { Q: "苯扎溴铵属于", options: ["清洁剂", "高效消毒剂", "灭菌剂", "中效消毒剂", "低效消毒剂"], answer: "E", explain: "苯扎溴铵属于低效消毒剂。", type: "single" },
+/* 296 */ { Q: "碘伏属于", options: ["清洁剂", "高效消毒剂", "灭菌剂", "中效消毒剂", "低效消毒剂"], answer: "D", explain: "碘伏属于中效消毒剂。", type: "single" },
+/* 297 */ { Q: "合理饮食、适量运动属于", options: ["日常健康行为", "避开有害环境行为", "戒除不良嗜好行为", "预警行为", "保健行为"], answer: "A", explain: "合理饮食、适量运动属于日常健康行为。", type: "single" },
+/* 298 */ { Q: "事故发生后的自救和他救行为属于", options: ["日常健康行为", "避开有害环境行为", "戒除不良嗜好行为", "预警行为", "保健行为"], answer: "D", explain: "自救和他救属于预警行为。", type: "single" },
+/* 299 */ { Q: "ICU中最常见的条件致病菌是", options: ["金黄色葡萄球菌", "铜绿假单胞菌", "大肠埃希菌", "克雷伯菌", "白假丝酵母菌"], answer: "A", explain: "金黄色葡萄球菌是ICU最常见的条件致病菌。", type: "single" },
+/* 300 */ { Q: "对外界环境抵抗力最强的细菌是", options: ["金黄色葡萄球菌", "铜绿假单胞菌", "大肠埃希菌", "克雷伯菌", "白假丝酵母菌"], answer: "B", explain: "铜绿假单胞菌对外界环境抵抗力最强。", type: "single" },
+/* 301 */ { Q: "关于有效沟通的方法，错误的是", options: ["创造良好的沟通环境", "重视沟通细节的处理", "增强语言的感染力", "减少聆听时间", "强化沟通能力"], answer: "D", explain: "有效沟通应增加聆听时间。", type: "single" },
+/* 302 */ { Q: "沟通按不同的标准分成不同的类型，按沟通媒介分类的是", options: ["垂直沟通和平行沟通", "语言沟通和非语言沟通", "斜向沟通和轮式沟通", "链式沟通和圆周式沟通", "正式沟通与非正式沟通"], answer: "B", explain: "按沟通媒介分为语言沟通和非语言沟通。", type: "single" },
+/* 303 */ { Q: "群体传播是", options: ["共享信息的最基本传播形式", "组织以外小群体的传播活动", "媒体组织采用现代机器设备，通过大批复制并迅速地传播信息，从而影响庞杂的受众的过程", "有组织、有领导、有一定规模的信息传播", "个体接收外界信息后，在头脑中进行信息加工处理的过程"], answer: "D", explain: "群体传播是有组织、有领导、有一定规模的信息传播。", type: "single" },
+/* 304 */ { Q: "对“知一信一行模式”最佳的解释为", options: ["强化知识、转变信念、改变行为", "获取知识、产生信念、形成行为", "积累知识、改变信念、转变行为", "更新知识、转换信念、产生行为", "扩展知识、更新信念、规范行为"], answer: "B", explain: "知信行模式指获取知识、产生信念、形成行为。", type: "single" },
+/* 305 */ { Q: "隔离的目的不包括", options: ["切断传播途径", "治疗疾病", "保护易感者", "控制传染源", "消灭感染源"], answer: "B", explain: "隔离的目的不包括治疗疾病。", type: "single" },
+/* 306 */ { Q: "评估健康教育质量的重点是", options: ["患者教育普及率与合格率", "教学方法是否恰当", "患者的学习需求是否得到满足", "患者知识掌握的程度", "患者态度改变与否和行为取向如何"], answer: "A", explain: "评估健康教育质量的重点是患者教育普及率与合格率。", type: "single" },
+/* 307 */ { Q: "领导的非权力性影响力因素包括", options: ["品格、才能、知识、资历", "品格、才能、知识、感情", "资历、品格、知识、感情", "资历、知识、感情、才能", "才能、品格、威信、感情"], answer: "B", explain: "非权力性影响力包括品格、才能、知识、感情。", type: "single" },
+/* 308 */ { Q: "根据格林模式，亲属的鼓励和支持将成为影响个体行为的", options: ["遗传因素", "环境因素", "倾向因素", "促成因素", "强化因素"], answer: "E", explain: "亲属的鼓励和支持属于强化因素。", type: "single" },
+/* 309 */ { Q: "根据讨论的主题，选择相关的人员组成小组，小组讨论的人数一般为", options: ["3~5人", "4~6人", "5~8人", "6~10人", "10~15人"], answer: "D", explain: "小组讨论适宜人数为6~10人。", type: "single" },
+/* 310 */ { Q: "人员管理的范畴不包括", options: ["护士的岗位设计", "护士的岗位人才选拔", "护士的岗位人才培训", "护士的岗位班次编排", "护士的岗位考评"], answer: "D", explain: "班次编排属于排班管理，不属于人员管理范畴。", type: "single" },
+/* 311 */ { Q: "梅奥人际关系学说的主要内容不包括", options: ["人是“社会人”，其工作态度受多种因素的影响", "劳动效率主要取决于职工的积极性", "过程管理是提高组织效率的关键", "非正式组织更能影响职工的情绪", "领导者应善于和职工沟通"], answer: "C", explain: "过程管理不是梅奥人际关系学说的内容。", type: "single" },
+/* 312 */ { Q: "生活质量诊断指标是", options: ["目标人群生活满意度", "人均国民生产总值", "人均绿化面积", "目标人群人均住房面积", "目标人群人均年收入水平"], answer: "A", explain: "生活满意度是生活质量诊断指标。", type: "single" },
+/* 313 */ { Q: "男，35岁。行疝修补术后1周，手术切口处红、肿、热、痛，伴少量脓性分泌物渗出。脓液细菌培养为阳性。应诊断为", options: ["表浅切口感染，属于医院感染", "表浅切口感染，不属于医院感染", "深部组织感染，属于医院感染", "深部组织感染，不属于医院感染", "交叉感染"], answer: "A", explain: "术后1周发生的切口感染属于医院感染。", type: "single" },
+/* 314 */ { Q: "授权的原则中最根本的准则是", options: ["权责对等", "监督控制", "合理合法", "视能授权", "奖惩分明"], answer: "C", explain: "合理合法是授权的最根本准则。", type: "single" },
+/* 315 */ { Q: "有关护理组织文化建设，不恰当的是", options: ["必须从社会全局出发，具有广泛性", "容易被护理人员理解、认同和接受", "要求每一位护理人员积极参与", "护理文化建设是一项系统工程", "能够体现护理专业的个性"], answer: "A", explain: "护理组织文化应具有护理专业特点，不一定具有广泛性。", type: "single" },
+/* 316 */ { Q: "计划工作中，评估形势的主要内容包括", options: ["社会关系、社会经济、社会竞争、服务对象的需求", "社会需求、社会竞争、组织资源的需求、社会经济", "社会竞争、社会关系、社会需求、服务对象的需求", "社会需求、社会竞争、组织资源、服务对象的需求", "社会需求、社会关系、社会竞争、组织资源的需求"], answer: "D", explain: "评估形势包括社会需求、社会竞争、组织资源、服务对象需求。", type: "single" },
+/* 317 */ { Q: "实现“肺主通调水道”功能的途径是", options: ["主呼吸之气", "主一身之气", "主治节", "朝百脉", "主宣发与肃降"], answer: "E", explain: "肺主通调水道通过宣发与肃降实现。", type: "single" },
+/* 318 */ { Q: "护理管理学受多种因素的影响，涉及多个学科领域，体现了护理管理的", options: ["独特性", "综合性", "整体性", "广泛性", "科学性"], answer: "B", explain: "涉及多学科体现了护理管理的综合性。", type: "single" },
+/* 319 */ { Q: "男，57岁。因发现血糖升高5年，波动2天，收治入院。护士对其进行入院健康教育，内容不包括", options: ["医院制度", "医护人员", "饮食控制", "医院环境", "定期复查"], answer: "C", explain: "饮食控制属于病房教育内容，不是入院教育。", type: "single" },
+/* 320 */ { Q: "用40%甲醛气化消毒时，须加入的氧化剂是", options: ["乳酸钙", "碳酸钠", "氯化钾", "亚硝酸钠", "高锰酸钾"], answer: "E", explain: "甲醛熏蒸需加入高锰酸钾作为氧化剂。", type: "single" },
+/* 321 */ { Q: "用于浸泡灭菌物品的容器，在更换灭菌剂时，对其容器正确的处置应是", options: ["无须灭菌", "清洗干净后灭菌", "消毒", "清洗干净", "清洗烘干"], answer: "B", explain: "容器应清洗干净后灭菌。", type: "single" },
+/* 322 */ { Q: "围术期预防性使用抗菌药物的时间是", options: ["入住外科病房后", "手术前3天", "手术前24小时", "麻醉诱导期，即术前0.5~1小时", "手术结束后1周内"], answer: "D", explain: "预防性抗菌药物应在术前0.5-1小时使用。", type: "single" },
+/* 323 */ { Q: "医务人员在执业过程中发生锐器伤的正确处理程序是", options: ["立即挤出污血并冲洗伤口，再清创、消毒、包扎、报告和记录、跟踪监测", "立即冲洗伤口后挤出污血，再清创、消毒、包扎、报告和记录，跟踪监测", "立即清创、消毒、包扎、报告和记录，跟踪监测", "立即报告和记录，再挤出污血、清创、消毒、包扎、跟踪监测", "立即查看锐器情况，评估伤情的严重性程度，再做妥善处理"], answer: "A", explain: "锐器伤应立即挤出污血、冲洗、清创、消毒、包扎、报告、跟踪监测。", type: "single" },
+/* 324 */ { Q: "男，18岁。能通过综合认识自己、他人、环境和社会，调整自己的行为。此时，其已进入行为的", options: ["主动发展阶段", "自主发展阶段", "巩固发展阶段", "被动发展阶段", "独立发展阶段"], answer: "B", explain: "自主发展阶段能综合认识并调整自己的行为。", type: "single" },
+/* 325 */ { Q: "行为的构成要素不包括", options: ["行为主体", "行为客体", "行为环境", "行为结果", "行为反馈"], answer: "E", explain: "行为反馈不是行为的构成要素。", type: "single" },
+/* 326 */ { Q: "健康传播主要特点不包括", options: ["健康传播传递的是健康信息", "健康传播具有明确的目的性", "健康传播的过程具有复合性", "健康传播对传播者有特殊素质要求", "健康传播是维护和促进健康的行为"], answer: "D", explain: "健康传播对传播者有特殊素质要求不是主要特点。", type: "single" },
+/* 327 */ { Q: "某医院护理部要求各科室提交的工作计划需要根据医院的总体工作目标制订护理工作的总目标，内容清晰明确，高低适当。这体现的是护理管理组织设计原则中的", options: ["管理层次的原则", "集权分权结合原则", "任务和目标一致的原则", "等级和统一指挥的原则", "专业化分工和协作原则"], answer: "C", explain: "科室计划与医院目标一致体现了任务和目标一致原则。", type: "single" },
+/* 328 */ { Q: "可杀灭结核分枝杆菌的条件是", options: ["紫外线灯管照射30分钟", "曝晒2小时", "氯已定消毒剂浸泡30分钟", "加热60℃5分钟", "放在阴凉干燥处24小时"], answer: "A", explain: "紫外线照射30分钟可杀灭结核分枝杆菌。", type: "single" },
+/* 329 */ { Q: "有关组织设计的要求，不正确的是", options: ["实施“一元化管理”", "注意避免机构重叠", "组织内的权力应相对均衡", "避免头重脚轻，人浮于事", "各部门间应组合成高效的结构形式"], answer: "C", explain: "组织内权力不一定均衡。", type: "single" },
+/* 330 */ { Q: "具有生化、承载、受纳等作用或特性的事物，其属性是", options: ["火", "土", "水", "木", "金"], answer: "B", explain: "土具有生化、承载、受纳的特性。", type: "single" },
+/* 331 */ { Q: "消化内科的护士长平时遇到问题时总是发动下属讨论，共同商量，集思广益，然后决策。护士长的领导作风属于", options: ["专权型", "命令型", "权威型", "民主参与型", "自由放任型"], answer: "D", explain: "发动下属讨论属于民主参与型领导。", type: "single" },
+/* 332 */ { Q: "人类的本能行为不包括", options: ["摄食行为", "性行为", "劳动行为", "躲避行为", "睡眠"], answer: "C", explain: "劳动行为不是本能行为。", type: "single" },
+/* 333 */ { Q: "心理素质不包括", options: ["自尊、自爱、自律", "有较强的适应能力", "有事业心和进取心", "有良好的忍耐力", "有较强的沟通能力"], answer: "E", explain: "沟通能力不属于心理素质。", type: "single" },
+/* 334 */ { Q: "原位菌群二度失调时，正常菌群比例失调处于相持状态，不易恢复。此类失调的表现不包括", options: ["大叶性肺炎", "慢性腹泻", "慢性咽喉炎", "慢性阴道炎", "肠功能紊乱"], answer: "A", explain: "大叶性肺炎不是菌群失调的表现。", type: "single" },
+/* 335 */ { Q: "护理人员的培训首先要从组织的发展战略出发，保证培训能够促进组织战略目标的实现，体现了护士培训的", options: ["按需施教，学用一致的原则", "与组织战略发展相适应的原则", "长期性与急用性相结合的原则", "重点培训和全员培训相结合的原则", "综合素质与专业素质培训相结合的原则"], answer: "B", explain: "从组织战略出发体现了与组织战略发展相适应的原则。", type: "single" },
+/* 336 */ { Q: "气随血脱的生理基础是", options: ["气能生血", "血能载气", "气能行血", "气能摄血", "血能化气"], answer: "B", explain: "血能载气，失血过多导致气随血脱。", type: "single" },
+/* 337 */ { Q: "确定组织发展方向和长远目标等重大问题的决策属于", options: ["战略决策", "程序化决策", "战术决策", "确定型决策", "风险型决策"], answer: "A", explain: "确定组织发展方向属于战略决策。", type: "single" },
+/* 338 */ { Q: "健康教育的目标是", options: ["树立健康信念", "改善健康相关行为", "掌握健康知识", "发展个人技能", "调整卫生服务方向"], answer: "B", explain: "健康教育的最终目标是改善健康相关行为。", type: "single" },
+/* 339 */ { Q: "临床护理质量标准中规定无菌物品的合格率应为", options: ["100%", "99%", "98%", "95%", "90%"], answer: "A", explain: "无菌物品合格率必须达到100%。", type: "single" },
+/* 340 */ { Q: "属于外邪致病先导的邪气是", options: ["凉邪", "冷邪", "风邪", "燥邪", "湿邪"], answer: "C", explain: "风邪是外邪致病的先导。", type: "single" },
+/* 341 */ { Q: "预防交叉感染的措施是", options: ["无菌物品与非无菌物品分开存放", "无菌物品应放在清洁、干燥、固定的地方", "一份无菌物品只供一位患者使用", "定期检查有效期", "用无菌持物钳夹取无菌物品"], answer: "C", explain: "一份无菌物品只供一位患者使用是预防交叉感染的关键措施。", type: "single" },
+/* 342 */ { Q: "通行元气的脏腑是", options: ["肺", "小肠", "肾", "胆", "三焦"], answer: "E", explain: "三焦通行元气。", type: "single" },
+/* 343 */ { Q: "在诊疗过程中，医生以医嘱形式对患者给予健康生活方式指导，属于", options: ["住院教育", "候诊教育", "咨询教育", "随诊教育", "健康教育处方"], answer: "E", explain: "以医嘱形式给予指导属于健康教育处方。", type: "single" },
+/* 344 */ { Q: "脓毒症患者使用抗生素后病情好转，体温恢复正常可停药的时间是", options: ["1~2天", "3~4天", "5~6天", "7~10天", "10天以上"], answer: "D", explain: "脓毒症患者体温正常后应继续用药7-10天。", type: "single" },
+/* 345 */ { Q: "青少年因崇拜明星而表现出的追星行为的学习方式是", options: ["无意模仿", "有意模仿", "强迫模仿", "系统教育", "强化教育"], answer: "B", explain: "追星行为是有意模仿。", type: "single" },
+/* 346 */ { Q: "具有滑利关节，补益脑髓功能的是", options: ["气", "血", "津", "液", "精"], answer: "D", explain: "液具有滑利关节、补益脑髓的功能。", type: "single" },
+/* 347 */ { Q: "管理的二重性是指", options: ["自然属性与社会属性", "自然属性与科学属性", "科学性与艺术性", "普遍性与目的性", "科学属性与社会属性"], answer: "A", explain: "管理的二重性指自然属性与社会属性。", type: "single" },
+/* 348 */ { Q: "健康教育介绍期，建立护患关系的主要技巧是", options: ["做好入院介绍", "告知患者的权利和义务", "说明为患者所提供服务的内容", "说明建立护患关系的重要性", "建立第一印象，消除陌生感，建立信任感"], answer: "E", explain: "介绍期主要技巧是建立第一印象，消除陌生感，建立信任感。", type: "single" },
+/* 349 */ { Q: "低可变性行为的特点是", options: ["社会反对程度较高", "形成时间较长", "已有成功改变实例", "与文化传统无关", "不属于传统生活方式"], answer: "B", explain: "形成时间较长的行为属于低可变性行为。", type: "single" },
+/* 350 */ { Q: "男，26岁。腿部外伤后发展为气性坏疽，为其换药用的剪刀最佳消毒方法是", options: ["75%乙醇浸泡", "燃烧法", "微波消毒灭菌法", "压力蒸汽灭菌", "煮沸法"], answer: "D", explain: "气性坏疽患者用过的器械应首选压力蒸汽灭菌。", type: "single" },
+/* 351 */ { Q: "护理人员个人的质量评价内容不包括", options: ["基本素质评价", "全面质量评价", "行为过程评价", "行为结果评价", "综合评价"], answer: "B", explain: "全面质量评价不属于护理人员个人的质量评价内容。", type: "single" },
+/* 352 */ { Q: "可导致虚证心病的是", options: ["痰阻", "火扰", "寒凝", "劳神", "气郁"], answer: "D", explain: "劳神过度可导致虚证心病。", type: "single" },
+/* 353 */ { Q: "目标管理的特点不包括", options: ["强调整体性管理", "强调管理者和被管理者共同参与", "强调自我管理", "强调自我评价", "强调下级服从上级"], answer: "E", explain: "目标管理不强调下级服从上级，而是强调自我管理。", type: "single" },
+/* 354 */ { Q: "医院健康教育的最终目的是", options: ["改善患者生活方式", "指导患者家属正确的护理", "促进患者身心康复", "引导患者准确服药", "增强患者战胜疾病的信心"], answer: "C", explain: "医院健康教育的最终目的是促进患者身心康复。", type: "single" },
+/* 355 */ { Q: "属于阴中之阳的是", options: ["心", "脾", "肝", "肾", "肺"], answer: "C", explain: "肝属阴中之阳。", type: "single" },
+/* 356 */ { Q: "形成组织结构的步骤不包括", options: ["设计组织的运作方式", "对组织设计进行审查、评价及修改", "确定正式组织结构", "确定组织运作程序", "颁布实施"], answer: "D", explain: "确定组织运作程序不是形成组织结构的步骤。", type: "single" },
+/* 357 */ { Q: "医院感染最简单有效的预防措施是", options: ["洗手", "戴手套", "环境消毒", "隔离传染病患者", "合理应用抗生素"], answer: "A", explain: "洗手是预防医院感染最简单有效的措施。", type: "single" },
+/* 358 */ { Q: "属于传染病的是", options: ["高血压", "肥胖", "细菌性痢疾", "恶性肿瘤", "糖尿病"], answer: "C", explain: "细菌性痢疾属于传染病。", type: "single" },
+/* 359 */ { Q: "健康教育主要的基础理论是", options: ["行为科学理论", "传播学理论", "预防医学理论", "教育学理论", "伦理学理论"], answer: "A", explain: "行为科学理论是健康教育的主要基础理论。", type: "single" },
+/* 360 */ { Q: "某病区护士长决定对全天的工作流程列出清单。根据ABC时间管理法，优先完成的是", options: ["书写工作手册", "参与患者抢救", "检查护士文件书写质量", "制订年轻护士培训计划", "召开患者座谈会"], answer: "B", explain: "参与患者抢救属于A类工作，应优先完成。", type: "single" },
+/* 361 */ { Q: "关于预防手术部位感染的措施不包括", options: ["尽量减少患者术后在监护室滞留的时间", "用无菌蒸馏水冲洗切口", "切口敷料被渗透应立即更换", "减少室内人员流动", "采用封闭式重力引流"], answer: "B", explain: "应用无菌生理盐水冲洗切口，不是蒸馏水。", type: "single" },
+/* 362 */ { Q: "健康档案的建立与管理要求错误的是", options: ["健康档案编写原则有灵活性、结构化", "健康档案的形式应简单、通俗、实用", "健康档案的内容要求完整性、逻辑性、准确性、严肃性和规范化", "健康档案的内容应能反映生理、心理、社会三个层次", "一个区内的健康档案形式可多样化，无须统一"], answer: "E", explain: "健康档案形式应统一，便于管理。", type: "single" },
+/* 363 */ { Q: "非语言传播技巧不包括", options: ["手势", "触摸", "同类语言", "时空语", "提问"], answer: "E", explain: "提问属于语言传播技巧。", type: "single" },
+/* 364 */ { Q: "计划按表现形式划分，输血技术操作流程属于", options: ["目的", "规则", "程序", "规划", "战略"], answer: "C", explain: "操作流程属于程序。", type: "single" },
+/* 365 */ { Q: "微生物从外界环境进入人体，并在一定部位不断生长、繁殖后代，这种现象称为", options: ["植入", "转移", "定植", "定居", "易位"], answer: "C", explain: "微生物在人体部位生长繁殖称为定植。", type: "single" },
+/* 366 */ { Q: "期望理论公式“M=V×E”中，E表示", options: ["激励力，指调动一个人的积极性的强度", "期望值，指调动一个人的积极性的强度", "期望值，指一个人判断某一成果的可能性的大小", "效价，指某项活动成果所能满足个人需要的程度", "效价，指一个人判断某一成果的可能性的大小"], answer: "C", explain: "E表示期望值，指个体对实现目标可能性的判断。", type: "single" },
+/* 367 */ { Q: "健康教育中最常用的体语是", options: ["手语", "身体运动", "姿势", "面部表情", "眼睛运动"], answer: "D", explain: "面部表情是健康教育中最常用的体语。", type: "single" },
+/* 368 */ { Q: "无明确潜伏期的感染，确定为医院感染的时间要求是", options: ["入院12小时后发生的感染", "入院24小时后发生的感染", "入院48小时后发生的感染", "入院72小时后发生的感染", "入院1周后发生的感染"], answer: "C", explain: "无明确潜伏期的感染，入院48小时后发生的感染属于医院感染。", type: "single" },
+/* 369 */ { Q: "大众传播大多属于", options: ["单向传播", "双向传播", "组织传播", "直接性传播", "社会传播"], answer: "A", explain: "大众传播大多属于单向传播。", type: "single" },
+/* 370 */ { Q: "人体正常菌群的生理作用不包括", options: ["合成部分维生素", "免疫调节作用", "定植抵抗力作用", "产生某些微量元素", "生物屏障作用"], answer: "D", explain: "正常菌群不能产生微量元素。", type: "single" },
+/* 371 */ { Q: "某医院就5年发展目标进行决策，最合适的决策方法是", options: ["高层领导集体决策", "高层领导个人决策", "中层领导集体决策", "高层和中层领导集体决策", "高、中、基层领导集体决策"], answer: "E", explain: "涉及组织长远发展的战略决策应由各层次领导集体决策。", type: "single" },
+/* 372 */ { Q: "健康传播效果中的最低层次为", options: ["知晓健康信息", "态度转变", "采纳健康行为", "健康信念认同", "采纳健康的生活方式"], answer: "A", explain: "知晓健康信息是健康传播的最低层次。", type: "single" },
+/* 373 */ { Q: "医院内和医院外分离出的同一种多重耐药菌株，其耐药特点为", options: ["医院内比医院外菌株耐药性更强且更广", "医院内比医院外菌株耐药性更强但不广", "医院外比医院内菌株耐药性更强且更广", "医院外比医院内菌株耐药性更强但不广", "医院内与医院外菌株耐药性基本相同"], answer: "A", explain: "医院内菌株因抗生素选择压力，耐药性更强更广。", type: "single" },
+/* 374 */ { Q: "五行相克规律的正确描述是", options: ["木→火→土→金→水→木", "木→土→水→火→金→木", "木→水→火→土→金→木", "水→火→土→金→木→水", "土→木→金→水→火→土"], answer: "B", explain: "五行相克规律为木克土、土克水、水克火、火克金、金克木。", type: "single" },
+/* 375 */ { Q: "组织有形要素中最主要的是", options: ["人力", "物力", "财力", "信息", "时间"], answer: "A", explain: "人力是组织有形要素中最主要的。", type: "single" },
+/* 376 */ { Q: "抗菌药物的作用机制不包括", options: ["抑制细菌核酸的合成", "干扰细菌细胞壁的合成", "细菌缺乏药物的靶位点", "影响细菌蛋白质的合成", "损伤细菌的细胞膜"], answer: "C", explain: "细菌缺乏靶位点不是药物的作用机制，而是细菌的耐药机制。", type: "single" },
+/* 377 */ { Q: "使用文字进行健康教育的首要条件是", options: ["内容实用", "文字通俗易懂", "图文并茂", "学习者必须有阅读能力", "有适宜的场所"], answer: "D", explain: "使用文字进行健康教育，学习者必须具备阅读能力。", type: "single" },
+/* 378 */ { Q: "无菌物品的保存方法不当的是", options: ["储物架及运送车要保持干净", "无菌物品应有合格标志，并标明灭菌日期", "快速压力蒸汽灭菌物品不论是否潮湿，均可保存7~14天", "储藏房间要保持湿式清扫，避免扬尘", "无菌物品应与非无菌物品分开存放"], answer: "C", explain: "快速压力蒸汽灭菌物品潮湿后不能保存。", type: "single" },
+/* 379 */ { Q: "关于辨证与施护关系的叙述，正确的是", options: ["辨证是施护的基础", "施护是辨证的唯一目的", "辨证是否正确不一定影响施护", "辨证与施护是中西医护理相结合的体现", "辨证施护不包括辨病护理和对症护理"], answer: "A", explain: "辨证是施护的基础。", type: "single" },
+/* 380 */ { Q: "女，18岁。因食用不洁食物引起上吐下泻，诊断为细菌性痢疾。其排泄物用漂白粉消毒，漂白粉与大便的比例和消毒时间分别是", options: ["1:3，1小时", "1:5，1小时", "1:3，2小时", "1:5，2小时", "1:10，1小时"], answer: "D", explain: "粪便与漂白粉比例为1:5，消毒2小时。", type: "single" },
+/* 381 */ { Q: "关于洗手设备的叙述，错误的是", options: ["临床科室应设有流动水设施", "洗手设施的开关最好采用手动式", "洗手最好选用液体皂液", "选用肥皂洗手时，肥皂应保持清洁、干燥", "选用擦手毛巾时，毛巾应保持清洁、干燥"], answer: "B", explain: "洗手设施开关应避免手动式，应采用感应式或脚踏式。", type: "single" },
+/* 382 */ { Q: "关于控制的叙述，错误的是", options: ["监视各项活动以保证它们按计划进行并纠正各种重要偏差的过程", "控制的重要性包括在执行组织计划中的保障作用和在管理职能中的关键作用", "控制的类型包括前馈控制、同期控制和反馈控制", "控制的基本过程包括建立标准、衡量绩效和纠正偏差", "控制的基本方法包括预算控制、质量控制、进度控制和数据控制"], answer: "E", explain: "数据控制不是控制的基本方法。", type: "single" },
+/* 383 */ { Q: "某社区开展控烟健康教育项目，评价该社区目标人群参与健康教育活动的人数属于", options: ["形成评价", "过程评价", "效应评价", "结局评价", "总结评价"], answer: "B", explain: "参与人数属于过程评价。", type: "single" },
+/* 384 */ { Q: "某社区开展控烟健康教育项目，评价该社区目标人群戒烟影响因素属于", options: ["形成评价", "过程评价", "效应评价", "结局评价", "总结评价"], answer: "C", explain: "戒烟影响因素属于效应评价。", type: "single" },
+/* 385 */ { Q: "在对糖尿病患者的教育中，评价糖尿病患者血糖控制率的变化属于", options: ["形成评价", "过程评价", "效应评价", "结局评价", "总结评价"], answer: "D", explain: "血糖控制率属于结局评价。", type: "single" },
+/* 386 */ { Q: "将护理人员和患者分组，一组护士为一组患者提供护理服务的临床护理组织方式属于", options: ["个案护理", "功能制护理", "小组护理", "责任制护理", "整体护理"], answer: "C", explain: "一组护士为一组患者服务属于小组护理。", type: "single" },
+/* 387 */ { Q: "2名护士运用护理程序，对所负责的患者从入院到出院提供连续的、全面的、整体的护理。此临床护理组织方式属于", options: ["个案护理", "功能制护理", "小组护理", "责任制护理", "整体护理"], answer: "D", explain: "责任护士对患者实施连续、全面护理属于责任制护理。", type: "single" },
+/* 388 */ { Q: "每1~2名护士负责某一护理工作任务，各班护士相互配合共同完成全部的护理工作。此临床护理组织方式属于", options: ["个案护理", "功能制护理", "小组护理", "责任制护理", "整体护理"], answer: "B", explain: "按工作任务分工属于功能制护理。", type: "single" },
+/* 389 */ { Q: "1名护理人员负责1位患者全部护理工作内容。此临床护理组织方式属于", options: ["个案护理", "功能制护理", "小组护理", "责任制护理", "整体护理"], answer: "A", explain: "一名护士负责一位患者全部护理属于个案护理。", type: "single" },
+/* 390 */ { Q: "按感染途径医院感染分为", options: ["医源性感染、自身感染", "交叉感染、自身感染", "医源性感染、交叉感染、自身感染", "内源性感染、外源性感染", "内源性感染、医源性感染"], answer: "C", explain: "按感染途径分为医源性感染、交叉感染、自身感染。", type: "single" },
+/* 391 */ { Q: "医院感染按病原体的来源分为", options: ["医源性感染、自身感染", "交叉感染、自身感染", "医源性感染、交叉感染、自身感染", "内源性感染、外源性感染", "内源性感染、医源性感染"], answer: "D", explain: "按病原体来源分为内源性感染和外源性感染。", type: "single" },
+/* 392 */ { Q: "强调保证信息能准确地传递给受者，遵循的选择传播途径原则是", options: ["准确性原则", "速度快原则", "经济性原则", "针对性原则", "科学性原则"], answer: "A", explain: "准确性原则强调信息能准确传递给受者。", type: "single" },
+/* 393 */ { Q: "强调针对具体受者、具体情况选择传播途径，遵循的选择传播途径原则是", options: ["准确性原则", "速度快原则", "经济性原则", "针对性原则", "科学性原则"], answer: "D", explain: "针对性原则强调针对具体受者选择传播途径。", type: "single" },
+/* 394 */ { Q: "不按时巡视病房，患者病情变化时未能及时发现，延误抢救，造成严重后果的，属于常见护理缺陷中的", options: ["违反护理规范、常规", "执行医嘱不当", "工作不认真，缺乏责任感", "护理管理不善造成的缺陷", "护理记录不全造成的缺陷"], answer: "C", explain: "不按时巡视病房属于工作不认真，缺乏责任感。", type: "single" },
+/* 395 */ { Q: "药物剂量查对失误，造成患者因用药剂量过大而中毒死亡，属于常见的护理缺陷中的", options: ["违反护理规范、常规", "执行医嘱不当", "工作不认真，缺乏责任感", "护理管理不善造成的缺陷", "护理记录不全造成的缺陷"], answer: "A", explain: "查对失误属于违反护理规范、常规。", type: "single" },
+/* 396 */ { Q: "属Ⅱ类环境的是", options: ["注射室", "传染病房", "新生儿室", "换药室", "层流病房"], answer: "C", explain: "新生儿室属于Ⅱ类环境。", type: "single" },
+/* 397 */ { Q: "属Ⅳ类环境的是", options: ["注射室", "传染病房", "新生儿室", "换药室", "层流病房"], answer: "A", explain: "注射室属于Ⅳ类环境。", type: "single" },
+/* 398 */ { Q: "患病后及时就医属于", options: ["日常健康行为", "避开有害环境行为", "戒除不良嗜好行为", "预警行为", "保健行为"], answer: "E", explain: "及时就医属于保健行为。", type: "single" },
+/* 399 */ { Q: "驾车时使用安全带属于", options: ["日常健康行为", "避开有害环境行为", "戒除不良嗜好行为", "预警行为", "保健行为"], answer: "D", explain: "使用安全带属于预警行为。", type: "single" },
+/* 400 */ { Q: "预防接种属于", options: ["日常健康行为", "避开有害环境行为", "戒除不良嗜好行为", "预警行为", "保健行为"], answer: "E", explain: "预防接种属于保健行为。", type: "single" },
+/* 401 */ { Q: "根据五行生克乘侮规律，脾病传肾属于", options: ["相克", "相侮", "母病及子", "相乘", "子盗母气"], answer: "D", explain: "脾属土，肾属水，土克水，脾病传肾属于相乘。", type: "single" },
+/* 402 */ { Q: "有关功能制护理的特点，不正确的是", options: ["节省人力、时间，便于组织工作", "分工不明确，不利于按护士的能力分工", "有利于提高护士技能操作的熟练程度", "易忽视患者的心理、社会状况", "护患之间缺乏沟通和理解"], answer: "B", explain: "功能制护理分工明确，但不利于按护士能力分工。", type: "single" },
+/* 403 */ { Q: "关于艾滋病的叙述，错误的是", options: ["HIV对外界的抵抗力大于HBV", "HIV感染者是主要传播源", "不能通过蚊虫叮咬传播", "共用剃刀可以传播", "人工授精也会传染"], answer: "A", explain: "HIV对外界的抵抗力小于HBV。", type: "single" },
+/* 404 */ { Q: "随着医院的发展，某内科新增1个内分泌护理单元，任命一名护士长，其管理幅度宜为", options: ["4-8人", "5-9人", "6-10人", "7-13人", "8-15人"], answer: "D", explain: "护理管理幅度一般为7-13人。", type: "single" },
+/* 405 */ { Q: "性质较稠厚，分布于骨节、脏腑和脑髓等组织的物质是", options: ["血", "精", "液", "气", "津"], answer: "C", explain: "液的性质较稠厚，分布于骨节、脏腑、脑髓。", type: "single" },
+/* 406 */ { Q: "医院感染的主要研究对象是", options: ["门诊患者", "来医院的探视者", "住院患者的陪护者", "住院患者的家属", "住院患者与医院职工"], answer: "E", explain: "医院感染的主要研究对象是住院患者与医院职工。", type: "single" },
+/* 407 */ { Q: "硅胶管消毒灭菌，不宜选用", options: ["压力蒸汽灭菌法", "煮沸法", "乙醇浸泡法", "过氧乙酸浸泡法", "环氧乙烷熏蒸法"], answer: "A", explain: "硅胶管不耐热，不宜选用压力蒸汽灭菌。", type: "single" },
+/* 408 */ { Q: "选定方案即实质性决策，是制订计划的", options: ["第二个步骤", "第三个步骤", "第四个步骤", "第五个步骤", "第六个步骤"], answer: "D", explain: "选定方案是计划制订的第五个步骤。", type: "single" },
+/* 409 */ { Q: "有关ABC时间管理法的描述，错误的是", options: ["每天工作前列出“日工作清单”", "对“日工作清单”分类", "集中精力完成A类工作", "同时兼顾C类工作，不应减少", "工作结束时评价时间应用情况"], answer: "D", explain: "C类工作可暂时搁置或减少。", type: "single" },
+/* 410 */ { Q: "对炭疽患者产生的医疗废物和有机垃圾应", options: ["含氯消毒剂浸泡消毒", "全部丢弃", "全部焚烧", "过氧乙酸喷洒", "气溶胶消毒法"], answer: "C", explain: "炭疽患者的医疗废物应全部焚烧。", type: "single" },
+/* 411 */ { Q: "基础护理操作规程的制订原则不包括", options: ["根据每项操作的目的、要求制订", "技术操作必须符合人体生理解剖特点", "必须有利于节省人力、物力、时间", "必须保证操作快速、便利", "必须有利于保证患者安全"], answer: "D", explain: "基础护理操作规程的制订应以保证患者安全为首要，而不是快速便利。", type: "single" },
+/* 412 */ { Q: "根据受者对信息的选择性，受者更容易接受或记住的信息是", options: ["与自己观念一致的信息", "与自己无关的信息", "令自己费解的信息", "令自己反感的信息", "令自己气愤的信息"], answer: "A", explain: "人们更容易接受与自己观念一致的信息。", type: "single" },
+/* 413 */ { Q: "“知人善任，扬长避短”体现了人员管理的", options: ["职务要求明确原则", "责权利一致原则", "用人之长原则", "系统管理原则", "公平竞争原则"], answer: "C", explain: "知人善任、扬长避短体现了用人之长原则。", type: "single" },
+/* 414 */ { Q: "护理人员编设原则不包括", options: ["公平竞争原则", "动态调整原则", "合理结构原则", "优化组合原则", "满足患者护理需要原则"], answer: "A", explain: "公平竞争原则不属于护理人员编设原则。", type: "single" },
+/* 415 */ { Q: "按医院用品危险性分类，属于高危险性物品的是", options: ["体温计", "注射器", "胃肠道内镜", "被服", "口罩"], answer: "B", explain: "注射器需进入无菌组织，属于高危险性物品。", type: "single" },
+/* 416 */ { Q: "属于非正式组织的特点是", options: ["有一个明确的组织目标", "有固定的组织结构编制", "组织成员有明确的职责", "具有协作关系，形成组织成员之间的关系层次", "由组织成员之间共同的兴趣爱好自发形成"], answer: "E", explain: "非正式组织是由共同的兴趣爱好自发形成的。", type: "single" },
+/* 417 */ { Q: "会议开始时，主持者简明扼要地说明会议目的、议题和议程等，使与会者把注意力集中到会议的议题中来，是善于主持会议中的", options: ["紧扣议题", "激发思维", "引导合作", "恪守时间", "做好总结"], answer: "A", explain: "会议开始时说明会议目的是紧扣议题的体现。", type: "single" },
+/* 418 */ { Q: "我国护理组织的最高行政职能机构是", options: ["国务院", "各省省政府", "中华护理学会", "人力资源和社会保障部", "国家卫生健康委员会"], answer: "E", explain: "国家卫生健康委员会是我国护理组织的最高行政职能机构。", type: "single" },
+/* 419 */ { Q: "在邪气中，“其性开泄，易袭阳位”是指", options: ["风邪", "燥邪", "湿邪", "暑邪", "热邪"], answer: "A", explain: "风邪性开泄，易袭阳位。", type: "single" },
+/* 420 */ { Q: "脾藏", options: ["神", "魂", "魄", "意", "志"], answer: "D", explain: "脾藏意。", type: "single" },
+/* 421 */ { Q: "每项医院感染目标监测开展的期限，一般不少于", options: ["2年", "3年", "6个月", "4年", "1年"], answer: "E", explain: "目标监测期限一般不少于1年。", type: "single" },
+/* 422 */ { Q: "非语言传播技巧不包括", options: ["动态体语", "肯定性语言", "时空语", "同类语言", "仪表形象"], answer: "B", explain: "肯定性语言属于语言传播技巧。", type: "single" },
+/* 423 */ { Q: "引起内源性感染的主要原因是", options: ["气管插管", "中心静脉置管", "留置导尿管", "环境污染", "大量使用广谱抗生素"], answer: "E", explain: "大量使用广谱抗生素是引起内源性感染的主要原因。", type: "single" },
+/* 424 */ { Q: "医院感染不包括", options: ["新生儿经胎盘获得的感染", "护理严重急性呼吸综合征患者时护士获得的感染", "新生儿脐带炎症感染", "患者住院第10天后出现上呼吸道感染", "住院患者导尿后发生尿路感染"], answer: "A", explain: "新生儿经胎盘获得的感染不属于医院感染。", type: "single" },
+/* 425 */ { Q: "艾瑞克森认为个体解决自我认同与角色紊乱危机的主要时期是", options: ["潜在期", "青春期", "成人早期", "成年期", "老年期"], answer: "B", explain: "青春期主要解决自我认同与角色紊乱的危机。", type: "single" },
+/* 426 */ { Q: "属于医院感染的是", options: ["入院时存在的感染", "入院前获得，入院后4小时出现临床症状", "入院前获得，入院后8小时出现临床症状", "住院期间获得的感染", "入院时处于潜伏期的感染"], answer: "D", explain: "住院期间获得的感染属于医院感染。", type: "single" },
+/* 427 */ { Q: "管理的首要职能是", options: ["控制职能", "领导职能", "人员管理", "组织职能", "计划职能"], answer: "E", explain: "计划是管理的首要职能。", type: "single" },
+/* 428 */ { Q: "护士在孕妇学校为孕妇们行产前教育。围绕“我怎么知道自己临产？”讨论。该护士运用群体传播的方式行健康教育，最大的优点是", options: ["讨论主题明确", "分好小组讨论", "选择好时间", "选择好地点", "排列好座位"], answer: "A", explain: "群体传播最大的优点是讨论主题明确。", type: "single" },
+/* 429 */ { Q: "关于熏洗疗法的叙述，正确的是", options: ["眼部肿瘤不宜用熏眼法治疗", "痈疽、烫伤患者不宜进行熏洗治疗", "熏洗治疗时，药液温度要在70℃以上", "伤口部位的熏洗，可按常规方法进行", "急性结膜炎宜用熏眼法治疗"], answer: "A", explain: "眼部肿瘤不宜用熏眼法治疗。", type: "single" },
+/* 430 */ { Q: "防止交叉感染，具有针对性的措施是", options: ["一份无菌物品只供一位患者使用", "无菌物品应放在清洁、干燥、固定处", "无菌物品与非无菌物品分开存放", "无菌物品应定期检查有效期", "用无菌钳夹取无菌物品"], answer: "A", explain: "一份无菌物品只供一位患者使用是防止交叉感染的针对性措施。", type: "single" },
+/* 431 */ { Q: "属于促进健康的行为是", options: ["A型行为", "C型行为", "不良生活方式", "求医行为", "不良疾病行为"], answer: "D", explain: "求医行为属于促进健康的行为。", type: "single" },
+/* 432 */ { Q: "因抗生素使用不当，肠道中的大肠埃希菌转移到泌尿道，这种现象称", options: ["植入", "移居", "定植", "定居", "移位菌群失调"], answer: "E", explain: "细菌从肠道转移到泌尿道属于移位菌群失调。", type: "single" },
+/* 433 */ { Q: "属于“五行相侮”的脏病传变是", options: ["心病及脾", "心病及肾", "心病及肺", "心病及肝", "肝病及心"], answer: "B", explain: "心属火，肾属水，水克火，心病及肾属于相侮。", type: "single" },
+/* 434 */ { Q: "感染的发生必须要具备的三个环节是", options: ["感染源、人体及其所处的环境", "感染源、自然因素、社会因素", "感染源、传播途径、易感人群", "传染源、传播途径、自然因素", "病原体毒力、数量及适当的入侵门户"], answer: "C", explain: "感染发生的三个环节是感染源、传播途径、易感人群。", type: "single" },
+/* 435 */ { Q: "西方管理理论的古典管理学阶段是", options: ["19世纪前", "19世纪末至1930年", "1940~1960年", "1960年以后", "1970年以后"], answer: "B", explain: "古典管理学阶段是19世纪末至1930年。", type: "single" },
+/* 436 */ { Q: "医院感染监测，查阅病历的重点不应放在", options: ["细菌及真菌培养阳性的患者", "首次使用抗生素的患者", "器官移植的患者", "昏迷的患者", "早产儿"], answer: "D", explain: "昏迷患者不是医院感染监测的重点。", type: "single" },
+/* 437 */ { Q: "行为诊断的主要目的是", options: ["确定导致目标人群疾病或健康问题发生的行为危险因素", "确定目标人群疾病或健康问题", "确定目标人群健康问题的影响因素", "确定目标人群的生活质量", "确定目标人群的健康需求"], answer: "A", explain: "行为诊断的主要目的是确定行为危险因素。", type: "single" },
+/* 438 */ { Q: "下列关于“脾气”的叙述，错误的是", options: ["脾主运化", "脾主统血", "脾气主升", "脾气主降", "脾喜燥恶湿"], answer: "D", explain: "脾气主升，不是主降。", type: "single" },
+/* 439 */ { Q: "关于戴手套的描述，错误的是", options: ["一副手套只用于一位患者", "进行侵入性操作时戴手套", "脱去手套后应立即洗手", "戴手套能完全防止手污染", "戴手套前应修剪指甲"], answer: "D", explain: "戴手套不能完全防止手污染。", type: "single" },
+/* 440 */ { Q: "某医院护理质量控制小组定期到病房检查护理文书书写质量，对发现的问题及时提出修改意见，此种控制属于", options: ["前馈控制", "同期控制", "反馈控制", "全面控制", "局部控制"], answer: "B", explain: "在过程中进行检查和纠正属于同期控制。", type: "single" },
+/* 441 */ { Q: "属于心理评估的是", options: ["婚姻状况", "信仰", "身高、体重", "应变能力", "生活方式"], answer: "D", explain: "应变能力属于心理评估内容。", type: "single" },
+/* 442 */ { Q: "在健康教育评价中，目标人群失访、外出等造成的偏倚属于", options: ["时间因素", "选择因素", "回归因素", "测量因素", "观察因素"], answer: "B", explain: "失访、外出属于选择因素造成的偏倚。", type: "single" },
+/* 443 */ { Q: "医疗机构对其医疗废物暂时贮存的时间不得超过", options: ["6小时", "12小时", "24小时", "48小时", "72小时"], answer: "D", explain: "医疗废物暂时贮存时间不得超过48小时。", type: "single" },
+/* 444 */ { Q: "提出“物竞天择，适者生存”进化论思想的是", options: ["马克思", "恩格斯", "达尔文", "孟德尔", "摩尔根"], answer: "C", explain: "达尔文提出进化论思想。", type: "single" },
+/* 445 */ { Q: "“阳病治阴”的治疗原则适用于", options: ["阳偏盛", "阴偏盛", "阳偏衰", "阴偏衰", "阴阳两虚"], answer: "D", explain: "阳病治阴适用于阴偏衰所致的虚热证。", type: "single" },
+/* 446 */ { Q: "在进行社区健康教育评价时，实验组与对照组在社会经济、种族、文化背景等方面应", options: ["完全相同", "基本相同", "完全不同", "可有较大差异", "无任何要求"], answer: "B", explain: "实验组与对照组应基本相同，以保证可比性。", type: "single" },
+/* 447 */ { Q: "有关护理管理职能，不正确的是", options: ["计划职能是管理的首要职能", "组织职能是管理的重要职能", "领导职能是管理的核心职能", "控制职能是管理的关键职能", "人员管理是管理的唯一职能"], answer: "E", explain: "人员管理不是管理的唯一职能。", type: "single" },
+/* 448 */ { Q: "护理人员应定期进行体检，属于", options: ["一级预防", "二级预防", "三级预防", "临床预防", "康复预防"], answer: "B", explain: "定期体检属于二级预防。", type: "single" },
+/* 449 */ { Q: "属于人际关系主要特点的是", options: ["个体性", "直接性", "情感性", "复杂性", "以上都是"], answer: "E", explain: "人际关系的特点包括个体性、直接性、情感性、复杂性。", type: "single" },
+/* 450 */ { Q: "健康传播的效果分为四个层次，其最高层次为", options: ["知晓健康信息", "健康信念认同", "态度转变", "采纳健康行为", "采纳健康的生活方式"], answer: "E", explain: "采纳健康的生活方式是健康传播的最高层次。", type: "single" },
+/* 451 */ { Q: "菌尘的传播途径为", options: ["虫媒传播", "空气传播", "接触传播", "水源传播", "呼吸道传播"], answer: "B", explain: "菌尘通过空气传播。", type: "single" },
+/* 452 */ { Q: "有关非语言沟通技巧的描述，正确的是", options: ["目光信号所表达的含义比其他体态信号简单", "沟通的距离与沟通无关", "面部表情是沟通交流中最丰富的非语言信息的源泉", "护士的身体姿势不会影响沟通的进程", "沟通中双方的感受主要来自对方的语言行为"], answer: "C", explain: "面部表情是最丰富的非语言信息源泉。", type: "single" },
+/* 453 */ { Q: "五色的五行归类中，属“水”的是", options: ["白", "黑", "黄", "青", "赤"], answer: "B", explain: "黑色属水。", type: "single" },
+/* 454 */ { Q: "针对教育对象存在的健康问题，说服其改变不正确的健康态度、信念和健康习惯的人际传播方式是", options: ["咨询", "劝服", "交谈", "指导", "反馈"], answer: "B", explain: "劝服是通过说服改变对方的态度和信念。", type: "single" },
+/* 455 */ { Q: "减少偶然因素对评价效果的影响，可采用", options: ["重复测量", "随机抽样", "随机配对", "检验测量工具", "培训测量人员"], answer: "A", explain: "重复测量可减少偶然因素的影响。", type: "single" },
+/* 456 */ { Q: "关于耐甲氧西林金黄色葡萄球菌的描述，错误的是", options: ["首选青霉素治疗", "对全身各系统均可引起感染", "耐多种抗菌药物", "有活动性金黄色葡萄球菌感染的患者是主要感染源", "医务人员中可有慢性携带者"], answer: "A", explain: "耐甲氧西林金黄色葡萄球菌对青霉素耐药，不首选青霉素。", type: "single" },
+/* 457 */ { Q: "属于集体决策的方法的是", options: ["愿望值准则法", "头脑风暴法", "极大极小损益值法", "决策树法", "极小极大后悔值法"], answer: "B", explain: "头脑风暴法是集体决策的方法之一。", type: "single" },
+/* 458 */ { Q: "与健康教育相比较，卫生宣教的特点是", options: ["以改善对象的健康相关行为为目标", "已初步形成较完整的理论体系", "单一方向的信息传播", "系统的干预活动", "融合了多种学科理论"], answer: "C", explain: "卫生宣教是单向信息传播，而健康教育是双向的。", type: "single" },
+/* 459 */ { Q: "正常菌群在医院感染学上的意义主要是", options: ["代谢作用", "免疫作用", "延缓衰老作用", "营养作用", "拮抗致病菌作用"], answer: "E", explain: "正常菌群可拮抗致病菌，预防感染。", type: "single" },
+/* 460 */ { Q: "现代管理原理不包括", options: ["系统原理", "人本原理", "管理过程原理", "动态原理", "效益原理"], answer: "C", explain: "管理过程原理不是现代管理原理。", type: "single" },
+/* 461 */ { Q: "“规划实施2年后，企业职工中10%的吸烟者戒烟”这一目标属于", options: ["总体目标", "行为目标", "技能目标", "知识目标", "态度目标"], answer: "B", explain: "戒烟率属于行为目标。", type: "single" },
+/* 462 */ { Q: "依据五行特性，水的特性是", options: ["曲直", "炎上", "稼穑", "从革", "润下"], answer: "E", explain: "水曰润下。", type: "single" },
+/* 463 */ { Q: "处理针刺伤的首要步骤是", options: ["挤出污血", "挤压伤口", "用清水清洗伤口", "用肥皂液清洗伤口", "用0.5%碘伏消毒伤口"], answer: "A", explain: "针刺伤后应首先挤出污血。", type: "single" },
+/* 464 */ { Q: "男，56岁。因突发意识障碍，喷射性呕吐，剧烈头痛，眼睑下垂，急诊入院。初步诊断为自发性蛛网膜下腔出血，积极行术前抢救，参与抢救的是2名新上岗的护士，护士长对这类情形的管理要点是", options: ["授权", "委托", "请别人做", "培训", "高年资护士代替"], answer: "E", explain: "紧急情况下应由高年资护士代替。", type: "single" },
+/* 465 */ { Q: "传播过程五要素包括", options: ["传播者、信息与讯息、传播媒介、受传者、传播效果", "传播者、信息与讯息、传播媒介、受传者、反馈", "传播者、信息与讯息、受传者、反馈、传播效果", "传播者、传播目的、传播媒介、受传者、传播效果", "传播者、信息与讯息、传播目的、受传者、反馈"], answer: "A", explain: "传播五要素为传播者、信息、媒介、受传者、效果。", type: "single" },
+/* 466 */ { Q: "中医学整体观念的内涵是", options: ["人体是一个有机的整体", "自然界是统一的整体", "时令晨昏对人体的整体影响", "脏腑相关是一个整体", "人体是有机整体，并与自然界相统一"], answer: "E", explain: "整体观念包括人体自身是一个有机整体，人与自然、社会环境相统一。", type: "single" },
+/* 467 */ { Q: "在健康教育计划与干预阶段，确定优先项目时应遵循的原则是", options: ["重要性和有效性原则", "科学性和经济性原则", "灵活性和效益性原则", "适用性和抛弃性原则", "针对性和指导性原则"], answer: "A", explain: "确定优先项目应遵循重要性和有效性原则。", type: "single" },
+/* 468 */ { Q: "对计划的叙述，不正确的是", options: ["计划是为实现组织目标对未来的行动进行设计的活动过程", "广义的计划是指制订、实施、检查和评价计划3阶段的工作过程", "从本质上讲，制订计划的过程就是一个决策过程", "计划不一定要根据实际情况，只要通过科学预测，权衡客观的需要提出在未来一定的时间内要达到的目标，以及实现目标的途径", "狭义的计划单指制订计划的活动过程"], answer: "D", explain: "计划必须根据实际情况制订。", type: "single" },
+/* 469 */ { Q: "男，35岁。因糖尿病、高血压住院治疗。病房教育的内容不包括", options: ["高血压的病因", "陪伴、探视制度", "糖尿病饮食要求", "高血压治疗原则", "糖尿病并发症的防治措施"], answer: "B", explain: "陪伴、探视制度属于入院教育内容。", type: "single" },
+/* 470 */ { Q: "关于冲突的叙述，错误的是", options: ["有差异才可能引起冲突", "冲突必须有对立的2个方面，缺一不可", "冲突是为取得有限的资源而发生的阻挠行为", "只有当问题被感觉时，才构成真正的冲突", "所有冲突均具有消极或破坏性作用"], answer: "E", explain: "冲突并非都具有消极作用，有些冲突有积极作用。", type: "single" },
+/* 471 */ { Q: "人际传播技巧不包括", options: ["谈话技巧", "提问技巧", "倾听技巧", "反馈技巧", "文字传播技巧"], answer: "E", explain: "文字传播技巧不属于人际传播技巧。", type: "single" },
+/* 472 */ { Q: "医院感染暴发流行时，不正确的措施是", options: ["先将发病患者转移到安全区", "先将健康患者转移到安全区", "分组护理", "单元隔离", "开展流行病学调查"], answer: "A", explain: "暴发时应先将健康患者转移到安全区。", type: "single" },
+/* 473 */ { Q: "导致抗生素毒性增加的联合使用药物为", options: ["庆大霉素十卡那霉素", "青霉素十甲硝唑", "庆大霉素十红霉素", "红霉素十磺胺类", "庆大霉素十先锋霉素"], answer: "A", explain: "庆大霉素和卡那霉素同属氨基糖苷类，联用增加肾毒性。", type: "single" },
+/* 474 */ { Q: "男，62岁。身高175cm，体重88kg。已确诊患高血压和糖尿病。该居民平常喜爱高热量、高蛋白、高脂肪的“三高”食物。在社区健康促进活动中，护士希望按照健康信念模式帮助该居民采取健康的饮食行为。按照健康信念模式，护士首先帮助该居民", options: ["了解高血压和糖尿病的遗传因素", "认识到“三高”饮食危害健康的严重性", "树立预防疾病、采取健康饮食行为的态度", "戒除“三高”饮食，建立健康饮食行为的信念", "树立健康饮食行为的态度，戒除“三高”饮食"], answer: "B", explain: "健康信念模式首先应让个体认识到危害的严重性。", type: "single" },
+/* 475 */ { Q: "消毒灭菌的原则不包括", options: ["接触皮肤黏膜的器具和用品必须消毒", "感染患者用过的医疗器材，应彻底清洗干净后，再消毒或灭菌", "手术器具及物品、各种穿刺针等首选压力蒸汽灭菌", "油、粉、膏等首选干热灭菌", "内镜可选用2%戊二醛浸泡灭菌"], answer: "B", explain: "感染患者用过的医疗器材应先消毒后清洗。", type: "single" },
+/* 476 */ { Q: "某护士护理学院毕业10年，责任心和业务能力强。按照生命周期领导理论的观点，护士长对她的领导方式最好是", options: ["高工作、低关系", "高工作、高关系", "中工作、中关系", "低工作、低关系", "低工作、高关系"], answer: "D", explain: "对于成熟度高的下属，应采取低工作、低关系的领导方式。", type: "single" },
+/* 477 */ { Q: "由人的社会性决定的行为是", options: ["摄食行为", "性行为", "防御行为", "职业行为", "睡眠"], answer: "D", explain: "职业行为由社会性决定。", type: "single" },
+/* 478 */ { Q: "某医院护理部就护理质量实施目标管理，该目标管理的内容不包括", options: ["总目标是使护理服务满意度达到99%", "由护理部制订个人目标，各科护士严格执行", "护士长组织护理人员自觉地实现这些目标", "总结考评结果，提出问题，采取相应对策", "按考核结果对护理人员进行奖惩"], answer: "B", explain: "目标管理强调员工参与制订目标，不是由上级制订。", type: "single" },
+/* 479 */ { Q: "初产妇，32岁。在硬膜外阻滞下行剖宫产，因病情需要预防性应用抗生素。护士执行该医嘱的最佳时间是", options: ["胎儿娩出后", "脐带钳夹后", "胎盘娩出后", "手术开始前", "注射常规疫苗后"], answer: "B", explain: "剖宫产预防性抗生素应在脐带钳夹后使用。", type: "single" },
+/* 480 */ { Q: "根据拉斯韦尔五因素传播模式，“控制研究”的研究对象是", options: ["传播者", "信息", "媒介渠道", "受传者", "效果"], answer: "A", explain: "控制研究的研究对象是传播者。", type: "single" },
+/* 481 */ { Q: "关于沟通的描述，错误的是", options: ["沟通的核心是信息传递和理解", "组织中应避免出现非正式沟通", "手势和符号也是信息的表达方式", "反馈在沟通过程中也很重要", "信息传递需要相应的渠道"], answer: "B", explain: "非正式沟通在组织中不可避免，且有时有积极作用。", type: "single" },
+/* 482 */ { Q: "有效控制系统的特征不包括", options: ["目的性", "及时性", "客观性", "预防性", "真实性"], answer: "D", explain: "控制具有预防性，但不是有效控制系统的特征。", type: "single" },
+/* 483 */ { Q: "对传播较为准确的描述是", options: ["是达到约束对象的行为", "是社会性传递信息的行为", "是普及知识和技能的行为", "是通过媒介学习知识的行为", "是通过传播媒介干预受众的行为"], answer: "B", explain: "传播是社会性传递信息的行为。", type: "single" },
+/* 484 */ { Q: "压力蒸汽灭菌时物品包的体积要求不超过", options: ["30cm×30cm×40cm", "20cm×30cm×25cm", "30cm×30cm×25cm", "30cm×25cm×25cm", "30cm×30cm×20cm"], answer: "C", explain: "物品包体积不超过30cm×30cm×25cm。", type: "single" },
+/* 485 */ { Q: "对医疗事故分级描述不正确的是", options: ["造成患者生活不能自理", "造成患者死亡、重度残疾", "造成患者明显人身损害的其他后果", "造成患者中度残疾、器官组织损伤导致严重功能障碍", "造成患者轻度残疾、器官组织损伤导致一般功能障碍"], answer: "A", explain: "造成患者生活不能自理不是医疗事故分级标准。", type: "single" },
+/* 486 */ { Q: "二级医疗事故是", options: ["造成患者生活不能自理", "造成患者死亡、重度残疾", "造成患者明显人身损害的其他后果", "造成患者中度残疾、器官组织损伤导致严重功能障碍", "造成患者轻度残疾、器官组织损伤导致一般功能障碍"], answer: "D", explain: "二级医疗事故造成患者中度残疾、器官组织损伤导致严重功能障碍。", type: "single" },
+/* 487 */ { Q: "四级医疗事故是", options: ["造成患者生活不能自理", "造成患者死亡、重度残疾", "造成患者明显人身损害的其他后果", "造成患者中度残疾、器官组织损伤导致严重功能障碍", "造成患者轻度残疾、器官组织损伤导致一般功能障碍"], answer: "C", explain: "四级医疗事故造成患者明显人身损害的其他后果。", type: "single" },
+/* 488 */ { Q: "按照空气卫生学标准，I类区域为", options: ["细菌总数≤500CFU/m³", "细菌总数≤300CFU/m³", "细菌总数≤200CFU/m³", "细菌总数≤100CFU/m³", "细菌总数≤10CFU/m³"], answer: "E", explain: "Ⅰ类区域空气细菌总数≤10CFU/m³。", type: "single" },
+/* 489 */ { Q: "按照空气卫生学标准，Ⅱ类区域为", options: ["细菌总数≤500CFU/m³", "细菌总数≤300CFU/m³", "细菌总数≤200CFU/m³", "细菌总数≤100CFU/m³", "细菌总数≤10CFU/m³"], answer: "C", explain: "Ⅱ类区域空气细菌总数≤200CFU/m³。", type: "single" },
+/* 490 */ { Q: "按照空气卫生学标准，Ⅲ类区域为", options: ["细菌总数≤500CFU/m³", "细菌总数≤300CFU/m³", "细菌总数≤200CFU/m³", "细菌总数≤100CFU/m³", "细菌总数≤10CFU/m³"], answer: "A", explain: "Ⅲ类区域空气细菌总数≤500CFU/m³。", type: "single" },
+/* 491 */ { Q: "对使用中的消毒灭菌剂应选择的监测是", options: ["生物监测", "物理监测", "化学监测", "生物监测、化学监测", "物理监测、化学监测、生物监测"], answer: "D", explain: "使用中的消毒灭菌剂应进行生物监测和化学监测。", type: "single" },
+/* 492 */ { Q: "压力蒸汽灭菌必须应用的监测是", options: ["生物监测", "物理监测", "化学监测", "生物监测、化学监测", "物理监测、化学监测、生物监测"], answer: "E", explain: "压力蒸汽灭菌必须进行物理、化学、生物三种监测。", type: "single" },
+/* 493 */ { Q: "人们开始通过对自己、他人、环境、社会的综合认识，调整自己的行为发展，这是人类行为发展阶段的", options: ["自主发展阶段", "被动发展阶段", "主动发展阶段", "巩固发展阶段", "完善发展阶段"], answer: "A", explain: "自主发展阶段通过综合认识调整自己的行为。", type: "single" },
+/* 494 */ { Q: "在人的整个生命周期中，3~12岁这个阶段的行为发展称", options: ["自主发展阶段", "被动发展阶段", "主动发展阶段", "巩固发展阶段", "完善发展阶段"], answer: "C", explain: "3-12岁属于主动发展阶段。", type: "single" },
+/* 495 */ { Q: "对影响健康行为的强化因素的评价内容包括", options: ["知识、信念、态度和价值观", "保健设施、诊所和医务人员", "医疗费用和交通工具", "家庭、单位和社会的支持", "个人保健技术和相关政策法规"], answer: "D", explain: "强化因素包括家庭、单位、社会的支持。", type: "single" },
+/* 496 */ { Q: "对影响健康行为的倾向因素的评价内容包括", options: ["知识、信念、态度和价值观", "保健设施、诊所和医务人员", "医疗费用和交通工具", "家庭、单位和社会的支持", "个人保健技术和相关政策法规"], answer: "A", explain: "倾向因素包括知识、信念、态度和价值观。", type: "single" },
+/* 497 */ { Q: "无声的动姿是指", options: ["声调", "语言", "眼神", "节奏", "服饰"], answer: "C", explain: "眼神属于无声的动姿。", type: "single" },
+/* 498 */ { Q: "无声的静姿是指", options: ["声调", "语言", "眼神", "节奏", "服饰"], answer: "E", explain: "服饰属于无声的静姿。", type: "single" },
+/* 499 */ { Q: "护理管理者在编设和使用护理人员时，应在保证优质、高效的基础上减少人力成本的投入，符合", options: ["满足患者护理需要原则", "合理结构原则", "优化组合原则", "经济效能原则", "动态调整原则"], answer: "D", explain: "减少人力成本投入体现了经济效能原则。", type: "single" },
+/* 500 */ { Q: "护理人员的编设应不断吸引具有新观念、新知识、新技术的护士，以适应医院发展的需要，符合", options: ["满足患者护理需要原则", "合理结构原则", "优化组合原则", "经济效能原则", "动态调整原则"], answer: "E", explain: "不断吸引新人才体现了动态调整原则。", type: "single" },
+/* 501 */ { Q: "制订计划时要分清主次轻重，着力解决影响全局的问题。遵循的是", options: ["合理性原则", "系统性原则", "重点原则", "有效性原则", "弹性原则"], answer: "C", explain: "分清主次轻重、着力解决影响全局的问题体现了重点原则。", type: "single" },
+/* 502 */ { Q: "制订计划要全面考虑系统中各构成部分的关系以及它们与环境的关系，进行统筹规划。遵循的是", options: ["合理性原则", "系统性原则", "重点原则", "有效性原则", "弹性原则"], answer: "B", explain: "全面考虑各构成部分及其与环境的关系体现了系统性原则。", type: "single" },
+/* 503 */ { Q: "健康信息传播是一种传递信息的", options: ["社会行为", "个人行为", "群体行为", "部门行为", "团体行为"], answer: "A", explain: "健康信息传播是一种社会行为。", type: "single" },
+/* 504 */ { Q: "对患者健康教育目标陈述错误的是", options: ["Who是指对谁", "What是指实现什么变化", "When是指在多长期限内实现这种变化", "How much是指有多少对象发生行为变化", "How to measure是指如何测量这种变化"], answer: "D", explain: "How much是指变化程度，不是对象数量。", type: "single" },
+/* 505 */ { Q: "时间管理方法不包括", options: ["ABC时间管理法", "排列图法", "记录统计法", "区域管理法", "四象限时间管理法"], answer: "B", explain: "排列图法不是时间管理方法。", type: "single" },
+/* 506 */ { Q: "脾藏", options: ["神", "魂", "魄", "意", "志"], answer: "D", explain: "脾藏意。", type: "single" },
+/* 507 */ { Q: "构成人的行为的基本要素不包括", options: ["行为客体", "行为习惯", "行为手段", "行为结果", "行为环境"], answer: "B", explain: "行为习惯不是构成行为的基本要素。", type: "single" },
+/* 508 */ { Q: "为了防止交叉感染，必须做到", options: ["无菌物品应放在清洁、干燥的地方", "治疗室紫外线消毒1次/天", "取无菌物品，用无菌持物钳", "一份无菌物品只供一位患者使用", "无菌物品和有菌物品分开放置"], answer: "D", explain: "一份无菌物品只供一位患者使用是防止交叉感染的关键。", type: "single" },
+/* 509 */ { Q: "现代护理活动扩展的内容不包括", options: ["由以疾病为中心到以人的健康为中心", "由疾病护理向预防、保健、康复扩展", "由躯体护理向心理、精神方面扩展", "由护理技能向医疗管理方向扩展", "由医院向社会、家庭扩展"], answer: "D", explain: "护理向医疗管理方向扩展不是现代护理活动扩展的内容。", type: "single" },
+/* 510 */ { Q: "2011年原卫生部发布的《中国护理事业发展规划（2011~2015）》明确要求，三级综合医院护士总数与实际开放床位比不低于", options: ["0.8:1", "0.7:1", "0.6:1", "0.5:1", "0.4:1"], answer: "A", explain: "三级综合医院护士与床位比不低于0.8:1。", type: "single" },
+/* 511 */ { Q: "原位菌群三度失调的表现为", options: ["慢性腹泻", "肠功能紊乱", "口腔炎", "阴道炎", "假膜性肠炎"], answer: "E", explain: "三度失调表现为假膜性肠炎等急性重症表现。", type: "single" },
+/* 512 */ { Q: "组织文化的特点不包括", options: ["文化性", "综合性", "整体性", "自觉性", "实践性"], answer: "C", explain: "整体性不是组织文化的特点。", type: "single" },
+/* 513 */ { Q: "目标管理的基本精神是", options: ["以考核为中心", "以自我管理为中心", "以任务为中心", "以效益为中心", "以目标为中心"], answer: "B", explain: "目标管理的基本精神是以自我管理为中心。", type: "single" },
+/* 514 */ { Q: "属于中效消毒剂的是", options: ["戊二醛", "过氧化氢", "含氯消毒剂", "碘伏", "氯己定"], answer: "D", explain: "碘伏属于中效消毒剂。", type: "single" },
+/* 515 */ { Q: "正式组织的特点是", options: ["自发形成", "较强的约束力", "组织内个人的职位不可以替代", "比较灵活", "沟通方便，内容广泛"], answer: "B", explain: "正式组织具有较强的约束力。", type: "single" },
+/* 516 */ { Q: "预防医院感染的关键措施不包括", options: ["隔离传染病", "切断传播途径", "保护易感人群", "加强预防性用药", "定期行消毒灭菌效果监测"], answer: "D", explain: "加强预防性用药不是预防医院感染的关键措施。", type: "single" },
+/* 517 */ { Q: "常用于健康教育形成评价和过程评价的方法是", options: ["专家咨询", "现场观察", "目标人群调查", "查阅档案资料", "专家小组讨论"], answer: "A", explain: "专家咨询常用于形成评价和过程评价。", type: "single" },
+/* 518 */ { Q: "“后天之本”指的是", options: ["肝", "心", "脾", "肺", "肾"], answer: "C", explain: "脾为后天之本。", type: "single" },
+/* 519 */ { Q: "对组织内部具体工作问题，在较小范围内和较短时间内实施的计划称为", options: ["指令性计划", "指导性计划", "战略性计划", "战术性计划", "基础性计划"], answer: "D", explain: "战术性计划是短期、具体的计划。", type: "single" },
+/* 520 */ { Q: "属于促进健康行为特点的是", options: ["稳定性", "持续性", "差异性", "牢固性", "一致性"], answer: "B", explain: "促进健康行为具有持续性。", type: "single" },
+/* 521 */ { Q: "冲突双方以放弃部分利益为前提，在一定程度上满足对方的部分需要，达成彼此接受的协议，此解决方法是", options: ["合作", "回避", "妥协", "迁就", "退让"], answer: "C", explain: "双方都放弃部分利益达成协议属于妥协。", type: "single" },
+/* 522 */ { Q: "对有机物污染严重的器具消毒应做到", options: ["加大消毒剂的使用剂量", "减少消毒剂的使用剂量", "给予一般消毒的使用剂量", "加大消毒剂的使用剂量，延长消毒作用时间", "加大消毒剂的使用剂量，缩短作用时间"], answer: "D", explain: "有机物污染严重的器具应加大消毒剂剂量，延长消毒时间。", type: "single" },
+/* 523 */ { Q: "须洗手的情况不包括", options: ["护理2个患者之间", "脱手套后", "给同一个患者输液后，准备导尿前", "行护理操作时，接触了污染的器械", "与患者交谈后"], answer: "E", explain: "与患者交谈后不需要洗手。", type: "single" },
+/* 524 */ { Q: "住院教育包括", options: ["门诊健康教育", "术前健康教育", "术后健康教育", "技能健康教育", "出院健康教育"], answer: "E", explain: "出院教育属于住院教育的一部分。", type: "single" },
+/* 525 */ { Q: "某病区护士长因喜欢护士甲，就请她分管病区的教学工作，但是护士甲无论学历还是能力都比不上病区的另外几个护士，工作起来也很吃力。该护士长的做法违背的授权原则是", options: ["视能授权", "合理合法", "监督控制", "权责对等", "及时反馈"], answer: "A", explain: "未根据能力授权违背了视能授权原则。", type: "single" },
+/* 526 */ { Q: "预防血管相关性感染的措施，错误的是", options: ["使用各种导管应有明确指征", "操作时严格遵守无菌操作原则", "留置导管的时间不宜过长", "使用合格的一次性医疗用品", "配制的溶液可在冰箱内保存1周"], answer: "E", explain: "配制的溶液应在24小时内使用，不能保存1周。", type: "single" },
+/* 527 */ { Q: "紫外线用于空气消毒时，应立即更换的强度低于", options: ["90μW/cm²", "80μW/cm²", "70μW/cm²", "60μW/cm²", "50μW/cm²"], answer: "C", explain: "紫外线灯强度低于70μW/cm²时应立即更换。", type: "single" },
+/* 528 */ { Q: "在治疗过程中，患者由于药物不良反应感到不适而停药，在健康信念模式中应解释为", options: ["对疾病易感性的认识", "对健康行为困难和益处的认识", "提示因素", "效能期待", "对疾病严重性的认识"], answer: "B", explain: "对不良反应的认识属于对健康行为困难和益处的认识。", type: "single" },
+/* 529 */ { Q: "健康教育要提供人们行为改变所必需的", options: ["医疗技术", "诊断技术", "生化检测技术", "知识、技术与服务", "救护技术"], answer: "D", explain: "健康教育提供行为改变所需的知识、技术与服务。", type: "single" },
+/* 530 */ { Q: "重症监护病房患者的特点不包括", options: ["多数患者因其他危重疾病继发感染后转入", "患者的细菌定植能力下降", "患者体内细菌的耐药性较强", "细菌容易有更多的途径侵入机体", "护患间交叉感染机会较多"], answer: "A", explain: "ICU患者常因原发病直接转入，不一定是继发感染后转入。", type: "single" },
+/* 531 */ { Q: "属于接收者原因导致沟通障碍的是", options: ["表达模糊", "言行不当", "目的不明", "过度加工", "口齿不清"], answer: "D", explain: "过度加工是接收者造成的沟通障碍。", type: "single" },
+/* 532 */ { Q: "根据七情理论，过度悲伤易损伤的脏器是", options: ["肺", "心", "肝", "脾", "肾"], answer: "A", explain: "悲则气消，过度悲伤伤肺。", type: "single" },
+/* 533 */ { Q: "根据相克规律确定的治法是", options: ["泻南补北", "滋水涵木", "金水相生", "益火补土", "培土生金"], answer: "A", explain: "泻南补北是根据相克规律确定的治法。", type: "single" },
+/* 534 */ { Q: "“通过经常性的各种有效信息的传递，使组织成员建立密切关系”，体现了协调的", options: ["灵活变通原则", "利益一致原则", "勤于沟通原则", "目标导向原则", "整体优化原则"], answer: "C", explain: "通过信息传递建立密切关系体现了勤于沟通原则。", type: "single" },
+/* 535 */ { Q: "医院感染中与不恰当的医疗护理操作有关的百分比是", options: ["10%-20%", "20%-30%", "30%-40%", "30%-50%", "40%-60%"], answer: "D", explain: "约30%-50%的医院感染与不恰当的医疗护理操作有关。", type: "single" },
+/* 536 */ { Q: "细菌在缺少某种结构成分时仍可生存的是", options: ["细胞壁", "细胞膜", "细胞质", "核质", "胞质颗粒"], answer: "A", explain: "细菌失去细胞壁后仍可生存，形成L型细菌。", type: "single" },
+/* 537 */ { Q: "根据医院感染的诊断标准，属于医院感染的是", options: ["发热24小时后入院", "入院48小时后发生的无明确潜伏期的感染", "入院时抽血培养结果细菌培养阳性", "以创伤性伤口感染收入院", "新生儿通过母婴传播获得的HIV抗体阳性"], answer: "B", explain: "入院48小时后发生的无明确潜伏期的感染属于医院感染。", type: "single" },
+/* 538 */ { Q: "健康教育的目标是", options: ["传播健康信息", "帮助目标人群树立健康观念", "目标人群掌握保健技能", "帮助目标人群学会利用卫生服务", "帮助目标人群建立健康行为"], answer: "E", explain: "健康教育的最终目标是帮助目标人群建立健康行为。", type: "single" },
+/* 539 */ { Q: "日常健康行为不包括", options: ["规律作息", "合理营养", "充足睡眠", "适量运动", "定期体检"], answer: "E", explain: "定期体检属于保健行为，不是日常健康行为。", type: "single" },
+/* 540 */ { Q: "以护理计划为内容，每名护士负责一定数量的患者，对患者实施有计划的、系统的护理，包括入院教育、各种治疗、基础护理和专科护理、护理病历书写、观察病情变化、心理护理、健康教育、出院指导。其临床护理组织方式是", options: ["个案护理", "责任制护理", "功能制护理", "临床路径", "小组护理"], answer: "B", explain: "责任护士对患者实施全面、系统的护理属于责任制护理。", type: "single" },
+/* 541 */ { Q: "医院感染的常见病原菌不包括", options: ["金黄色葡萄球菌", "大肠埃希菌", "脑膜炎奈瑟菌", "铜绿假单胞菌", "肺炎克雷伯菌"], answer: "C", explain: "脑膜炎奈瑟菌不是医院感染的常见病原菌。", type: "single" },
+/* 542 */ { Q: "导致移位菌群失调的因素不包括", options: ["不适当使用抗菌药物", "外科手术", "插管或介入治疗", "免疫功能下降", "细菌结构变化"], answer: "E", explain: "细菌结构变化不是导致移位菌群失调的因素。", type: "single" },
+/* 543 */ { Q: "卫生主管部门对医院护理人员编制要求护理人员与床位比为", options: ["4:1", "1:1", "0.4:1", "1:4", "1:0.4"], answer: "C", explain: "护理人员与床位比应为0.4:1。", type: "single" },
+/* 544 */ { Q: "某乳腺癌术后患者，因为担心形象不好及癌症转移，对未来生活失去信心，责任护士每天反复对其进行心理护理及健康宣教，使其终于恢复了对未来生活的信心。责任护士采用的有效沟通方法属于", options: ["创造良好的沟通环境", "学会有效的倾听", "增强语言文字的感染力", "韧性沟通", "重视沟通细节的处理"], answer: "D", explain: "反复进行心理护理和健康宣教属于韧性沟通。", type: "single" },
+/* 545 */ { Q: "某科室的目标是提高护理人员的业务素质，则可行的备选方案有", options: ["加强护士的职业道德教育", "增加科室护士人数", "加强护理文化建设", "注重护士的心理素质培养", "聘请护理专家进行专题讲座"], answer: "E", explain: "聘请专家讲座可直接提高业务素质。", type: "single" },
+/* 546 */ { Q: "在目标管理的过程中，制订下级和个人分目标时，不正确的是", options: ["目标方向正确", "目标值恰当", "可测量、便于考核", "利益最大化", "有时间规定"], answer: "D", explain: "目标制订不应追求利益最大化，而应合理可行。", type: "single" },
+/* 547 */ { Q: "PDCA循环的特点是", options: ["做好患者照顾的质量保证", "大环套小环，互相促进", "有效掌握医疗护理照顾的成本效益", "满足工作人员的需求", "落实患者和工作人员的安全措施"], answer: "B", explain: "PDCA循环的特点是呈阶梯式上升，大环套小环，互相促进。", type: "single" },
+/* 548 */ { Q: "抗菌药物的应用方法正确的是", options: ["发生感染时应尽早使用高效、广谱抗菌药物", "在治疗感染性疾病时，考虑病原体对抗菌药物的敏感性", "联合用药比单一用药要好", "抗菌药物可用作消毒剂，对皮肤、伤口消毒", "发热患者都有感染，均可用抗菌药物治愈"], answer: "B", explain: "应根据病原体对抗菌药物的敏感性选择药物。", type: "single" },
+/* 549 */ { Q: "大众传播媒介不包括", options: ["报刊", "杂志", "电话", "广播", "电视"], answer: "C", explain: "电话不属于大众传播媒介。", type: "single" },
+/* 550 */ { Q: "对结核病患者的痰液及口鼻分泌物，正确的处理方法是", options: ["纸盒或纸袋盛装后焚烧", "集中于容器后深埋", "置于痰杯中曝晒", "消毒剂浸泡消毒", "置于密闭容器后丢弃"], answer: "A", explain: "结核病患者的痰液及口鼻分泌物应焚烧处理。", type: "single" },
+
+/* 551 */ { Q: "管理基本特征不包括", options: ["管理的二重性", "管理的实效性", "管理的科学性", "管理的艺术性", "管理的目的性"], answer: "B", explain: "管理的实效性不是管理的基本特征。", type: "single" },
+/* 552 */ { Q: "根据组织设计原则，从高层领导到基层领导适宜的管理层次是", options: ["1~3层", "2~4层", "3~5层", "4~6层", "5~7层"], answer: "B", explain: "管理层次一般为2-4层。", type: "single" },
+/* 553 */ { Q: "对炭疽采取的消毒方法不包括", options: ["肺炭疽患者居室要消毒空气", "炭疽患者产生的医疗废物要焚烧", "病畜应整体焚烧，严禁解剖", "对患者居室地面、墙壁及家具可用乙醇反复擦拭消毒", "炭疽患者要采取严密隔离"], answer: "D", explain: "炭疽患者的居室应用过氧乙酸或含氯消毒剂消毒，乙醇效果不佳。", type: "single" },
+/* 554 */ { Q: "根据格林模式，确定疾病在人群、时间、地点方面的特点，属于", options: ["社会诊断", "行为诊断", "流行病学诊断", "管理与政策诊断", "教育诊断"], answer: "C", explain: "流行病学诊断确定疾病在人群、时间、地点的分布特点。", type: "single" },
+/* 555 */ { Q: "静脉采血符合要求的是", options: ["一人一针一管", "一人一针一管一巾", "一人一针一管一巾一带", "一人一针一巾", "一人一针一带"], answer: "C", explain: "静脉采血应做到一人一针一管一巾一带。", type: "single" },
+/* 556 */ { Q: "权力性影响力的特点不包括", options: ["靠奖惩等附加条件起作用", "对下属的影响具有强迫性", "不稳定，随地位的变化而改变", "下属被动地服从，激励作用有限", "影响力持久，可起潜移默化的作用"], answer: "E", explain: "影响力持久、起潜移默化作用是非权力性影响力的特点。", type: "single" },
+/* 557 */ { Q: "层流洁净手术室的空气标准为", options: ["≤5CFU/m³", "≤10CFU/m³", "≤30CFU/m³", "≤50CFU/m³", "≤15CFU/m³"], answer: "B", explain: "层流洁净手术室空气细菌总数≤10CFU/m³。", type: "single" },
+/* 558 */ { Q: "医院环境清洁与消毒的原则和方法正确的是", options: ["尽量选用高浓度的消毒剂", "清洁程序应首先清洁污染区域，后清洁洁净区域", "环境定期清洁，随时保持清洁、干净", "清洁患者房间的家具应一房一巾", "用后的拖布、抹布洗净备用，不需要消毒"], answer: "D", explain: "患者房间家具清洁应一房一巾。", type: "single" },
+/* 559 */ { Q: "属阴阳偏衰所致病理变化的是", options: ["实证", "虚证", "寒证", "热证", "表证"], answer: "B", explain: "阴阳偏衰导致虚证。", type: "single" },
+/* 560 */ { Q: "直线型组织结构存在的局限性是", options: ["结构简单", "责权明确", "权力高度集中", "联系便捷", "管理成本较低"], answer: "C", explain: "直线型组织结构的局限性是权力高度集中，容易导致专制。", type: "single" },
+/* 561 */ { Q: "乳腺癌患者自发成立联谊会，定期开展交流活动，传播活动类型属于", options: ["人际传播", "群体传播", "大众传播", "组织传播", "自我传播"], answer: "B", explain: "自发成立的联谊会活动属于群体传播。", type: "single" },
+/* 562 */ { Q: "按照格林模式，“价值观”属于影响健康教育诊断的", options: ["倾向因素", "促成因素", "强化因素", "遗传因素", "学习因素"], answer: "A", explain: "价值观属于倾向因素。", type: "single" },
+/* 563 */ { Q: "选择传播途径的原则不包括", options: ["准确性原则", "按时性原则", "针对性原则", "速度快原则", "经济性原则"], answer: "B", explain: "按时性原则不是选择传播途径的原则。", type: "single" },
+/* 564 */ { Q: "调查医院感染暴发流行的基本原则和主要手段是", options: ["制订有效的控制措施先查找感染源", "首先采取措施再调查", "边调查边采取措施", "先调查再采取措施", "先行病原学检查"], answer: "C", explain: "医院感染暴发时应边调查边采取措施。", type: "single" },
+/* 565 */ { Q: "对戊二醛的效果监测为", options: ["每天1次", "隔天1次", "每周1次", "两周1次", "每月1次"], answer: "C", explain: "戊二醛的化学监测应每周不少于1次。", type: "single" },
+/* 566 */ { Q: "六淫之邪从口鼻而入或从皮毛而受，致外感咳嗽，为先的邪是", options: ["风", "寒", "湿", "热", "燥"], answer: "A", explain: "风为六淫之首，外感咳嗽以风为先导。", type: "single" },
+/* 567 */ { Q: "可用阴阳互根互用解释的是", options: ["寒极生热", "阴病治阳", "寒者热之", "重阴必阳", "阴中求阳"], answer: "E", explain: "阴中求阳体现了阴阳互根互用。", type: "single" },
+/* 568 */ { Q: "应于长夏的脏是", options: ["肝", "心", "脾", "肺", "肾"], answer: "C", explain: "脾应于长夏。", type: "single" },
+/* 569 */ { Q: "属于危害健康行为的是", options: ["合理营养", "预防接种", "求医行为", "不遵守交通规则", "主动回避"], answer: "D", explain: "不遵守交通规则属于危害健康行为。", type: "single" },
+/* 570 */ { Q: "远离污染环境、积极应对各种紧张生活事件属于", options: ["保健行为", "避开有害环境行为", "戒除不良嗜好行为", "预警行为", "日常健康行为"], answer: "B", explain: "远离污染环境属于避开有害环境行为。", type: "single" },
+/* 571 */ { Q: "关于健康教育的陈述错误的是", options: ["是一种双向的信息传播", "以传播信息为主要措施", "以调查研究为前提", "是有计划、有组织、有评价的系统干预活动", "作为辅助方法为卫生工作某一时间的中心任务服务"], answer: "E", explain: "健康教育不是辅助方法，而是系统干预活动。", type: "single" },
+/* 572 */ { Q: "属“母病及子”的是", options: ["肺病及肾", "肝病及肾", "心病及肾", "肺病及心", "脾病及肾"], answer: "A", explain: "肺属金，肾属水，金生水，肺病及肾属于母病及子。", type: "single" },
+/* 573 */ { Q: "个体的行为取向一般是以", options: ["知识为基础", "技能为基础", "信心为基础", "态度为基础", "价值观为基础"], answer: "D", explain: "行为取向以态度为基础。", type: "single" },
+/* 574 */ { Q: "医院提高医疗护理服务质量的主要措施是", options: ["教育员工加强工作责任心", "学习不良事件报告制度和流程", "通过各种方式加强与患者的有效沟通", "积极化解工作中出现的医患矛盾", "为医务人员投保医疗保险"], answer: "C", explain: "加强与患者的有效沟通是提高服务质量的主要措施。", type: "single" },
+/* 575 */ { Q: "不耐热、不耐腐蚀的医疗器械和精密仪器如内镜，应选用的灭菌方法是", options: ["过氧乙酸浸泡30分钟", "压力蒸汽灭菌30分钟", "2%戊二醛浸泡10小时", "福尔马林熏蒸2小时", "3%过氧化氢浸泡30分钟"], answer: "C", explain: "内镜可选用2%戊二醛浸泡10小时灭菌。", type: "single" },
+/* 576 */ { Q: "计算某年某地新婚妇女某项卫生知识的知晓率，分母为", options: ["该地所有妇女数", "该地所有育龄妇女数", "该地接受调查的所有新婚妇女数", "该地18岁以上的所有妇女数", "该地平均人口数"], answer: "C", explain: "知晓率的分母是接受调查的目标人群数。", type: "single" },
+/* 577 */ { Q: "“治未病”指的是", options: ["防止疾病的发生", "防止疾病的发展", "未病先防和既病防变", "调养正气和防止病邪的侵害", "早期诊治和先安未受邪之地"], answer: "C", explain: "治未病包括未病先防和既病防变。", type: "single" },
+/* 578 */ { Q: "对盆、碗、盘进行压力蒸汽灭菌时，其重量不超过", options: ["6kg", "5kg", "7kg", "8kg", "4kg"], answer: "A", explain: "盆、碗、盘灭菌时重量不超过6kg。", type: "single" },
+/* 579 */ { Q: "健康教育时，最有针对性的教学方法是", options: ["专题讲座", "媒介传播", "个别指导", "集体指导", "行为指导"], answer: "C", explain: "个别指导最有针对性。", type: "single" },
+/* 580 */ { Q: "男，78岁。患慢性支气管炎30年，有吸烟史35年，吸烟2包/天。护士拟对其行戒烟健康教育，首先应", options: ["评估教育需求", "确定教育目标", "制订教育计划", "实施教育计划", "评价教育效果"], answer: "A", explain: "健康教育程序的第一步是评估教育需求。", type: "single" },
+/* 581 */ { Q: "门诊教育的主要内容是", options: ["患者病因的教育", "医院环境的教育", "常见病的防治教育", "医院生活制度的教育", "患者治疗原则的教育"], answer: "C", explain: "门诊教育侧重于常见病的防治教育。", type: "single" },
+/* 582 */ { Q: "在计划实施前采取预防措施防止问题的发生，称为", options: ["直接控制", "间接控制", "前馈控制", "同期控制", "反馈控制"], answer: "C", explain: "前馈控制是在计划实施前采取的预防措施。", type: "single" },
+/* 583 */ { Q: "关于人体正常菌群的叙述，错误的是", options: ["绝大部分是厌氧菌", "在肠道可合成维生素", "在抗感染上有重要作用", "菌群失调可导致医院感染", "有升高胆固醇的作用"], answer: "E", explain: "正常菌群没有升高胆固醇的作用。", type: "single" },
+/* 584 */ { Q: "开放性肺结核应采取", options: ["严密隔离", "血液-体液隔离", "接触隔离", "消化道隔离", "呼吸道隔离"], answer: "E", explain: "开放性肺结核应采取呼吸道隔离。", type: "single" },
+/* 585 */ { Q: "医院健康教育的最终目的是", options: ["培养既有健康知识又有健康行为的人", "灌输健康知识", "帮助建立健康行为", "促进身心健康", "克服不良生活习惯"], answer: "A", explain: "医院健康教育的最终目的是培养既有健康知识又有健康行为的人。", type: "single" },
+/* 586 */ { Q: "能全面反映健康教育项目的成功与不足，为今后计划制订和项目决策提供依据的是", options: ["形成评价", "过程评价", "效应评价", "结局评价", "总结评价"], answer: "E", explain: "总结评价能全面反映项目的成功与不足。", type: "single" },
+/* 587 */ { Q: "能使健康教育计划更符合实际情况的评价是", options: ["形成评价", "过程评价", "效应评价", "结局评价", "总结评价"], answer: "A", explain: "形成评价可使计划更符合实际情况。", type: "single" },
+/* 588 */ { Q: "行为已基本定型的阶段为", options: ["被动发展阶段", "主动发展阶段", "自主发展阶段", "巩固发展阶段", "自我发展阶段"], answer: "D", explain: "巩固发展阶段行为已基本定型。", type: "single" },
+/* 589 */ { Q: "成年后由于环境、社会及个人状况的不断变化，个人对自己的行为进行不断地调整、完善、充实和提高，这是人类行为发展阶段的", options: ["被动发展阶段", "主动发展阶段", "自主发展阶段", "巩固发展阶段", "自我发展阶段"], answer: "D", explain: "成年后行为不断调整属于巩固发展阶段。", type: "single" },
+/* 590 */ { Q: "常规器械消毒灭菌合格率属于", options: ["基础质量评价", "服务质量评价", "环节质量评价", "综合评价", "终末质量评价"], answer: "A", explain: "消毒灭菌合格率属于基础质量评价。", type: "single" },
+/* 591 */ { Q: "护理表格书写合格率属于", options: ["基础质量评价", "服务质量评价", "环节质量评价", "综合评价", "终末质量评价"], answer: "C", explain: "护理表格书写属于环节质量评价。", type: "single" },
+/* 592 */ { Q: "从多方面对全院所有住院患者和工作人员的监测属于", options: ["综合性监测", "暴发流行监测", "目标监测", "漏报率监测", "其他监测"], answer: "A", explain: "对全院所有对象的监测属于综合性监测。", type: "single" },
+/* 593 */ { Q: "对ICU呼吸机相关性肺炎的监测属于", options: ["综合性监测", "暴发流行监测", "目标监测", "漏报率监测", "其他监测"], answer: "C", explain: "对特定项目的监测属于目标监测。", type: "single" },
+/* 594 */ { Q: "某院护理部主任根据对院内王护士的德、勤、能、绩进行考察，聘任其为护士长，这一做法行使了", options: ["用人权", "决策权", "指挥权", "经济权", "奖罚权"], answer: "A", explain: "聘任护士长行使了用人权。", type: "single" },
+/* 595 */ { Q: "护理部每年组织评选优秀护士，并对其予以经济上的奖励，这一做法行使了", options: ["用人权", "决策权", "指挥权", "经济权", "奖罚权"], answer: "E", explain: "给予经济奖励行使了奖罚权。", type: "single" },
+/* 596 */ { Q: "某院急诊科紧急接收大批中毒患者，护理部主任立即从其他科室调来6名护士支援，这一做法行使了", options: ["用人权", "决策权", "指挥权", "经济权", "奖罚权"], answer: "C", explain: "调配人员行使了指挥权。", type: "single" },
+/* 597 */ { Q: "可与肥皂、洗衣粉混用的消毒剂不包括", options: ["乙醇", "甲醛", "碘酊", "氯己定", "过氧乙酸"], answer: "D", explain: "氯己定不可与肥皂、洗衣粉混用。", type: "single" },
+/* 598 */ { Q: "须现配现用的消毒剂是", options: ["乙醇", "甲醛", "碘酊", "氯己定", "过氧乙酸"], answer: "E", explain: "过氧乙酸须现配现用。", type: "single" },
+/* 599 */ { Q: "“能和我谈一下您的想法吗？”属于", options: ["封闭式提问", "开放式提问", "探索式提问", "偏向式提问", "复合式提问"], answer: "B", explain: "开放式提问给回答者自由发挥的空间。", type: "single" },
+/* 600 */ { Q: "“您今年几岁了？”属于", options: ["封闭式提问", "开放式提问", "探索式提问", "偏向式提问", "复合式提问"], answer: "A", explain: "封闭式提问有明确答案范围。", type: "single" },
+/* 601 */ { Q: "涂擦消毒手时，涂擦的时间不少于", options: ["15秒", "30秒", "1分钟", "2分钟", "3分钟"], answer: "C", explain: "涂擦消毒手的时间不少于1分钟。", type: "single" },
+/* 602 */ { Q: "洗手时揉搓的时间不少于", options: ["15秒", "30秒", "1分钟", "2分钟", "3分钟"], answer: "A", explain: "洗手揉搓时间不少于15秒。", type: "single" },
+/* 603 */ { Q: "“水谷之海”指的是", options: ["胃", "脾", "肾", "肝", "胆"], answer: "A", explain: "胃为水谷之海。", type: "single" },
+/* 604 */ { Q: "2个人员协同工作发挥的作用可以达到1+1>2的效果，体现了", options: ["人的主观能动性", "人力资源的可塑性", "人力资源的组合性", "人力资源的流动性", "人力资源闲置过程中的消耗性"], answer: "C", explain: "协同作用大于个体之和体现了人力资源的组合性。", type: "single" },
+/* 605 */ { Q: "在组织设计过程中，需要用职位说明书表达的是", options: ["组织目标", "组织框架", "工作关系", "人员配备", "业务分工"], answer: "D", explain: "职位说明书用于表达人员配备的要求。", type: "single" },
+/* 606 */ { Q: "关于流行性出血热的叙述，错误的是", options: ["由汉坦病毒引起", "是一种自然疫源性疾病", "鼠为主要传染源", "人-人传播为重要的传播途径", "肾脏损害为本病的特征"], answer: "D", explain: "流行性出血热不通过人-人传播。", type: "single" },
+/* 607 */ { Q: "护理人才群体结构不包括", options: ["专业结构", "能级结构", "年龄结构", "智能结构", "知识结构"], answer: "D", explain: "智能结构属于个体结构，不是群体结构。", type: "single" },
+/* 608 */ { Q: "为避免医院感染，须安置在隔离室的患者是", options: ["乙型肝炎患者", "大手术后的患者", "产妇和新生儿", "介入治疗后的患者", "失眠和焦虑的患者"], answer: "A", explain: "乙型肝炎患者需要隔离。", type: "single" },
+/* 609 */ { Q: "管理的职能不包括", options: ["计划职能", "组织职能", "人力资源管理职能", "领导职能", "经济职能"], answer: "E", explain: "经济职能不是管理的职能。", type: "single" },
+/* 610 */ { Q: "属于拔罐法正常反应的是", options: ["头晕", "恶心", "心慌", "呼吸急促", "拔罐区出现紫斑"], answer: "E", explain: "拔罐区出现紫斑是正常反应。", type: "single" },
+/* 611 */ { Q: "关于组织传播的描述，错误的是", options: ["又称公共关系学", "又称群体传播", "是组织之间的信息交流活动", "是组织内部成员之间的信息交流活动", "传播活动可分为5种类型"], answer: "B", explain: "组织传播不等同于群体传播。", type: "single" },
+/* 612 */ { Q: "女，28岁。入院诊断甲型肝炎，经治疗3周后痊愈出院，护士行终末消毒处理时，做法错误的是", options: ["被服及时送洗衣房清洗", "病床、桌椅用消毒剂擦拭", "体温计用消毒剂浸泡，血压计、听诊器行熏蒸消毒", "室内空气可用紫外线照射", "个人用物经消毒后带出病区"], answer: "A", explain: "甲肝患者的被服应先消毒后清洗。", type: "single" },
+/* 613 */ { Q: "最理想的目光交流是", options: ["目光聚集在对方的眼睛", "以温和的目光注视着对方", "双方的目光在同一水平", "聚精会神地注视着对方", "目光交流的时间占沟通过程中的1/3"], answer: "C", explain: "双方目光在同一水平是最理想的目光交流。", type: "single" },
+/* 614 */ { Q: "女，40岁。诊断为2型糖尿病，需要持续胰岛素皮下注射治疗，但患者担心长期注射胰岛素会成瘾而没有坚持进行胰岛素注射治疗，护士发现问题后及时采用通俗的语言向患者讲解胰岛素的降糖机制，说服其改变不正确的健康态度，属于", options: ["咨询", "交谈", "反馈", "劝服", "指导"], answer: "D", explain: "说服对方改变态度属于劝服。", type: "single" },
+/* 615 */ { Q: "五行制化的含义是", options: ["五行相生", "五行相克", "五行相乘", "五行相侮", "生中有克、克中有生"], answer: "E", explain: "五行制化指生中有克、克中有生，相互制约。", type: "single" },
+/* 616 */ { Q: "由责任护士运用护理程序方法，对所管患者从入院到出院提供连续、全面、整体的护理，其临床护理组织方式是", options: ["个案护理", "功能制护理", "小组护理", "责任制护理", "综合护理"], answer: "D", explain: "责任制护理由责任护士对患者实施连续、全面、整体的护理。", type: "single" },
+/* 617 */ { Q: "以社会关系为基础，不受组织的监督，自由选择沟通渠道的沟通方式为", options: ["垂直沟通", "非正式沟通", "横向沟通", "正式沟通", "全通道式沟通"], answer: "B", explain: "非正式沟通以社会关系为基础，自由选择沟通渠道。", type: "single" },
+/* 618 */ { Q: "某医院门诊准备利用半天时间在医院附近公共场所进行1次关于吸烟有害健康的卫生知识普及活动，督促居民自觉遵守公共场所不吸烟的社会公德，戒掉吸烟的不良习惯，此次活动最适合的传播方式是", options: ["召开座谈会", "小组讨论", "播放电影", "出版板刊", "印发传单"], answer: "E", explain: "印发传单适合普及知识，覆盖面广。", type: "single" },
+/* 619 */ { Q: "某医院ICU护士长到病房检查危重患者的护理时，发现患者的卧位不正确，给予指出，并纠正。护士长的行为属于", options: ["预先控制", "过程控制", "反馈控制", "全面控制", "局部控制"], answer: "B", explain: "在护理过程中发现并纠正问题属于过程控制。", type: "single" },
+/* 620 */ { Q: "协调的基本要求不包括", options: ["及时协调与连续协调相结合", "从根本上解决问题", "调动当事者的积极性", "体现协调者的权威性", "公平合理"], answer: "D", explain: "协调不要求体现权威性。", type: "single" },
+/* 621 */ { Q: "男，20岁。长期吸烟、酗酒，且有吸毒行为和性乱行为，其危害健康行为类型属于", options: ["日常危害健康行为十不良疾病行为", "致病性行为模式十不良疾病行为", "日常危害健康行为十违规行为", "致病性行为模式十违规行为", "不良疾病行为十违规行为"], answer: "C", explain: "吸烟、酗酒是日常危害健康行为，吸毒、性乱是违规行为。", type: "single" },
+/* 622 */ { Q: "积极开展医院健康教育的意义不包括", options: ["提高患者依从性", "密切医患关系", "降低医疗成本", "增强患者战胜疾病的信心", "缓解疾病痛苦"], answer: "E", explain: "健康教育不能直接缓解疾病痛苦。", type: "single" },
+/* 623 */ { Q: "关于隔离室的设置，错误的是", options: ["隔离室内应备有独立通风系统", "空气传播疾病患者的病室应为负压", "保护性隔离患者的病室应为正压", "应在隔离病室内为医务人员准备洗手设备", "备有缓冲间"], answer: "D", explain: "洗手设备应设在缓冲间，不在隔离室内。", type: "single" },
+/* 624 */ { Q: "实施患者健康教育程序的第一个步骤是", options: ["评价教育效果", "确定教育目标", "制订教育计划", "实施教育计划", "评估教育需求"], answer: "E", explain: "健康教育程序的第一步是评估教育需求。", type: "single" },
+/* 625 */ { Q: "一般情况下，任职10年的护士长影响力较刚上任的护士长要大的原因是", options: ["传统因素", "资历因素", "职位因素", "品格因素", "感情因素"], answer: "B", explain: "任职时间长资历深，影响力大是由于资历因素。", type: "single" },
+/* 626 */ { Q: "PDCA管理循环的4个管理阶段，按照其顺序应是", options: ["计划、执行、检查、处理", "计划、执行、反馈、处理", "计划、检查、调整、执行", "计划、调整、执行、检查", "计划、调整、检查、执行"], answer: "A", explain: "PDCA循环的顺序是计划、执行、检查、处理。", type: "single" },
+/* 627 */ { Q: "通过不断地学习及受环境的影响，人类的行为是在不断发展变化的，这是人类行为的", options: ["差异性", "目的性", "可塑性", "计划性", "顺应性"], answer: "C", explain: "行为可通过学习改变体现了可塑性。", type: "single" },
+/* 628 */ { Q: "传播的2种主要类型是", options: ["媒介传播和网络传播", "人际传播和大众传播", "自我传播和交互传播", "组织传播和社会传播", "单向传播和双向传播"], answer: "B", explain: "传播的主要类型是人际传播和大众传播。", type: "single" },
+/* 629 */ { Q: "连续使用的氧气湿化瓶、雾化器、早产儿暖箱应", options: ["每周2次消毒，用后终末消毒，干燥保存", "每天清洁，用后消毒，干燥保存", "每天消毒，用后终末消毒，干燥保存", "每周1次消毒，用后终末消毒，干燥保存", "专人专用，用后终末消毒"], answer: "C", explain: "连续使用的湿化瓶、雾化器应每天消毒，用后终末消毒，干燥保存。", type: "single" },
+/* 630 */ { Q: "某三级甲等综合医院有床位3500张，病区65个，科护士长3名，每位科护士长分管20余个病区，因此每个人都感到身心疲惫，力不从心。该医院在组织设计中忽略了", options: ["目标统一原则", "分工协作原则", "有效管理幅度原则", "最少层次原则", "集权与分权相结合原则"], answer: "C", explain: "管理幅度过宽，超过了有效管理幅度。", type: "single" },
+/* 631 */ { Q: "健康教育应坚持的最基本原则是", options: ["正面教育原则", "科学性原则", "理论联系实际原则", "巩固性原则", "循序渐进原则"], answer: "B", explain: "科学性是健康教育最基本的原则。", type: "single" },
+/* 632 */ { Q: "属于低可变性行为的是", options: ["社会不赞成的行为", "已有成功改变实例的行为", "与传统生活方式关系不大的行为", "形成时间已久的行为", "正处于发展时期的行为"], answer: "D", explain: "形成时间已久的行为属于低可变性行为。", type: "single" },
+/* 633 */ { Q: "男，29岁。诊断为皮肤炭疽。使炭疽芽胞杆菌能抵抗中水平以下消毒剂的结构是", options: ["质粒", "荚膜", "芽胞", "鞭毛", "炭疽毒素"], answer: "C", explain: "芽胞结构抵抗力强，能抵抗中水平以下消毒剂。", type: "single" },
+/* 634 */ { Q: "关于控制图的叙述，错误的是", options: ["控制图又称管理图", "控制图是画有控制界限的目录", "不同的控制图有其不同的适用范围", "控制图又称树枝图、鱼刺图", "是用来检查质量波动是否处于控制状态的工具"], answer: "D", explain: "树枝图、鱼刺图是因果分析图，不是控制图。", type: "single" },
+/* 635 */ { Q: "关于原位菌群失调，正确的是", options: ["一度失调可通过细菌定量检查得到反映", "二度失调去除失调因素后，正常菌群可自然恢复", "二度失调的原因常为广谱抗菌药物的大量使用", "三度失调又称比例失调", "三度失调是某部位正常菌群结构与数量的暂时变动"], answer: "C", explain: "二度失调常由广谱抗菌药物大量使用引起。", type: "single" },
+/* 636 */ { Q: "单纯乳腺良性肿瘤切除术，抗菌药物应用正确的是", options: ["术前24小时应用", "术前3小时应用", "切开皮肤前0.5小时应用", "术后应用1次", "无应用指征"], answer: "E", explain: "单纯乳腺良性肿瘤切除术属于清洁手术，无预防用抗菌药物指征。", type: "single" },
+/* 637 */ { Q: "目标管理又可称为", options: ["标准管理", "系统管理", "综合管理", "成果管理", "自我管理"], answer: "D", explain: "目标管理又称成果管理。", type: "single" },
+/* 638 */ { Q: "目标监测的内容不包括", options: ["医院感染率的监测", "高危科室监测", "综合性监测", "暴发监测", "一级护理合格率的监测"], answer: "E", explain: "一级护理合格率的监测不属于目标监测。", type: "single" },
+/* 639 */ { Q: "影响行为的因素中，经济基础属于", options: ["遗传因素", "环境因素", "教育因素", "学习因素", "人文因素"], answer: "B", explain: "经济基础属于环境因素。", type: "single" },
+/* 640 */ { Q: "防止激励效应弱化应", options: ["加强激励的针对性", "加强激励的严肃性", "加强激励的科学性", "加强激励的合理性", "加强激励的政策导向性"], answer: "A", explain: "加强针对性可防止激励效应弱化。", type: "single" },
+/* 641 */ { Q: "“先安未受邪之地”体现的治疗原则是", options: ["治病求本", "未病先防", "急则治标", "既病防变", "三因制宜"], answer: "D", explain: "先安未受邪之地体现了既病防变的原则。", type: "single" },
+/* 642 */ { Q: "为改变一个人的吸烟行为，使其戒烟，首先使吸烟者了解吸烟的危害和戒烟的益处，掌握戒烟的方法，从而使戒烟者形成吸烟危害健康的信念，产生自觉、自愿戒烟的积极态度，最终产生戒烟的行为。此过程称为", options: ["健康信念模式", "知-信-行模式", "自然发展模式", "社会心理模式", "有效性认识模式"], answer: "B", explain: "知识-信念-行为改变的过程属于知-信-行模式。", type: "single" },
+/* 643 */ { Q: "某医疗机构使用预真空式压力蒸汽灭菌器对诊疗器械灭菌。工作人员对其灭菌效果行生物监测的频率为", options: ["2次/月", "1次/月", "2次/周", "1次/周", "1次/天"], answer: "B", explain: "预真空压力蒸汽灭菌器生物监测应每月1次。", type: "single" },
+/* 644 */ { Q: "医院定期监测消毒、灭菌效果，灭菌合格率必须达到", options: ["99.99%", "99.9%", "99%", "90%", "100%"], answer: "E", explain: "灭菌合格率必须达到100%。", type: "single" },
+/* 645 */ { Q: "对行为的描述正确的是", options: ["行为是内心活动的内在表现，不易被觉察", "行为是自发产生的，与外界刺激无关", "行为是内心活动的外在表现", "行为是机体在内外界环境刺激下所引起的内在反应", "行为是机体在内在因素的刺激下所引起的反应"], answer: "C", explain: "行为是内心活动的外在表现。", type: "single" },
+/* 646 */ { Q: "在五行相生的理论中，脾的子脏是", options: ["心", "肺", "肝", "肠", "脑"], answer: "B", explain: "脾生肺，脾的子脏是肺。", type: "single" },
+/* 647 */ { Q: "物理灭菌法中最有效的方法是", options: ["压力蒸汽灭菌", "燃烧法", "煮沸法", "微波照射法", "紫外线照射法"], answer: "A", explain: "压力蒸汽灭菌是物理灭菌法中最有效的方法。", type: "single" },
+/* 648 */ { Q: "护士在护理活动的过程中发生错误时，护士长予以纠正，此控制类型是", options: ["前馈控制", "预先控制", "同期控制", "反馈控制", "事后控制"], answer: "C", explain: "在过程中纠正错误属于同期控制。", type: "single" },
+/* 649 */ { Q: "在ABC时间管理方法中，C级目标是指", options: ["必须完成的目标", "最优先的目标", "较重要的目标", "很想完成的目标", "可暂时搁置的目标"], answer: "E", explain: "C级目标是可以暂时搁置的目标。", type: "single" },
+/* 650 */ { Q: "人际传播特点不包括", options: ["全身心的传播", "以个体化信息为主", "含情感信息传播", "具有及时反馈性", "具有自我总结性"], answer: "E", explain: "自我总结性不是人际传播的特点。", type: "single" },
+/* 651 */ { Q: "预防新生儿发生医院感染的措施，错误的是", options: ["保持新生儿的皮肤清洁及饮食卫生", "接触新生儿前一定要洗手", "常规监测病室环境的细菌", "强化介入性监护方法，密切观察病情变化", "新生儿室工作人员出现感染性疾病时应立即治疗、休息"], answer: "D", explain: "应尽量减少介入性监护方法，避免增加感染机会。", type: "single" },
+/* 652 */ { Q: "组织内的权力相对集中，实施一元化管理，符合组织设计的", options: ["精简要求", "统一要求", "协作要求", "高效要求", "分工要求"], answer: "B", explain: "一元化管理符合统一要求。", type: "single" },
+/* 653 */ { Q: "男，54岁。因骨折而入院，4天后出现肺部感染的症状和体征。该感染属于", options: ["医院感染", "非医院感染", "正常现象", "合并症", "社会感染"], answer: "A", explain: "入院48小时后发生的感染属于医院感染。", type: "single" },
+/* 654 */ { Q: "小组讨论出现沉默不语时，主持人应", options: ["马上结束讨论", "暂时休会", "保持沉默", "个别提问", "点名批评"], answer: "D", explain: "出现沉默时应个别提问，打破沉默。", type: "single" },
+/* 655 */ { Q: "护士长在排班时将工作20年的护士甲和工作5年的护士乙及工作2年的护士丙组合在一起，体现了排班的", options: ["公平原则", "效率原则", "能级原则", "满足需要原则", "结构合理原则"], answer: "E", explain: "新老护士搭配体现了结构合理原则。", type: "single" },
+/* 656 */ { Q: "信息沟通的3个关键环节是", options: ["发送者、信息渠道、接收者", "传递者、接收者、信息内容", "发送者、传递者、信息渠道", "接收者、信息、信息渠道", "发送者、信息、信息渠道"], answer: "A", explain: "沟通的三个关键环节是发送者、信息渠道、接收者。", type: "single" },
+/* 657 */ { Q: "计划的步骤中“发展可选方案”考虑的因素不包括", options: ["确定计划工作的目标", "可预测的投入与效益之比", "公众的接受程度", "下属的接受程度", "时间因素"], answer: "A", explain: "发展可选方案是在确定目标之后，不需再考虑目标。", type: "single" },
+/* 658 */ { Q: "耐甲氧西林金黄色葡萄球菌的感染途径主要是", options: ["污染的手导致人与人之间的传播", "病房的清扫工具", "一次性医疗用品", "探视人员从外界带给患者", "空气传播"], answer: "A", explain: "MRSA主要通过污染的手导致人与人之间的传播。", type: "single" },
+/* 659 */ { Q: "“湿温”的好发季节是", options: ["春、夏、秋", "春、秋", "夏、冬", "夏、秋", "冬、春"], answer: "D", explain: "湿温好发于夏秋季节。", type: "single" },
+/* 660 */ { Q: "普通病房治疗室空气培养细菌总数的卫生学标准为", options: ["≤10CFU/m³", "≤50CFU/m³", "≤100CFU/m³", "≤200CFU/m³", "≤500CFU/m³"], answer: "E", explain: "普通病房治疗室属于Ⅲ类环境，空气细菌总数≤500CFU/m³。", type: "single" },
+/* 661 */ { Q: "恶性肿瘤患者手术用过的布类，须先放入专用污物池，用消毒剂浸泡", options: ["10分钟", "20分钟", "30分钟", "40分钟", "50分钟"], answer: "C", explain: "肿瘤患者用过的布类应先浸泡30分钟。", type: "single" },
+/* 662 */ { Q: "根据决策的主体不同，决策可划分为", options: ["确定型决策和不确定型决策", "常规决策和非常规决策", "个人决策和集体决策", "战略决策和战术决策", "程序化决策和非程序化决策"], answer: "C", explain: "按决策主体分为个人决策和集体决策。", type: "single" },
+/* 663 */ { Q: "管理学中组织的概念不包含", options: ["组织相应人员与隶属关系", "组织有共同的目标", "组织有不同层次的分工协作", "组织结构应满足个人需求", "组织有相应的权力和责任"], answer: "D", explain: "组织结构应满足组织目标，而非个人需求。", type: "single" },
+/* 664 */ { Q: "某科室实施围生期保健健康教育，半年后95%孕妇能说出产前检查的好处，10%孕妇相信她们能够掌握母乳喂养的技巧，这实现了健康教育规划目标中的", options: ["总体目标", "教育目标", "行为目标", "健康目标", "知识目标"], answer: "E", explain: "能说出产前检查的好处属于知识目标。", type: "single" },
+/* 665 */ { Q: "肾开窍于", options: ["鼻", "耳", "口", "舌", "目"], answer: "B", explain: "肾开窍于耳。", type: "single" },
+/* 666 */ { Q: "全面质量管理的重要组成部分是", options: ["强烈地关注顾客", "精确地度量", "持续质量改进", "向员工授权", "组织成员的质量培训"], answer: "C", explain: "持续质量改进是全面质量管理的重要组成部分。", type: "single" },
+/* 667 */ { Q: "发怒的情志刺激主要影响的是", options: ["肾的纳气", "心的主血脉", "肝的疏泄", "胃的消化", "肺的肃降"], answer: "C", explain: "怒伤肝，影响肝的疏泄功能。", type: "single" },
+/* 668 */ { Q: "抗菌药物的作用机制不包括", options: ["干扰细菌细胞壁合成", "损伤细菌细胞膜", "影响细菌蛋白质的合成", "加速细菌线粒体的溶解", "抑制细菌核酸的合成"], answer: "D", explain: "细菌无线粒体，抗菌药物不能加速其溶解。", type: "single" },
+/* 669 */ { Q: "男，39岁。因肾绞痛急诊就诊，肌内注射哌替啶50mg后疼痛缓解，2天后自觉注射部位疼痛，4天后就诊，查体：局部压痛，皮肤发红，皮温增高，有波动感，穿刺抽出少量脓液，应诊断为", options: ["注射部位感染，属于医院感染", "注射部位感染，不属于医院感染", "无菌性化脓，属于医院感染", "无菌性化脓，不属于医院感染", "自然感染"], answer: "A", explain: "住院期间发生的注射部位感染属于医院感染。", type: "single" },
+/* 670 */ { Q: "护士在处置传染病患者时，手消毒处理错误的是", options: ["戴手套为患者处置结束后，应先脱去手套后再彻底洗净双手", "戴手套为不同患者操作时，每接触一个患者应更换手套", "用手直接为患者处置后，先洗手，再用消毒剂搓擦双手2分钟", "连续处置患者时，应在全部患者处置结束后一次性洗手及消毒", "双手被感染性材料污染后，应先洗手，再用消毒剂搓擦2分钟"], answer: "D", explain: "连续处置患者时，每处置一个患者后都应洗手消毒。", type: "single" },
+/* 671 */ { Q: "某护士夜班巡视时，发现一位二级护理的患者倒在床旁，此时夜班值班室只有护士一个人，针对患者发生的坠床情况，护士首选的措施是", options: ["向患者解释和道歉", "马上通知医生到病房", "初步检查判定患者伤情", "上报该不良事件", "通知护士长"], answer: "C", explain: "发生坠床后应先初步检查患者伤情。", type: "single" },
+/* 672 */ { Q: "健康教育的实质是", options: ["知识传播", "树立信念", "培养技能", "行为干预", "改变现状"], answer: "D", explain: "健康教育的实质是行为干预。", type: "single" },
+/* 673 */ { Q: "最佳健康模式强调的是", options: ["促进健康与预防疾病", "治疗疾病与康复护理", "恢复健康与减轻痛苦", "维持健康与预防疾病", "治疗疾病与减轻不适"], answer: "A", explain: "最佳健康模式强调促进健康与预防疾病。", type: "single" },
+/* 674 */ { Q: "根据医院分级管理标准，700张床位的三级医院中，护理人员应有", options: ["400人", "240人", "280人", "320人", "360人"], answer: "E", explain: "三级医院护理人员与床位比为0.4:1，700张床位应有280人，加上20%机动数，约336人。", type: "single" },
+/* 675 */ { Q: "以共同制订的目标为依据来检查和评价目标完成情况的管理方法是", options: ["人本管理", "组织管理", "统筹管理", "目标管理", "时间管理"], answer: "D", explain: "以目标为依据进行检查和评价是目标管理。", type: "single" },
+/* 676 */ { Q: "健康传播过程中，传递的是健康", options: ["信息", "知识", "技术", "概念", "行为模式"], answer: "A", explain: "健康传播传递的是健康信息。", type: "single" },
+/* 677 */ { Q: "某乡政府为鼓励住院分娩，决定减少住院分娩妇女丈夫的义务工，这种干预手段属于", options: ["行政干预", "法规干预", "信息干预", "教育干预", "技能干预"], answer: "A", explain: "政府通过行政手段干预属于行政干预。", type: "single" },
+/* 678 */ { Q: "以人体为中心的是", options: ["五脏", "经络系统", "精、气、血、津液", "六腑", "五体、五官、九窍、四肢"], answer: "B", explain: "经络系统以人体为中心。", type: "single" },
+/* 679 */ { Q: "属于X理论描述“人性的观点”的是", options: ["人难以自我控制和管理", "个人目标和组织目标可以统一", "人们具有相当高的想象力", "人们愿意接受责任", "人是懒惰的，不喜欢工作"], answer: "E", explain: "X理论认为人是懒惰的，不喜欢工作。", type: "single" },
+/* 680 */ { Q: "按时间划分的计划是", options: ["综合计划", "专项计划", "阶段计划", "年度计划", "短期计划"], answer: "E", explain: "按时间划分可分为长期、中期、短期计划。", type: "single" },
+/* 681 */ { Q: "健康传播途径中，图片、标本、食物、模型等属于", options: ["口头传播", "文字传播", "形象传播", "音像传播", "电子媒介传播"], answer: "C", explain: "图片、标本、模型等属于形象传播。", type: "single" },
+/* 682 */ { Q: "属于专科护理管理的内容是", options: ["静脉输液技术", "给药方法", "病情观察", "消毒隔离", "基础护理"], answer: "D", explain: "消毒隔离属于专科护理管理内容。", type: "single" },
+/* 683 */ { Q: "用于手的消毒时碘伏溶液含有效碘", options: ["100mg/L", "200mg/L", "500mg/L", "5000mg/L", "50mg/L"], answer: "D", explain: "手消毒用碘伏含有效碘5000mg/L。", type: "single" },
+/* 684 */ { Q: "有关消毒灭菌原则的叙述，正确的是", options: ["进入人体无菌器官的医疗用品必须消毒", "耐热、耐湿物品首选化学灭菌法", "手术器具首选压力蒸汽灭菌", "室内空气消毒首选自然挥发的甲醛蒸馏", "用于浸泡灭菌物品的容器不必灭菌"], answer: "C", explain: "手术器具首选压力蒸汽灭菌。", type: "single" },
+/* 685 */ { Q: "中医学中关于疾病的基本病机描述正确的是", options: ["五行失调", "脏腑虚损", "六淫侵袭", "阴阳失调", "正邪失衡"], answer: "D", explain: "阴阳失调是疾病的基本病机。", type: "single" },
+/* 686 */ { Q: "当某种行为可导致两方面的结果时，个体对自己的行为进行控制以适应社会属于", options: ["反射", "应激", "顺应", "调适", "自我控制"], answer: "E", explain: "对自己的行为进行控制属于自我控制。", type: "single" },
+/* 687 */ { Q: "个体与他人之间、群体与群体之间相互配合、相互适应属于", options: ["反射", "应激", "顺应", "调适", "自我控制"], answer: "C", explain: "相互配合、相互适应属于顺应。", type: "single" },
+/* 688 */ { Q: "评估组织资源时可进行SWOT分析，其中O是指", options: ["源于组织外部可能的威胁或不利影响", "源于组织外部可能存在的机遇", "评估组织内部劣势", "评估组织内部优势", "整理组织的资源"], answer: "B", explain: "O指机遇(Opportunities)。", type: "single" },
+/* 689 */ { Q: "评估组织资源时可进行SWOT分析，其中S是指", options: ["源于组织外部可能的威胁或不利影响", "源于组织外部可能存在的机遇", "评估组织内部劣势", "评估组织内部优势", "整理组织的资源"], answer: "D", explain: "S指优势(Strengths)。", type: "single" },
+/* 690 */ { Q: "为患者实施静脉穿刺后，正确的洗手方法是", options: ["无菌刷接触皂液，先刷指尖，然后刷手、腕、前臂、肘部、上臂下1/3段", "用清洁剂认真揉搓掌心、指缝、手背、手指关节、指腹、指尖、拇指、腕部", "时间为每遍2分钟，刷洗3遍，每遍刷完均用流动水洗净", "时间为20秒，流动水洗净", "连续手术时，不需要外科手消毒"], answer: "D", explain: "静脉穿刺后属于卫生手消毒，应揉搓15-20秒。", type: "single" },
+/* 691 */ { Q: "外科手消毒法正确的是", options: ["无菌刷接触皂液，先刷指尖，然后刷手、腕、前臂、肘部、上臂下1/3段", "用清洁剂认真揉搓掌心、指缝、手背、手指关节、指腹、指尖、拇指、腕部", "时间为每遍2分钟，刷洗3遍，每遍刷完均用流动水洗净", "时间为20秒，流动水洗净", "连续手术时，不需要外科手消毒"], answer: "C", explain: "外科手消毒应刷洗3遍，每遍2分钟。", type: "single" },
+/* 692 */ { Q: "红霉素静脉滴注的给药方式是", options: ["每天1次足量给药", "每天2次给药", "隔天1次给药", "持续缓慢给药", "快速加压给药"], answer: "D", explain: "红霉素应持续缓慢静脉滴注。", type: "single" },
+/* 693 */ { Q: "青霉素静脉滴注的给药方式是", options: ["每天1次足量给药", "每天2次给药", "隔天1次给药", "持续缓慢给药", "快速加压给药"], answer: "A", explain: "青霉素应每天1次足量给药。", type: "single" },
+/* 694 */ { Q: "称为近中期效果评价的评价活动是", options: ["形成评价", "总结评价", "过程评价", "效应评价", "结局评价"], answer: "D", explain: "效应评价是近中期效果评价。", type: "single" },
+/* 695 */ { Q: "对项目计划进行的评价活动是", options: ["形成评价", "总结评价", "过程评价", "效应评价", "结局评价"], answer: "A", explain: "形成评价是对项目计划的评价。", type: "single" },
+/* 696 */ { Q: "始于健康计划实施开始之时，并贯穿于计划执行全过程的评价活动是", options: ["形成评价", "总结评价", "过程评价", "效应评价", "结局评价"], answer: "C", explain: "过程评价贯穿于计划执行全过程。", type: "single" },
+/* 697 */ { Q: "医院感染患病率", options: ["是指一定时间内住院患者中发生医院感染的频率", "指一定时间内处于感染危险中的住院患者中新发生医院感染的频率", "指在一定时间和一定人群中新发生的医院感染的频率", "指用于评估医院感染暴发的指标", "指用于监测医院感染长期趋势的指标"], answer: "A", explain: "患病率指一定时间内住院患者中发生医院感染的频率。", type: "single" },
+/* 698 */ { Q: "根据八纲辨证，辨别疾病邪正盛衰的纲领是", options: ["气血", "阴阳", "表里", "寒热", "虚实"], answer: "E", explain: "虚实辨别邪正盛衰。", type: "single" },
+/* 699 */ { Q: "点着酒精棉球快速在罐里绕一圈拿出，然后迅速扣在背上的方法是", options: ["闪火法", "投火法", "滴酒法", "水吸法", "抽气吸法"], answer: "A", explain: "酒精棉球绕一圈后扣罐是闪火法。", type: "single" },
+/* 700 */ { Q: "医院感染的发生必须具备的三个基本条件是", options: ["空气传播、接触传播、易感宿主", "原位菌群失调、细菌移位、抵抗力下降", "感染源、传播途径、易感宿主", "感染源、接触传播、抵抗力下降", "感染源、细菌移位、易感生态环境"], answer: "C", explain: "感染发生必须具备感染源、传播途径、易感宿主。", type: "single" },
+
+/* 701 */ { Q: "护士长甲，当护士长5年，在工作中她非常善于关注不同护士的个性和特点，积极为她们创造良好的工作和生活环境，用人所长，避人所短，病区的质量考核成绩一直名列前茅。护士长甲的管理原理主要是遵循了", options: ["系统原理", "人本原理", "动态原理", "效益原理", "节能原理"], answer: "B", explain: "关注人的个性和特点，用人所长体现了人本原理。", type: "single" },
+/* 702 */ { Q: "健康信息的特点不包括", options: ["易懂性", "普及性", "科学性", "针对性", "指导性"], answer: "B", explain: "普及性不是健康信息的特点。", type: "single" },
+/* 703 */ { Q: "协调的基本要求不包括", options: ["从根本上解决问题", "调动当事者积极性", "相互尊重", "公平合理", "提高效率"], answer: "E", explain: "提高效率不是协调的基本要求。", type: "single" },
+/* 704 */ { Q: "室内空气消毒时，过氧化氢的作用时间为", options: ["<30分钟", "30~60分钟", "90分钟", "120分钟", "180分钟"], answer: "B", explain: "过氧化氢空气消毒作用时间为30-60分钟。", type: "single" },
+/* 705 */ { Q: "根据阴阳学说，事物的量变过程称为", options: ["阴阳消长", "阴阳对立", "阴平阳秘", "阴阳互根", "阴阳转化"], answer: "A", explain: "阴阳消长是量变过程。", type: "single" },
+/* 706 */ { Q: "紫外线杀菌的最佳波长是", options: ["184nm", "254nm", "285nm", "354nm", "384nm"], answer: "B", explain: "紫外线杀菌的最佳波长为254nm。", type: "single" },
+/* 707 */ { Q: "根据格林模式，生活质量属于健康教育诊断中的", options: ["社会诊断", "行为诊断", "流行病学诊断", "环境诊断", "教育诊断"], answer: "A", explain: "生活质量评估属于社会诊断。", type: "single" },
+/* 708 */ { Q: "感染风险最高的部门是", options: ["人流室", "治疗室", "换药室", "产房", "感染科病房"], answer: "E", explain: "感染科病房感染风险最高。", type: "single" },
+/* 709 */ { Q: "医疗用品按其污染后造成危害的程度，可分为", options: ["1类", "2类", "3类", "4类", "5类"], answer: "C", explain: "医疗用品分为高度、中度、低度危险性3类。", type: "single" },
+/* 710 */ { Q: "小组讨论提纲内容不包括", options: ["讨论目的", "讨论问题", "讨论内容", "讨论时间和地点", "讨论的预期目标"], answer: "D", explain: "讨论提纲不包括时间和地点。", type: "single" },
+/* 711 */ { Q: "根据知-信-行模式，一个人从接受知识到改变行为要经过的过程包括", options: ["信息传播和行为干预", "内因变化和外因变化", "宣传教育和环境支持", "信念确立和态度转变", "生理变化和心理变化"], answer: "D", explain: "知-信-行模式需经过信念确立和态度转变。", type: "single" },
+/* 712 */ { Q: "男，33岁。野外工作人员，因寒战、高热，大汗淋漓，每3天发作1次去医院就诊，查血液涂片找到疟原虫。患者应首选的药物是", options: ["伯氨喹", "氯喹", "吡喹酮", "甲硝唑", "甲苯达唑"], answer: "B", explain: "疟疾发作期首选氯喹。", type: "single" },
+/* 713 */ { Q: "属于非正式组织特点的是", options: ["有明确的章程", "有较强的内聚力", "讲究效率", "不强调工作人员工作的独特性", "建立职权，下级服从上级"], answer: "B", explain: "非正式组织有较强的内聚力。", type: "single" },
+/* 714 */ { Q: "护理人才的能力结构不包括", options: ["获取知识的能力", "科学研究能力", "组织管理能力", "沟通能力", "表达能力"], answer: "B", explain: "科学研究能力不是护理人才必备的能力。", type: "single" },
+/* 715 */ { Q: "除呼吸道传播外，结核病常见的传播途径还有", options: ["泌尿道传播", "消化道传播", "皮肤接触传播", "性传播", "血液-体液传播"], answer: "B", explain: "结核病还可通过消化道传播。", type: "single" },
+/* 716 */ { Q: "在七情内伤中，思虑过度最易伤", options: ["心", "肺", "脾", "肝", "肾"], answer: "C", explain: "思伤脾。", type: "single" },
+/* 717 */ { Q: "护士长在护理查房时，提问实习护士关于医疗垃圾处理问题时，实习护士回答错误的是", options: ["医疗垃圾应焚烧", "使用后的一次性注射器、输液器针头置于锐器盒内", "医用垃圾使用棕色塑料袋", "医用垃圾使用污染专梯专人回收", "医疗垃圾处理时做好自我防护"], answer: "C", explain: "医用垃圾应使用黄色塑料袋。", type: "single" },
+/* 718 */ { Q: "在事故发生后采取正确处置的行为，属于促进健康行为中的", options: ["日常健康行为", "避开有害环境行为", "戒除不良嗜好行为", "预警行为", "保健行为"], answer: "D", explain: "事故后正确处置属于预警行为。", type: "single" },
+/* 719 */ { Q: "拉斯韦尔模式不包括", options: ["传播者", "信息", "反馈", "传播效果", "传播媒介"], answer: "C", explain: "拉斯韦尔模式不包括反馈。", type: "single" },
+/* 720 */ { Q: "对组织内外人员一视同仁的公平竞争，才能得到合适的人选，这遵循的是人员管理的", options: ["职务要求明确原则", "责权利一致原则", "公平竞争原则", "系统管理原则", "用人之长原则"], answer: "C", explain: "一视同仁公平竞争体现了公平竞争原则。", type: "single" },
+/* 721 */ { Q: "气的生理功能是", options: ["营养作用", "运化作用", "充养作用", "滋润作用", "推动作用"], answer: "E", explain: "气具有推动作用。", type: "single" },
+/* 722 */ { Q: "对被血液与体液污染的环境，消毒时应首选", options: ["灭菌剂", "清洁剂", "洗涤剂", "低水平消毒剂", "中、高水平消毒剂"], answer: "E", explain: "被血液体液污染的环境应使用中、高水平消毒剂。", type: "single" },
+/* 723 */ { Q: "肾在体是", options: ["脉", "皮", "肌肉", "骨", "筋"], answer: "D", explain: "肾在体合骨。", type: "single" },
+/* 724 */ { Q: "护理健康教育研究的对象是", options: ["医生、护士", "患者、家属、护士", "患者及其家属", "所有医务人员", "所有工作人员"], answer: "B", explain: "护理健康教育研究的对象是患者、家属、护士。", type: "single" },
+/* 725 */ { Q: "人体内正常菌群的描述，正确的是", options: ["绝大部分是需氧菌", "可在肠道内合成维生素A等", "可在皮肤上形成一层非特异的保护膜，抵抗致病微生物侵袭", "肠道菌群有降低血脂的作用", "是特异性免疫功能的组成部分"], answer: "C", explain: "正常菌群可在皮肤上形成生物屏障，抵抗致病微生物。", type: "single" },
+/* 726 */ { Q: "由一组护理人员应用护理程序的工作方法，共同完成对一组患者的护理工作，属于", options: ["个案护理", "综合护理", "功能制护理", "责任制护理", "循证护理"], answer: "B", explain: "一组护士共同完成对一组患者的护理属于综合护理。", type: "single" },
+/* 727 */ { Q: "健康教育诊断的目的主要是", options: ["收集有关资料", "归纳、分析资料", "确定影响健康问题的因素", "了解社会问题", "分析环境因素"], answer: "C", explain: "健康教育诊断的目的是确定影响健康问题的因素。", type: "single" },
+/* 728 */ { Q: "某医院对恢复中病情轻微的患者，为保证其睡眠质量，夜间查房采用窗口查房方式。某患者入院后因不适应病房环境而常失眠，由此发现有时夜间护士不查房，遂向护士长投诉护士偷懒。护士应做出的回应是", options: ["认为患者事多，不予理睬", "直接让患者服用地西泮", "夜里象征性地打开门看一眼", "及时与患者沟通交流，解释在何种情况下为减少打扰患者夜间不入户查房，并针对患者的失眠问题提出解决方法", "再次夜间查房时，即使该患者睡着也将其叫醒，嘘寒问暖"], answer: "D", explain: "护士应及时与患者沟通解释，并解决问题。", type: "single" },
+/* 729 */ { Q: "电子媒介传播不包括", options: ["电影", "电视", "投影", "演讲", "广播"], answer: "D", explain: "演讲不属于电子媒介传播。", type: "single" },
+/* 730 */ { Q: "针对具有内源性感染危险因素的患者，预防原则不正确的是", options: ["避免扰乱和破坏患者的正常防疫机制", "尽量使用广谱抗生素", "仔细检查和明确患者的潜在病灶", "对感染危险指数高的人，采取保护性隔离措施", "对感染危险指数高的人，采取选择性去污染等措施"], answer: "B", explain: "不应尽量使用广谱抗生素，应针对性用药。", type: "single" },
+/* 731 */ { Q: "影响健康信息传播效果的因素包括", options: ["社会环境、传播者、信息、传播媒介、受者", "自然环境、传播者、信息、传播媒介、受者", "环境、传播者、信息、传播媒介、受者", "传播者、信息、传播媒介、受者、反馈", "传播者、信息、传播媒介、受者、效果"], answer: "C", explain: "影响因素包括环境、传播者、信息、传播媒介、受者。", type: "single" },
+/* 732 */ { Q: "具有营养全身和化生血液作用的气是", options: ["元气", "宗气", "营气", "卫气", "心气"], answer: "C", explain: "营气有营养全身和化生血液的作用。", type: "single" },
+/* 733 */ { Q: "健康传播具有明确的目的性，表现为", options: ["以疾病为中心", "以患者为中心", "以社区为中心", "以生活方式为中心", "以健康为中心"], answer: "E", explain: "健康传播以健康为中心。", type: "single" },
+/* 734 */ { Q: "关于健康教育的叙述，不正确的是", options: ["健康教育的工作目标是行为改变", "健康教育的工作重点是传播卫生知识", "健康教育是健康知识与健康行为之间的桥梁", "健康教育是一门知识，也是一门技术，更是一门科学", "健康教育与卫生宣教有着重要区别"], answer: "B", explain: "健康教育的工作重点是行为干预，不是传播知识。", type: "single" },
+/* 735 */ { Q: "属于污染区的是", options: ["医务人员值班室", "医护人员办公室", "治疗室", "医生更衣室", "患者入院接待处"], answer: "E", explain: "患者入院接待处属于污染区。", type: "single" },
+/* 736 */ { Q: "符合亲身传播技巧的是", options: ["谈话内容应尽量丰富多彩", "谈话重点内容应适当重复", "谈话中应避免被对象动作干扰", "应避免双目注视对象，使其紧张", "应尽量保持语调、节奏一致，以免分散对象注意力"], answer: "B", explain: "重点内容适当重复是亲身传播的技巧。", type: "single" },
+/* 737 */ { Q: "主受纳与腐熟水谷的脏腑是", options: ["小肠", "三焦", "大肠", "胆", "胃"], answer: "E", explain: "胃主受纳与腐熟水谷。", type: "single" },
+/* 738 */ { Q: "目标管理的第一步是", options: ["找出管理中的问题", "建立信息反馈制度", "制订组织整体目标", "协议授权", "咨询指导"], answer: "C", explain: "目标管理的第一步是制订组织整体目标。", type: "single" },
+/* 739 */ { Q: "领导生命周期理论中，领导行为进行逐步推移的程序是", options: ["低工作与高关系→低工作与低关系→高工作与低关系→高工作与高关系", "低工作与高关系→高工作与低关系→低工作与低关系→高工作与高关系", "高工作与低关系→高工作与高关系→低工作与高关系→低工作与低关系", "高工作与低关系→低工作与高关系→高工作与高关系→低工作与低关系", "高工作与低关系→低工作与低关系→高工作与高关系"], answer: "C", explain: "领导生命周期理论程序为：高工作低关系→高工作高关系→低工作高关系→低工作低关系。", type: "single" },
+/* 740 */ { Q: "根据消毒因子的杀菌能力分级描述的是", options: ["压力蒸汽灭菌、紫外线消毒", "高度危险性物品、中度危险性物品、低度危险性物品", "灭菌、高水平消毒法、中水平消毒法、低水平消毒法", "浸泡消毒法、擦拭消毒法、喷洒消毒法", "热力灭菌法、微波灭菌法、等离子体灭菌法"], answer: "C", explain: "消毒因子按杀菌能力分为灭菌、高水平、中水平、低水平消毒法。", type: "single" },
+/* 741 */ { Q: "标准是衡量事物的准则，将物质技术质量定型化和定量化称为", options: ["统一化", "系列化", "规格化", "整体化", "系统化"], answer: "C", explain: "将物质技术质量定型化和定量化称为规格化。", type: "single" },
+/* 742 */ { Q: "医院感染中最常见的细菌是", options: ["致病性大肠埃希菌", "淋病奈瑟菌", "溶血性链球菌", "白假丝酵母菌", "金黄色葡萄球菌"], answer: "E", explain: "金黄色葡萄球菌是医院感染中最常见的细菌。", type: "single" },
+/* 743 */ { Q: "“个体对紧张刺激的一种非特异性的适应性反应”称为", options: ["反射", "调适", "顺应", "应对", "应激"], answer: "E", explain: "应激是个体对紧张刺激的非特异性适应性反应。", type: "single" },
+/* 744 */ { Q: "健康促进对行为可提供的环境支持主要指", options: ["人际环境", "事物环境", "政策开发", "心理环境", "卫生服务"], answer: "C", explain: "健康促进的环境支持主要指政策开发。", type: "single" },
+/* 745 */ { Q: "中华护理学会是我国的", options: ["群众性卫生组织", "卫生行政组织", "医学研究机构", "卫生事业组织", "卫生专业机构"], answer: "A", explain: "中华护理学会属于群众性卫生组织。", type: "single" },
+/* 746 */ { Q: "某病房有50张床位，使用率为90%，平均护理时数为4小时，每名护士工作8小时/天，机动编制数占20%。该病房应配备护士数为", options: ["20人", "24人", "27人", "30人", "35人"], answer: "C", explain: "应配备护士数=(50×90%×4/8)×(1+20%)=27人。", type: "single" },
+/* 747 */ { Q: "朋友聚会时发布的消息属于", options: ["正式沟通", "非正式沟通", "韧性沟通", "间接沟通", "强化沟通"], answer: "B", explain: "朋友聚会发布消息属于非正式沟通。", type: "single" },
+/* 748 */ { Q: "制订医院护理工作计划的步骤不包括", options: ["评估形势", "确定目标", "广泛征求意见", "发展可选方案", "比较和选择方案"], answer: "C", explain: "计划步骤不包括广泛征求意见。", type: "single" },
+/* 749 */ { Q: "男，21岁。出国留学，由于语言不适应，从出国第1天就感到胃部不适，食欲减退，行胃镜检查结果显示正常，造成该患者出现身体症状的压力源属于", options: ["生理性", "心理性", "社会性", "物理性", "文化性"], answer: "E", explain: "语言不适应属于文化性压力源。", type: "single" },
+/* 750 */ { Q: "为完成组织目标而制订的具体行动方案称为", options: ["程序化决策", "非程序化决策", "确定型决策", "战略决策", "战术决策"], answer: "E", explain: "具体行动方案属于战术决策。", type: "single" },
+/* 751 */ { Q: "有效训导的方法不包括", options: ["以平等态度对待下属", "具体指明问题所在", "批评对事不对人", "以行动强化语言", "提出防范错误的建议"], answer: "D", explain: "以行动强化语言不是有效训导的方法。", type: "single" },
+/* 752 */ { Q: "控制工作的特征不包括", options: ["反馈及时", "具有明确的目的", "具有准确的信息", "具有一定的灵活性", "具有明确可衡量的标准"], answer: "A", explain: "反馈及时不是控制工作的特征。", type: "single" },
+/* 753 */ { Q: "有关管理幅度的说法，正确的是", options: ["组织内沟通渠道畅通，管理幅度不宜放宽", "较宽的管理幅度意味着较多的管理层次", "下属工作地点分散，管理幅度相对宽", "管理者善于授权，管理幅度可适当增宽", "管理幅度是指1个管理者所管理的下属人员数"], answer: "E", explain: "管理幅度是指一个管理者所管理的下属人员数。", type: "single" },
+/* 754 */ { Q: "在五脏中，心开窍于", options: ["唇", "二阴", "鼻", "目", "舌"], answer: "E", explain: "心开窍于舌。", type: "single" },
+/* 755 */ { Q: "人类的本能行为不包括", options: ["躲避行为", "睡眠", "逃走", "守法", "性行为"], answer: "D", explain: "守法不是本能行为。", type: "single" },
+/* 756 */ { Q: "为了不断提高护理服务质量，依据护理组织文化的内涵建设原则，护理文化建设的关键是", options: ["完善文化设施和美化环境", "培养和提高护理人员的素质", "建立健全护理规章制度", "教育培养良好的医德医风", "构建和谐的医、护、患关系"], answer: "B", explain: "护理文化建设的关键是培养和提高护理人员的素质。", type: "single" },
+/* 757 */ { Q: "健康教育与卫生宣教的区别为", options: ["健康教育是卫生宣教的延续", "二者都是传播卫生知识，只是名称不同", "健康教育是传播与教育并重，卫生宣教是单纯的知识传播", "健康教育形式是一对一，卫生宣教是集体授课", "二者无区别"], answer: "C", explain: "健康教育是传播与教育并重，卫生宣教是单纯的知识传播。", type: "single" },
+/* 758 */ { Q: "五脏共同的生理特点是", options: ["传化物", "实而不能满", "藏精气", "泻而不藏", "受盛传化水谷"], answer: "C", explain: "五脏共同的生理特点是藏精气。", type: "single" },
+/* 759 */ { Q: "属于医院感染的是", options: ["皮肤黏膜开放性伤口只有细菌定植而无炎症表现", "非生物性因子刺激而产生的炎症表现", "新生儿经胎盘获得的感染", "本次感染直接与上次住院有关", "患者原有的慢性感染在医院内发作"], answer: "D", explain: "与上次住院有关的感染属于医院感染。", type: "single" },
+/* 760 */ { Q: "属于低可变性行为的是", options: ["受到全社会谴责的行为", "正处在发展时期的行为", "源于传统生活方式的行为", "已有成功改变实例的行为", "与文化传统无关的行为"], answer: "C", explain: "源于传统生活方式的行为属于低可变性行为。", type: "single" },
+/* 761 */ { Q: "人际关系学说的提出者是", options: ["麦格雷戈", "韦伯", "库尔特·卢因", "法约尔", "梅奥"], answer: "E", explain: "梅奥提出人际关系学说。", type: "single" },
+/* 762 */ { Q: "女，56岁。诊断为糖尿病。为向患者传授皮下注射胰岛素的知识和技术，护士宜采用的方式是", options: ["讲座", "交谈", "指导", "劝告", "咨询"], answer: "C", explain: "传授技能宜采用指导的方式。", type: "single" },
+/* 763 */ { Q: "“压疮的发生率”属于控制中的", options: ["前馈控制", "同期控制", "过程控制", "反馈控制", "全面质量控制"], answer: "D", explain: "发生率统计属于反馈控制。", type: "single" },
+/* 764 */ { Q: "大众传播特点不包括", options: ["信息是由把关人发出的", "信息的接收者众多", "信息量大", "覆盖面广", "传播速度快"], answer: "A", explain: "信息由把关人发出不是大众传播的特点。", type: "single" },
+/* 765 */ { Q: "按照《医院感染管理办法》规定，须向有关部门报告医院感染暴发的情况是", options: ["由于医院感染暴发导致患者人身损害后果", "由于医院感染暴发导致3人以上人身损害后果", "由于医院感染暴发导致3人以下人身损害后果", "由于医疗责任事故导致患者死亡", "由于医院感染暴发间接导致患者死亡"], answer: "B", explain: "感染暴发导致3人以上人身损害后果需报告。", type: "single" },
+/* 766 */ { Q: "使计划数字化的工作被称为", options: ["规划", "决策", "预测", "预算", "方案"], answer: "D", explain: "使计划数字化的工作称为预算。", type: "single" },
+/* 767 */ { Q: "办公室只有一台计算机，甲、乙2人都想在同一天使用。经过协商，甲在上午用，乙在下午用。这种解决冲突的方法是", options: ["强制", "合作", "回避", "迁就", "妥协"], answer: "E", explain: "双方各让一步达成协议属于妥协。", type: "single" },
+/* 768 */ { Q: "消毒灭菌的原则不包括", options: ["重复使用的器械、物品，应先清洁再消毒或灭菌", "当受到患者的血液、体液等污染时，先去除污染物，再清洁与消毒", "环境与物体表面，应先消毒再清洁", "耐热、耐湿的手术器械首选压力蒸汽灭菌", "疑似或确诊朊粒感染的患者应选用一次性诊疗器械、器具和物品"], answer: "C", explain: "环境与物体表面应先清洁再消毒。", type: "single" },
+/* 769 */ { Q: "组织为全面实现目标而对整体行动进行布置的总称称为", options: ["宗旨", "计划", "目标", "规程", "策略"], answer: "B", explain: "为实现目标对整体行动进行布置的是计划。", type: "single" },
+/* 770 */ { Q: "流行性出血热的主要病原体是", options: ["汉坦病毒", "克雷伯菌", "柯萨奇病毒", "腺病毒", "大肠埃希菌"], answer: "A", explain: "流行性出血热由汉坦病毒引起。", type: "single" },
+/* 771 */ { Q: "医院感染的高危人群不包括", options: ["老年患者", "早产儿和新生儿", "免疫抑制剂使用者", "ICU住院患者", "孕、产妇"], answer: "E", explain: "孕、产妇不是医院感染的高危人群。", type: "single" },
+/* 772 */ { Q: "美国心理学家弗隆姆提出的期望理论的公式是", options: ["M=V×E", "P=S×E", "E=M×V", "S=P×M", "E=V×W"], answer: "A", explain: "期望理论公式为M=V×E。", type: "single" },
+/* 773 */ { Q: "男，37岁。因胃穿孔、急性腹膜炎急诊收治入院，病情好转准备出院，其出院时的健康教育内容包括", options: ["病情现状", "治疗原则", "治疗效果", "继续用药情况", "定期复查"], answer: "E", explain: "出院教育应告知定期复查。", type: "single" },
+/* 774 */ { Q: "关于管理的职能，正确的是", options: ["评估、计划、指导、领导、控制", "计划、指导、人员管理、领导、控制", "评估、计划、组织、领导、控制", "计划、组织、人员管理、领导、评价", "计划、组织、人员管理、领导、评价"], answer: "C", explain: "管理职能包括计划、组织、人员管理、领导、控制。", type: "single" },
+/* 775 */ { Q: "健康教育需求中的学习态度评估重点是", options: ["健康价值观", "阅读能力", "记忆力", "反应速度", "文化程度"], answer: "A", explain: "学习态度评估重点是健康价值观。", type: "single" },
+/* 776 */ { Q: "医务人员在诊查传染病患者后洗手方法为", options: ["大量流动水冲洗", "快速手消毒", "用肥皂彻底洗手", "严格洗手与手消毒", "认真外科刷手"], answer: "D", explain: "诊查传染病患者后应严格洗手与手消毒。", type: "single" },
+/* 777 */ { Q: "产妇，24岁。护士通过与其交谈，了解到年轻母亲缺乏婴儿喂养的知识和技能。属于健康教育程序的", options: ["评估需求阶段", "确定目标阶段", "制订计划阶段", "实施计划阶段", "评价效果阶段"], answer: "A", explain: "了解缺乏知识和技能属于评估需求阶段。", type: "single" },
+/* 778 */ { Q: "质量观的发展阶段不包括", options: ["符合性质量阶段", "适用性质量阶段", "有效性质量阶段", "满意性质量阶段", "卓越性质量阶段"], answer: "C", explain: "有效性质量阶段不是质量观的发展阶段。", type: "single" },
+/* 779 */ { Q: "有关抗生素的使用，不正确的是", options: ["原则上一般使用生理盐水作为抗生素静脉滴注的溶液", "对长期使用广谱抗生素的患者，应监测感染部位细菌变化", "疑似细菌感染，决定在使用抗生素前，应留取标本行病原学检查", "万古霉素不作为预防性抗生素使用", "清洁无菌手术术前一定要预防性使用抗生素"], answer: "E", explain: "清洁无菌手术不需预防性使用抗生素。", type: "single" },
+/* 780 */ { Q: "须用消毒剂搓洗手的情况不包括", options: ["接触污染物品后", "接触传染病患者后", "接触同一患者不同部位", "接触特殊感染的病原体后", "在微生物实验室操作后"], answer: "C", explain: "接触同一患者不同部位不需要消毒剂搓洗手。", type: "single" },
+/* 781 */ { Q: "医院中，Ⅰ、Ⅱ类区域工作人员，消毒洗手后效果监测应达到", options: ["细菌总数≤5CFU/cm²，且不得检出致病菌", "细菌总数≤10CFU/cm²，且不得检出致病菌", "细菌总数≤15CFU/cm²，且不得检出致病菌", "细菌总数≤200CFU/m³，且不得检出致病菌", "细菌总数≤500CFU/m³，且不得检出致病菌"], answer: "A", explain: "Ⅰ、Ⅱ类区域工作人员洗手后细菌总数≤5CFU/cm²。", type: "single" },
+/* 782 */ { Q: "医院中，Ⅳ类区域工作人员，消毒洗手后效果监测应达到", options: ["细菌总数≤5CFU/cm²，且不得检出致病菌", "细菌总数≤10CFU/cm²，且不得检出致病菌", "细菌总数≤15CFU/cm²，且不得检出致病菌", "细菌总数≤200CFU/m³，且不得检出致病菌", "细菌总数≤500CFU/m³，且不得检出致病菌"], answer: "B", explain: "Ⅳ类区域工作人员洗手后细菌总数≤10CFU/cm²。", type: "single" },
+/* 783 */ { Q: "“能和我说说您对这个治疗方案的看法吗？”提问方式属于", options: ["封闭式提问", "开放式提问", "探索式提问", "诱导式提问", "特定式提问"], answer: "B", explain: "开放式提问给对方自由发挥的空间。", type: "single" },
+/* 784 */ { Q: "“您知道什么是胃溃疡吗？”提问方式属于", options: ["封闭式提问", "开放式提问", "探索式提问", "诱导式提问", "特定式提问"], answer: "A", explain: "封闭式提问有明确答案范围。", type: "single" },
+/* 785 */ { Q: "护士欲对患者的某一问题深入了解，应选用的提问方式是", options: ["封闭式提问", "开放式提问", "探索式提问", "诱导式提问", "特定式提问"], answer: "C", explain: "探索式提问用于深入了解问题。", type: "single" },
+/* 786 */ { Q: "适用于收集简明的事实性资料的提问方式是", options: ["封闭式提问", "开放式提问", "探索式提问", "诱导式提问", "特定式提问"], answer: "A", explain: "封闭式提问适用于收集简明的事实性资料。", type: "single" },
+/* 787 */ { Q: "属于抗结核的药物是", options: ["利福平", "阿昔洛韦", "甲硝唑", "氟康唑", "氯喹"], answer: "A", explain: "利福平是抗结核药。", type: "single" },
+/* 788 */ { Q: "属于抗真菌的药物是", options: ["利福平", "阿昔洛韦", "甲硝唑", "氟康唑", "氯喹"], answer: "D", explain: "氟康唑是抗真菌药。", type: "single" },
+/* 789 */ { Q: "男，5岁。他非常喜欢表现自己，且总爱问“为什么”之类的问题。此男孩的行为可能处于", options: ["自主发展阶段", "被动发展阶段", "主动发展阶段", "自我发展阶段", "巩固发展阶段"], answer: "C", explain: "喜欢表现自己、爱问为什么是主动发展阶段的特点。", type: "single" },
+/* 790 */ { Q: "0~3岁小儿的行为发展处于", options: ["自主发展阶段", "被动发展阶段", "主动发展阶段", "自我发展阶段", "巩固发展阶段"], answer: "B", explain: "0-3岁属于被动发展阶段。", type: "single" },
+/* 791 */ { Q: "属于基础质量评价指标的是", options: ["仪器设备完好率", "运行病历合格率", "静脉输液操作合格率", "一人一针一管执行率", "出院患者满意度"], answer: "A", explain: "仪器设备完好率属于基础质量评价指标。", type: "single" },
+/* 792 */ { Q: "属于终末质量评价指标的是", options: ["仪器设备完好率", "运行病历合格率", "静脉输液操作合格率", "一人一针一管执行率", "出院患者满意度"], answer: "E", explain: "出院患者满意度属于终末质量评价指标。", type: "single" },
+/* 793 */ { Q: "ABC时间管理法中A级目标是", options: ["最重要且必须完成的目标", "最重要很想完成的目标", "较重要且必须完成的目标", "较重要很想完成的目标", "不太重要可以暂时搁置的目标"], answer: "A", explain: "A级目标是最重要且必须完成的目标。", type: "single" },
+/* 794 */ { Q: "ABC时间管理法中B级目标是", options: ["最重要且必须完成的目标", "最重要很想完成的目标", "较重要且必须完成的目标", "较重要很想完成的目标", "不太重要可以暂时搁置的目标"], answer: "C", explain: "B级目标是较重要且必须完成的目标。", type: "single" },
+/* 795 */ { Q: "ABC时间管理法中C级目标是", options: ["最重要且必须完成的目标", "最重要很想完成的目标", "较重要且必须完成的目标", "较重要很想完成的目标", "不太重要可以暂时搁置的目标"], answer: "E", explain: "C级目标是不太重要可以暂时搁置的目标。", type: "single" },
+/* 796 */ { Q: "环境的温度<24℃，湿度<70%时，使用纺织品材料包装的无菌物品的有效期宜为", options: ["1个月", "7天", "14天", "6个月", "3个月"], answer: "C", explain: "纺织品包装的无菌物品有效期为14天。", type: "single" },
+/* 797 */ { Q: "医用一次性纸袋包装的无菌物品，有效期宜为", options: ["1个月", "7天", "14天", "6个月", "3个月"], answer: "A", explain: "一次性纸袋包装的无菌物品有效期为1个月。", type: "single" },
+/* 798 */ { Q: "健康教育的核心问题是", options: ["宣传健康知识", "进行完整、系统的教育活动", "开展爱国卫生运动", "促进个体或群体改变不健康的行为与生活方式", "治疗慢性疾病"], answer: "D", explain: "健康教育的核心是改变不健康的行为与生活方式。", type: "single" },
+/* 799 */ { Q: "属于权力性影响力的是", options: ["人格", "知识", "感情", "职务", "能力"], answer: "D", explain: "职务属于权力性影响力。", type: "single" },
+/* 800 */ { Q: "男，35岁。入住ICU3天，留置肘静脉导管，晨起发现透明敷料下创面红肿，沿肘静脉走向出现红线，局部有压痛，查体：体温38.4℃。血常规示白细胞19.5×10⁹/L。对该患者的描述，不正确的是", options: ["加强置管部位的护理及监控，留置导管时间不宜过长", "高度怀疑为血管相关性感染", "应在血培养确诊感染后拔除导管", "严格手卫生和无菌操作是预防感染最重要的措施之一", "须行穿刺部位采血定量培养"], answer: "C", explain: "怀疑血管相关性感染时应立即拔除导管，不必等血培养结果。", type: "single" },
+/* 801 */ { Q: "结核病最主要的传染源是", options: ["结核性脑膜炎", "骨关节结核", "开放性肺结核", "淋巴结结核", "结核性腹膜炎"], answer: "C", explain: "开放性肺结核患者是结核病最主要的传染源。", type: "single" },
+/* 802 */ { Q: "咨询属于", options: ["人际传播形式", "自我传播形式", "群体传播形式", "组织传播形式", "大众传播形式"], answer: "A", explain: "咨询属于人际传播形式。", type: "single" },
+/* 803 */ { Q: "为人类适应行为奠定基础的是", options: ["自我控制", "顺应", "反射", "应对", "应激"], answer: "C", explain: "反射是人类适应行为的基础。", type: "single" },
+/* 804 */ { Q: "首先提出目标管理的是", options: ["孔安", "德鲁克", "巴纳德", "西蒙", "马斯洛"], answer: "B", explain: "德鲁克首先提出目标管理。", type: "single" },
+/* 805 */ { Q: "某护士能及时发现患者的病情变化并正确处理，说明该护士", options: ["具有诚实的品格", "具有扎实的理论基础", "具有较强的实践能力", "具有敏锐的观察力和分析力", "具有较强的责任感"], answer: "D", explain: "能及时发现病情变化说明具有敏锐的观察力和分析力。", type: "single" },
+/* 806 */ { Q: "关于环境清洁与消毒的方法和原则中，错误的是", options: ["环境应定期清扫", "医院一般环境应使用消毒剂清洁", "清洁程序遵循从洁到污的原则", "采用湿布拖把清洁", "患者房间家具清洁做到一人一桌一巾"], answer: "B", explain: "医院一般环境以清洁为主，不是必须使用消毒剂。", type: "single" },
+/* 807 */ { Q: "肠道正常菌群参与合成叶酸，体现的是其", options: ["营养作用", "免疫调节作用", "定植抵抗力作用", "生物屏障作用", "抗衰老作用"], answer: "A", explain: "合成维生素属于营养作用。", type: "single" },
+/* 808 */ { Q: "健康促进的策略属于", options: ["独立性的策略", "社会性的策略", "职能性的策略", "专业性的策略", "综合性的策略"], answer: "E", explain: "健康促进属于综合性的策略。", type: "single" },
+/* 809 */ { Q: "健康行为是一种", options: ["健康相关行为", "处于理想健康状态下的行为", "身体处于良好状态的行为", "心理处于良好状态的行为", "社会适应处于良好状态的行为"], answer: "A", explain: "健康行为是一种健康相关行为。", type: "single" },
+/* 810 */ { Q: "健康传播效果的根本保证是", options: ["针对性", "简洁性", "指导性", "合理性", "科学性"], answer: "E", explain: "科学性是健康传播效果的根本保证。", type: "single" },
+/* 811 */ { Q: "五行中水的特性是", options: ["曲直", "润下", "炎上", "稼穑", "从革"], answer: "B", explain: "水曰润下。", type: "single" },
+/* 812 */ { Q: "属于正治法的是", options: ["热因热用", "寒因寒用", "塞因塞用", "实则泻之", "通因通用"], answer: "D", explain: "实则泻之属于正治法。", type: "single" },
+/* 813 */ { Q: "医院感染病例监测的具体方法不包括", options: ["资料的收集", "资料的整理", "资料的分析", "资料的统计", "资料的报告"], answer: "D", explain: "资料的统计不是监测的具体方法。", type: "single" },
+/* 814 */ { Q: "护士准备为患者更换造口敷料和行静脉穿刺。关于洗手的叙述，错误的是", options: ["先静脉穿刺，再更换造口敷料", "护士的操作从造口处转向静脉穿刺部位时，应洗手", "接触患者床单位、周围环境及物品前必须洗手", "接触患者造口分泌物和敷料后应立即洗手或手消毒", "操作时戴手套，脱手套后应洗手"], answer: "A", explain: "应先做清洁操作(静脉穿刺)，再做污染操作(更换造口敷料)。", type: "single" },
+/* 815 */ { Q: "患者因居住地阴冷、潮湿。近来左腿常感重着、麻木、屈伸不利，舌质暗，苔白腻，脉濡缓。采用拔罐治疗。将火罐分别吸附于左侧腰部的肾俞穴和臀部的环跳穴，吸上后又立即取下，再吸再拔如此反复操作至皮肤潮红为止。此拔罐方法称作", options: ["留罐", "闪罐", "走罐", "刺络拔罐", "留针拔罐"], answer: "B", explain: "吸上立即取下反复操作是闪罐法。", type: "single" },
+/* 816 */ { Q: "选择传播媒介时不必考虑", options: ["传播效果", "传播者的喜好", "经费", "受众的喜好", "可及性"], answer: "B", explain: "选择媒介应以受众为中心，不是以传播者喜好为中心。", type: "single" },
+/* 817 */ { Q: "根据双因素理论，管理者为了提高护士对护理工作的满意度，激发正性情绪。最适宜采取的措施是", options: ["改善工作环境", "改善人际关系", "提高福利待遇", "改善工作条件", "设立岗位明星"], answer: "E", explain: "设立岗位明星属于激励因素，可提高满意度。", type: "single" },
+/* 818 */ { Q: "在一定生产关系下进行的管理，反映了管理的", options: ["科学属性", "艺术属性", "实践属性", "社会属性", "自然属性"], answer: "D", explain: "在一定生产关系下进行管理反映了管理的社会属性。", type: "single" },
+/* 819 */ { Q: "属于浪费时间主观因素的是", options: ["缺乏反馈", "信息不够丰富", "未能恰当授权", "无效沟通", "过多的社交活动"], answer: "C", explain: "未能恰当授权是主观因素造成的浪费时间。", type: "single" },
+/* 820 */ { Q: "“在患者及其家属面前说话不考虑后果”属于的护理缺陷类型为", options: ["执行医嘱不当", "违反护理管理制度", "工作不认真，缺乏责任感", "护理管理不善造成缺陷", "疏于对护士的业务培训"], answer: "C", explain: "说话不考虑后果属于工作不认真，缺乏责任感。", type: "single" },
+/* 821 */ { Q: "发生医院感染危险性相对最低的人群是", options: ["长期住院患者", "新生儿", "择期手术的患者", "免疫功能低下的患者", "卧床患者"], answer: "C", explain: "择期手术患者住院时间短，感染危险性相对较低。", type: "single" },
+/* 822 */ { Q: "预防接种属于", options: ["日常健康行为", "避开有害环境行为", "戒除不良嗜好行为", "预警行为", "保健行为"], answer: "E", explain: "预防接种属于保健行为。", type: "single" },
+/* 823 */ { Q: "某医院外科接到某地区先天性心脏病救治的重大任务，护士长将护士甲和护士乙2名经验丰富的护士组织起来，这种方式属于", options: ["弹性授权", "引导授权", "不充分授权", "制约授权", "逐渐授权"], answer: "D", explain: "将任务交给两位经验丰富的护士互相制约属于制约授权。", type: "single" },
+/* 824 */ { Q: "为确保效果，小组讨论的人数、时间最好分别为", options: ["3~5人，0.5小时左右", "6~10人，1小时左右", "6~10人，1.5小时左右", "11~15人，1小时左右", "11~15人，1.5小时左右"], answer: "B", explain: "小组讨论人数6-10人，时间1小时左右最合适。", type: "single" },
+/* 825 */ { Q: "根据知-信-行模式，健康行为形成的基础条件是", options: ["获取相关知识", "掌握相关技能", "树立相关信念", "建立相关动机", "制订相关目标"], answer: "A", explain: "获取相关知识是健康行为形成的基础。", type: "single" },
+/* 826 */ { Q: "属于医院感染高度危险性的物品是", options: ["呼吸机管道", "麻醉机管道", "胃镜", "喉镜", "手术用止血钳"], answer: "E", explain: "手术用止血钳需进入无菌组织，属于高度危险性物品。", type: "single" },
+/* 827 */ { Q: "五色的五行归类中，属“木”的是", options: ["白", "黑", "黄", "青", "赤"], answer: "D", explain: "青色属木。", type: "single" },
+/* 828 */ { Q: "行为诊断的主要目的是确定目标人群", options: ["形成已久的行为", "疾病和健康问题", "疾病或健康问题的相关因素", "正处在发展期或刚刚形成的行为", "疾病或健康问题发生的行为危险因素"], answer: "E", explain: "行为诊断的目的是确定行为危险因素。", type: "single" },
+/* 829 */ { Q: "隔离对象不包括", options: ["水痘患者", "肾结石患者", "麻疹患者", "甲型肝炎患者", "感染性腹泻患者"], answer: "B", explain: "肾结石患者不需要隔离。", type: "single" },
+/* 830 */ { Q: "人体的物质转化和能量转化过程，主要依赖气的", options: ["推动作用", "温煦作用", "防御作用", "固摄作用", "气化作用"], answer: "E", explain: "气化作用指物质转化和能量转化过程。", type: "single" },
+/* 831 */ { Q: "组织文化内容会渗透到组织内部的各个方面，体现了组织文化的", options: ["文化性", "综合性", "整合性", "自觉性", "实践性"], answer: "C", explain: "渗透到各个方面体现了整合性。", type: "single" },
+/* 832 */ { Q: "精血同源的两脏是", options: ["心、肺", "肺、脾", "心、肾", "肝、肾", "心、肝"], answer: "D", explain: "肝藏血，肾藏精，精血同源。", type: "single" },
+/* 833 */ { Q: "在管理决策的过程中，护理管理者应用最简单、在日常管理中也最为常用的方法是", options: ["集体决策法", "头脑风暴法", "德尔菲法", "个人判断法", "电子会议法"], answer: "D", explain: "个人判断法是最简单、最常用的决策方法。", type: "single" },
+/* 834 */ { Q: "物品消毒灭菌效果合格的是", options: ["化学消毒剂的染菌量为150CFU/ml", "使用中紫外线灯管的照射强度为80μW/cm²", "消毒后的喉镜菌落总数为30CFU/件", "透析器入口液的菌落总数为500CFU/ml", "透析器出口液的菌落总数为2500CFU/ml"], answer: "B", explain: "使用中紫外线灯强度应≥70μW/cm²，80μW/cm²合格。", type: "single" },
+/* 835 */ { Q: "属于Ⅰ类环境的是", options: ["新生儿室", "儿科病房", "透析室", "层流洁净病房", "ICU"], answer: "D", explain: "层流洁净病房属于Ⅰ类环境。", type: "single" },
+/* 836 */ { Q: "有助于有效交流的行为技巧是", options: ["说教", "劝服", "劝告", "轻视", "刺激"], answer: "B", explain: "劝服是有助于有效交流的技巧。", type: "single" },
+/* 837 */ { Q: "某二级医院护理部制订在职护士的培养计划，方案一：选送部分护士去三级医院学习、进修，其优点是学习效果好，缺点是只有一小部分护士有机会出去学习，路程远、费用高。方案二：邀请全国临床护理专家定期来医院进行临床护理知识讲座、培训，其优点是全院护士均有机会参与，缺点是专家不易联系。该二级医院护理部处于制订计划步骤中的", options: ["确定目标阶段", "发展可选方案阶段", "比较方案阶段", "选定辅助计划阶段", "制订辅助计划阶段"], answer: "C", explain: "比较不同方案的优缺点属于比较方案阶段。", type: "single" },
+/* 838 */ { Q: "影响护理人员编设的因素不包括", options: ["政策法规", "护士薪酬", "社会因素", "管理水平", "工作量"], answer: "B", explain: "护士薪酬不是影响护理人员编设的因素。", type: "single" },
+/* 839 */ { Q: "阴阳互根关系不包括", options: ["阳在外，阴之使也", "孤阴不生，独阳不长", "阴在内，阳之守也", "阴损及阳，阳损及阴", "重阴必阳，重阳必阴"], answer: "E", explain: "重阴必阳、重阳必阴是阴阳转化。", type: "single" },
+/* 840 */ { Q: "直线型组织结构的特点", options: ["职能机构和人员按管理业务性质分工，分别从事专业管理", "组织系统职权从组织上层流向组织基层", "设置委员会以利于集体决策", "在高层管理者之下按特征设置若干分部", "直线主管人员有相应的职能机构和人员作为助手"], answer: "B", explain: "直线型组织结构职权从上层流向基层。", type: "single" },
+/* 841 */ { Q: "一个健康教育项目效果评价的重点是", options: ["知识增长", "态度转变", "患病率下降", "行为改变", "健康状况改善"], answer: "D", explain: "健康教育效果评价的重点是行为改变。", type: "single" },
+/* 842 */ { Q: "关于流行性出血热的叙述，正确的是", options: ["人类和鼠类感染后易发病", "不可垂直传播", "具有单一宿主性", "主要病原体为柯萨奇病毒", "可通过食入被感染动物排泄物污染的食物感染"], answer: "E", explain: "流行性出血热可通过食入被污染食物感染。", type: "single" },
+/* 843 */ { Q: "护理人员数量与结构设置的主要依据是", options: ["合理结构原则", "最大化优组合原则", "提升经济效能原则", "满足患者护理需要原则", "动态调整原则"], answer: "D", explain: "满足患者护理需要是护理人员设置的主要依据。", type: "single" },
+/* 844 */ { Q: "某医院护理部质控组使用PDCA循环的管理方法，实行护理质控管制，依据既定的质量标准定期到临床查找问题，分析原因，针对原因制订改进措施，实施并反馈，不断改进提高。该医院实行护理质量控制过程中的依据是", options: ["统计数据", "质量标准", "个人观察", "问卷调查", "书面报告"], answer: "B", explain: "质量控制以质量标准为依据。", type: "single" },
+/* 845 */ { Q: "男，55岁。因心绞痛发作2天入院。既往病史3年。入院时，患者情绪高度紧张，态度很激动，说话声音很大，认为家属小题大做，表现出不满情绪。健康教育时，护士评估此患者的行为表现应为", options: ["不遵医嘱行为", "不良疾病行为", "患者角色缺如行为", "A型行为模式", "C型行为模式"], answer: "D", explain: "情绪紧张、激动、声音大是A型行为模式特点。", type: "single" },
+/* 846 */ { Q: "医院感染的主要对象是", options: ["门诊患者", "急诊患者", "住院患者", "探视者", "陪护者"], answer: "C", explain: "医院感染的主要对象是住院患者。", type: "single" },
+/* 847 */ { Q: "差别工资制的提出者是", options: ["马斯洛", "梅奥", "韦伯", "法约尔", "泰勒"], answer: "E", explain: "泰勒提出差别工资制。", type: "single" },
+/* 848 */ { Q: "全面质量管理的目标是", options: ["强烈地关注客户", "全面提升整体的质量", "持续地、渐进地变革", "改进组织中每项工作的质量", "建立组织对持续改进的承诺"], answer: "B", explain: "全面质量管理的目标是全面提升整体的质量。", type: "single" },
+/* 849 */ { Q: "功能制护理的优点是", options: ["便于发挥不同层次护理人员的作用", "分工明确、效率高、易于组织管理", "便于发挥护理人员的主动性和创造性", "全面掌握和满足患者需求", "为患者提供生理、心理、社会等全方位护理"], answer: "B", explain: "功能制护理的优点是分工明确、效率高、易于组织管理。", type: "single" },
+/* 850 */ { Q: "同一类传染病患者住同一病室，床距应保持在", options: ["1m以上", "0.8m以上", "1.5m以上", "2m以上", "2.5m以上"], answer: "A", explain: "同一类传染病患者同住一室，床距应保持1m以上。", type: "single" },
+/* 851 */ { Q: "沟通障碍的类型主要包括", options: ["发送者的障碍、编码的障碍、接收者的障碍", "发送者的障碍、编码的障碍、沟通通道的障碍", "发送者的障碍、沟通通道的障碍、反馈的障碍", "发送者的障碍、沟通通道的障碍、接收者的障碍", "发送者的障碍、接收者的障碍、反馈的障碍"], answer: "D", explain: "沟通障碍主要包括发送者、沟通通道、接收者三方面的障碍。", type: "single" },
+/* 852 */ { Q: "梅毒的病原体是", options: ["奈瑟菌", "钩端螺旋体", "苍白螺旋体", "汉坦病毒", "人类乳头瘤病毒"], answer: "C", explain: "梅毒的病原体是苍白螺旋体。", type: "single" },
+/* 853 */ { Q: "建立传播关系需要的三个基本条件是", options: ["传播者、传播渠道和受传者", "传播者、受传者和反馈", "传播者、受传者和共同经验范围", "契约关系、反馈和渠道", "共同经验范围、反馈和契约关系"], answer: "C", explain: "建立传播关系需要传播者、受传者和共同经验范围。", type: "single" },
+/* 854 */ { Q: "术前预防性使用抗生素的最佳时机是", options: ["术前10天", "术前7天", "术前3天", "术前1天", "术前0.5~1小时"], answer: "E", explain: "术前预防性抗生素应在术前0.5-1小时使用。", type: "single" },
+/* 855 */ { Q: "男，65岁。因肺炎入院治疗，使用抗生素治疗7天后，出现了发热、腹痛、腹泻，大便为水样便，血常规：白细胞分类升高。结肠镜检查：肠壁充血、水肿，见5mm灰白色假膜。患者最有可能的诊断是", options: ["急性细菌性痢疾", "急性肠炎", "假膜性肠炎", "克罗恩病", "溃疡性结肠炎"], answer: "C", explain: "长期使用抗生素后出现假膜性肠炎是二重感染的表现。", type: "single" },
+/* 856 */ { Q: "对门诊患者进行健康教育的侧重点是", options: ["心理问题指导", "常见病的防治教育", "家庭保健指导", "医院规章制度的介绍", "康复指导"], answer: "B", explain: "门诊教育侧重于常见病的防治教育。", type: "single" },
+/* 857 */ { Q: "在组织设计中，“确定正式组织结构及组织运作程序”属于", options: ["决定人员配备", "确立组织目标", "形成组织结构", "划分业务工作", "确定职责和权限"], answer: "C", explain: "确定正式组织结构及运作程序属于形成组织结构。", type: "single" },
+/* 858 */ { Q: "某医院、某科室的住院患者中，短时间内突然发生许多医院感染病例的现象是", options: ["医院感染散发", "医院感染播散", "医院感染流行", "医院感染暴发", "医院感染罹患"], answer: "D", explain: "短时间内发生多例感染属于医院感染暴发。", type: "single" },
+/* 859 */ { Q: "护士长制订了本科室上半年护理工作计划，该计划属于", options: ["长期计划", "中期计划", "短期计划", "战略性计划", "预算计划"], answer: "C", explain: "上半年计划属于短期计划。", type: "single" },
+/* 860 */ { Q: "β-内酰胺类抗生素最佳给药方法是", options: ["连续给药", "1天量一次性给药", "间歇给药", "与氨基糖苷类抗生素同瓶滴注", "根据药物效应动力学和药物代谢动力学的特点决定间歇或者连续给药"], answer: "E", explain: "应根据药效学和药动学特点决定给药方案。", type: "single" },
+/* 861 */ { Q: "组织中每个部门或个人的贡献越是有利实现组织目标，组织结构就越是合理有效，是组织设计原则中的", options: ["集权与分权相结合的原则", "责权一致原则", "目标统一原则", "有效管理幅度原则", "分工协作原则"], answer: "C", explain: "各部门贡献有利于实现目标体现了目标统一原则。", type: "single" },
+/* 862 */ { Q: "中医学的基本特点是", options: ["整体观念与审因论治", "辨证论治与预防为主", "整体观念与辨证论治", "治病求本与标本同治", "藏象学说与辨证论治"], answer: "C", explain: "中医学的基本特点是整体观念和辨证论治。", type: "single" },
+/* 863 */ { Q: "目标管理的特点不包括", options: ["强调目标的唯一性", "强调员工参与管理", "强调自我评价", "强调自我管理", "强调重视成果"], answer: "A", explain: "目标管理不强调目标的唯一性。", type: "single" },
+/* 864 */ { Q: "外感六淫是咳嗽的常见病因，称为先导的病原是", options: ["风", "寒", "湿", "燥", "火"], answer: "A", explain: "风为六淫之首，是外感咳嗽的先导。", type: "single" },
+/* 865 */ { Q: "属于经空气传播的疾病是", options: ["水痘", "沙眼", "流行性乙型脑炎", "细菌性脑膜炎", "伤寒"], answer: "A", explain: "水痘经空气传播。", type: "single" },
+/* 866 */ { Q: "健康教育的主要措施是", options: ["教育者充分利用卫生资源", "向教育对象传播健康信息", "充分挖掘社区的保健潜力", "改善教育对象的健康相关行为", "提供合理的健康、预防服务"], answer: "D", explain: "健康教育的主要措施是改善健康相关行为。", type: "single" },
+/* 867 */ { Q: "血的功能是", options: ["主气", "纳气", "生气", "载气", "调气"], answer: "D", explain: "血的功能是载气。", type: "single" },
+/* 868 */ { Q: "系统的功能大于各个个体的功效之和。这反映了系统的", options: ["整体性", "相关性", "层次性", "目的性", "环境适应性"], answer: "A", explain: "系统功能大于个体之和体现了系统的整体性。", type: "single" },
+/* 869 */ { Q: "肝胆外科病区值班护士发现一名患者不在医院且没有请假，此时护士首先应报告的对象是", options: ["肝胆外科主任", "外科总护士长", "患者家属", "肝胆外科病区护士长", "护理部主任"], answer: "D", explain: "发现患者不在应立即报告病区护士长。", type: "single" },
+/* 870 */ { Q: "护士告诉某新入院患者到放射科去做检查，但是忘了给申请单，也未告诉患者在哪里做检查，导致患者在门诊耽误了很长时间。该护士的行为属于沟通障碍中的", options: ["目的不明，导致信息内容不准确", "表达模糊，导致信息传递错误", "选择失误，导致信息误解的可能性增大", "言行不当，导致信息的理解错误", "过度加工，导致信息的模糊或失真"], answer: "B", explain: "未告知具体信息属于表达模糊。", type: "single" },
+/* 871 */ { Q: "关于穿隔离衣进入隔离区后行为的描述，正确的是", options: ["穿隔离衣后，可到储物室取物", "穿隔离衣后，可以随意活动", "穿隔离衣后仅用避污纸接触患者，脱衣后可不用消毒双手", "护理操作前用物计划周全，以省略反复穿、脱隔离衣及手消毒", "为患者发药时，可不用穿隔离衣"], answer: "D", explain: "应计划周全，减少反复穿脱隔离衣。", type: "single" },
+/* 872 */ { Q: "在确定优先健康教育项目时，优先考虑对人群健康威胁严重、对经济社会发展影响较大的问题，遵循的是", options: ["有效性原则", "重要性原则", "合理性原则", "先进性原则", "整体性原则"], answer: "B", explain: "优先考虑威胁严重的问题体现了重要性原则。", type: "single" },
+/* 873 */ { Q: "须采取血液-体液隔离的疾病是", options: ["麻疹", "脊髓灰质炎", "皮肤白喉", "疟疾", "霍乱"], answer: "D", explain: "疟疾需采取血液-体液隔离。", type: "single" },
+/* 874 */ { Q: "医护人员对患者进行有关医院规章制度的教育属于", options: ["候诊教育", "入院教育", "出院教育", "病房教育", "健康教育处方"], answer: "B", explain: "医院规章制度教育属于入院教育内容。", type: "single" },
+/* 875 */ { Q: "健康信息的生命和取得健康传播效果的根本保证是", options: ["符号通用、易懂", "信息内容科学、准确", "信息选择针对接受者的需求", "信息传递针对接受者的特点", "信息对接受者具有指导意义"], answer: "B", explain: "信息内容的科学、准确是健康信息的生命和效果保证。", type: "single" },
+/* 876 */ { Q: "关于预防血管相关性感染的描述，错误的是", options: ["严格洗手和无菌操作", "熟练的穿刺、置管技术", "留置导管的时间不宜过长", "使用合格的一次性医疗用品", "配制的溶液可在冰箱内保存1周"], answer: "E", explain: "配制的溶液应在24小时内使用。", type: "single" },
+/* 877 */ { Q: "组织结构的基本类型不包括", options: ["直线型组织结构", "职能型组织结构", "分部制组织结构", "直线-职能型组织结构", "委员会"], answer: "E", explain: "委员会不是组织结构的基本类型。", type: "single" },
+/* 878 */ { Q: "关于控制的叙述，错误的是", options: ["监视各项活动", "纠正各种偏差", "按既定计划运行", "提高经济效益", "保证目标的实现"], answer: "D", explain: "控制不一定直接提高经济效益。", type: "single" },
+/* 879 */ { Q: "某护士在清洗外科手术器械时，不慎被锐利的器械刺伤手指，该护士必须立即", options: ["挤出污血并冲洗伤口", "清创", "消毒", "找到可能感染的病原种类证据", "医院感染管理科备案，抽血"], answer: "A", explain: "锐器伤后应立即挤出污血并冲洗伤口。", type: "single" },
+/* 880 */ { Q: "按照传播规模，人类传播活动不包括", options: ["人际传播", "社区传播", "大众传播", "组织传播", "自我传播"], answer: "B", explain: "社区传播不是按传播规模分类的类型。", type: "single" },
+/* 881 */ { Q: "个体之间相互沟通的传播活动称为", options: ["人际传播", "社区传播", "大众传播", "组织传播", "自我传播"], answer: "A", explain: "个体之间相互沟通属于人际传播。", type: "single" },
+/* 882 */ { Q: "人内传播又称", options: ["人际传播", "社区传播", "大众传播", "组织传播", "自我传播"], answer: "E", explain: "人内传播又称自我传播。", type: "single" },
+/* 883 */ { Q: "已发展成为一介独立研究领域，即公共关系学的传播活动是", options: ["人际传播", "社区传播", "大众传播", "组织传播", "自我传播"], answer: "D", explain: "组织传播发展成公共关系学。", type: "single" },
+/* 884 */ { Q: "有效控制的特征中，强调例外指的是", options: ["控制的标准必须是统一的、合理的", "有效控制系统应是合理、适用的", "控制手段应顾及例外情况的发生", "控制系统应能及时发现偏差信息", "有效控制系统依赖于准确的数据"], answer: "C", explain: "强调例外指控制手段应顾及例外情况。", type: "single" },
+/* 885 */ { Q: "有效控制的特征中，适用性是指", options: ["控制的标准必须是统一的、合理的", "有效控制系统应是合理、适用的", "控制手段应顾及例外情况的发生", "控制系统应能及时发现偏差信息", "有效控制系统依赖于准确的数据"], answer: "B", explain: "适用性指控制系统应是合理、适用的。", type: "single" },
+/* 886 */ { Q: "护理诊断阐述的对象是", options: ["有关个人对生活环境反应的判断", "有关个人对医疗技术反应的判断", "个人、家庭、社会对健康问题反应的判断", "对个人身体病理生理变化的判断", "有关个人对生命照顾反应的判断"], answer: "C", explain: "护理诊断阐述的是个人、家庭、社会对健康问题反应的判断。", type: "single" },
+/* 887 */ { Q: "医疗诊断阐述的对象是", options: ["有关个人对生活环境反应的判断", "有关个人对医疗技术反应的判断", "个人、家庭、社会对健康问题反应的判断", "对个人身体病理生理变化的判断", "有关个人对生命照顾反应的判断"], answer: "D", explain: "医疗诊断是对个人身体病理生理变化的判断。", type: "single" },
+/* 888 */ { Q: "下排气式压力蒸汽灭菌消毒柜灭菌条件为", options: ["温度160℃，时间2小时", "压力205.8kPa，温度132℃，时间4分钟", "湿度70%-90%，温度54℃±2℃，时间3小时", "压力102.9kPa，温度121℃，时间20~30分钟", "湿度60%，温度20-40℃，时间25-143分钟"], answer: "D", explain: "下排气式压力蒸汽灭菌条件为121℃、20-30分钟。", type: "single" },
+/* 889 */ { Q: "预真空压力蒸汽灭菌消毒柜灭菌条件为", options: ["温度160℃，时间2小时", "压力205.8kPa，温度132℃，时间4分钟", "湿度70%-90%，温度54℃±2℃，时间3小时", "压力102.9kPa，温度121℃，时间20~30分钟", "湿度60%，温度20-40℃，时间25-143分钟"], answer: "B", explain: "预真空压力蒸汽灭菌条件为132℃、4分钟。", type: "single" },
+/* 890 */ { Q: "人类行为形成和发展的巩固发展阶段一般在", options: ["0~2岁", "2~3岁", "3~12岁", "12~13岁至成年", "成年后"], answer: "E", explain: "巩固发展在成年后。", type: "single" },
+/* 891 */ { Q: "人类行为形成和发展的主动发展阶段一般在", options: ["0~2岁", "2~3岁", "3~12岁", "12~13岁至成年", "成年后"], answer: "C", explain: "主动发展阶段在3-12岁。", type: "single" },
+/* 892 */ { Q: "人类行为形成和发展的自主发展阶段一般在", options: ["0~2岁", "2~3岁", "3~12岁", "12~13岁至成年", "成年后"], answer: "D", explain: "自主发展阶段在12-13岁至成年。", type: "single" },
+/* 893 */ { Q: "脓毒症抗菌药物一般用至体温正常、病情好转后", options: ["3天", "5天", "7~10天", "14天", "4~8周"], answer: "C", explain: "脓毒症用药至体温正常后7-10天。", type: "single" },
+/* 894 */ { Q: "心内膜炎抗菌药物一般用至体温正常、病情好转后", options: ["3天", "5天", "7~10天", "14天", "4~8周"], answer: "E", explain: "心内膜炎用药至体温正常后4-8周。", type: "single" },
+/* 895 */ { Q: "层流洁净病房空气中的细菌总数应", options: ["≤5CFU/cm²", "≤10CFU/m³", "≤50CFU/m³", "≤100CFU/m³", "≤15CFU/cm²"], answer: "B", explain: "层流洁净病房空气细菌总数≤10CFU/m³。", type: "single" },
+/* 896 */ { Q: "传染科病房物体表面的细菌总数应", options: ["≤5CFU/cm²", "≤10CFU/m³", "≤50CFU/m³", "≤100CFU/m³", "≤15CFU/cm²"], answer: "E", explain: "传染科病房物体表面细菌总数≤15CFU/cm²。", type: "single" },
+/* 897 */ { Q: "普通手术室物体表面的细菌总数应", options: ["≤5CFU/cm²", "≤10CFU/m³", "≤50CFU/m³", "≤100CFU/m³", "≤15CFU/cm²"], answer: "A", explain: "普通手术室物体表面细菌总数≤5CFU/cm²。", type: "single" },
+/* 898 */ { Q: "医疗机构发生医院感染暴发时，报告当地卫生行政部门的时间是", options: ["6小时内", "12小时内", "24小时内", "8小时内", "48小时内"], answer: "B", explain: "医院感染暴发应在12小时内报告当地卫生行政部门。", type: "single" },
+/* 899 */ { Q: "关于人际关系学说主要观点的描述，正确的是", options: ["人是喜欢工作的，是负责的，能够自我控制和管理", "群体行为是各种相互影响力的结合，这种“力场”可修正个人的行为", "群体是一种非正式组织，是处于平衡状态的", "人不仅是经济人，也是社会人，其工作态度受多种因素的影响", "群体的内聚力可以用每个成员对群体忠诚、责任感等态度来说明"], answer: "D", explain: "人际关系学说认为人是社会人，工作态度受多种因素影响。", type: "single" },
+/* 900 */ { Q: "顺从疾病假象而进行护理的方法是", options: ["正护法", "反护法", "扶正法", "祛邪法", "标本同护法"], answer: "B", explain: "顺从疾病假象进行护理属于反护法。", type: "single" },
+/* 901 */ { Q: "制订健康教育目标的宗旨是", options: ["行为的建立", "知识的获得", "态度的转变", "技能的提升", "对象的参与"], answer: "A", explain: "健康教育目标的宗旨是建立健康行为。", type: "single" },
+/* 902 */ { Q: "全面质量管理的特点，错误的是", options: ["关注顾客", "持续改进", "全程管理", "强调标准", "全员参与"], answer: "D", explain: "全面质量管理不强调标准，而是持续改进。", type: "single" },
+/* 903 */ { Q: "ICU的感染管理原则中错误的是", options: ["病室定期消毒", "限制家属探视及陪护", "拔除有创导管后行细菌培养", "尽量采用介入性血流动力学监测", "严重创伤、感染及应用免疫抑制药的患者避免安排在同一房间"], answer: "D", explain: "应尽量减少介入性监护方法。", type: "single" },
+/* 904 */ { Q: "时间管理的策略不包括", options: ["减少使用助手", "充分利用最佳工作时间", "保持时间利用的连续性", "学会授权", "学会拒绝"], answer: "A", explain: "时间管理应合理使用助手，不是减少使用助手。", type: "single" },
+/* 905 */ { Q: "喹诺酮类抗菌药物的作用机制是", options: ["干扰细菌细胞壁合成", "损伤细菌细胞膜", "抑制细菌核酸合成", "影响细菌蛋白质合成", "抗叶酸代谢"], answer: "C", explain: "喹诺酮类抑制细菌核酸合成。", type: "single" },
+/* 906 */ { Q: "健康信念模式解释健康相关行为所运用的方法是", options: ["医学基础", "社会心理", "临床医学", "医学管理", "卫生管理"], answer: "B", explain: "健康信念模式运用社会心理学方法解释健康行为。", type: "single" },
+/* 907 */ { Q: "影响健康信息传播效果的因素不包括", options: ["环境", "传播者", "信息", "传播媒介", "反馈"], answer: "E", explain: "反馈不是影响传播效果的因素。", type: "single" },
+/* 908 */ { Q: "血管相关性感染的主要影响因素不包括", options: ["导管的类型", "导管留置的时间", "对导管的日常护理", "置管时的无菌操作", "置管人的年资"], answer: "E", explain: "置管人年资不是主要影响因素。", type: "single" },
+/* 909 */ { Q: "沟通障碍的原因中，属于发送者原因的是", options: ["以自己为原则，对有些信息视而不见", "表达模糊，词不达意", "不合理的组织结构", "知觉偏差，导致对信息理解偏差", "沟通渠道过长，导致信息在传递中发生改变"], answer: "B", explain: "表达模糊是发送者造成的沟通障碍。", type: "single" },
+/* 910 */ { Q: "人类为协调矛盾、解决冲突，常采取适应形式中的", options: ["自我控制", "调适", "应对", "顺应", "应激"], answer: "D", explain: "为解决冲突采取的适应形式是顺应。", type: "single" },
+/* 911 */ { Q: "解决“干什么”的问题是", options: ["战略决策", "战术决策", "程序化决策", "非程序化决策", "确定型决策"], answer: "A", explain: "战略决策解决“干什么”的问题。", type: "single" },
+/* 912 */ { Q: "利用行政方法直接干预组织的各个环节，使整个组织工作保持良好秩序的协调方法属于", options: ["经济协调", "法纪协调", "目标协调", "协商协调", "组织协调"], answer: "E", explain: "行政干预属于组织协调。", type: "single" },
+/* 913 */ { Q: "关于隔离技术的叙述，错误的是", options: ["检验标本应放在有盖的容器内运送", "凡具有传染性的患者应集中在1个房间，便于管理", "焚烧处理被污染的敷料", "不将病历带进隔离室", "为患者抽血时戴手套"], answer: "B", explain: "不同传染性疾病患者不能集中一室，应分室隔离。", type: "single" },
+/* 914 */ { Q: "交流中可使用的动态体语是", options: ["眼神", "服饰", "姿势", "语调", "设施"], answer: "C", explain: "姿势属于动态体语。", type: "single" },
+/* 915 */ { Q: "某医院制订护理人才培训计划，在计划步骤的第一步评估形势时，需要评估的内容不包括", options: ["社会需求", "社会竞争", "服务对象的需求", "组织资源", "时间因素"], answer: "E", explain: "时间因素不是评估形势的内容。", type: "single" },
+/* 916 */ { Q: "躯体健康测量指标不包括", options: ["发病率", "体重", "腰围", "坐高", "日常生活活动能力"], answer: "E", explain: "日常生活活动能力是功能状态测量指标。", type: "single" },
+/* 917 */ { Q: "为了对某一问题深入了解，可以采用的提问方式是", options: ["封闭式提问", "开放式提问", "探索式提问", "复合式提问", "偏向式提问"], answer: "C", explain: "探索式提问用于深入了解问题。", type: "single" },
+/* 918 */ { Q: "弹性原则主要反映了现代管理原理中的", options: ["系统原理", "人本原理", "动态原理", "效益原理", "平衡原理"], answer: "C", explain: "弹性原则反映了动态原理。", type: "single" },
+/* 919 */ { Q: "以要素质量为导向的评价方法不包括", options: ["查阅资料", "与患者直接沟通", "考核", "问卷调查", "现场检查"], answer: "B", explain: "与患者直接沟通不是要素质量评价方法。", type: "single" },
+/* 920 */ { Q: "抗菌药物联合用药的指征不包括", options: ["单一药物难以控制的感染", "病因明确的严重感染", "感染部位一般抗生素不易渗入的感染", "联合用药可显著增强抗菌作用的感染", "长期应用抗生素，注意防止真菌二重感染"], answer: "E", explain: "防止真菌二重感染不是联合用药的指征。", type: "single" },
+/* 921 */ { Q: "预防医院感染发生的措施不包括", options: ["避免扰乱和破坏患者身体正常防御机制", "明确患者的潜在病灶，及时给予治疗", "及早使用预防性抗生素", "严格遵守无菌原则", "对免疫力低下的患者采取保护性隔离措施"], answer: "C", explain: "及早使用预防性抗生素不是预防医院感染的措施。", type: "single" },
+/* 922 */ { Q: "关于消毒灭菌剂，正确的是", options: ["乙醇可用于内、外科器械的灭菌", "碘伏可用于不耐热的塑料制品的灭菌", "戊二醛可用于不耐热的医疗器械和精密仪器的灭菌", "耐高温的玻璃器材、油剂类物品可选用环氧乙烷气体灭菌", "过氧乙酸可用于棉布的消毒"], answer: "C", explain: "戊二醛可用于不耐热医疗器械和精密仪器的灭菌。", type: "single" },
+/* 923 */ { Q: "人际传播的形式不包括", options: ["咨询", "个别访谈", "劝服", "指导", "反馈"], answer: "E", explain: "反馈不是人际传播的形式，而是沟通过程的要素。", type: "single" },
+/* 924 */ { Q: "属于日常健康行为的是", options: ["预防接种", "按时吃药", "服用保健品", "戒烟限酒", "运动锻炼"], answer: "E", explain: "运动锻炼属于日常健康行为。", type: "single" },
+/* 925 */ { Q: "女，46岁。因直肠癌行直肠癌切除、结肠造口术。其住院期间的健康教育内容不包括", options: ["直肠癌的病因及发病机制", "直肠癌的主要临床表现", "直肠癌的治疗原则及方法", "直肠癌术后进一步的药物治疗", "直肠癌术后常见的并发症"], answer: "A", explain: "住院期间教育侧重于疾病治疗和康复，病因不是重点。", type: "single" },
+/* 926 */ { Q: "目标的叙述正确的是", options: ["用符号描述", "具有可测量性", "用文字表述", "具有远期性", "具有宏观性"], answer: "B", explain: "目标应具有可测量性。", type: "single" },
+/* 927 */ { Q: "属于人员管理基本原则的是", options: ["以人为本原则", "责权一致原则", "经济效能原则", "用人之长原则", "合理结构原则"], answer: "D", explain: "用人之长是人员管理的基本原则。", type: "single" },
+/* 928 */ { Q: "术前无须预防性应用抗菌药物的是", options: ["甲状腺手术", "开放性骨关节伤", "严重烧伤", "经阴道子宫切除术", "人工心脏瓣膜置换术"], answer: "A", explain: "甲状腺手术属于清洁手术，不需预防用抗菌药物。", type: "single" },
+/* 929 */ { Q: "医院感染间接传播的最主要方式为", options: ["通过医疗设备", "通过工作人员的手", "通过患者用具", "通过患者之间接触", "通过一次性用品"], answer: "B", explain: "工作人员的手是医院感染间接传播最主要的方式。", type: "single" },
+/* 930 */ { Q: "与心相表里的是", options: ["胆", "胃", "小肠", "三焦", "膀胱"], answer: "C", explain: "心与小肠相表里。", type: "single" },
+/* 931 */ { Q: "最古老、最简单的一种组织结构类型是", options: ["直线-参谋型组织结构", "分部制组织结构", "委员会", "直线型组织结构", "职能型组织结构"], answer: "D", explain: "直线型组织结构是最古老、最简单的组织结构类型。", type: "single" },
+/* 932 */ { Q: "压力蒸汽灭菌中化学指示卡和指示带的监测要求是", options: ["每包", "每锅", "每天", "每周", "每月"], answer: "A", explain: "化学指示卡和指示带应每包放置。", type: "single" },
+/* 933 */ { Q: "最基本的、传统的管理方法是", options: ["行政方法", "经济方法", "法律方法", "思想教育方法", "社会心理学方法"], answer: "A", explain: "行政方法是最基本、传统的管理方法。", type: "single" },
+/* 934 */ { Q: "护患交往中，个人距离应为", options: ["10~30cm", "40~50cm", "50~100cm", "120~400cm", ">400cm"], answer: "C", explain: "个人距离为50-100cm。", type: "single" },
+/* 935 */ { Q: "高度危险性的医用物品必须选用", options: ["高效消毒法", "中效消毒法", "低效消毒法", "灭菌法", "机械清洗法"], answer: "D", explain: "高度危险性物品必须选用灭菌法。", type: "single" },
+/* 936 */ { Q: "在一定时间和一定人群(通常指住院患者)中新发生的医院感染的频率为", options: ["医院感染发病率", "医院感染罹患率", "医院感染部位发生率", "医院感染患病率", "医院感染现患率"], answer: "A", explain: "新发生的感染频率称为发病率。", type: "single" },
+/* 937 */ { Q: "护士在病房注射时不慎将10床患者的维生素B₁₂给11床的患者注射。护士注射完毕后立即发现了错误，其应直接将此事汇报给", options: ["主管医生", "科护士长", "病房护士长", "护理部主任", "医院值班室"], answer: "C", explain: "发生差错应立即报告病房护士长。", type: "single" },
+/* 938 */ { Q: "上焦生理功能的特点是", options: ["若雾露之溉", "主气之升发", "通行宗、营、卫三气", "原气之别使", "主宣发与肃降"], answer: "A", explain: "上焦如雾，若雾露之溉。", type: "single" },
+/* 939 */ { Q: "紫外线灯消毒物品时其有效距离和消毒时间分别是", options: ["25~60cm、20~30分钟", "25~60cm、10~20分钟", "25~60mm、20~30分钟", "25~60mm、10~20分钟", "25~60mm、5~10分钟"], answer: "A", explain: "紫外线消毒物品有效距离25-60cm，时间20-30分钟。", type: "single" },
+/* 940 */ { Q: "护理人员排班的基本原则，错误的是", options: ["以患者需要为中心", "按护理工作规律安排", "保持各班工作量绝对均衡", "有效运用人力资源发挥个人所长", "新老搭配，优势互补"], answer: "C", explain: "各班工作量不可能绝对均衡。", type: "single" },
+/* 941 */ { Q: "正常菌群在医院感染学上的意义主要是", options: ["拮抗病原菌", "营养作用", "代谢作用", "免疫作用", "生长与衰老"], answer: "A", explain: "正常菌群可拮抗病原菌，预防感染。", type: "single" },
+/* 942 */ { Q: "五脏生理功能的特点是", options: ["传化物而不藏，实而不能满", "藏精气而不泻，实而不能满", "藏精气而不泻，满而不能实", "传化物而不藏，满而不能实", "虚实交替，泻而不藏"], answer: "C", explain: "五脏藏精气而不泻，满而不能实。", type: "single" },
+/* 943 */ { Q: "女，60岁。因胃癌住院，术后使用头孢噻肟钠和甲硝唑预防感染，第5天出现发热39℃、腹痛、腹泻，大便培养：大量白假丝酵母菌生长。此种情况最可能的诊断是", options: ["急性细菌性痢疾", "急性肠炎", "二重感染", "脓毒症", "移位菌群失调"], answer: "C", explain: "长期使用抗生素后出现真菌感染属于二重感染。", type: "single" },
+/* 944 */ { Q: "沟通的过程不包括", options: ["编码", "传递信息", "接收", "解码", "反馈"], answer: "E", explain: "反馈不是沟通的必经过程。", type: "single" },
+/* 945 */ { Q: "医院健康教育的中心是", options: ["家属", "患者", "健康人群", "亚健康人群", "高危人群"], answer: "B", explain: "医院健康教育以患者为中心。", type: "single" },
+/* 946 */ { Q: "关于表证的描述，正确的是", options: ["见于外感疾病的初期阶段", "起病缓、病情重、病程长", "见于外感疾病的中、后期阶段", "起病急、病情重、病程反复", "无恶寒与发热"], answer: "A", explain: "表证见于外感病初期。", type: "single" },
+/* 947 */ { Q: "目标管理的核心内容是", options: ["员工参与管理", "强调有效地反馈", "以自我管理为中心", "重视成果", "强调自我评价"], answer: "C", explain: "目标管理的核心是以自我管理为中心。", type: "single" },
+/* 948 */ { Q: "中医情志是指", options: ["怒、喜、思、悲、恐", "气、血、津、精、神", "风、寒、暑、湿、火", "酸、苦、甘、辛、咸", "心、肝、脾、肺、肾"], answer: "A", explain: "中医情志指怒、喜、思、悲、恐。", type: "single" },
+/* 949 */ { Q: "护理部制订护士年度培训计划时拟对全员护士加强常用抢救技术培训，不作为需要全员培训项目的是", options: ["吸氧", "吸痰", "止血包扎法", "骨折固定", "血液净化"], answer: "E", explain: "血液净化是专科技术，不需全员培训。", type: "single" },
+/* 950 */ { Q: "健康教育诊断中，流行病学诊断最主要的任务是了解目标人群的", options: ["传染病发病情况", "地方病的发病情况", "流行病的发病情况", "主要健康问题", "传染病防疫情况"], answer: "D", explain: "流行病学诊断主要任务是了解目标人群的主要健康问题。", type: "single" },
+/* 951 */ { Q: "授权步骤的内容不包括", options: ["选择授权对象", "明确授权内容", "形成沟通渠道", "及时调整计划", "评价授权效果"], answer: "D", explain: "及时调整计划不是授权的步骤。", type: "single" },
+/* 952 */ { Q: "炭疽芽胞杆菌繁殖体在日光下死亡的时间是", options: ["2小时", "4小时", "8小时", "10小时", "12小时"], answer: "D", explain: "炭疽芽胞杆菌繁殖体在日光下10小时死亡。", type: "single" },
+/* 953 */ { Q: "具有主持诸气，总司人体气机和气化作用的是", options: ["三焦", "脾", "肾", "肺", "命门"], answer: "A", explain: "三焦总司人体气机和气化。", type: "single" },
+/* 954 */ { Q: "某科室换班，护士每人每周轮流上一次夜班，依次循环，此种排班方式属于", options: ["周排班法", "周期性排班法", "班次内容排班法", "自我排班法", "工作日排班法"], answer: "B", explain: "轮流循环属于周期性排班法。", type: "single" },
+/* 955 */ { Q: "在健康教育评价过程中，目标人群因得知自己正在被观察而表现出行为异常，从而影响了评价效果。此现象称为", options: ["回归效应", "偶然效应", "暗示效应", "霍桑效应", "时间效应"], answer: "D", explain: "因被观察而行为异常是霍桑效应。", type: "single" },
+/* 956 */ { Q: "传播途径的选择原则最具有决定性的是", options: ["保证效果原则", "针对性原则", "速度快原则", "经济性原则", "可及性原则"], answer: "A", explain: "保证效果是选择传播途径最具有决定性的原则。", type: "single" },
+/* 957 */ { Q: "男，60岁。高血压20余年，接受健康教育过程中，不符合患者心理特点的是", options: ["求真", "求新", "求多", "求短", "求近"], answer: "C", explain: "求多不是患者接受健康教育的心理特点。", type: "single" },
+/* 958 */ { Q: "由于暗示效应导致对健康教育目标人群的评价效果出现偏倚。此偏倚因素为", options: ["暴露因素", "观察因素", "回归因素", "选择因素", "信息因素"], answer: "B", explain: "暗示效应属于观察因素。", type: "single" },
+/* 959 */ { Q: "人际传播相对大众传播最大的优点是", options: ["信息量小", "反馈及时", "覆盖范围小", "不需要人工媒介", "传播速度慢"], answer: "B", explain: "人际传播最大的优点是反馈及时。", type: "single" },
+/* 960 */ { Q: "创造良好沟通环境的方法不包括", options: ["少用评价性语言", "加强评论和表态", "多用描述性语言", "耐心听取对方的说明", "认同对方的问题和处境"], answer: "B", explain: "加强评论和表态不利于创造良好的沟通环境。", type: "single" },
+/* 961 */ { Q: "医院内源性感染是指", options: ["饮食不当引起的感染", "通过医疗器械引起的感染", "患者与患者之间的感染", "患者与医护人员之间的感染", "自身携带病原体引起的感染"], answer: "E", explain: "内源性感染是自身病原体引起的感染。", type: "single" },
+/* 962 */ { Q: "五行中，金的所胜之行是", options: ["火", "水", "土", "木", "以上均非"], answer: "D", explain: "金克木，金的所胜是木。", type: "single" },
+/* 963 */ { Q: "管理者将组织内各要素进行合理组合，建立和实施特定组织结构的过程称为", options: ["组织调整", "组织变革", "组织规划", "组织设计", "组织建设"], answer: "D", explain: "建立和实施组织结构的过程称为组织设计。", type: "single" },
+/* 964 */ { Q: "关于健康教育和卫生宣教的描述，正确的是", options: ["健康教育就是卫生宣教", "健康教育是卫生宣教的具体措施", "健康教育与卫生宣教含义相同", "卫生宣教是单一方向的信息传播", "卫生宣教的目标是行为干预"], answer: "D", explain: "卫生宣教是单向信息传播。", type: "single" },
+/* 965 */ { Q: "关于组织文化的描述，错误的是", options: ["是组织在长期发展过程中形成的", "组织文化的核心是价值观", "是一种隐藏的价值因素和精神源泉", "是价值观、群体意识、道德规范、行为准则、特色、管理风格以及传统习惯的总和", "是组织经营活动和文化活动的总和"], answer: "E", explain: "组织文化不是组织经营活动和文化活动的总和。", type: "single" },
+/* 966 */ { Q: "护士小秦工作积极，责任心强，专业知识丰富，工作表现突出，护士长为重点培养，经常指派她负责一些工作，但小秦工作起来并不顺畅，常缩手缩脚，护士长意识到没有给小秦充分授权，造成了限制，遂任命她为护理组组长，小秦工作的积极性和创造性明显提高。护士长这种做法体现的组织设计原则是", options: ["职责与权限一致的原则", "集权分权结合原则", "任务和目标一致的原则", "有效管理幅度的原则", "专业化分工与协作的原则"], answer: "A", explain: "给予职位的同时给予相应权限体现了职责与权限一致的原则。", type: "single" },
+/* 967 */ { Q: "细菌在人体定植，除有适宜的环境、相当细菌数量外还应具备的条件是", options: ["移位途径", "细菌具有黏附力", "适宜的pH", "生物屏障", "细菌易位"], answer: "B", explain: "细菌定植需要具有黏附力。", type: "single" },
+/* 968 */ { Q: "对无明确潜伏期的感染，属于医院感染的时间是入院", options: ["24小时后", "36小时后", "48小时后", "72小时后", "96小时后"], answer: "C", explain: "无明确潜伏期的感染，入院48小时后发生的感染属于医院感染。", type: "single" },
+/* 969 */ { Q: "医院清洁、消毒、灭菌措施的叙述，错误的是", options: ["清洁是用清水等清除物品表面的污垢、尘埃", "清洁常是物品消毒、灭菌的前期步骤", "清洁可达到杀灭少量病原微生物的效果", "消毒指用物理或化学方法杀灭除芽胞外的所有病原微生物", "灭菌指用物理或化学方法杀灭一切微生物，包括芽胞"], answer: "C", explain: "清洁不能杀灭病原微生物。", type: "single" },
+/* 970 */ { Q: "流行性出血热疫区要执行的工作是", options: ["灭鼠", "灭蚊", "灭蝇", "灭蟑螂", "灭病畜"], answer: "A", explain: "流行性出血热疫区应灭鼠。", type: "single" },
+/* 971 */ { Q: "与血液的生成和运行关系密切的两脏是", options: ["心与肺", "心与脾", "心与肝", "肺与脾", "肺与肾"], answer: "B", explain: "心主行血，脾主生血，与血液生成和运行关系密切。", type: "single" },
+/* 972 */ { Q: "12岁至成年是人类行为发展阶段", options: ["巩固发展阶段", "自主发展阶段", "主动发展阶段", "被动发展阶段", "自动发展阶段"], answer: "B", explain: "12岁至成年属于自主发展阶段。", type: "single" },
+/* 973 */ { Q: "医院护理部为提高全院护理服务质量，采用目标管理的方法提高护理人员的护理技术操作水平。关于目标的描述，最有效的是", options: ["提高全体护理人员的护理技术操作水平", "提高全体护理人员的护理技术操作合格率", "1年内提高全体护理人员的护理技术操作合格率", "全体护理人员的护理技术操作合格率达90%以上", "1年内使全体护理人员的护理技术操作合格率达90%以上"], answer: "E", explain: "有效目标应具体、可测量、有时间限制。", type: "single" },
+/* 974 */ { Q: "某行人过马路时突然有辆车行驶过来，该行人立即退回以躲避车辆，属于人类行为适应形式的", options: ["反射", "自我控制", "调适", "应对", "应激"], answer: "A", explain: "立即躲避是反射行为。", type: "single" },
+/* 975 */ { Q: "个人接收外界信息后，在头脑中进行信息加工处理的过程，称为", options: ["亲身传播", "自我传播", "群体传播", "组织传播", "人际传播"], answer: "B", explain: "头脑中信息加工属于自我传播。", type: "single" },
+/* 976 */ { Q: "按五行生克规律，肺“所不胜”的是", options: ["脾", "心", "肝", "肾", "胆"], answer: "B", explain: "火克金，肺所不胜的是心。", type: "single" },
+/* 977 */ { Q: "对健康相关行为的描述，正确的是", options: ["指人在生理、心理、社会各方面都处于良好状态的行为", "指个体或团体与健康和疾病有关的行为", "指个体或团体的有利于健康的行为", "指个体或团体的危害健康的行为", "指个体或团体与环境和谐的行为"], answer: "B", explain: "健康相关行为指个体或团体与健康和疾病有关的行为。", type: "single" },
+/* 978 */ { Q: "门诊教育的主要内容是", options: ["患者病因的教育", "医院环境的教育", "常见病的防治教育", "医院生活制度的教育", "患者治疗原则的教育"], answer: "C", explain: "门诊教育侧重于常见病的防治教育。", type: "single" },
+/* 979 */ { Q: "推动血液运行的基本动力是", options: ["心的功能", "脾的功能", "肝的功能", "肺的功能", "肾的功能"], answer: "A", explain: "心主行血，是推动血液运行的基本动力。", type: "single" },
+/* 980 */ { Q: "医院内属于高度危险性物品的是", options: ["衣服", "口罩", "体温表", "枕头条", "注射器"], answer: "E", explain: "注射器需进入无菌组织，属于高度危险性物品。", type: "single" },
+/* 981 */ { Q: "医院内属于中度危险性物品的是", options: ["衣服", "口罩", "体温表", "枕头条", "注射器"], answer: "C", explain: "体温表需接触黏膜，属于中度危险性物品。", type: "single" },
+/* 982 */ { Q: "健康促进包括", options: ["知识普及+宣传鼓动+社会环境支持", "知识学习+信念理解+行为改变", "知识学习+信念理解+社会环境支持", "知识普及+宣传鼓动+行为改变", "知识学习+信念理解+行为改变+社会环境支持"], answer: "E", explain: "健康促进包括知识、信念、行为和社会环境支持。", type: "single" },
+/* 983 */ { Q: "健康教育包括", options: ["知识普及+宣传鼓动+社会环境支持", "知识学习+信念理解+行为改变", "知识学习+信念理解+社会环境支持", "知识普及+宣传鼓动+行为改变", "知识学习+信念理解+行为改变+社会环境支持"], answer: "B", explain: "健康教育包括知识学习、信念理解、行为改变。", type: "single" },
+/* 984 */ { Q: "按照医院空气卫生学标准，Ⅰ类环境消毒合格的标准是", options: ["细菌总数≤500CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌", "细菌总数≤100CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌", "细菌总数≤10CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌", "细菌总数≤200CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌", "细菌总数≤4000CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌"], answer: "C", explain: "Ⅰ类环境空气细菌总数≤10CFU/m³。", type: "single" },
+/* 985 */ { Q: "按照医院空气卫生学标准，Ⅱ类环境消毒合格的标准是", options: ["细菌总数≤500CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌", "细菌总数≤100CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌", "细菌总数≤10CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌", "细菌总数≤200CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌", "细菌总数≤4000CFU/m³，且不得检出金黄色葡萄球菌、溶血性链球菌"], answer: "D", explain: "Ⅱ类环境空气细菌总数≤200CFU/m³。", type: "single" },
+/* 986 */ { Q: "器官（或腔隙）感染是指", options: ["无植入物手术后30天内，仅限切口涉及的皮肤和皮下组织的感染", "无植入物手术后30天内，有植入物术后1年内发生的与手术有关并涉及切口深部软组织的感染", "无植入物手术后30天内，发生的与手术有关并涉及切口深部软组织的感染", "无植入物手术后30天内，有植入物术后1年内发生的与手术有关的器官或腔隙感染", "无植入物手术后30天内，发生的与手术有关的器官或腔隙感染"], answer: "D", explain: "器官或腔隙感染指无植入物术后30天内、有植入物术后1年内发生的与手术有关的器官或腔隙感染。", type: "single" },
+/* 987 */ { Q: "深部手术切口感染是指", options: ["无植入物手术后30天内，仅限切口涉及的皮肤和皮下组织的感染", "无植入物手术后30天内，有植入物术后1年内发生的与手术有关并涉及切口深部软组织的感染", "无植入物手术后30天内，发生的与手术有关并涉及切口深部软组织的感染", "无植入物手术后30天内，有植入物术后1年内发生的与手术有关的器官或腔隙感染", "无植入物手术后30天内，发生的与手术有关的器官或腔隙感染"], answer: "C", explain: "深部切口感染指无植入物术后30天内发生的与手术有关并涉及切口深部软组织的感染。", type: "single" },
+/* 988 */ { Q: "属于健康传播特点的是", options: ["传播过程具有复合性", "双向性的直接传播", "受传者行为的可塑性", "降低医疗成本", "能及时反馈"], answer: "A", explain: "健康传播具有复合性。", type: "single" },
+/* 989 */ { Q: "属于群体传播特点的是", options: ["传播过程具有复合性", "双向性的直接传播", "受传者行为的可塑性", "降低医疗成本", "能及时反馈"], answer: "B", explain: "群体传播是双向性的直接传播。", type: "single" },
+/* 990 */ { Q: "从目标人群的生活质量入手，评估社区的需求和健康问题是", options: ["社会诊断", "流行病学诊断", "行为与环境诊断", "教育诊断", "管理与政策诊断"], answer: "A", explain: "从生活质量入手评估属于社会诊断。", type: "single" },
+/* 991 */ { Q: "确定影响健康行为的倾向因素、促成因素和强化因素是", options: ["社会诊断", "流行病学诊断", "行为与环境诊断", "教育诊断", "管理与政策诊断"], answer: "D", explain: "确定倾向、促成、强化因素属于教育诊断。", type: "single" },
+/* 992 */ { Q: "把被控系统的执行结果与预期的目标及标准对照检查，从而发现问题，采取纠正偏差措施。此方法属于", options: ["质量控制", "预算控制", "进度控制", "目标控制", "反馈控制"], answer: "E", explain: "将执行结果与目标对照并纠正是反馈控制。", type: "single" },
+/* 993 */ { Q: "对工作在时间上进行控制，使各项工作能有节奏地进行是", options: ["质量控制", "预算控制", "进度控制", "目标控制", "反馈控制"], answer: "C", explain: "对时间进行控制是进度控制。", type: "single" },
+/* 994 */ { Q: "美国管理学家莱金提出的ABC时间管理方法中，B级目标是", options: ["最重要的目标", "最优先的目标", "较重要的目标", "不太重要的目标", "必须完成的目标"], answer: "C", explain: "B级目标是较重要的目标。", type: "single" },
+/* 995 */ { Q: "美国管理学家莱金提出的ABC时间管理方法中，C级目标是指", options: ["最重要的目标", "最优先的目标", "较重要的目标", "不太重要的目标", "必须完成的目标"], answer: "D", explain: "C级目标是不太重要的目标。", type: "single" },
+/* 996 */ { Q: "艾滋病患者应采取", options: ["严密隔离", "接触隔离", "血液-体液隔离", "消化道隔离", "保护性隔离"], answer: "C", explain: "艾滋病应采取血液-体液隔离。", type: "single" },
+/* 997 */ { Q: "破伤风患者应采取", options: ["严密隔离", "接触隔离", "血液-体液隔离", "消化道隔离", "保护性隔离"], answer: "B", explain: "破伤风应采取接触隔离。", type: "single" },
+/* 998 */ { Q: "医院健康教育的最终目的是", options: ["培养既有健康知识又有健康行为的人", "灌输健康知识", "帮助建立健康行为", "促进身心健康", "克服不良生活习惯"], answer: "A", explain: "医院健康教育的最终目的是培养既有健康知识又有健康行为的人。", type: "single" },
+/* 999 */ { Q: "某护士能及时发现患者的病情变化并正确处理，说明该护士", options: ["具有诚实的品格", "具有扎实的理论基础", "具有较强的实践能力", "具有敏锐的观察力和分析力", "具有较强的责任感"], answer: "D", explain: "及时发现病情变化说明具有敏锐的观察力和分析力。", type: "single" },
+/* 1000 */ { Q: "关于组织传播的描述，错误的是", options: ["又称公共关系学", "又称群体传播", "是组织之间的信息交流活动", "是组织内部成员之间的信息交流活动", "传播活动可分为5种类型"], answer: "B", explain: "组织传播不等同于群体传播。", type: "single" }
+        ];  // 注意：此处仅展示10条示例，实际使用时请替换为完整1000题数据
+
+        // ---------- 持久化存储键 ----------
+        const STORAGE_KEY = 'nurse_exam_data';
+
+        // 从localStorage读取保存的数据
+        let savedSelections = {};
+        let savedWrongSet = [];
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                savedSelections = parsed.selections || {};
+                savedWrongSet = parsed.wrongSet || [];
+            }
+        } catch (e) {
+            console.warn('读取存储数据失败', e);
+        }
+
+        const { createApp, ref, computed, watch } = Vue;
+
+        const app = createApp({
+            setup() {
+                // ---------- 基础数据 ----------
+                const questions = ref(questionsData);          // 所有题目
+                const mode = ref('order');                      // 当前模式
+                const index = ref(0);                            // 当前题目在过滤后列表中的索引
+                const showAnswer = ref(false);
+                const userSelections = ref(savedSelections);    // 用户答案记录（原始索引 -> 选项）
+                const wrongSet = ref(new Set(savedWrongSet));    // 错题集合（原始索引）
+
+                // ---------- 模拟考试专用状态 ----------
+                const examQuestions = ref([]);                   // 随机抽取的100题（原始题目对象）
+                const examTimeLeft = ref(90 * 60);                // 剩余时间（秒）
+                const examTimer = ref(null);
+                const examFinished = ref(false);
+                const examScore = ref(0);
+                const showExamResult = ref(false);
+
+                // ---------- 持久化存储（自动保存）----------
+                watch(
+                    [userSelections, wrongSet],
+                    () => {
+                        const toStore = {
+                            selections: userSelections.value,
+                            wrongSet: Array.from(wrongSet.value)
+                        };
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+                    },
+                    { deep: true }
+                );
+
+                // ---------- 过滤后的题目列表 ----------
+                const filteredList = computed(() => {
+                    if (mode.value === 'wrong') {
+                        return Array.from(wrongSet.value).map(idx => questions.value[idx]).filter(q => q);
+                    } else if (mode.value === 'exam') {
+                        return examQuestions.value;
+                    } else {
+                        return questions.value;
+                    }
+                });
+
+                const total = computed(() => filteredList.value.length);
+                const currentQuestion = computed(() => filteredList.value[index.value]);
+                const currentRawIndex = computed(() => {
+                    if (!currentQuestion.value) return -1;
+                    return questions.value.findIndex(q => q === currentQuestion.value);
+                });
+                const atFirst = computed(() => index.value === 0);
+                const atLast = computed(() => index.value === total.value - 1);
+                const answeredCount = computed(() => Object.keys(userSelections.value).length);
+                const correctCount = computed(() => {
+                    let cnt = 0;
+                    for (let rawIdx in userSelections.value) {
+                        if (userSelections.value[rawIdx] === questions.value[rawIdx]?.answer) cnt++;
+                    }
+                    return cnt;
+                });
+                const wrongList = computed(() => Array.from(wrongSet.value).sort((a,b)=>a-b));
+
+                // 格式化时间 mm:ss
+                const formattedTime = computed(() => {
+                    const minutes = Math.floor(examTimeLeft.value / 60);
+                    const seconds = examTimeLeft.value % 60;
+                    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                });
+
+                // ---------- 工具函数：随机抽取100题 ----------
+                function pickRandomQuestions() {
+                    const totalCount = questions.value.length;
+                    if (totalCount <= 100) return questions.value.slice();
+                    // Fisher-Yates 洗牌
+                    const shuffled = [...questions.value];
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                    }
+                    return shuffled.slice(0, 100);
+                }
+
+                // ---------- 模拟考试控制 ----------
+                function startExam() {
+                    examQuestions.value = pickRandomQuestions();
+                    examTimeLeft.value = 90 * 60;
+                    examFinished.value = false;
+                    showExamResult.value = false;
+                    index.value = 0;
+                    showAnswer.value = false;
+
+                    if (examTimer.value) clearInterval(examTimer.value);
+                    examTimer.value = setInterval(() => {
+                        if (examTimeLeft.value > 0) {
+                            examTimeLeft.value--;
+                        } else {
+                            finishExam(); // 时间到自动交卷
+                        }
+                    }, 1000);
+                }
+
+                function finishExam() {
+                    if (examFinished.value) return;
+                    if (examTimer.value) {
+                        clearInterval(examTimer.value);
+                        examTimer.value = null;
+                    }
+                    // 检查漏答题目
+                    const missed = examQuestions.value.filter(q => {
+                        const rawIdx = questions.value.findIndex(item => item === q);
+                        return !userSelections.value[rawIdx];
+                    });
+                    if (missed.length > 0) {
+                        // 提示用户
+                        alert(`您有 ${missed.length} 道题未作答，已自动标记为错误。`);
+                        // 将漏答题目加入错题本
+                        const newSet = new Set(wrongSet.value);
+                        missed.forEach(q => {
+                            const rawIdx = questions.value.findIndex(item => item === q);
+                            newSet.add(rawIdx);
+                        });
+                        wrongSet.value = newSet;
+                    }
+                    examFinished.value = true;
+                    examScore.value = correctCount.value; // correctCount只计算已答正确的
+                    showExamResult.value = true;
+                }
+
+                // ---------- 模式切换 ----------
+                function switchMode(newMode) {
+                    mode.value = newMode;
+                    index.value = 0;
+                    showAnswer.value = false;
+
+                    if (newMode === 'exam') {
+                        startExam();
+                    } else {
+                        // 离开考试模式时清理计时器
+                        if (examTimer.value) {
+                            clearInterval(examTimer.value);
+                            examTimer.value = null;
+                        }
+                        examFinished.value = false;
+                        showExamResult.value = false;
+                    }
+                }
+
+                // ---------- 题目导航 ----------
+                function nextQuestion() {
+                    if (index.value < total.value - 1) {
+                        index.value++;
+                        showAnswer.value = false;
+                    }
+                }
+                function previousQuestion() {
+                    if (index.value > 0) {
+                        index.value--;
+                        showAnswer.value = false;
+                    }
+                }
+                function toggleAnswer() {
+                    showAnswer.value = !showAnswer.value;
+                }
+
+                // ---------- 选择选项 ----------
+                function selectOption(opt) {
+                    if (!currentQuestion.value) return;
+                    const rawIdx = currentRawIndex.value;
+                    if (rawIdx === -1) return;
+
+                    userSelections.value[rawIdx] = opt;  // 记录答案
+
+                    // 模拟考试中自动判断错题
+                    if (mode.value === 'exam' && !examFinished.value) {
+                        const correctAns = questions.value[rawIdx]?.answer;
+                        if (opt !== correctAns) {
+                            const newSet = new Set(wrongSet.value);
+                            newSet.add(rawIdx);
+                            wrongSet.value = newSet;
+                        }
+                    }
+                }
+
+                // ---------- 标记错题（考试模式下禁用）----------
+                function markWrong() {
+                    if (mode.value === 'exam') return;
+                    if (!currentQuestion.value) return;
+                    const rawIdx = currentRawIndex.value;
+                    if (rawIdx === -1) return;
+                    const newSet = new Set(wrongSet.value);
+                    if (newSet.has(rawIdx)) {
+                        newSet.delete(rawIdx);
+                    } else {
+                        newSet.add(rawIdx);
+                    }
+                    wrongSet.value = newSet;
+                }
+
+                // ---------- 随机跳题 ----------
+                function randomJump() {
+                    if (total.value === 0) return;
+                    const rand = Math.floor(Math.random() * total.value);
+                    index.value = rand;
+                    showAnswer.value = false;
+                }
+
+                // ---------- 跳转到错题 ----------
+                function jumpToWrongQuestion(rawId) {
+                    if (mode.value !== 'wrong') switchMode('wrong');
+                    const pos = filteredList.value.findIndex(q => questions.value[rawId] === q);
+                    if (pos !== -1) {
+                        index.value = pos;
+                        showAnswer.value = false;
+                    }
+                }
+
+                // ---------- 清空错题本 ----------
+                function clearWrongSet() {
+                    wrongSet.value = new Set();
+                }
+
+                return {
+                    questions,
+                    mode,
+                    index,
+                    showAnswer,
+                    userSelections,
+                    wrongSet,
+                    filteredList,
+                    total,
+                    currentQuestion,
+                    currentRawIndex,
+                    atFirst,
+                    atLast,
+                    answeredCount,
+                    correctCount,
+                    wrongList,
+                    // 模拟考试专用
+                    examTimeLeft,
+                    examFinished,
+                    examScore,
+                    showExamResult,
+                    formattedTime,
+                    // 方法
+                    switchMode,
+                    nextQuestion,
+                    previousQuestion,
+                    toggleAnswer,
+                    selectOption,
+                    markWrong,
+                    randomJump,
+                    jumpToWrongQuestion,
+                    finishExam,
+                    clearWrongSet
+                };
+            }
+        });
+
+        app.mount('#app');
+    })();
+</script>
+</body>
+</html>
