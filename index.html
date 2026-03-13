@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>主管护师·题库大全 + 考试倒计时</title>
+    <title>主管护师·题库大全（智能复习计划）</title>
     <style>
         :root {
             --gradient-start: #667eea;
@@ -227,35 +227,74 @@
             color: var(--text-dark);
             min-width: 240px;
         }
-        
-        /* 补打卡日历卡（缩小尺寸） */
-        .calendar-section {
+
+        /* 两栏布局：今日复习计划 + 日历 */
+        .plan-calendar-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        /* 今日复习计划卡片（占70%） */
+        .daily-plan-card {
+            flex: 7;
             background: white;
             border-radius: 15px;
-            padding: 10px; /* 减小内边距 */
-            margin-top: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .daily-plan-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .daily-plan-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-light);
+            flex: 1;
+        }
+        .daily-plan-content p {
+            margin-bottom: 10px;
+        }
+        .daily-plan-highlight {
+            color: var(--gradient-start);
+            font-weight: 600;
+        }
+        /* 日历卡片（占30%）- 进一步缩小尺寸 */
+        .calendar-card {
+            flex: 3;
+            background: white;
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .calendar-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px; /* 减小间距 */
+            margin-bottom: 8px;
         }
         .calendar-header h3 {
-            font-size: 1.2rem; /* 减小标题字号 */
+            font-size: 1rem;
             color: var(--text-dark);
         }
         .calendar-nav {
             display: flex;
-            gap: 8px;
+            gap: 5px;
         }
         .calendar-nav button {
             background: var(--bg-light);
             border: none;
-            padding: 4px 12px; /* 减小按钮内边距 */
+            padding: 2px 8px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.9rem; /* 减小字号 */
+            font-size: 0.8rem;
             transition: background 0.2s;
         }
         .calendar-nav button:hover {
@@ -267,13 +306,13 @@
             text-align: center;
             font-weight: 600;
             color: var(--text-light);
-            font-size: 0.85rem; /* 缩小字体 */
-            margin-bottom: 5px;
+            font-size: 0.7rem;
+            margin-bottom: 4px;
         }
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 3px; /* 减小单元格间隙 */
+            gap: 2px;
         }
         .calendar-cell {
             aspect-ratio: 1 / 1;
@@ -281,9 +320,9 @@
             align-items: center;
             justify-content: center;
             background: #f5f5f5;
-            border-radius: 6px; /* 稍小圆角 */
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.85rem; /* 缩小字号 */
+            font-size: 0.7rem;
             transition: 0.2s;
             border: 1px solid transparent;
         }
@@ -300,7 +339,7 @@
             color: white;
         }
         .calendar-cell.future {
-            opacity: 0.4;
+            opacity: 0.3;
             cursor: not-allowed;
         }
         .calendar-cell:not(.empty):not(.future):hover {
@@ -476,7 +515,8 @@
             .countdown-section,
             .checkin-section,
             .progress-section,
-            .calendar-section,
+            .daily-plan-card,
+            .calendar-card,
             .btn {
                 background: white !important;
                 color: black !important;
@@ -511,6 +551,9 @@
             .progress-section {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+            .plan-calendar-row {
+                flex-direction: column;
             }
         }
     </style>
@@ -565,20 +608,33 @@
                 <div class="progress-text" id="progressText">距离考试还有XX天，已打卡0天</div>
             </div>
 
-            <!-- 补打卡日历卡（缩小版） -->
-            <div class="calendar-section">
-                <div class="calendar-header">
-                    <h3 id="calendarMonthTitle">2026年3月</h3>
-                    <div class="calendar-nav">
-                        <button id="prevMonthBtn">◀ 上月</button>
-                        <button id="nextMonthBtn">下月 ▶</button>
+            <!-- 两栏布局：今日复习计划 + 缩小版日历 -->
+            <div class="plan-calendar-row">
+                <!-- 今日复习计划卡片（占7成） -->
+                <div class="daily-plan-card" id="dailyPlanCard">
+                    <div class="daily-plan-title">
+                        <span>📋 今日复习计划</span>
+                    </div>
+                    <div class="daily-plan-content" id="dailyPlanContent">
+                        <!-- 动态生成内容 -->
+                        <p>正在加载...</p>
                     </div>
                 </div>
-                <div class="calendar-weekdays">
-                    <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+                <!-- 日历卡片（占3成）- 进一步缩小 -->
+                <div class="calendar-card">
+                    <div class="calendar-header">
+                        <h3 id="calendarMonthTitle">2026年3月</h3>
+                        <div class="calendar-nav">
+                            <button id="prevMonthBtn">◀</button>
+                            <button id="nextMonthBtn">▶</button>
+                        </div>
+                    </div>
+                    <div class="calendar-weekdays">
+                        <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                    <p style="margin-top: 6px; font-size: 0.7rem; color: var(--text-light);">点击过去日期补打卡</p>
                 </div>
-                <div class="calendar-grid" id="calendarGrid"></div>
-                <p style="margin-top: 8px; font-size: 0.85rem; color: var(--text-light);">点击过去日期可补打卡（灰色为未来）</p>
             </div>
         </div>
         
@@ -698,14 +754,19 @@
                 { name: '专业实践能力(一)', date: '2026-04-25', time: '8:30-10:00', dateLabel: '4月25日' },
                 { name: '专业实践能力(二)', date: '2026-04-26', time: '16:15-17:45', dateLabel: '4月26日' }
             ];
-            // 最后一科考试日期（用于进度条分母）
+
+            // 题库总题数（根据用户描述，总题库约10000题，刷2遍需完成20000题）
+            const TOTAL_QUESTIONS = 10000;
+            const TOTAL_NEED = TOTAL_QUESTIONS * 2; // 20000题
+
+            // 最后一科考试日期（用于进度条分母和总剩余天数）
             const lastExam = examDates[examDates.length - 1];
             const [lastYear, lastMonth, lastDay] = lastExam.date.split('-').map(Number);
             const lastTimePart = lastExam.time.split('-')[0].trim();
             const [lastHour, lastMin] = lastTimePart.split(':').map(Number);
             const lastExamDate = new Date(lastYear, lastMonth - 1, lastDay, lastHour, lastMin, 0);
 
-            // ---------- 工具函数：获取本地日期字符串 YYYY-MM-DD ----------
+            // ---------- 工具函数：获取本地日期字符串 ----------
             function getLocalDateString(date = new Date()) {
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -743,7 +804,7 @@
                     document.getElementById('continuousDays').textContent = 0;
                 } else {
                     let continuous = 1;
-                    let current = new Date(todayStr + 'T12:00:00'); // 中午避免时区问题
+                    let current = new Date(todayStr + 'T12:00:00');
                     while (true) {
                         current.setDate(current.getDate() - 1);
                         const prevDate = getLocalDateString(current);
@@ -763,12 +824,13 @@
                     const diffTime = lastExamDate - now;
                     targetDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 } else {
-                    targetDays = 1; // 考试已过
+                    targetDays = 1;
                 }
                 const percent = Math.min(100, Math.round((total / targetDays) * 100));
                 document.getElementById('progressBar').style.width = percent + '%';
                 document.getElementById('progressText').innerHTML = 
                     `距离最后一科考试还有 ${targetDays} 天，已打卡 ${total} 天 (目标 ${targetDays} 天)`;
+                return targetDays; // 返回剩余天数供计划使用
             }
 
             function handleTodayCheckin() {
@@ -782,6 +844,7 @@
                 saveCheckinSet(set);
                 recalcStats();
                 renderCalendar(currentYear, currentMonth);
+                updateDailyPlan(); // 更新今日计划
                 showToast('今日打卡成功');
                 updateCheckinBtnState();
             }
@@ -801,6 +864,7 @@
                 saveCheckinSet(set);
                 recalcStats();
                 renderCalendar(currentYear, currentMonth);
+                updateDailyPlan();
                 showToast(`补打卡 ${dateStr} 成功`);
                 updateCheckinBtnState();
             }
@@ -818,7 +882,7 @@
                 }
             }
 
-            // ---------- 倒计时更新（使用本地时间构建考试日期）----------
+            // ---------- 倒计时更新 ----------
             function updateCountdown() {
                 const now = new Date();
                 const grid = document.getElementById('countdownGrid');
@@ -855,6 +919,89 @@
                     `;
                     grid.appendChild(card);
                 });
+            }
+
+            // ---------- 智能今日复习计划 ----------
+            function updateDailyPlan() {
+                const now = new Date();
+                const todayStr = getTodayString();
+                const set = getCheckinSet();
+                const checkedToday = set.has(todayStr);
+                const totalCheckins = set.size;
+
+                // 计算剩余天数到最后一科
+                let remainingDays = 0;
+                if (now < lastExamDate) {
+                    const diffTime = lastExamDate - now;
+                    remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                } else {
+                    remainingDays = 0; // 考试已结束
+                }
+
+                // 如果剩余天数为0，考试已结束
+                if (remainingDays === 0) {
+                    document.getElementById('dailyPlanContent').innerHTML = `
+                        <p>🎉 所有考试已结束，您辛苦了！</p>
+                        <p>📊 累计打卡 ${totalCheckins} 天，连续打卡 ${document.getElementById('continuousDays').textContent} 天。</p>
+                        <p>💪 感谢您的坚持，祝您顺利通过！</p>
+                    `;
+                    return;
+                }
+
+                // 需要完成的总题量（刷2遍）
+                const needQuestions = TOTAL_NEED; // 20000
+                // 每日平均推荐题量（向上取整，留出缓冲）
+                let dailyRecommended = Math.ceil(needQuestions / remainingDays);
+                // 根据学习曲线，设置一个合理范围，不低于400题，但也不过于夸张（例如不超过800题）
+                dailyRecommended = Math.min(800, Math.max(400, dailyRecommended));
+                // 如果剩余天数很少，可能需要提高每日题量，但不超过1000
+                if (remainingDays < 30) {
+                    dailyRecommended = Math.min(1000, Math.ceil(needQuestions / remainingDays));
+                }
+
+                // 找出最近的未考科目（按时间排序）
+                const upcomingExams = examDates
+                    .map(exam => {
+                        const [year, month, day] = exam.date.split('-').map(Number);
+                        const timePart = exam.time.split('-')[0].trim();
+                        const [hour, minute] = timePart.split(':').map(Number);
+                        const examDate = new Date(year, month - 1, day, hour, minute, 0);
+                        const daysUntil = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+                        return { ...exam, examDate, daysUntil };
+                    })
+                    .filter(e => e.daysUntil >= 0) // 只保留未考
+                    .sort((a, b) => a.daysUntil - b.daysUntil);
+
+                let priorityHtml = '';
+                if (upcomingExams.length > 0) {
+                    const first = upcomingExams[0];
+                    const second = upcomingExams[1];
+                    priorityHtml = `<p>🔔 距离最近的考试是 <span class="daily-plan-highlight">${first.name}</span>，还有 ${first.daysUntil} 天。</p>`;
+                    if (second) {
+                        priorityHtml += `<p>⏳ 次近的是 <span class="daily-plan-highlight">${second.name}</span>，还有 ${second.daysUntil} 天。</p>`;
+                    }
+                }
+
+                // 模拟考试建议：每周二次，根据剩余周数
+                const weeksRemaining = Math.ceil(remainingDays / 7);
+                const simExamAdvice = weeksRemaining > 0 ? `建议每周进行1-2次模拟考试（共约${weeksRemaining}周）。` : '';
+
+                // 今日打卡状态
+                const checkinAdvice = checkedToday 
+                    ? `✅ 今日已打卡，继续保持！` 
+                    : `❌ 今日尚未打卡，请先打卡记录学习。`;
+
+                // 生成计划HTML
+                const planHtml = `
+                    <p>${checkinAdvice}</p>
+                    <p>📅 距离最后一科考试还有 <span class="daily-plan-highlight">${remainingDays}</span> 天。</p>
+                    <p>📈 今日推荐刷题量：<span class="daily-plan-highlight">${dailyRecommended}</span> 题 (根据剩余天数动态调整，建议不低于400题)。</p>
+                    ${priorityHtml}
+                    <p>🎯 建议逐一复习 ${upcomingExams.map(e => e.name).join('、')}。</p>
+                    <p>⏰ 模拟考试：${simExamAdvice} 每科100题，各组题库均可点击“模拟”开始考试。</p>
+                 
+                `;
+                document.getElementById('dailyPlanContent').innerHTML = planHtml;
             }
 
             // ---------- 日历渲染 ----------
@@ -935,6 +1082,7 @@
                 updateCheckinBtnState();
 
                 renderCalendar(currentYear, currentMonth);
+                updateDailyPlan(); // 初始化今日计划
 
                 document.getElementById('checkinBtn').addEventListener('click', handleTodayCheckin);
             }
