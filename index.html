@@ -228,34 +228,34 @@
             min-width: 240px;
         }
         
-        /* 补打卡日历卡 */
+        /* 补打卡日历卡（缩小尺寸） */
         .calendar-section {
             background: white;
             border-radius: 15px;
-            padding: 20px;
+            padding: 10px; /* 减小内边距 */
             margin-top: 20px;
         }
         .calendar-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* 减小间距 */
         }
         .calendar-header h3 {
-            font-size: 1.3rem;
+            font-size: 1.2rem; /* 减小标题字号 */
             color: var(--text-dark);
         }
         .calendar-nav {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
         .calendar-nav button {
             background: var(--bg-light);
             border: none;
-            padding: 5px 15px;
+            padding: 4px 12px; /* 减小按钮内边距 */
             border-radius: 20px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem; /* 减小字号 */
             transition: background 0.2s;
         }
         .calendar-nav button:hover {
@@ -267,22 +267,23 @@
             text-align: center;
             font-weight: 600;
             color: var(--text-light);
+            font-size: 0.85rem; /* 缩小字体 */
             margin-bottom: 5px;
         }
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            gap: 3px; /* 减小单元格间隙 */
         }
         .calendar-cell {
-            aspect-ratio: 1;
+            aspect-ratio: 1 / 1;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #f5f5f5;
-            border-radius: 8px;
+            border-radius: 6px; /* 稍小圆角 */
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem; /* 缩小字号 */
             transition: 0.2s;
             border: 1px solid transparent;
         }
@@ -299,7 +300,7 @@
             color: white;
         }
         .calendar-cell.future {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
         }
         .calendar-cell:not(.empty):not(.future):hover {
@@ -564,7 +565,7 @@
                 <div class="progress-text" id="progressText">距离考试还有XX天，已打卡0天</div>
             </div>
 
-            <!-- 补打卡日历卡 -->
+            <!-- 补打卡日历卡（缩小版） -->
             <div class="calendar-section">
                 <div class="calendar-header">
                     <h3 id="calendarMonthTitle">2026年3月</h3>
@@ -577,7 +578,7 @@
                     <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
                 </div>
                 <div class="calendar-grid" id="calendarGrid"></div>
-                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-light);">点击过去日期可补打卡（灰色为未来日期）</p>
+                <p style="margin-top: 8px; font-size: 0.85rem; color: var(--text-light);">点击过去日期可补打卡（灰色为未来）</p>
             </div>
         </div>
         
@@ -661,7 +662,7 @@
                 <div class="card-title">综合模拟(二)</div>
                 <div class="card-desc">单科第10科 · 1000题<br>包含冲刺密卷、押题精练、考点预测</div>
                 <div class="card-info"><span>📊 1000题</span><span>⏱️ 考试模式</span></div>
-                <a href="https://mycymy.github.io/quiz/quizzghs09.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <a href="https://mycymy.github.io/quiz/quizzghs10.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
         </div>
         
@@ -689,7 +690,7 @@
 
     <script>
         (function() {
-            // 考试时间配置（最后一科为专业实践能力(二)，日期2026-04-26 16:15）
+            // ---------- 考试时间配置 ----------
             const examDates = [
                 { name: '基础知识', date: '2026-04-18', time: '8:30-10:00', dateLabel: '4月18日' },
                 { name: '相关专业知识', date: '2026-04-18', time: '10:45-12:15', dateLabel: '4月18日' },
@@ -699,12 +700,23 @@
             ];
             // 最后一科考试日期（用于进度条分母）
             const lastExam = examDates[examDates.length - 1];
-            const lastExamTimePart = lastExam.time.split('-')[0].trim();
-            const [lastHour, lastMin] = lastExamTimePart.split(':').map(Number);
-            const lastExamDate = new Date(lastExam.date);
-            lastExamDate.setHours(lastHour, lastMin, 0, 0);
+            const [lastYear, lastMonth, lastDay] = lastExam.date.split('-').map(Number);
+            const lastTimePart = lastExam.time.split('-')[0].trim();
+            const [lastHour, lastMin] = lastTimePart.split(':').map(Number);
+            const lastExamDate = new Date(lastYear, lastMonth - 1, lastDay, lastHour, lastMin, 0);
 
-            // 辅助函数：显示 toast
+            // ---------- 工具函数：获取本地日期字符串 YYYY-MM-DD ----------
+            function getLocalDateString(date = new Date()) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            function getTodayString() {
+                return getLocalDateString(new Date());
+            }
+
             function showToast(message) {
                 const toast = document.getElementById('toast');
                 toast.textContent = message;
@@ -712,7 +724,7 @@
                 setTimeout(() => toast.classList.remove('show'), 3000);
             }
 
-            // 获取存储的打卡日期集合 (存储格式: 日期字符串数组 YYYY-MM-DD)
+            // ---------- 打卡数据管理 ----------
             function getCheckinSet() {
                 const data = localStorage.getItem('checkinDates');
                 return data ? new Set(JSON.parse(data)) : new Set();
@@ -721,26 +733,20 @@
                 localStorage.setItem('checkinDates', JSON.stringify([...set]));
             }
 
-            // 重新计算统计信息 (累计天数、连续天数)
             function recalcStats() {
                 const set = getCheckinSet();
                 const total = set.size;
                 document.getElementById('totalDays').textContent = total;
 
-                // 计算连续打卡天数
-                const todayStr = new Date().toDateString(); // 用于比较今天是否打卡
-                const todayISO = new Date().toISOString().slice(0,10);
-                if (!set.has(todayISO)) {
+                const todayStr = getTodayString();
+                if (!set.has(todayStr)) {
                     document.getElementById('continuousDays').textContent = 0;
                 } else {
                     let continuous = 1;
-                    let current = new Date(todayISO);
+                    let current = new Date(todayStr + 'T12:00:00'); // 中午避免时区问题
                     while (true) {
                         current.setDate(current.getDate() - 1);
-                        const y = current.getFullYear();
-                        const m = String(current.getMonth() + 1).padStart(2,'0');
-                        const d = String(current.getDate()).padStart(2,'0');
-                        const prevDate = `${y}-${m}-${d}`;
+                        const prevDate = getLocalDateString(current);
                         if (set.has(prevDate)) {
                             continuous++;
                         } else {
@@ -750,14 +756,14 @@
                     document.getElementById('continuousDays').textContent = continuous;
                 }
 
-                // 更新进度条 (分母 = 从今天到最后一科考试的天数)
+                // 进度条分母：从今天到最后一科考试的天数
                 const now = new Date();
                 let targetDays = 0;
                 if (now < lastExamDate) {
                     const diffTime = lastExamDate - now;
-                    targetDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 向上取整，保证至少1天
+                    targetDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 } else {
-                    targetDays = 1; // 考试已过，分母设为1，百分比为100%
+                    targetDays = 1; // 考试已过
                 }
                 const percent = Math.min(100, Math.round((total / targetDays) * 100));
                 document.getElementById('progressBar').style.width = percent + '%';
@@ -765,32 +771,29 @@
                     `距离最后一科考试还有 ${targetDays} 天，已打卡 ${total} 天 (目标 ${targetDays} 天)`;
             }
 
-            // 打卡（今日打卡）
             function handleTodayCheckin() {
-                const today = new Date().toISOString().slice(0,10);
+                const todayStr = getTodayString();
                 const set = getCheckinSet();
-                if (set.has(today)) {
+                if (set.has(todayStr)) {
                     showToast('今天已经打卡过了');
                     return;
                 }
-                set.add(today);
+                set.add(todayStr);
                 saveCheckinSet(set);
                 recalcStats();
-                renderCalendar(currentYear, currentMonth); // 刷新日历
+                renderCalendar(currentYear, currentMonth);
                 showToast('今日打卡成功');
                 updateCheckinBtnState();
             }
 
-            // 补打卡（指定日期，必须是过去且未打卡）
             function handleCatchup(dateStr) {
                 const set = getCheckinSet();
                 if (set.has(dateStr)) {
                     showToast('该日期已打卡');
                     return;
                 }
-                // 检查是否为未来日期
-                const today = new Date().toISOString().slice(0,10);
-                if (dateStr > today) {
+                const todayStr = getTodayString();
+                if (dateStr > todayStr) {
                     showToast('不能补未来日期');
                     return;
                 }
@@ -802,12 +805,11 @@
                 updateCheckinBtnState();
             }
 
-            // 更新今日打卡按钮状态
             function updateCheckinBtnState() {
                 const btn = document.getElementById('checkinBtn');
-                const today = new Date().toISOString().slice(0,10);
+                const todayStr = getTodayString();
                 const set = getCheckinSet();
-                if (set.has(today)) {
+                if (set.has(todayStr)) {
                     btn.classList.add('checked');
                     btn.innerHTML = '✅ 今日已打卡';
                 } else {
@@ -816,23 +818,25 @@
                 }
             }
 
-            // ---------- 倒计时更新 ----------
+            // ---------- 倒计时更新（使用本地时间构建考试日期）----------
             function updateCountdown() {
                 const now = new Date();
                 const grid = document.getElementById('countdownGrid');
                 grid.innerHTML = '';
+
                 examDates.forEach(exam => {
+                    const [year, month, day] = exam.date.split('-').map(Number);
                     const timePart = exam.time.split('-')[0].trim();
-                    const [h, m] = timePart.split(':').map(Number);
-                    const examDate = new Date(exam.date);
-                    examDate.setHours(h, m, 0, 0);
+                    const [hour, minute] = timePart.split(':').map(Number);
+                    const examDate = new Date(year, month - 1, day, hour, minute, 0);
+
                     const diffMs = examDate - now;
-                    let diffDays = Math.floor(diffMs / (1000*60*60*24));
+                    let diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
                     if (diffMs < 0) diffDays = -1;
 
                     const card = document.createElement('div');
                     card.className = 'exam-card';
-                    let statusText = diffDays<0 ? '已结束' : (diffDays===0 ? '今天考试' : `剩余 ${diffDays} 天`);
+                    let statusText = diffDays < 0 ? '已结束' : (diffDays === 0 ? '今天考试' : `剩余 ${diffDays} 天`);
                     card.setAttribute('aria-label', `${exam.name}，考试日期${exam.dateLabel} ${exam.time}，${statusText}`);
 
                     let statusHtml = '';
@@ -859,15 +863,14 @@
 
             function renderCalendar(year, month) {
                 const title = document.getElementById('calendarMonthTitle');
-                title.textContent = `${year}年${month+1}月`;
+                title.textContent = `${year}年${month + 1}月`;
 
-                const firstDay = new Date(year, month, 1).getDay(); // 0=周日
-                const daysInMonth = new Date(year, month+1, 0).getDate();
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
 
                 const grid = document.getElementById('calendarGrid');
                 grid.innerHTML = '';
 
-                // 填充空白
                 for (let i = 0; i < firstDay; i++) {
                     const cell = document.createElement('div');
                     cell.className = 'calendar-cell empty';
@@ -875,30 +878,26 @@
                 }
 
                 const today = new Date();
-                const todayISO = today.toISOString().slice(0,10);
+                const todayStr = getTodayString();
                 const set = getCheckinSet();
 
                 for (let d = 1; d <= daysInMonth; d++) {
-                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const cellDate = new Date(year, month, d);
                     const cell = document.createElement('div');
                     cell.className = 'calendar-cell';
                     cell.textContent = d;
 
-                    // 标记今天
-                    if (dateStr === todayISO) {
+                    if (dateStr === todayStr) {
                         cell.classList.add('today');
                     }
-                    // 标记已打卡
                     if (set.has(dateStr)) {
                         cell.classList.add('checked');
                     }
-                    // 未来日期不可点
                     if (cellDate > today) {
                         cell.classList.add('future');
                     }
 
-                    // 绑定点击事件（仅过去或今天可点）
                     if (cellDate <= today) {
                         cell.addEventListener('click', () => {
                             handleCatchup(dateStr);
@@ -908,7 +907,6 @@
                 }
             }
 
-            // 月份切换
             document.getElementById('prevMonthBtn').addEventListener('click', () => {
                 if (currentMonth === 0) {
                     currentMonth = 11;
@@ -930,18 +928,14 @@
 
             // ---------- 初始化 ----------
             function init() {
-                // 倒计时
                 updateCountdown();
                 setInterval(updateCountdown, 1000 * 60 * 60);
 
-                // 打卡统计
                 recalcStats();
                 updateCheckinBtnState();
 
-                // 日历
                 renderCalendar(currentYear, currentMonth);
 
-                // 绑定今日打卡按钮
                 document.getElementById('checkinBtn').addEventListener('click', handleTodayCheckin);
             }
 
