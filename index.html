@@ -3,8 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>主管护师·题库大全 + 考试倒计时</title>
+    <title>主管护师·题库大全（优化版）</title>
     <style>
+        :root {
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --border-radius: 20px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +25,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -38,16 +50,16 @@
         
         .header h1 {
             font-size: 2.8rem;
-            color: #333;
+            color: var(--text-dark);
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
         .header p {
-            color: #666;
+            color: var(--text-light);
             font-size: 1.2rem;
             letter-spacing: 1px;
         }
@@ -55,7 +67,7 @@
         /* 倒计时卡片 */
         .countdown-section {
             background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
-            border-radius: 20px;
+            border-radius: var(--border-radius);
             padding: 30px;
             margin-bottom: 40px;
             color: white;
@@ -68,10 +80,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        
-        .countdown-title i {
-            font-size: 2rem;
         }
         
         .exam-grid {
@@ -153,16 +161,16 @@
         .stat-value {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #667eea;
+            color: var(--gradient-start);
         }
         
         .stat-label {
             font-size: 0.9rem;
-            color: #666;
+            color: var(--text-light);
         }
         
         .checkin-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
             color: white;
             border: none;
             padding: 15px 40px;
@@ -179,13 +187,123 @@
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
         }
         
-        .checkin-btn:active {
-            transform: translateY(0);
+        .checkin-btn.checked {
+            background: var(--success-color);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
         }
         
-        .checkin-btn.checked {
-            background: #28a745;
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        /* 进度条区域 */
+        .progress-section {
+            margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        .progress-bar-container {
+            flex: 2;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            font-size: 1rem;
+            color: var(--text-dark);
+            min-width: 240px;
+        }
+        
+        /* 补打卡日历卡 */
+        .calendar-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .calendar-header h3 {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+        }
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+        .calendar-nav button {
+            background: var(--bg-light);
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .calendar-nav button:hover {
+            background: #e0e0e0;
+        }
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .calendar-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+        .calendar-cell.empty {
+            background: transparent;
+            cursor: default;
+        }
+        .calendar-cell.today {
+            border: 2px solid var(--gradient-start);
+            font-weight: 600;
+        }
+        .calendar-cell.checked {
+            background: var(--success-color);
+            color: white;
+        }
+        .calendar-cell.future {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .calendar-cell:not(.empty):not(.future):hover {
+            background: #ddd;
         }
         
         /* 题库网格 */
@@ -198,9 +316,9 @@
         
         .card {
             background: white;
-            border-radius: 20px;
+            border-radius: var(--border-radius);
             padding: 25px 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-shadow);
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
@@ -214,7 +332,7 @@
             left: 0;
             right: 0;
             height: 5px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
         }
         
         .card:hover {
@@ -224,20 +342,20 @@
         
         .card-number {
             font-size: 1.1rem;
-            color: #667eea;
+            color: var(--gradient-start);
             font-weight: 600;
             margin-bottom: 10px;
         }
         
         .card-title {
             font-size: 1.5rem;
-            color: #333;
+            color: var(--text-dark);
             margin-bottom: 15px;
             font-weight: 700;
         }
         
         .card-desc {
-            color: #666;
+            color: var(--text-light);
             margin-bottom: 25px;
             line-height: 1.6;
             font-size: 0.95rem;
@@ -252,17 +370,11 @@
             font-size: 0.9rem;
         }
         
-        .card-info span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
         .btn {
             display: inline-block;
             width: 100%;
             padding: 14px 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
             color: white;
             text-decoration: none;
             border-radius: 12px;
@@ -272,11 +384,10 @@
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
-            letter-spacing: 1px;
         }
         
         .btn:hover {
-            background: linear-gradient(135deg, #764ba2, #667eea);
+            background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));
             transform: scale(1.02);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
@@ -286,7 +397,7 @@
             margin-top: 50px;
             padding-top: 30px;
             border-top: 1px solid #eee;
-            color: #666;
+            color: var(--text-light);
         }
         
         .badge {
@@ -294,35 +405,111 @@
             padding: 4px 12px;
             background: #f0f0f0;
             border-radius: 20px;
-            color: #666;
+            color: var(--text-light);
             font-size: 0.8rem;
             margin-left: 10px;
+        }
+        .badge-success {
+            background: var(--success-color);
+            color: white;
+        }
+        .badge-warning {
+            background: var(--warning-color);
+            color: #333;
+        }
+        
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 15px;
+        }
+        .link-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .link-item a {
+            color: var(--gradient-start);
+            text-decoration: none;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                backdrop-filter: none;
+                background: white;
+            }
+            .countdown-section,
+            .checkin-section,
+            .progress-section,
+            .calendar-section,
+            .btn {
+                background: white !important;
+                color: black !important;
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+            .btn {
+                display: none;
+            }
         }
         
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
             }
-            
             .container {
                 padding: 30px 20px;
             }
-            
             .grid {
                 grid-template-columns: 1fr;
             }
-            
             .checkin-section {
                 flex-direction: column;
                 text-align: center;
             }
-            
             .checkin-info {
                 flex-direction: column;
             }
-            
             .exam-grid {
                 grid-template-columns: 1fr;
+            }
+            .progress-section {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -340,12 +527,10 @@
                 <i>⏰</i> 2026年主管护师考试倒计时
             </div>
             
-            <div class="exam-grid" id="countdownGrid">
-                <!-- 倒计时将通过JavaScript动态生成 -->
-            </div>
+            <div class="exam-grid" id="countdownGrid"></div>
             
             <!-- 打卡区域 -->
-            <div class="checkin-section" id="checkinSection">
+            <div class="checkin-section">
                 <div class="checkin-info">
                     <div style="font-size: 2.5rem;">📅</div>
                     <div>
@@ -354,7 +539,7 @@
                     </div>
                 </div>
                 
-                <div class="checkin-stats" id="checkinStats">
+                <div class="checkin-stats">
                     <div class="stat-item">
                         <div class="stat-value" id="totalDays">0</div>
                         <div class="stat-label">累计打卡</div>
@@ -365,291 +550,403 @@
                     </div>
                 </div>
                 
-                <button class="checkin-btn" id="checkinBtn" onclick="handleCheckin()">📌 立即打卡</button>
+                <button class="checkin-btn" id="checkinBtn">📌 立即打卡</button>
+            </div>
+
+            <!-- 进度条区域 -->
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span>📊 打卡进度</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">距离考试还有XX天，已打卡0天</div>
+            </div>
+
+            <!-- 补打卡日历卡 -->
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <h3 id="calendarMonthTitle">2026年3月</h3>
+                    <div class="calendar-nav">
+                        <button id="prevMonthBtn">◀ 上月</button>
+                        <button id="nextMonthBtn">下月 ▶</button>
+                    </div>
+                </div>
+                <div class="calendar-weekdays">
+                    <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-light);">点击过去日期可补打卡（灰色为未来日期）</p>
             </div>
         </div>
         
-        <!-- 题库网格 -->
+        <!-- 题库网格（保持不变） -->
         <div class="grid">
             <!-- 第1组：基础知识 -->
             <div class="card">
                 <div class="card-number">📖 第1组</div>
                 <div class="card-title">基础知识</div>
                 <div class="card-desc">单科第1科 · 1000题<br>包含生理学、病理学、药理学等基础医学知识</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 练习模式</span>
-                </div>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 练习模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs01.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第2组：相关专业知识 -->
             <div class="card">
                 <div class="card-number">📗 第2组</div>
                 <div class="card-title">相关专业知识</div>
                 <div class="card-desc">单科第2科 · 1000题<br>包含护理管理、医院感染、健康教育、中医基础等</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 练习模式</span>
-                </div>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 练习模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs02.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第3组：专业知识 -->
             <div class="card">
                 <div class="card-number">📘 第3组</div>
                 <div class="card-title">专业知识</div>
                 <div class="card-desc">单科第3科 · 1000题<br>包含内科护理学、外科护理学、妇产科护理学等</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 练习模式</span>
-                </div>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 练习模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs03.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第4组：专业实践能力 -->
             <div class="card">
                 <div class="card-number">📙 第4组</div>
                 <div class="card-title">专业实践能力</div>
                 <div class="card-desc">单科第4科 · 1000题<br>包含基础护理学、护理技术、急救护理等</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 练习模式</span>
-                </div>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 练习模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs04.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第5组：26年新考纲知识点汇总 -->
             <div class="card">
                 <div class="card-number">📕 第5组</div>
                 <div class="card-title">26年新考纲知识点汇总</div>
                 <div class="card-desc">新考纲 · 197题<br>包含内科、外科、妇科、儿科、基础护理学、社区护理学等</div>
-                <div class="card-info">
-                    <span>📊 197题</span>
-                    <span>⏱️ 练习模式</span>
-                </div>
+                <div class="card-info"><span>📊 197题</span><span>⏱️ 练习模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs05.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第6组：1000题混编练习（一） -->
             <div class="card">
                 <div class="card-number">📒 第6组</div>
                 <div class="card-title">1000题混编练习（一）</div>
                 <div class="card-desc">主管护师 · 1000题<br>基础知识、相关专业知识、专业知识、专业实践能力</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 练习模式</span>
-                </div>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 练习模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs06.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第7组：1000题混编练习（二） -->
             <div class="card">
                 <div class="card-number">📓 第7组</div>
                 <div class="card-title">1000题混编练习（二）</div>
                 <div class="card-desc">主管护师 · 1000题<br>基础知识、相关专业知识、专业知识、专业实践能力</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 练习模式</span>
-                </div>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 练习模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs07.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第8组：专业实践能力(二) -->
             <div class="card">
                 <div class="card-number">📔 第8组</div>
                 <div class="card-title">专业实践能力(二)</div>
                 <div class="card-desc">单科第8科 · 1000题<br>包含危重症护理、围手术期护理、疼痛护理等</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 练习模式</span>
-                </div>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 练习模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs08.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第9组：综合模拟(一) -->
             <div class="card">
                 <div class="card-number">📰 第9组</div>
                 <div class="card-title">综合模拟(一)</div>
                 <div class="card-desc">单科第9科 · 1000题<br>包含历年真题、高频考点、易错题集</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 考试模式</span>
-                </div>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 考试模式</span></div>
                 <a href="https://mycymy.github.io/quiz/quizzghs09.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
-            
             <!-- 第10组：综合模拟(二) -->
             <div class="card">
                 <div class="card-number">📋 第10组</div>
                 <div class="card-title">综合模拟(二)</div>
                 <div class="card-desc">单科第10科 · 1000题<br>包含冲刺密卷、押题精练、考点预测</div>
-                <div class="card-info">
-                    <span>📊 1000题</span>
-                    <span>⏱️ 考试模式</span>
-                </div>
-                <a href="https://mycymy.github.io/quiz/quizzghs10.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
+                <div class="card-info"><span>📊 1000题</span><span>⏱️ 考试模式</span></div>
+                <a href="https://mycymy.github.io/quiz/quizzghs09.html" class="btn" target="_blank" rel="noopener noreferrer">👉 开始练习</a>
             </div>
         </div>
         
-        <!-- Footer -->
+        <!-- Footer - 精简链接网格 -->
         <div class="footer">
             <p>📢 提示：点击按钮后将在新标签页打开对应题库</p>
-            
-            <div style="margin-top: 20px; font-size: 0.95rem; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; background: #f8f9fa; padding: 20px; border-radius: 15px;">
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs01.html" target="_blank" rel="noopener noreferrer"><strong>基础知识（第1组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上线</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs02.html" target="_blank" rel="noopener noreferrer"><strong>相关专业知识（第2组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上传</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs03.html" target="_blank" rel="noopener noreferrer"><strong>专业知识（第3组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上传</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs04.html" target="_blank" rel="noopener noreferrer"><strong>专业实践能力（第4组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上传</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs05.html" target="_blank" rel="noopener noreferrer"><strong>26年新考纲知识点汇总（第5组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上传</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs06.html" target="_blank" rel="noopener noreferrer"><strong>1000题混编练习（一）（第6组）</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上传</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs07.html" target="_blank" rel="noopener noreferrer"><strong>1000题混编练习（二））</strong></a> <span class="badge" style="background: #28a745; color: white;">✅ 已上传</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs08.html" target="_blank" rel="noopener noreferrer"><strong>专业实践能力（二）（第8组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs09.html" target="_blank" rel="noopener noreferrer"><strong>综合模拟（一）（第9组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
-                <div style="min-width: 200px;">🔗 <a href="https://mycymy.github.io/quiz/quizzghs10.html" target="_blank" rel="noopener noreferrer"><strong>综合模拟（二）（第10组）</strong></a> <span class="badge" style="background: #ffc107; color: #333;">⏳ 待上传</span></div>
+            <div class="link-grid">
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs01.html" target="_blank">基础知识</a> <span class="badge badge-success">已上线</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs02.html" target="_blank">相关专业知识</a> <span class="badge badge-success">已上线</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs03.html" target="_blank">专业知识</a> <span class="badge badge-success">已上线</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs04.html" target="_blank">专业实践能力</a> <span class="badge badge-success">已上线</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs05.html" target="_blank">26年新考纲</a> <span class="badge badge-success">已上线</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs06.html" target="_blank">混编练习(一)</a> <span class="badge badge-success">已上线</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs07.html" target="_blank">混编练习(二)</a> <span class="badge badge-success">已上线</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs08.html" target="_blank">专业实践能力(二)</a> <span class="badge badge-warning">待上传</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs09.html" target="_blank">综合模拟(一)</a> <span class="badge badge-warning">待上传</span></div>
+                <div class="link-item"><a href="https://mycymy.github.io/quiz/quizzghs10.html" target="_blank">综合模拟(二)</a> <span class="badge badge-warning">待上传</span></div>
             </div>
-            
-            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 30px; color: #666; font-size: 0.9rem;">
-                <span><span style="display: inline-block; width: 12px; height: 12px; background: #28a745; border-radius: 50%; margin-right: 5px;"></span> 已上线可访问</span>
-                <span><span style="display: inline-block; width: 12px; height: 12px; background: #ffc107; border-radius: 50%; margin-right: 5px;"></span> 待上传</span>
-            </div>
-            
-            <p style="margin-top: 20px; color: #999; font-size: 0.85rem; border-top: 1px solid #eee; padding-top: 15px;">
-                ⚡ 点击上方链接可在新标签页打开对应题库 | 第1-7组已上线
-            </p>
+            <p style="margin-top: 20px; color: #999; font-size: 0.85rem;">⚡ 点击上方链接在新标签页打开题库 | 第1-7组已上线</p>
         </div>
     </div>
 
-    <!-- 倒计时和打卡功能JavaScript -->
+    <!-- Toast 提示容器 -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        // 考试时间配置（根据图片信息）
-        const examDates = [
-            { name: '基础知识', date: '2026-04-18', time: '8:30-10:00', dateLabel: '4月18日' },
-            { name: '相关专业知识', date: '2026-04-18', time: '10:45-12:15', dateLabel: '4月18日' },
-            { name: '专业知识', date: '2026-04-19', time: '14:00-15:30', dateLabel: '4月19日' },
-            { name: '专业实践能力(一)', date: '2026-04-25', time: '8:30-10:00', dateLabel: '4月25日' },
-            { name: '专业实践能力(二)', date: '2026-04-26', time: '16:15-17:45', dateLabel: '4月26日' }
-        ];
+        (function() {
+            // 考试时间配置（最后一科为专业实践能力(二)，日期2026-04-26 16:15）
+            const examDates = [
+                { name: '基础知识', date: '2026-04-18', time: '8:30-10:00', dateLabel: '4月18日' },
+                { name: '相关专业知识', date: '2026-04-18', time: '10:45-12:15', dateLabel: '4月18日' },
+                { name: '专业知识', date: '2026-04-19', time: '14:00-15:30', dateLabel: '4月19日' },
+                { name: '专业实践能力(一)', date: '2026-04-25', time: '8:30-10:00', dateLabel: '4月25日' },
+                { name: '专业实践能力(二)', date: '2026-04-26', time: '16:15-17:45', dateLabel: '4月26日' }
+            ];
+            // 最后一科考试日期（用于进度条分母）
+            const lastExam = examDates[examDates.length - 1];
+            const lastExamTimePart = lastExam.time.split('-')[0].trim();
+            const [lastHour, lastMin] = lastExamTimePart.split(':').map(Number);
+            const lastExamDate = new Date(lastExam.date);
+            lastExamDate.setHours(lastHour, lastMin, 0, 0);
 
-        // 初始化倒计时
-        function updateCountdown() {
-            const now = new Date();
-            const grid = document.getElementById('countdownGrid');
-            grid.innerHTML = '';
-            
-            examDates.forEach(exam => {
-                const examDate = new Date(exam.date);
-                examDate.setHours(0, 0, 0, 0);
-                
-                const diffTime = examDate - now;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                const card = document.createElement('div');
-                card.className = 'exam-card';
-                
-                let statusHtml = '';
-                if (diffDays < 0) {
-                    statusHtml = `<div class="countdown-number" style="color: #ff6b6b;">已结束</div>`;
-                } else if (diffDays === 0) {
-                    statusHtml = `<div class="countdown-number" style="color: #f9ca24;">今天考试</div>`;
+            // 辅助函数：显示 toast
+            function showToast(message) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+
+            // 获取存储的打卡日期集合 (存储格式: 日期字符串数组 YYYY-MM-DD)
+            function getCheckinSet() {
+                const data = localStorage.getItem('checkinDates');
+                return data ? new Set(JSON.parse(data)) : new Set();
+            }
+            function saveCheckinSet(set) {
+                localStorage.setItem('checkinDates', JSON.stringify([...set]));
+            }
+
+            // 重新计算统计信息 (累计天数、连续天数)
+            function recalcStats() {
+                const set = getCheckinSet();
+                const total = set.size;
+                document.getElementById('totalDays').textContent = total;
+
+                // 计算连续打卡天数
+                const todayStr = new Date().toDateString(); // 用于比较今天是否打卡
+                const todayISO = new Date().toISOString().slice(0,10);
+                if (!set.has(todayISO)) {
+                    document.getElementById('continuousDays').textContent = 0;
                 } else {
-                    statusHtml = `
-                        <div class="countdown-number">${diffDays}</div>
-                        <div class="countdown-label">天后开考</div>
-                    `;
+                    let continuous = 1;
+                    let current = new Date(todayISO);
+                    while (true) {
+                        current.setDate(current.getDate() - 1);
+                        const y = current.getFullYear();
+                        const m = String(current.getMonth() + 1).padStart(2,'0');
+                        const d = String(current.getDate()).padStart(2,'0');
+                        const prevDate = `${y}-${m}-${d}`;
+                        if (set.has(prevDate)) {
+                            continuous++;
+                        } else {
+                            break;
+                        }
+                    }
+                    document.getElementById('continuousDays').textContent = continuous;
                 }
-                
-                card.innerHTML = `
-                    <div class="exam-name">${exam.name}</div>
-                    <div class="exam-date">${exam.dateLabel}</div>
-                    <div class="exam-time">⏰ ${exam.time}</div>
-                    ${statusHtml}
-                `;
-                
-                grid.appendChild(card);
+
+                // 更新进度条 (分母 = 从今天到最后一科考试的天数)
+                const now = new Date();
+                let targetDays = 0;
+                if (now < lastExamDate) {
+                    const diffTime = lastExamDate - now;
+                    targetDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 向上取整，保证至少1天
+                } else {
+                    targetDays = 1; // 考试已过，分母设为1，百分比为100%
+                }
+                const percent = Math.min(100, Math.round((total / targetDays) * 100));
+                document.getElementById('progressBar').style.width = percent + '%';
+                document.getElementById('progressText').innerHTML = 
+                    `距离最后一科考试还有 ${targetDays} 天，已打卡 ${total} 天 (目标 ${targetDays} 天)`;
+            }
+
+            // 打卡（今日打卡）
+            function handleTodayCheckin() {
+                const today = new Date().toISOString().slice(0,10);
+                const set = getCheckinSet();
+                if (set.has(today)) {
+                    showToast('今天已经打卡过了');
+                    return;
+                }
+                set.add(today);
+                saveCheckinSet(set);
+                recalcStats();
+                renderCalendar(currentYear, currentMonth); // 刷新日历
+                showToast('今日打卡成功');
+                updateCheckinBtnState();
+            }
+
+            // 补打卡（指定日期，必须是过去且未打卡）
+            function handleCatchup(dateStr) {
+                const set = getCheckinSet();
+                if (set.has(dateStr)) {
+                    showToast('该日期已打卡');
+                    return;
+                }
+                // 检查是否为未来日期
+                const today = new Date().toISOString().slice(0,10);
+                if (dateStr > today) {
+                    showToast('不能补未来日期');
+                    return;
+                }
+                set.add(dateStr);
+                saveCheckinSet(set);
+                recalcStats();
+                renderCalendar(currentYear, currentMonth);
+                showToast(`补打卡 ${dateStr} 成功`);
+                updateCheckinBtnState();
+            }
+
+            // 更新今日打卡按钮状态
+            function updateCheckinBtnState() {
+                const btn = document.getElementById('checkinBtn');
+                const today = new Date().toISOString().slice(0,10);
+                const set = getCheckinSet();
+                if (set.has(today)) {
+                    btn.classList.add('checked');
+                    btn.innerHTML = '✅ 今日已打卡';
+                } else {
+                    btn.classList.remove('checked');
+                    btn.innerHTML = '📌 立即打卡';
+                }
+            }
+
+            // ---------- 倒计时更新 ----------
+            function updateCountdown() {
+                const now = new Date();
+                const grid = document.getElementById('countdownGrid');
+                grid.innerHTML = '';
+                examDates.forEach(exam => {
+                    const timePart = exam.time.split('-')[0].trim();
+                    const [h, m] = timePart.split(':').map(Number);
+                    const examDate = new Date(exam.date);
+                    examDate.setHours(h, m, 0, 0);
+                    const diffMs = examDate - now;
+                    let diffDays = Math.floor(diffMs / (1000*60*60*24));
+                    if (diffMs < 0) diffDays = -1;
+
+                    const card = document.createElement('div');
+                    card.className = 'exam-card';
+                    let statusText = diffDays<0 ? '已结束' : (diffDays===0 ? '今天考试' : `剩余 ${diffDays} 天`);
+                    card.setAttribute('aria-label', `${exam.name}，考试日期${exam.dateLabel} ${exam.time}，${statusText}`);
+
+                    let statusHtml = '';
+                    if (diffDays < 0) {
+                        statusHtml = `<div class="countdown-number" style="color:#ff6b6b;">已结束</div>`;
+                    } else if (diffDays === 0) {
+                        statusHtml = `<div class="countdown-number" style="color:#f9ca24;">今天考试</div>`;
+                    } else {
+                        statusHtml = `<div class="countdown-number">${diffDays}</div><div class="countdown-label">天后开考</div>`;
+                    }
+                    card.innerHTML = `
+                        <div class="exam-name">${exam.name}</div>
+                        <div class="exam-date">${exam.dateLabel}</div>
+                        <div class="exam-time">⏰ ${exam.time}</div>
+                        ${statusHtml}
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            // ---------- 日历渲染 ----------
+            let currentYear = new Date().getFullYear();
+            let currentMonth = new Date().getMonth(); // 0-11
+
+            function renderCalendar(year, month) {
+                const title = document.getElementById('calendarMonthTitle');
+                title.textContent = `${year}年${month+1}月`;
+
+                const firstDay = new Date(year, month, 1).getDay(); // 0=周日
+                const daysInMonth = new Date(year, month+1, 0).getDate();
+
+                const grid = document.getElementById('calendarGrid');
+                grid.innerHTML = '';
+
+                // 填充空白
+                for (let i = 0; i < firstDay; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'calendar-cell empty';
+                    grid.appendChild(cell);
+                }
+
+                const today = new Date();
+                const todayISO = today.toISOString().slice(0,10);
+                const set = getCheckinSet();
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    const cellDate = new Date(year, month, d);
+                    const cell = document.createElement('div');
+                    cell.className = 'calendar-cell';
+                    cell.textContent = d;
+
+                    // 标记今天
+                    if (dateStr === todayISO) {
+                        cell.classList.add('today');
+                    }
+                    // 标记已打卡
+                    if (set.has(dateStr)) {
+                        cell.classList.add('checked');
+                    }
+                    // 未来日期不可点
+                    if (cellDate > today) {
+                        cell.classList.add('future');
+                    }
+
+                    // 绑定点击事件（仅过去或今天可点）
+                    if (cellDate <= today) {
+                        cell.addEventListener('click', () => {
+                            handleCatchup(dateStr);
+                        });
+                    }
+                    grid.appendChild(cell);
+                }
+            }
+
+            // 月份切换
+            document.getElementById('prevMonthBtn').addEventListener('click', () => {
+                if (currentMonth === 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else {
+                    currentMonth--;
+                }
+                renderCalendar(currentYear, currentMonth);
             });
-        }
+            document.getElementById('nextMonthBtn').addEventListener('click', () => {
+                if (currentMonth === 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                } else {
+                    currentMonth++;
+                }
+                renderCalendar(currentYear, currentMonth);
+            });
 
-        // 打卡功能
-        function handleCheckin() {
-            const today = new Date().toDateString();
-            const checkinBtn = document.getElementById('checkinBtn');
-            
-            // 获取本地存储的打卡数据
-            let checkinData = JSON.parse(localStorage.getItem('checkinData')) || {
-                total: 0,
-                continuous: 0,
-                lastDate: null
-            };
-            
-            // 检查今天是否已经打卡
-            if (checkinData.lastDate === today) {
-                alert('今天已经打卡过了，明天再来吧！');
-                return;
+            // ---------- 初始化 ----------
+            function init() {
+                // 倒计时
+                updateCountdown();
+                setInterval(updateCountdown, 1000 * 60 * 60);
+
+                // 打卡统计
+                recalcStats();
+                updateCheckinBtnState();
+
+                // 日历
+                renderCalendar(currentYear, currentMonth);
+
+                // 绑定今日打卡按钮
+                document.getElementById('checkinBtn').addEventListener('click', handleTodayCheckin);
             }
-            
-            // 检查是否是连续打卡
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toDateString();
-            
-            if (checkinData.lastDate === yesterdayStr) {
-                checkinData.continuous += 1;
-            } else {
-                checkinData.continuous = 1;
-            }
-            
-            // 更新数据
-            checkinData.total += 1;
-            checkinData.lastDate = today;
-            
-            // 保存到本地存储
-            localStorage.setItem('checkinData', JSON.stringify(checkinData));
-            
-            // 更新显示
-            updateCheckinDisplay(checkinData);
-            
-            // 按钮样式变化
-            checkinBtn.classList.add('checked');
-            checkinBtn.innerHTML = '✅ 今日已打卡';
-            
-            alert('打卡成功！继续加油！');
-        }
 
-        // 更新打卡显示
-        function updateCheckinDisplay(data) {
-            document.getElementById('totalDays').textContent = data.total;
-            document.getElementById('continuousDays').textContent = data.continuous;
-            
-            const today = new Date().toDateString();
-            const checkinBtn = document.getElementById('checkinBtn');
-            
-            if (data.lastDate === today) {
-                checkinBtn.classList.add('checked');
-                checkinBtn.innerHTML = '✅ 今日已打卡';
-            } else {
-                checkinBtn.classList.remove('checked');
-                checkinBtn.innerHTML = '📌 立即打卡';
-            }
-        }
-
-        // 初始化
-        function init() {
-            // 倒计时每秒更新
-            updateCountdown();
-            setInterval(updateCountdown, 1000 * 60 * 60); // 每小时更新一次
-            
-            // 初始化打卡数据
-            const checkinData = JSON.parse(localStorage.getItem('checkinData')) || {
-                total: 0,
-                continuous: 0,
-                lastDate: null
-            };
-            updateCheckinDisplay(checkinData);
-        }
-
-        // 页面加载完成后执行
-        window.onload = init;
+            window.addEventListener('load', init);
+        })();
     </script>
 </body>
 </html>
