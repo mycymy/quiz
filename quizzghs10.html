@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>第10组·800题混编练习</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 12px;
+        }
+        #app {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 20px 18px;
+            margin: 10px 0 30px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #0b3b5c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-left: 8px solid #2a7faa;
+            padding-left: 16px;
+        }
+        h1 small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #4b5563;
+            margin-left: auto;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: #e6f0f9;
+            padding: 14px 12px;
+            border-radius: 28px;
+            justify-content: center;
+        }
+        .mode-btn {
+            background: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            flex: 1 0 auto;
+            font-size: 0.95rem;
+        }
+        .mode-btn.active {
+            background: #2a7faa;
+            color: white;
+            box-shadow: 0 8px 14px -6px #2a7faacc;
+            border-color: #1f5a7a;
+        }
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin: 18px 0 14px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 12px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            flex: 1 1 auto;
+            justify-content: center;
+            background: #f8fafc;
+        }
+        .btn.primary {
+            background: #2a7faa;
+            border-color: #1e5f82;
+            color: white;
+        }
+        .btn.warning {
+            background: #f97316;
+            border-color: #c2410c;
+            color: white;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 12px 20px;
+            background: #fff3cd;
+            border-radius: 40px;
+            border: 1px solid #ffeeba;
+        }
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #856404;
+        }
+        .question-panel {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 24px 18px;
+            box-shadow: inset 0 1px 4px #e2e8f0, 0 6px 12px -8px #94a3b8;
+            border: 1px solid #e9eef3;
+        }
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #dbeafe;
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: #1e3a8a;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .q-type {
+            background: #e2f3e4;
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: #166534;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .q-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.5;
+            margin: 20px 0 18px;
+            color: #0a1e2f;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 40px;
+            border: 1px solid #dee7ef;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+        .option-item.selected {
+            background: #e0f2fe;
+            border-color: #0369a1;
+            box-shadow: 0 0 0 2px #bae6fd;
+        }
+        .option-prefix {
+            font-weight: 700;
+            background: white;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+        }
+        .option-item.selected .option-prefix {
+            background: #0369a1;
+            border-color: #0369a1;
+            color: white;
+        }
+        .option-content {
+            flex: 1;
+            font-size: 1.06rem;
+            line-height: 1.4;
+            color: #0f2b40;
+        }
+        .answer-area {
+            margin: 24px 0 12px;
+            background: #f1f5f9;
+            border-radius: 24px;
+            padding: 16px 18px;
+        }
+        .correct-badge {
+            background: #22c55e;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        .wrong-badge {
+            background: #ef4444;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .explanation {
+            margin-top: 12px;
+            color: #2c3e50;
+            font-size: 1rem;
+            background: white;
+            padding: 14px;
+            border-radius: 24px;
+        }
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 10px;
+            color: #4b5563;
+        }
+        .wrong-book {
+            background: #fff1f0;
+            padding: 18px;
+            border-radius: 30px;
+            margin-top: 20px;
+            border: 1px solid #ffccc7;
+        }
+        .wrong-item {
+            padding: 12px;
+            border-bottom: 1px dashed #fbb9b5;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .wrong-item:hover {
+            background: #ffe4e2;
+        }
+        .exam-result {
+            background: white;
+            border-radius: 28px;
+            padding: 24px;
+            margin: 20px 0;
+            border: 2px solid #2a7faa;
+        }
+        .exam-result h2 {
+            color: #0b3b5c;
+            margin-bottom: 15px;
+        }
+        .exam-result h3 {
+            margin: 15px 0 10px;
+            color: #b91c1c;
+        }
+        .wrong-answer {
+            background: #fff1f0;
+            padding: 15px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        footer {
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h1 style="margin-bottom: 0;">📚 第10组·主管护师800题混编练习 <small>共800题</small></h1>
+        
+    </div>
+<a href="https://mycymy.github.io/quiz" target="_self" class="btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; width: 140px; padding: 10px 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+        🏠 返回主页
+    </a>
+    <!-- 模式切换工具栏 -->
+    <div class="toolbar">
+        <button class="mode-btn" :class="{active: mode === 'order'}" @click="switchMode('order')">📋 顺序</button>
+        <button class="mode-btn" :class="{active: mode === 'random'}" @click="switchMode('random')">🎲 随机</button>
+        <button class="mode-btn" :class="{active: mode === 'exam'}" @click="switchMode('exam')">✍️ 模拟</button>
+        <button class="mode-btn" :class="{active: mode === 'wrong'}" @click="switchMode('wrong')">📌 错题本</button>
+    </div>
+
+    <!-- 上一题/查看答案/下一题 -->
+    <div class="action-btns">
+        <button class="btn" @click="previousQuestion" :disabled="atFirst">◀ 上一题</button>
+        <button class="btn primary" @click="toggleAnswer">{{ showAnswer ? '隐藏答案' : '查看答案' }}</button>
+        <button class="btn" @click="nextQuestion" :disabled="atLast">下一题 ▶</button>
+    </div>
+
+    <!-- 模拟考试计时器栏（只在模拟考试未结束时显示） -->
+    <div v-if="mode === 'exam' && !examFinished" class="exam-info">
+        <span class="timer">⏱️ 剩余时间: {{ formattedTime }}</span>
+        <button class="btn primary" @click="finishExam">📤 交卷</button>
+    </div>
+
+    <!-- 非错题模式下的辅助操作（标记错题、随机跳题） -->
+    <div class="action-btns" v-if="mode !== 'wrong'">
+        <button class="btn warning" @click="markWrong">📕 标记错题</button>
+        <button class="btn" @click="randomJump">🎯 随机跳题</button>
+    </div>
+
+    <!-- 题目卡片 -->
+    <div class="question-panel" v-if="currentQuestion">
+        <div class="q-header">
+            <span class="q-num">第 {{ index+1 }}/{{ total }} 题</span>
+            <span class="q-type">单选题</span>
+        </div>
+        <div class="q-text">{{ currentQuestion.Q }}</div>
+
+        <div class="options">
+            <div v-for="(opt, idx) in currentQuestion.options" :key="idx"
+                 class="option-item"
+                 :class="{selected: userSelections[currentRawIndex] === String.fromCharCode(65+idx)}"
+                 @click="selectOption(String.fromCharCode(65+idx))">
+                <span class="option-prefix">{{ String.fromCharCode(65+idx) }}</span>
+                <span class="option-content">{{ opt }}</span>
+            </div>
+        </div>
+
+        <div class="answer-area" v-if="showAnswer">
+            <div>
+                <span class="correct-badge" v-if="userSelections[currentRawIndex] === currentQuestion.answer">✓ 回答正确</span>
+                <span class="wrong-badge" v-else-if="userSelections[currentRawIndex] && userSelections[currentRawIndex] !== currentQuestion.answer">✗ 回答错误</span>
+                <span style="font-weight:600; margin-left:8px;">正确答案：{{ currentQuestion.answer }}</span>
+            </div>
+            <div class="explanation" v-if="currentQuestion.explain">
+                <strong>📖 解析：</strong> {{ currentQuestion.explain }}
+            </div>
+            <div class="explanation" v-else>
+                <span style="color:#6b7280;">（本题无解析，可自行记录）</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度统计 -->
+    <div class="progress">
+        <span>已完成: {{ answeredCount }}/{{ total }}</span>
+        <span>正确: {{ correctCount }}</span>
+        <span>错题本: {{ wrongList.length }}</span>
+    </div>
+
+    <!-- 错题本详情（错题模式下显示） -->
+    <div class="wrong-book" v-if="mode === 'wrong'">
+        <h3 style="color:#b91c1c; margin-bottom:16px;">❌ 我的错题 ({{ wrongList.length }})</h3>
+        <div v-if="wrongList.length === 0" style="color: #4b5563;">还没有错题，继续加油！</div>
+        <div v-for="(id, idx) in wrongList" :key="idx" class="wrong-item" @click="jumpToWrongQuestion(id)">
+            <span style="font-weight:500;">题号 {{ id+1 }}：</span> {{ questions[id].Q.substring(0,26) }}…
+            <span style="color:#a5a; margin-left:8px;">[{{ questions[id].answer }}]</span>
+        </div>
+        <!-- 清空错题本按钮 -->
+        <button v-if="wrongList.length > 0" class="btn warning" @click="clearWrongSet" style="margin-top:15px;">🧹 清空错题本</button>
+    </div>
+
+    <!-- 考试成绩单（交卷后显示） -->
+    <div v-if="showExamResult" class="exam-result">
+        <h2>📊 模拟考试成绩</h2>
+        <p>得分: {{ examScore }} / {{ total }} ({{ (examScore/total*100).toFixed(1) }}%)</p>
+        <p>正确题数: {{ correctCount }}</p>
+        <p>错题数: {{ wrongList.length }}</p>
+        <div v-if="wrongList.length > 0">
+            <h3>❌ 错题解析</h3>
+            <div v-for="(rawId, idx) in wrongList" :key="idx" class="wrong-answer">
+                <p><strong>题号 {{ rawId+1 }}:</strong> {{ questions[rawId].Q }}</p>
+                <p><span style="color:red;">您的答案: {{ userSelections[rawId] || '未答' }}</span> → <span style="color:green;">正确答案: {{ questions[rawId].answer }}</span></p>
+                <p>📖 解析: {{ questions[rawId].explain || '无解析' }}</p>
+                <hr>
+            </div>
+        </div>
+        <button class="btn primary" @click="switchMode('order')">返回练习模式</button>
+    </div>
+
+    <footer>⭐ 主管护师·800题混编练习 · 第10组 · 共800题</footer>
+</div>
+
+<!-- 引入Vue -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    (function() {
+
+const questionsData = [
+// ==================== 模拟试卷五 基础知识 (第1601-1700题) ====================
+// 第1601题 试卷五 基础知识 第1题
+{ Q: "与肺癌发生关系最密切的是", options: ["A.职业性致病因素", "B.长期吸烟", "C.空气污染", "D.电离辐射", "E.饮食与营养"], answer: "B", explain: "长期吸烟是肺癌最重要的危险因素，吸烟量越大、年限越长，肺癌发生率越高。" },
+// 第1602题 试卷五 基础知识 第2题
+{ Q: "二尖瓣狭窄导致肺水肿的原因为", options: ["A.肺毛细血管渗透压增高", "B.左心房压力增高，肺静脉压和肺毛细血管压增高", "C.肺动脉压增高", "D.血浆胶体渗透压降低", "E.血容量过多"], answer: "B", explain: "二尖瓣狭窄时左心房压力增高，导致肺静脉压和肺毛细血管压增高，液体渗出形成肺水肿。" },
+// 第1603题 试卷五 基础知识 第3题
+{ Q: "导致产褥病率的主要因素是", options: ["A.手术切口感染", "B.乳腺炎", "C.上呼吸道感染", "D.尿路感染", "E.产褥感染"], answer: "E", explain: "产褥感染是导致产褥病率的最主要因素。" },
+// 第1604题 试卷五 基础知识 第4题
+{ Q: "糖尿病微血管病变所致慢性并发症为", options: ["A.冠心病", "B.脑动脉硬化", "C.糖尿病肾病", "D.皮肤化脓性感染", "E.下肢动脉硬化"], answer: "C", explain: "糖尿病肾病是典型的微血管并发症。" },
+// 第1605题 试卷五 基础知识 第5题
+{ Q: "诊断有机磷农药中毒的依据不包括", options: ["A.有接触史", "B.典型症状和体征", "C.呼气有大蒜气味", "D.碱性磷酸酶测定", "E.胆碱酯酶活力测定"], answer: "D", explain: "碱性磷酸酶与有机磷中毒无关，诊断依据是胆碱酯酶活力测定。" },
+// 第1606题 试卷五 基础知识 第6题
+{ Q: "侵蚀性葡萄胎一般发生于", options: ["A.人工流产后", "B.自然流产后", "C.足月分娩后", "D.葡萄胎清宫术后", "E.异位妊娠清除术后"], answer: "D", explain: "侵蚀性葡萄胎多继发于葡萄胎清宫术后。" },
+// 第1607题 试卷五 基础知识 第7题
+{ Q: "目前临床上应用的心脏机械瓣膜，其主要缺点是", options: ["A.易并发感染", "B.须终身抗凝治疗", "C.血栓栓塞发生率高", "D.组织相容性差", "E.持久性差，易发生退行性变而需要再次手术"], answer: "B", explain: "机械瓣膜需终身抗凝治疗，生物瓣膜不需抗凝但耐久性差。" },
+// 第1608题 试卷五 基础知识 第8题
+{ Q: "外科休克中最常见的类型是", options: ["A.心源性和神经源性", "B.神经源性和过敏性", "C.低血容量性和感染性", "D.创伤性和神经源性", "E.感染性和心源性"], answer: "C", explain: "外科休克最常见的是低血容量性休克和感染性休克。" },
+// 第1609题 试卷五 基础知识 第9题
+{ Q: "男，58岁。20年吸烟史。刺激性咳嗽并痰中带血丝6个月。胸部X线检查示左肺中央型块状阴影，右肺上叶不张，左侧中量胸腔积液，右侧纵隔阴影增宽，轮廓呈波浪形。为确诊，首选的检查是", options: ["A.胸部CT检查", "B.开胸探查", "C.胸腔镜检查", "D.支气管镜检查", "E.经胸壁穿刺活组织检查"], answer: "D", explain: "中央型肺癌首选支气管镜检查，可直接取活检。" },
+// 第1610题 试卷五 基础知识 第10题
+{ Q: "急性感染病程时间范围为", options: ["A.1天", "B.1周", "C.3周", "D.3个月", "E.6个月"], answer: "C", explain: "急性感染病程在3周以内。" },
+// 第1611题 试卷五 基础知识 第11题
+{ Q: "颅内压增高时颅内压的调节主要通过", options: ["A.脑组织从高压区向低压区部分移位", "B.脑静脉血被挤压到颅腔外", "C.颅腔内脑脊液量的减少", "D.脑血管的自动调节", "E.脑组织被压缩"], answer: "C", explain: "颅内压增高时，通过颅腔内脑脊液量的减少进行代偿调节。" },
+// 第1612题 试卷五 基础知识 第12题
+{ Q: "治疗胆绞痛不单独使用吗啡类药物的原因是", options: ["A.避免成瘾", "B.镇痛效果不好", "C.药物来源困难", "D.疼痛缓解后可使病情恶化", "E.避免Oddi括约肌痉挛加重病情"], answer: "E", explain: "吗啡可致Oddi括约肌痉挛，加重胆绞痛。" },
+// 第1613题 试卷五 基础知识 第13题
+{ Q: "导致输卵管妊娠最常见的原因是", options: ["A.输卵管过长", "B.输卵管手术后", "C.输卵管功能障碍", "D.输卵管慢性炎症", "E.输卵管发育不良"], answer: "D", explain: "输卵管慢性炎症是输卵管妊娠最常见原因。" },
+// 第1614题 试卷五 基础知识 第14题
+{ Q: "男，24岁。高热3天，咳嗽，咳铁锈色痰，胸部X线呈右上叶片状阴影。应选用的抗生素为", options: ["A.青霉素", "B.链霉素", "C.庆大霉素", "D.头孢菌素", "E.阿米卡星"], answer: "A", explain: "铁锈色痰是大叶性肺炎特征，由肺炎链球菌引起，首选青霉素。" },
+// 第1615题 试卷五 基础知识 第15题
+{ Q: "尿瘘的主要病因是", options: ["A.挤压伤", "B.产伤", "C.肿瘤浸润", "D.妇科手术损伤", "E.腐蚀性灼伤"], answer: "B", explain: "产伤是尿瘘最主要病因，占90%以上。" },
+// 第1616题 试卷五 基础知识 第16题
+{ Q: "女，36岁。因妊娠36⁺周，双下肢水肿一月余，头晕、头痛、视物模糊6天就诊。查体：体温36℃，脉搏102次/分，呼吸22次/分，血压148/100mmHg，下肢水肿(++)；实验室检查：尿蛋白(+)。产科检查：胎心138次/分，先露头部，无宫缩，无阴道流血，未破膜。根据患者情况，应采取的措施是", options: ["A.给予硫酸镁", "B.饮食应严格限制食盐入量", "C.给予间断吸氧", "D.每天监测孕妇体重及血压", "E.定期监测胎儿发育情况及胎盘功能"], answer: "A", explain: "血压148/100mmHg，尿蛋白(+)，为子痫前期，首选硫酸镁解痉治疗。" },
+// 第1617题 试卷五 基础知识 第17题
+{ Q: "关于小儿脊柱的发育，错误的是", options: ["A.新生儿的脊柱是直的", "B.3个月时出现颈椎前凸", "C.6个月时出现胸椎后凸", "D.1岁后出现腰椎前凸", "E.2岁时脊柱的弯曲被韧带固定"], answer: "E", explain: "脊柱的弯曲约在6-7岁才被韧带固定。" },
+// 第1618题 试卷五 基础知识 第18题
+{ Q: "最多见的肿瘤转移途径是", options: ["A.直接蔓延", "B.混合性转移", "C.血行转移", "D.种植性转移", "E.淋巴转移"], answer: "E", explain: "淋巴转移是肿瘤最常见的转移途径。" },
+// 第1619题 试卷五 基础知识 第19题
+{ Q: "伤寒最主要的传播途径是", options: ["A.水源传播", "B.蚊蝇", "C.血液-体液传播", "D.鼠类传播", "E.器官移植传播"], answer: "A", explain: "伤寒主要通过污染的水源和食物传播。" },
+// 第1620题 试卷五 基础知识 第20题
+{ Q: "门静脉提供的血液占肝脏全部血液供应量的", options: ["A.50%-55%", "B.56%-60%", "C.60%-65%", "D.66%-70%", "E.70%-75%"], answer: "E", explain: "门静脉提供肝脏血供的70%-75%，肝动脉提供25%-30%。" },
+// 第1621题 试卷五 基础知识 第21题
+{ Q: "非麻醉性镇痛药为", options: ["A.可待因", "B.吗啡", "C.哌替啶（度冷丁）", "D.阿司匹林", "E.美沙酮"], answer: "D", explain: "阿司匹林为非麻醉性镇痛药，其余均为麻醉性镇痛药。" },
+// 第1622题 试卷五 基础知识 第22题
+{ Q: "急性肾小球肾炎常见的并发症包括", options: ["A.水肿、少尿、高血压", "B.水肿、大量蛋白尿、低白蛋白血症", "C.血尿、高血压脑病、肾衰竭", "D.感染、血栓形成、急性肾损伤", "E.严重循环充血、高血压脑病、急性肾损伤"], answer: "E", explain: "急性肾炎三大并发症：严重循环充血、高血压脑病、急性肾损伤。" },
+// 第1623题 试卷五 基础知识 第23题
+{ Q: "人体最大的能源仓库是", options: ["A.肝脏", "B.肌肉", "C.糖原", "D.蛋白质", "E.体脂"], answer: "E", explain: "体脂是人体最大的能源仓库。" },
+// 第1624题 试卷五 基础知识 第24题
+{ Q: "关于胆囊结石的描述，错误的是", options: ["A.胆囊结石均有临床症状", "B.主要为胆固醇结石或以胆固醇为主的混合性结石", "C.大的单发结石不易发生嵌顿", "D.结石长期嵌顿于胆囊壶腹部但无感染时，可产生“白胆汁”", "E.结石和炎症的反复刺激可诱发胆囊癌变"], answer: "A", explain: "多数胆囊结石无症状，仅在体检时发现。" },
+// 第1625题 试卷五 基础知识 第25题
+{ Q: "根据小儿年龄段的划分，婴儿期是指", options: ["A.出生至出生后28天", "B.出生至12个月", "C.出生后13个月至2岁", "D.出生后2-3岁", "E.出生后3-5岁"], answer: "B", explain: "婴儿期指出生后到满1周岁之前。" },
+// 第1626题 试卷五 基础知识 第26题
+{ Q: "吉兰-巴雷综合征属", options: ["A.病毒感染性疾病", "B.过敏性疾病", "C.自身免疫性疾病", "D.细菌感染性疾病", "E.传染性疾病"], answer: "C", explain: "吉兰-巴雷综合征是自身免疫性疾病。" },
+// 第1627题 试卷五 基础知识 第27题
+{ Q: "可提示直肠癌预后及监测复发的指标是", options: ["A.神经元特异性烯醇化酶（NSE）", "B.癌胚抗原（CEA）", "C.γ-谷氨酰转移酶（GGT）", "D.鳞状上皮细胞癌抗原（SCC）", "E.癌抗原-50（CA-50）"], answer: "B", explain: "CEA是结直肠癌的肿瘤标志物，可用于监测复发。" },
+// 第1628题 试卷五 基础知识 第28题
+{ Q: "有关孕激素的生理作用，正确的是", options: ["A.使增殖期子宫内膜转化为分泌期", "B.促进卵泡及子宫发育", "C.使阴道上皮增生、角化", "D.促进骨中钙质沉积", "E.促使水、钠潴留"], answer: "A", explain: "孕激素使增殖期子宫内膜转化为分泌期，为着床做准备。" },
+// 第1629题 试卷五 基础知识 第29题
+{ Q: "血液中最重要的一对缓冲物质是", options: ["A.HPO₄²⁻/H₂PO₄", "B.HCO₃⁻/H₂CO₃", "C.SO₄²⁻/H₂SO₄", "D.NO₃⁻/HNO₃", "E.Cl⁻/HCl"], answer: "B", explain: "HCO₃⁻/H₂CO₃是血液中最重要的缓冲对。" },
+// 第1630题 试卷五 基础知识 第30题
+{ Q: "外科疾病中引起代谢性碱中毒最常见的是", options: ["A.幽门梗阻", "B.肠瘘", "C.小肠扭转", "D.肾功能不全", "E.胰瘘"], answer: "A", explain: "幽门梗阻呕吐丢失胃酸，导致代谢性碱中毒。" },
+// 第1631题 试卷五 基础知识 第31题
+{ Q: "男，48岁。吞咽有硬物感半年，目前仅能进半流质食物。查体：稍消瘦，锁骨上未触及肿大淋巴结。食管X线钡剂检查示食管中下段4cm长局限性管壁僵硬，黏膜部分中断，钡剂尚能通过。为明确诊断，应进行的检查是", options: ["A.血管造影检查", "B.食管镜检查", "C.放射性核素检查", "D.食管拉网脱落细胞学检查", "E.B超检查"], answer: "B", explain: "食管镜检查加活检是确诊食管癌的金标准。" },
+// 第1632题 试卷五 基础知识 第32题
+{ Q: "引起血栓闭塞性脉管炎的常见原因为", options: ["A.大量饮酒", "B.缺乏锻炼", "C.低盐饮食", "D.长期吸烟", "E.高碳水化合物饮食"], answer: "D", explain: "吸烟是血栓闭塞性脉管炎最重要的病因。" },
+// 第1633题 试卷五 基础知识 第33题
+{ Q: "腰椎管狭窄症的后天发病因素中，最多见的是", options: ["A.损伤", "B.妊娠", "C.椎管退行性变", "D.腰棘韧带炎", "E.先天性颈椎管狭窄"], answer: "C", explain: "椎管退行性变是腰椎管狭窄症最常见后天因素。" },
+// 第1634题 试卷五 基础知识 第34题
+{ Q: "维生素D缺乏性手足搐搦症与维生素D缺乏性佝偻病发病原因不同点是", options: ["A.钙吸收代谢障碍", "B.磷吸收代谢障碍", "C.甲状旁腺分泌不足", "D.神经系统兴奋性降低", "E.碱性磷酸酶活性升高"], answer: "C", explain: "手足搐搦症时甲状旁腺反应迟钝，不能代偿性分泌增加。" },
+// 第1635题 试卷五 基础知识 第35题
+{ Q: "诊断肝癌首选的检查方法是", options: ["A.肝功能检查", "B.AFP", "C.B超检查", "D.CT检查", "E.MRI检查"], answer: "C", explain: "B超是肝癌筛查的首选方法，经济、无创、方便。" },
+// 第1636题 试卷五 基础知识 第36题
+{ Q: "女，2岁。患有法洛四联症，喜蹲踞，其原因是", options: ["A.保证重要器官供血", "B.缓解腹部不适", "C.腔静脉回心血量增加", "D.休息，缓解疲劳", "E.增加体循环阻力，减少右向左分流"], answer: "E", explain: "蹲踞可增加体循环阻力，减少右向左分流，缓解缺氧。" },
+// 第1637题 试卷五 基础知识 第37题
+{ Q: "男，46岁。反复中上腹疼痛1年余。近来症状加重，疼痛呈烧灼感，进食后疼痛缓解，并伴有反酸、嗳气、食欲减退等。胃镜检查：十二指肠球部黏膜潮红、水肿，球腔变形、变小，前壁近大弯处有一椭圆形溃疡，边缘光滑，表面覆盖厚白苔，周围黏膜明显水肿。导致该病发生并起关键作用的因素是", options: ["A.胃酸", "B.胃蛋白酶", "C.粗糙饮食", "D.幽门螺杆菌感染", "E.非甾体抗炎药"], answer: "D", explain: "幽门螺杆菌感染是十二指肠溃疡的主要病因。" },
+// 第1638题 试卷五 基础知识 第38题
+{ Q: "男，45岁。肝硬化病史5年，血常规示全血细胞减少。最可能的原因是", options: ["A.肝功能减退", "B.脾功能亢进", "C.内分泌失调", "D.门静脉高压", "E.腹壁静脉曲张"], answer: "B", explain: "脾功能亢进导致全血细胞减少。" },
+// 第1639题 试卷五 基础知识 第39题
+{ Q: "全身性感染患者行血培养的最佳时间是", options: ["A.寒战、高热前", "B.寒战、高热时", "C.寒战、高热后", "D.应用抗生素时", "E.应用退热药前"], answer: "B", explain: "寒战高热时细菌在血液中浓度最高，采血阳性率最高。" },
+// 第1640题 试卷五 基础知识 第40题
+{ Q: "关于护士的基本任务，错误的是", options: ["A.促进健康", "B.预防疾病", "C.保护环境", "D.恢复健康", "E.减轻痛苦"], answer: "C", explain: "护士的基本任务不包括保护环境。" },
+// 第1641题 试卷五 基础知识 第41题
+{ Q: "男，50岁。因饱餐后突发上腹痛，伴恶心、呕吐4小时入院。经检查后诊断为急性水肿型胰腺炎。护理措施错误的是", options: ["A.禁食、胃肠减压", "B.手术引流胰周渗出液", "C.补充液体", "D.解痉、镇痛", "E.应用抗生素"], answer: "B", explain: "水肿型胰腺炎不需手术引流，保守治疗即可。" },
+// 第1642题 试卷五 基础知识 第42题
+{ Q: "新生儿，胎龄39周。全身皮肤青紫，呼吸不规则，心率100次/分，四肢稍屈。对外界刺激有反应。该新生儿情况属于", options: ["A.正常", "B.轻度窒息", "C.中度窒息", "D.重度窒息", "E.苍白窒息"], answer: "B", explain: "Apgar评分4-7分为轻度窒息。" },
+// 第1643题 试卷五 基础知识 第43题
+{ Q: "根据心脏状态和心电图表现，心脏骤停的类型不包括", options: ["A.心室颤动", "B.心房颤动", "C.心脏完全停止", "D.心室停搏", "E.心脏电-机械分离"], answer: "B", explain: "房颤不是心脏骤停的类型。" },
+// 第1644题 试卷五 基础知识 第44题
+{ Q: "男，60岁。吸烟40年，胃大部切除术后2天，出现痰多、无力咳出，烦躁不安，呼吸急促。查体：体温38.5℃，脉搏96次/分，呼吸26次/分，右下肺叩诊浊音，呼吸音消失。应首先考虑", options: ["A.支气管炎", "B.肺不张", "C.胸腔积液", "D.气胸", "E.脓胸"], answer: "B", explain: "术后痰多无力咳出导致肺不张。" },
+// 第1645题 试卷五 基础知识 第45题
+{ Q: "耻骨联合上缘中点至骶岬前缘中点的距离称为", options: ["A.入口前后径", "B.出口前后径", "C.中骨盆前后径", "D.出口前矢状径", "E.出口后矢状径"], answer: "A", explain: "耻骨联合上缘中点至骶岬前缘中点的距离为入口前后径，即真结合径。" },
+// 第1646题 试卷五 基础知识 第46题
+{ Q: "初产妇，26岁。第二产程延长，行胎头吸引器助产后12小时，阴道流血量似月经量，自感头晕、乏力、心慌。血压80/60mmHg，脉搏108次/分，面色苍白，宫底脐上1横指。最可能的原因是", options: ["A.凝血功能障碍", "B.软产道裂伤", "C.子宫收缩乏力", "D.产后虚脱", "E.胎盘残留"], answer: "C", explain: "产后出血，子宫底升高，考虑子宫收缩乏力。" },
+// 第1647题 试卷五 基础知识 第47题
+{ Q: "原发免疫性血小板减少症最主要的发病机制是", options: ["A.骨髓制造巨核细胞功能低下", "B.免疫反应", "C.毛细血管脆性增加", "D.脾脏破坏血小板", "E.血小板功能异常"], answer: "B", explain: "ITP是免疫反应导致血小板破坏过多。" },
+// 第1648题 试卷五 基础知识 第48题
+{ Q: "诱发甲状腺危象的原因不包括", options: ["A.感染", "B.严重精神创伤", "C.准备不充分的甲状腺次全切除术", "D.非甲状腺的大手术", "E.应用β受体阻滞剂"], answer: "E", explain: "β受体阻滞剂用于控制甲亢症状，不会诱发危象。" },
+// 第1649题 试卷五 基础知识 第49题
+{ Q: "正常成人的潮气量为", options: ["A.200-300ml", "B.400-600ml", "C.700-800ml", "D.900-1000ml", "E.1100-1200ml"], answer: "B", explain: "正常成人潮气量为400-600ml。" },
+// 第1650题 试卷五 基础知识 第50题
+{ Q: "男，40岁。突然出现头晕、心悸、乏力、脉速，呕吐咖啡样胃内容物。为明确病因首选的检查是", options: ["A.选择性动脉造影", "B.X线钡剂检查", "C.胃镜检查", "D.腹部B超检查", "E.吞棉线试验"], answer: "C", explain: "上消化道出血首选胃镜检查。" },
+// 第1651题 试卷五 基础知识 第51题
+{ Q: "流行性乙型脑炎的传播途径是", options: ["A.生物制品传播", "B.虫媒传播", "C.接触传播", "D.消化道传播", "E.血液-体液传播"], answer: "B", explain: "乙脑由蚊虫传播。" },
+// 第1652题 试卷五 基础知识 第52题
+{ Q: "小儿的脑耗氧量在基础代谢状态下占总耗氧量的比例是", options: ["A.20%", "B.30%", "C.40%", "D.50%", "E.60%"], answer: "D", explain: "小儿脑耗氧量占总耗氧量的50%。" },
+// 第1653题 试卷五 基础知识 第53题
+{ Q: "齿状线以下肛管的解剖生理特点是", options: ["A.覆盖黏膜", "B.痛觉敏锐", "C.血液回流入门静脉", "D.由自主神经支配", "E.由直肠上、下动脉供血"], answer: "B", explain: "齿状线以下为皮肤，痛觉敏感。" },
+// 第1654题 试卷五 基础知识 第54题
+{ Q: "脑血管疾病的危险因素中不可干预的是", options: ["A.年龄", "B.心脏病", "C.高血压", "D.高脂血症", "E.白血病"], answer: "A", explain: "年龄是不可干预的危险因素。" },
+// 第1655题 试卷五 基础知识 第55题
+{ Q: "为冠心病患者治疗决策提供依据的重要检查是", options: ["A.心电图", "B.超声心动图", "C.冠状动脉造影", "D.右室造影", "E.胸部X线检查"], answer: "C", explain: "冠脉造影是诊断冠心病的金标准。" },
+// 第1656题 试卷五 基础知识 第56题
+{ Q: "女，51岁。车祸致下腹部撞伤。现场排除膀胱破裂的简便方法是", options: ["A.直肠指诊", "B.耻骨上膀胱穿刺", "C.排泄性尿路造影", "D.腹部叩诊移动性浊音", "E.导尿及膀胱注水试验"], answer: "E", explain: "导尿后注水试验可简单判断有无膀胱破裂。" },
+// 第1657题 试卷五 基础知识 第57题
+{ Q: "男，70岁。因持续心前区疼痛6小时入院。除心电图检查外，对急性心肌梗死诊断有价值的检查是", options: ["A.血常规", "B.出、凝血时间", "C.血清心肌坏死标志物", "D.胆碱酯酶", "E.碱性磷酸酶"], answer: "C", explain: "心肌坏死标志物如CK-MB、肌钙蛋白是诊断心梗的重要指标。" },
+// 第1658题 试卷五 基础知识 第58题
+{ Q: "正常成年女性的卵巢大小为", options: ["A.4cm×2cm×1cm", "B.4cm×3cm×1cm", "C.4cm×3cm×2cm", "D.4cm×2cm×2cm", "E.3cm×2cm×2cm"], answer: "B", explain: "正常卵巢大小约4cm×3cm×1cm。" },
+// 第1659题 试卷五 基础知识 第59题
+{ Q: "防治坏血病的维生素是", options: ["A.维生素A", "B.维生素B", "C.维生素C", "D.维生素D", "E.维生素E"], answer: "C", explain: "维生素C缺乏导致坏血病。" },
+// 第1660题 试卷五 基础知识 第60题
+{ Q: "大面积烧伤早期发生的休克多为", options: ["A.神经源性休克", "B.心源性休克", "C.低血容量性休克", "D.感染性休克", "E.过敏性休克"], answer: "C", explain: "烧伤早期因大量体液渗出，发生低血容量性休克。" },
+// 第1661题 试卷五 基础知识 第61题
+{ Q: "尿路感染最主要的感染途径是", options: ["A.血行感染", "B.上行感染", "C.下行感染", "D.淋巴道感染", "E.直接感染"], answer: "B", explain: "上行感染是尿路感染最常见的途径。" },
+// 第1662题 试卷五 基础知识 第62题
+{ Q: "癫痫的发病机制主要是", options: ["A.脑血管破裂出血", "B.大脑神经元异常放电", "C.大脑假性神经递质形成", "D.血液中芳香族氨基酸增多", "E.血氨增高影响脑细胞代谢"], answer: "B", explain: "癫痫是大脑神经元异常放电所致。" },
+// 第1663题 试卷五 基础知识 第63题
+{ Q: "女，46岁。2周前因胃溃疡行胃大部切除术，现患者出现头晕、乏力、口唇黏膜苍白。查血红蛋白75g/L。其贫血的原因是", options: ["A.铁转运障碍", "B.铁吸收不良", "C.贮存铁减少", "D.铁排泄增加", "E.铁供给不足"], answer: "B", explain: "胃大部切除后胃酸减少，影响铁的吸收。" },
+// 第1664题 试卷五 基础知识 第64题
+{ Q: "慢性胃炎常见的致病菌是", options: ["A.沙门菌", "B.大肠埃希菌", "C.嗜盐杆菌", "D.金黄色葡萄球菌", "E.幽门螺杆菌"], answer: "E", explain: "幽门螺杆菌是慢性胃炎的主要致病菌。" },
+// 第1665题 试卷五 基础知识 第65题
+{ Q: "支气管扩张症的主要表现为", options: ["A.夜间咳嗽", "B.干咳或刺激性咳嗽", "C.慢性连续性咳嗽", "D.金属音调咳嗽", "E.嘶哑性咳嗽"], answer: "C", explain: "支扩表现为慢性咳嗽，大量脓痰，与体位改变有关。" },
+// 第1666题 试卷五 基础知识 第66题
+{ Q: "固定宫颈以维持子宫正常位置的韧带是", options: ["A.圆韧带", "B.阔韧带", "C.主韧带", "D.骶结节韧带", "E.宫骶韧带"], answer: "C", explain: "主韧带是固定宫颈位置的主要韧带。" },
+// 第1667题 试卷五 基础知识 第67题
+{ Q: "交替脉见于", options: ["A.心房颤动", "B.肺动脉高压", "C.高血压", "D.左心衰竭", "E.右心衰竭"], answer: "D", explain: "交替脉是左心衰竭的特征性体征。" },
+// 第1668题 试卷五 基础知识 第68题
+{ Q: "男，4岁。肠炎后出现急性对称性迟缓性肢体瘫痪，诊断为吉兰-巴雷综合征，脑脊液呈现的特征是", options: ["A.蛋白质、细胞数均正常", "B.蛋白-细胞分离", "C.糖含量高", "D.糖含量低", "E.细菌培养阳性"], answer: "B", explain: "吉兰-巴雷综合征典型表现为蛋白-细胞分离。" },
+// 第1669题 试卷五 基础知识 第69题
+{ Q: "最易并发脓胸的肺炎，其病原体是", options: ["A.链球菌", "B.铜绿假单胞菌", "C.大肠埃希菌", "D.肺炎链球菌", "E.金黄色葡萄球菌"], answer: "E", explain: "金黄色葡萄球菌肺炎易并发脓胸、脓气胸。" },
+// 第1670题 试卷五 基础知识 第70题
+{ Q: "小儿原发型肺结核的病理转归最常见的是", options: ["A.液化", "B.纤维化", "C.形成空洞", "D.钙化或硬结", "E.干酪样坏死"], answer: "D", explain: "原发综合征最常见的转归是钙化或硬结。" },
+// 第1671题 试卷五 基础知识 第71题
+{ Q: "初产妇，从分娩次日起持续3天体温在37.5℃左右，子宫收缩好，无压痛，会阴切口无红肿、无疼痛，恶露鲜红色，无臭味，双乳肿胀，有硬结。发热的原因最可能是", options: ["A.过度疲劳", "B.乳汁淤积", "C.会阴切口感染", "D.上呼吸道感染", "E.宫腔有胎膜残留"], answer: "B", explain: "双乳肿胀有硬结，考虑乳汁淤积引起的吸收热。" },
+// 第1672题 试卷五 基础知识 第72题
+{ Q: "患者因骨盆骨折大量出血难以控制，需要紧急手术，必要时可考虑结扎", options: ["A.髂内动脉", "B.髂外动脉", "C.髂总动脉", "D.髂内静脉", "E.髂外静脉"], answer: "A", explain: "结扎髂内动脉可控制盆腔出血。" },
+// 第1673题 试卷五 基础知识 第73题
+{ Q: "男，33岁。上腹部闭合性损伤3小时入院。查体：面色苍白，四肢厥冷；血压70/46mmHg，脉搏140次/分。B超检查示腹腔积液。患者最可能的诊断是", options: ["A.胃穿孔", "B.十二指肠穿孔", "C.肝、脾破裂", "D.腹壁软组织损伤", "E.胰腺破裂"], answer: "C", explain: "外伤后休克、腹腔积液，提示实质性脏器破裂出血。" },
+// 第1674题 试卷五 基础知识 第74题
+{ Q: "引起左心室后负荷增加的主要因素是", options: ["A.二尖瓣狭窄", "B.静脉回流增加", "C.相对性主动脉瓣狭窄", "D.外周血管阻力增加", "E.动脉血容量增加"], answer: "D", explain: "外周血管阻力增加使左心室后负荷增加。" },
+// 第1675题 试卷五 基础知识 第75题
+{ Q: "营养不良患儿的发病年龄多见于", options: ["A.2岁以下", "B.3岁以下", "C.4岁以下", "D.5岁以下", "E.6岁以下"], answer: "B", explain: "营养不良多见于3岁以下婴幼儿。" },
+// 第1676题 试卷五 基础知识 第76题
+{ Q: "胎头内旋转完成的时间是在", options: ["A.产程开始", "B.第一产程中", "C.第一产程末", "D.第二产程中", "E.第二产程末"], answer: "C", explain: "胎头内旋转在第一产程末完成。" },
+// 第1677题 试卷五 基础知识 第77题
+{ Q: "男，19岁。运动后突然出现右上腹剧痛，疼痛放射至右侧中下腹及会阴部，伴恶心、呕吐，尿液呈浓茶色。查体：腹软，右下腹深压痛，右肾区叩击痛。考虑该患者为“右肾结石”。为了确诊应采用的检查为", options: ["A.尿常规检查", "B.血常规检查", "C.MRI检查", "D.CT检查", "E.X线检查"], answer: "E", explain: "腹部平片可发现90%以上的泌尿系统结石。" },
+// 第1678题 试卷五 基础知识 第78题
+{ Q: "再生障碍性贫血诊断最有力的证据是", options: ["A.有贫血、出血和感染", "B.全血细胞减少", "C.网织红细胞减少", "D.骨髓增生低下", "E.铁粒幼红细胞增多"], answer: "D", explain: "骨髓穿刺显示骨髓增生低下是诊断再障的最有力证据。" },
+// 第1679题 试卷五 基础知识 第79题
+{ Q: "急性肾损伤少尿期电解质紊乱最严重的是", options: ["A.高钾血症", "B.高钠血症", "C.低钙血症", "D.高镁血症", "E.高磷血症"], answer: "A", explain: "高钾血症是少尿期最危险的电解质紊乱。" },
+// 第1680题 试卷五 基础知识 第80题
+{ Q: "病理性支气管呼吸音见于", options: ["A.肺气肿", "B.阻塞性肺不张", "C.肺实变", "D.气胸", "E.胸腔积液"], answer: "C", explain: "肺实变时出现病理性支气管呼吸音。" },
+// 第1681题 试卷五 基础知识 第81题
+{ Q: "急性呼吸窘迫综合征的主要病理改变是", options: ["A.肺水肿和肺不张", "B.肺纤维化", "C.肺气肿", "D.肺大泡", "E.肺脓肿"], answer: "A", explain: "ARDS主要病理改变为肺水肿和肺不张。" },
+// 第1682题 试卷五 基础知识 第82题
+{ Q: "引起小儿佝偻病最主要的原因是", options: ["A.缺乏维生素D", "B.缺乏钙", "C.缺乏磷", "D.缺乏蛋白质", "E.缺乏脂肪"], answer: "A", explain: "维生素D缺乏是佝偻病的主要原因。" },
+// 第1683题 试卷五 基础知识 第83题
+{ Q: "小儿轻度脱水失水量占体重的百分比为", options: ["A.3%-5%", "B.6%-10%", "C.11%-15%", "D.16%-20%", "E.21%-25%"], answer: "A", explain: "轻度脱水失水量<5%。" },
+// 第1684题 试卷五 基础知识 第84题
+{ Q: "急性肾小球肾炎患儿出现高血压脑病时，血压应控制在", options: ["A.140/90mmHg以下", "B.130/80mmHg以下", "C.120/70mmHg以下", "D.110/70mmHg以下", "E.100/60mmHg以下"], answer: "B", explain: "高血压脑病时应将血压降至130/80mmHg以下。" },
+// 第1685题 试卷五 基础知识 第85题
+{ Q: "关于小儿肺炎的护理，错误的是", options: ["A.保持室内空气流通", "B.给予高蛋白、高维生素饮食", "C.鼓励患儿多饮水", "D.喘憋严重时可用镇静药", "E.密切观察病情变化"], answer: "D", explain: "喘憋严重时应用镇静药会抑制呼吸，应谨慎。" },
+// 第1686题 试卷五 基础知识 第86题
+{ Q: "急性肾小球肾炎患儿应卧床休息的时间是", options: ["A.水肿消退、血压正常后", "B.肉眼血尿消失后", "C.尿量恢复正常后", "D.尿蛋白消失后", "E.血沉正常后"], answer: "A", explain: "水肿消退、血压正常后可逐渐增加活动。" },
+// 第1687题 试卷五 基础知识 第87题
+{ Q: "肾病综合征患儿最常见的并发症是", options: ["A.感染", "B.血栓形成", "C.急性肾损伤", "D.电解质紊乱", "E.高血压脑病"], answer: "A", explain: "感染是肾病综合征最常见的并发症。" },
+// 第1688题 试卷五 基础知识 第88题
+{ Q: "法洛四联症患儿缺氧发作时，应采取的体位是", options: ["A.平卧位", "B.半坐卧位", "C.侧卧位", "D.膝胸卧位", "E.头低脚高位"], answer: "D", explain: "膝胸卧位可增加体循环阻力，减少右向左分流。" },
+// 第1689题 试卷五 基础知识 第89题
+{ Q: "急性肾炎患儿出现严重循环充血时，首选的治疗是", options: ["A.利尿药", "B.强心药", "C.降压药", "D.镇静药", "E.吸氧"], answer: "A", explain: "严重循环充血应使用利尿药减轻心脏负荷。" },
+// 第1690题 试卷五 基础知识 第90题
+{ Q: "小儿贫血最常见的类型是", options: ["A.缺铁性贫血", "B.巨幼细胞贫血", "C.溶血性贫血", "D.再生障碍性贫血", "E.生理性贫血"], answer: "A", explain: "缺铁性贫血是小儿最常见的贫血类型。" },
+// 第1691题 试卷五 基础知识 第91题
+{ Q: "小儿轻度贫血的血红蛋白值是", options: ["A.90-120g/L", "B.60-90g/L", "C.30-60g/L", "D.<30g/L", "E.120-140g/L"], answer: "A", explain: "轻度贫血Hb 90-120g/L。" },
+// 第1692题 试卷五 基础知识 第92题
+{ Q: "营养性缺铁性贫血的主要病因是", options: ["A.铁摄入不足", "B.铁吸收障碍", "C.铁丢失过多", "D.铁利用障碍", "E.先天性储铁不足"], answer: "A", explain: "铁摄入不足是小儿缺铁性贫血最主要原因。" },
+// 第1693题 试卷五 基础知识 第93题
+{ Q: "关于小儿惊厥的护理措施，错误的是", options: ["A.立即松开衣领", "B.头偏向一侧", "C.按压抽搐肢体", "D.保持呼吸道通畅", "E.记录抽搐时间"], answer: "C", explain: "不可按压抽搐肢体，以免骨折。" },
+// 第1694题 试卷五 基础知识 第94题
+{ Q: "小儿热性惊厥最常见的病因是", options: ["A.上呼吸道感染", "B.肺炎", "C.尿路感染", "D.肠道感染", "E.中耳炎"], answer: "A", explain: "上感是小儿热性惊厥最常见原因。" },
+// 第1695题 试卷五 基础知识 第95题
+{ Q: "新生儿颅内出血最重要的护理措施是", options: ["A.保持安静减少搬动", "B.保持呼吸道通畅", "C.合理喂养", "D.预防感染", "E.观察生命体征"], answer: "A", explain: "保持安静、减少搬动是防止继续出血的关键。" },
+// 第1696题 试卷五 基础知识 第96题
+{ Q: "新生儿黄疸进行光照疗法时，灯管与婴儿的距离应为", options: ["A.10-20cm", "B.20-30cm", "C.30-40cm", "D.40-50cm", "E.50-60cm"], answer: "D", explain: "光疗灯管与婴儿距离40-50cm。" },
+// 第1697题 试卷五 基础知识 第97题
+{ Q: "新生儿寒冷损伤综合征复温的原则是", options: ["A.逐步复温", "B.快速复温", "C.先快后慢", "D.先慢后快", "E.恒温"], answer: "A", explain: "应逐步复温，每小时提高箱温1℃。" },
+// 第1698题 试卷五 基础知识 第98题
+{ Q: "新生儿败血症最常见的感染途径是", options: ["A.脐部", "B.皮肤", "C.呼吸道", "D.消化道", "E.泌尿道"], answer: "A", explain: "脐部是新生儿败血症最常见的感染途径。" },
+// 第1699题 试卷五 基础知识 第99题
+{ Q: "新生儿缺氧缺血性脑病控制惊厥的首选药物是", options: ["A.苯巴比妥", "B.地西泮", "C.水合氯醛", "D.苯妥英钠", "E.丙戊酸钠"], answer: "A", explain: "苯巴比妥是HIE控制惊厥的首选药物。" },
+// 第1700题 试卷五 基础知识 第100题
+{ Q: "新生儿窒息复苏步骤的顺序是", options: ["A.清理呼吸道-建立呼吸-维持循环-药物治疗", "B.建立呼吸-清理呼吸道-维持循环-药物治疗", "C.维持循环-清理呼吸道-建立呼吸-药物治疗", "D.药物治疗-清理呼吸道-建立呼吸-维持循环", "E.清理呼吸道-维持循环-建立呼吸-药物治疗"], answer: "A", explain: "复苏步骤按A（气道）、B（呼吸）、C（循环）、D（药物）顺序进行。" },
+
+// ==================== 模拟试卷五 相关专业知识 (第1701-1800题) ====================
+// 第1701题 试卷五 相关专业知识 第1题
+{ Q: "冬天给小区里的老年人讲解冬季保健知识属于", options: ["A.学校健康教育", "B.职业人群健康教育", "C.医院健康教育", "D.社区健康教育", "E.易感人群健康教育"], answer: "D", explain: "在社区针对老年人群进行健康教育属于社区健康教育。" },
+// 第1702题 试卷五 相关专业知识 第2题
+{ Q: "正常情况下，正常菌群可存留在机体的腔道是", options: ["A.肠道", "B.胸腔", "C.腹腔", "D.颅腔", "E.关节腔"], answer: "A", explain: "肠道是正常菌群寄居的主要部位。" },
+// 第1703题 试卷五 相关专业知识 第3题
+{ Q: "关于管理的职能，正确的是", options: ["A.评估、计划、指导、领导、控制", "B.计划、指导、人员管理、领导、控制", "C.评估、计划、组织、领导、控制", "D.计划、组织、人员管理、领导、控制", "E.计划、组织、人员管理、领导、评价"], answer: "D", explain: "管理职能包括计划、组织、人员管理、领导、控制。" },
+// 第1704题 试卷五 相关专业知识 第4题
+{ Q: "男，8岁。表现为爱探究未知问题、好攻击他人、易激惹和自我表现，提示其已进入行为的", options: ["A.主动发展阶段", "B.被动发展阶段", "C.自主发展阶段", "D.巩固发展阶段", "E.独立发展阶段"], answer: "A", explain: "爱探究、好攻击属于主动发展阶段的行为特点。" },
+// 第1705题 试卷五 相关专业知识 第5题
+{ Q: "促进健康行为不包括", options: ["A.适量运动", "B.合理营养", "C.定期体检", "D.讳疾忌医", "E.充足睡眠"], answer: "D", explain: "讳疾忌医是不良疾病行为，不是促进健康行为。" },
+// 第1706题 试卷五 相关专业知识 第6题
+{ Q: "属于中医学基本特点的是", options: ["A.同病异治", "B.异病同治", "C.审因论治", "D.辨证论治", "E.标本同治"], answer: "D", explain: "辨证论治是中医学的基本特点。" },
+// 第1707题 试卷五 相关专业知识 第7题
+{ Q: "血管相关性感染的预防，错误的是", options: ["A.严格无菌操作", "B.尽早拔除血管导管", "C.导管入口选用透明敷料，以便随时观察", "D.发现导管局部红肿，脓液渗出，应立即用药，密切观察", "E.发生全身感染征象立即拔管"], answer: "D", explain: "发现导管局部感染应立即拔管，而不是观察。" },
+// 第1708题 试卷五 相关专业知识 第8题
+{ Q: "护理质量评价定性分析法不包括", options: ["A.分层法", "B.调查表法", "C.排列图法", "D.因果分析图法", "E.头脑风暴法"], answer: "E", explain: "头脑风暴法是决策方法，不是质量评价的定性分析法。" },
+// 第1709题 试卷五 相关专业知识 第9题
+{ Q: "关于计划步骤排序正确的是", options: ["A.评估形势一确定目标一比较方案一发展可选方案一选定方案一编制预算", "B.评估形势一确定目标一发展可选方案一比较方案一选定方案一编制预算", "C.确定目标一评估形势一发展可选方案一比较方案一选定方案一编制预算", "D.确定目标一评估形势一比较方案一发展可选方案一选定方案一编制预算", "E.确定目标一评估形势一比较方案一发展可选方案一编制预算一选定方案"], answer: "B", explain: "计划步骤：评估形势→确定目标→发展可选方案→比较方案→选定方案→编制预算。" },
+// 第1710题 试卷五 相关专业知识 第10题
+{ Q: "非正式沟通的重要作用不包括", options: ["A.可以满足员工情感方面的需要", "B.可以了解员工真实的心理倾向", "C.可以有较强的约束力，易于保密", "D.可以防止管理者滥用正式沟通", "E.可以减轻管理者的沟通压力"], answer: "C", explain: "非正式沟通不易保密，约束力不强。" },
+// 第1711题 试卷五 相关专业知识 第11题
+{ Q: "医院感染的高危人群是指", options: ["A.ICU住院患者", "B.普通内科患者", "C.妇科患者", "D.普通外科患者", "E.眼科患者"], answer: "A", explain: "ICU患者病情重，侵入性操作多，是医院感染高危人群。" },
+// 第1712题 试卷五 相关专业知识 第12题
+{ Q: "护理部在整体规划下，进行明确分工，并在其基础上进行有效综合，这一管理原则是", options: ["A.能级原则", "B.动力原则", "C.参与管理原则", "D.整合原则", "E.反馈原则"], answer: "D", explain: "分工与综合体现了整合原则。" },
+// 第1713题 试卷五 相关专业知识 第13题
+{ Q: "全面质量管理的目标是", options: ["A.强烈地关注客户", "B.全面提升整体的质量", "C.持续地、渐进地变革", "D.改进组织中每项工作的质量", "E.建立组织对持续改进的承诺"], answer: "B", explain: "TQM的目标是全面提升整体质量。" },
+// 第1714题 试卷五 相关专业知识 第14题
+{ Q: "原位菌群二度失调时，正常菌群比例失调处于相持状态，不易恢复。此类失调的表现不包括", options: ["A.大叶性肺炎", "B.慢性腹泻", "C.慢性咽喉炎", "D.慢性阴道炎", "E.肠功能紊乱"], answer: "A", explain: "大叶性肺炎是急性感染，不是菌群失调的表现。" },
+// 第1715题 试卷五 相关专业知识 第15题
+{ Q: "注射室的地面溅有患者的血液，应采取的措施是", options: ["A.用干拖把拖净", "B.用湿拖把拖净", "C.用含氯消毒剂浸泡，然后用拖把拖净", "D.用消毒纸巾擦拭", "E.用拖把拖净，然后丢弃拖把"], answer: "C", explain: "血液污染应先消毒后清洁。" },
+// 第1716题 试卷五 相关专业知识 第16题
+{ Q: "根据阴阳学说，事物的量变过程称为", options: ["A.阴阳消长", "B.阴阳对立", "C.阴平阳秘", "D.阴阳互根", "E.阴阳转化"], answer: "A", explain: "阴阳消长是量变过程。" },
+// 第1717题 试卷五 相关专业知识 第17题
+{ Q: "健康教育的目的不包括", options: ["A.早诊断", "B.消除影响健康的危险因素", "C.预防疾病", "D.促进健康", "E.提高生活质量"], answer: "A", explain: "早诊断是临床医疗的内容，不是健康教育的目的。" },
+// 第1718题 试卷五 相关专业知识 第18题
+{ Q: "某医院外科接到某地区先天性心脏病救治的重大任务，护士长将护士甲和护士乙2名经验丰富的护士组织起来，这种方式属于", options: ["A.正式沟通", "B.非正式沟通", "C.平行沟通", "D.口头沟通", "E.书面沟通"], answer: "A", explain: "根据任务需要正式组建团队属于正式沟通。" },
+// 第1719题 试卷五 相关专业知识 第19题
+{ Q: "管理的二重性是指", options: ["A.自然属性和社会属性", "B.科学性和艺术性", "C.理论性和实践性", "D.普遍性和特殊性", "E.客观性和主观性"], answer: "A", explain: "管理具有自然属性和社会属性二重性。" },
+// 第1720题 试卷五 相关专业知识 第20题
+{ Q: "科学管理理论的创始人是", options: ["A.泰勒", "B.法约尔", "C.韦伯", "D.梅奥", "E.马斯洛"], answer: "A", explain: "泰勒是科学管理理论的创始人。" },
+// 第1721题 试卷五 相关专业知识 第21题
+{ Q: "法约尔的管理过程理论中，管理的五项要素不包括", options: ["A.计划", "B.组织", "C.指挥", "D.协调", "E.决策"], answer: "E", explain: "法约尔提出管理的五要素是计划、组织、指挥、协调、控制。" },
+// 第1722题 试卷五 相关专业知识 第22题
+{ Q: "韦伯的行政组织理论中，理想的组织形态是", options: ["A.官僚行政组织", "B.学习型组织", "C.扁平化组织", "D.矩阵式组织", "E.网络式组织"], answer: "A", explain: "韦伯提出的理想组织形态是官僚行政组织。" },
+// 第1723题 试卷五 相关专业知识 第23题
+{ Q: "霍桑实验的结论认为，工人是", options: ["A.经济人", "B.社会人", "C.复杂人", "D.自我实现人", "E.理性人"], answer: "B", explain: "霍桑实验提出人是社会人，不仅有物质需求，还有心理需求。" },
+// 第1724题 试卷五 相关专业知识 第24题
+{ Q: "马斯洛的人类需要层次理论中，最高层次的需要是", options: ["A.生理需要", "B.安全需要", "C.爱与归属的需要", "D.尊重的需要", "E.自我实现的需要"], answer: "E", explain: "自我实现的需要是最高的层次。" },
+// 第1725题 试卷五 相关专业知识 第25题
+{ Q: "赫茨伯格的双因素理论中，属于保健因素的是", options: ["A.工作成就感", "B.工作认可", "C.工资待遇", "D.晋升机会", "E.个人发展"], answer: "C", explain: "工资待遇属于保健因素，其缺失会引起不满，但存在不一定带来满意。" },
+// 第1726题 试卷五 相关专业知识 第26题
+{ Q: "麦格雷戈的X理论认为，人", options: ["A.天生懒惰，不愿工作", "B.愿意工作，具有创造力", "C.能够自我控制", "D.勇于承担责任", "E.追求自我实现"], answer: "A", explain: "X理论认为人性本懒，需要强制管理。" },
+// 第1727题 试卷五 相关专业知识 第27题
+{ Q: "麦格雷戈的Y理论认为，人", options: ["A.天生懒惰，不愿工作", "B.需要强制管理", "C.逃避责任", "D.愿意工作，具有创造力", "E.缺乏雄心"], answer: "D", explain: "Y理论认为人是积极向上的，愿意工作。" },
+// 第1728题 试卷五 相关专业知识 第28题
+{ Q: "决策理论学派的代表人物是", options: ["A.泰勒", "B.法约尔", "C.韦伯", "D.梅奥", "E.西蒙"], answer: "E", explain: "西蒙是决策理论学派的代表人物。" },
+// 第1729题 试卷五 相关专业知识 第29题
+{ Q: "系统管理学派认为，组织是一个", options: ["A.封闭系统", "B.开放系统", "C.机械系统", "D.静态系统", "E.孤立系统"], answer: "B", explain: "系统管理学派认为组织是一个开放系统，与外界环境相互影响。" },
+// 第1730题 试卷五 相关专业知识 第30题
+{ Q: "权变理论的核心思想是", options: ["A.存在最佳的管理模式", "B.管理应因地制宜", "C.管理应标准化", "D.管理应统一化", "E.管理应程序化"], answer: "B", explain: "权变理论认为管理应根据具体情况灵活变通。" },
+// 第1731题 试卷五 相关专业知识 第31题
+{ Q: "目标管理的提出者是", options: ["A.泰勒", "B.法约尔", "C.韦伯", "D.德鲁克", "E.西蒙"], answer: "D", explain: "德鲁克提出了目标管理理论。" },
+// 第1732题 试卷五 相关专业知识 第32题
+{ Q: "PDCA循环的四个阶段是", options: ["A.计划-实施-检查-处理", "B.计划-检查-实施-处理", "C.实施-计划-检查-处理", "D.检查-计划-实施-处理", "E.处理-计划-实施-检查"], answer: "A", explain: "PDCA循环是计划(Plan)、实施(Do)、检查(Check)、处理(Action)。" },
+// 第1733题 试卷五 相关专业知识 第33题
+{ Q: "关于组织文化的功能，错误的是", options: ["A.导向功能", "B.凝聚功能", "C.激励功能", "D.约束功能", "E.替代功能"], answer: "E", explain: "组织文化有导向、凝聚、激励、约束等功能，不能替代管理。" },
+// 第1734题 试卷五 相关专业知识 第34题
+{ Q: "“中精之府”指的是", options: ["A.胆", "B.胃", "C.小肠", "D.大肠", "E.膀胱"], answer: "A", explain: "胆为中精之府。" },
+// 第1735题 试卷五 相关专业知识 第35题
+{ Q: "男，45岁。确诊为二期梅毒，消毒方法错误的是", options: ["A.内衣、内裤、毛巾煮沸消毒", "B.床单、被褥用250-500mg/L含氯消毒剂浸泡", "C.便器用0.2%过氧乙酸擦拭", "D.家具表面可用75%乙醇擦拭", "E.性生活时可向生殖器官喷涂消毒剂"], answer: "E", explain: "喷涂消毒剂不能预防梅毒，应使用安全套。" },
+// 第1736题 试卷五 相关专业知识 第36题
+{ Q: "肝胆外科病区值班护士发现一名患者不在医院且没有请假，此时护士首先应报告的对象是", options: ["A.肝胆外科主任", "B.外科总护士长", "C.患者家属", "D.肝胆外科病区护士长", "E.护理部主任"], answer: "D", explain: "首先应报告病区护士长。" },
+// 第1737题 试卷五 相关专业知识 第37题
+{ Q: "感染链的组成是", options: ["A.传染源、传播途径、感染症状", "B.传播途径、易感人群、感染部位", "C.易感人群、传染源、病原体毒力", "D.宿主的免疫力、传染源、病原体毒力", "E.传染源、传播途径及易感人群"], answer: "E", explain: "感染链由传染源、传播途径、易感人群组成。" },
+// 第1738题 试卷五 相关专业知识 第38题
+{ Q: "控制按业务范围划分不包括", options: ["A.技术控制", "B.质量控制", "C.资金控制", "D.日常控制", "E.人力资源控制"], answer: "D", explain: "日常控制是按控制时间划分，不是按业务范围。" },
+// 第1739题 试卷五 相关专业知识 第39题
+{ Q: "在真菌引起的医院感染中，常见的致病菌是", options: ["A.黑曲霉菌", "B.近平滑假丝酵母菌", "C.光滑假丝酵母菌", "D.白假丝酵母菌", "E.李斯特菌"], answer: "D", explain: "白假丝酵母菌是最常见的真菌感染菌。" },
+// 第1740题 试卷五 相关专业知识 第40题
+{ Q: "急性细菌感染评价抗菌药物的治疗效果应在", options: ["A.6-12小时后", "B.12-24小时后", "C.1-2天后", "D.2-3天后", "E.3-5天后"], answer: "D", explain: "抗生素使用2-3天后评价疗效。" },
+// 第1741题 试卷五 相关专业知识 第41题
+{ Q: "随着医院的发展，某内科新增1个内分泌护理单元，任命一名护士长，其管理幅度宜为", options: ["A.4-8人", "B.5-9人", "C.6-10人", "D.7-13人", "E.8-15人"], answer: "D", explain: "护士长的管理幅度一般为7-13人。" },
+// 第1742题 试卷五 相关专业知识 第42题
+{ Q: "使计划数字化的工作被称为", options: ["A.规划", "B.决策", "C.预测", "D.预算", "E.方案"], answer: "D", explain: "预算是计划的数字化形式。" },
+// 第1743题 试卷五 相关专业知识 第43题
+{ Q: "受者的心理特点不包括", options: ["A.求真", "B.求广", "C.求新", "D.求短", "E.求近"], answer: "B", explain: "求广不是受者的心理特点。" },
+// 第1744题 试卷五 相关专业知识 第44题
+{ Q: "属于阴的症状是", options: ["A.声高气粗", "B.精神亢奋", "C.面色潮红", "D.脉细涩", "E.舌苔黄糙"], answer: "D", explain: "脉细涩属阴证表现。" },
+// 第1745题 试卷五 相关专业知识 第45题
+{ Q: "日常健康行为不包括", options: ["A.规律作息", "B.合理营养", "C.充足睡眠", "D.适量运动", "E.定期体检"], answer: "E", explain: "定期体检是保健行为，不是日常健康行为。" },
+// 第1746题 试卷五 相关专业知识 第46题
+{ Q: "造成沟通障碍的原因不包括", options: ["A.不同的政治、宗教或职业角色可使人们形成不同的意识，造成沟通障碍", "B.知觉偏差", "C.沟通目的不明确", "D.使用非正式沟通", "E.几种媒介互相冲突"], answer: "D", explain: "非正式沟通是沟通的一种方式，不是障碍原因。" },
+// 第1747题 试卷五 相关专业知识 第47题
+{ Q: "关于期望理论，正确的是", options: ["A.应将效价与期望值进行优化组合", "B.同一个人在不同时期的效价一样", "C.效价的高低是激励是否有效的关键", "D.效价与期望值之间互不影响", "E.期望值的高低是激励是否有效的关键"], answer: "A", explain: "激励力=效价×期望值，应使二者优化组合。" },
+// 第1748题 试卷五 相关专业知识 第48题
+{ Q: "管理者通过分析影响因素及个体优化组合后达到理想的整体效益，体现协调的原则是", options: ["A.原则性与灵活性相结合原则", "B.利益一致原则", "C.整体优化原则", "D.勤于沟通原则", "E.目标导向原则"], answer: "C", explain: "整体优化原则追求整体效益最大化。" },
+// 第1749题 试卷五 相关专业知识 第49题
+{ Q: "预防医院感染发生的措施不包括", options: ["A.避免扰乱和破坏患者身体正常防御机制", "B.明确患者的潜在病灶，及时给予治疗", "C.及早使用预防性抗生素", "D.严格遵守无菌原则", "E.对免疫力低下的患者采取保护性隔离措施"], answer: "C", explain: "预防性抗生素不能预防所有医院感染，应合理使用。" },
+// 第1750题 试卷五 相关专业知识 第50题
+{ Q: "对炎症患者产生的医疗废物和有机垃圾应", options: ["A.含氯消毒剂浸泡消毒", "B.全部丢弃", "C.全部焚烧", "D.过氧乙酸喷洒", "E.气溶胶消毒法"], answer: "C", explain: "感染性医疗废物应焚烧处理。" },
+// 第1751题 试卷五 相关专业知识 第51题
+{ Q: "关于行为学家麦格雷戈X-Y理论（人性理论）的描述，错误的是", options: ["A.X理论认为人不愿负责任，宁愿被人领导", "B.X理论认为人是懒惰的", "C.Y理论认为人对工作是负责任的，能够自我控制", "D.Y理论认为人不愿负责任，人是懒惰的", "E.Y理论认为人是喜欢工作的"], answer: "D", explain: "D选项是X理论的观点，不是Y理论。" },
+// 第1752题 试卷五 相关专业知识 第52题
+{ Q: "评估患者健康教育需求的内容不包括", options: ["A.对疾病或健康问题的知识水平", "B.对健康教育的态度", "C.文化水平", "D.学习条件", "E.生活方式"], answer: "E", explain: "生活方式是行为评估的内容，不是需求评估。" },
+// 第1753题 试卷五 相关专业知识 第53题
+{ Q: "压力蒸汽灭菌效果监测最可靠的方法是", options: ["A.化学指示胶带", "B.程序监测", "C.生物监测", "D.化学指示卡", "E.温度计"], answer: "C", explain: "生物监测是最可靠的监测方法，用嗜热脂肪杆菌芽孢。" },
+// 第1754题 试卷五 相关专业知识 第54题
+{ Q: "常为外邪致病先导的邪气是", options: ["A.风", "B.寒", "C.湿", "D.燥", "E.火"], answer: "A", explain: "风为百病之长，常为外邪先导。" },
+// 第1755题 试卷五 相关专业知识 第55题
+{ Q: "为确保效果，小组讨论的人数、时间最好分别为", options: ["A.3-5人，0.5小时左右", "B.6-10人，1小时左右", "C.6-10人，1.5小时左右", "D.11-15人，1小时左右", "E.11-15人，1.5小时左右"], answer: "B", explain: "小组讨论以6-10人为宜，时间1小时左右。" },
+// 第1756题 试卷五 相关专业知识 第56题
+{ Q: "影响护理人员编设的因素不包括", options: ["A.政策法规", "B.护士薪酬", "C.社会因素", "D.管理水平", "E.工作量"], answer: "B", explain: "薪酬是人力资源管理内容，不是编制影响因素。" },
+// 第1757题 试卷五 相关专业知识 第57题
+{ Q: "“某社区55岁以上的老年人高血压的控制率在3年内提高30%”，此描述属于健康教育的计划", options: ["A.目的", "B.目标", "C.原则", "D.结果", "E.体现"], answer: "B", explain: "具体、可测量的是计划目标。" },
+// 第1758题 试卷五 相关专业知识 第58题
+{ Q: "有关知识与行为的描述，正确的是", options: ["A.拥有健康行为的知识就会采纳相应的促进健康的行为", "B.知识和行为没有关系，如几乎人人都知道吸烟危害健康的知识，但仍有很多人吸烟", "C.知识是行为产生的基础，是行为产生的必要条件，但不是充分条件", "D.知识是行为产生的后果", "E.知识是行为改变的动力"], answer: "C", explain: "知识是行为改变的基础，但不一定能导致行为改变。" },
+// 第1759题 试卷五 相关专业知识 第59题
+{ Q: "某医院护理部在护理质量管理中运用PDCA循环的护理方法，对护理质量持续改进，其中“D”代表的含义是", options: ["A.计划", "B.检查", "C.执行", "D.循环", "E.处置"], answer: "C", explain: "D代表执行(Do)。" },
+// 第1760题 试卷五 相关专业知识 第60题
+{ Q: "为完成组织目标而制订的具体行动方案称为", options: ["A.程序化决策", "B.非程序化决策", "C.确定型决策", "D.战略决策", "E.战术决策"], answer: "E", explain: "战术决策是为实现战略目标制订的具体行动方案。" },
+// 第1761题 试卷五 相关专业知识 第61题
+{ Q: "“冲突是与生俱来的，组织应当接纳冲突，使之合理化”，这一观点来自", options: ["A.现代观点", "B.传统观点", "C.动态观点", "D.人际关系观点", "E.相互作用观点"], answer: "E", explain: "相互作用观点认为冲突是不可避免的，应接纳并使其合理化。" },
+// 第1762题 试卷五 相关专业知识 第62题
+{ Q: "抗菌药物的作用机制不包括", options: ["A.抑制细菌核酸的合成", "B.干扰细菌细胞壁的合成", "C.细菌缺乏药物的靶位点", "D.影响细菌蛋白质的合成", "E.损伤细菌的细胞膜"], answer: "C", explain: "C选项是细菌耐药机制，不是药物的作用机制。" },
+// 第1763题 试卷五 相关专业知识 第63题
+{ Q: "拔罐治疗时，临床上最常用的吸附方法是", options: ["A.闪火法", "B.投火法", "C.滴酒法", "D.水吸法", "E.抽气吸法"], answer: "A", explain: "闪火法是最常用的拔罐方法。" },
+// 第1764题 试卷五 相关专业知识 第64题
+{ Q: "护理健康教育学的产生，在护理工作中实现的4个重要突破不包括", options: ["A.护理理念", "B.护理领域", "C.护理模式", "D.护理程序", "E.护理工作性质"], answer: "D", explain: "护理程序是护理工作的基本方法，不是健康教育学带来的突破。" },
+// 第1765题 试卷五 相关专业知识 第65题
+{ Q: "在影响人类健康和死亡的5类因素中，健康教育最能影响", options: ["A.遗传因素", "B.生物因素", "C.生活方式因素", "D.社会环境因素", "E.自然环境因素"], answer: "C", explain: "健康教育主要通过改变人们的生活方式来促进健康。" },
+// 第1766题 试卷五 相关专业知识 第66题
+{ Q: "六腑的共同生理特点是", options: ["A.主管饮食消化", "B.传化食物糟粕", "C.受盛传化水谷", "D.化生贮藏精气", "E.受纳腐熟水谷"], answer: "C", explain: "六腑的共同特点是受盛和传化水谷。" },
+// 第1767题 试卷五 相关专业知识 第67题
+{ Q: "围术期预防性使用抗菌药物的时间是", options: ["A.入住外科病房后", "B.手术前3天", "C.手术前24小时", "D.麻醉诱导期，即术前0.5-1小时", "E.手术结束后1周内"], answer: "D", explain: "预防用药应在麻醉诱导期或术前0.5-1小时给予。" },
+// 第1768题 试卷五 相关专业知识 第68题
+{ Q: "健康教育评价的种类不包括", options: ["A.形成评价", "B.过程评价", "C.效益评价", "D.结局评价", "E.总结评价"], answer: "C", explain: "健康教育评价包括形成评价、过程评价、效应评价、结局评价、总结评价。" },
+// 第1769题 试卷五 相关专业知识 第69题
+{ Q: "为避免医院感染，须安置在隔离室的患者是", options: ["A.乙型肝炎患者", "B.大手术后的患者", "C.产妇和新生儿", "D.介入治疗后的患者", "E.失眠和焦虑的患者"], answer: "A", explain: "乙肝患者需血液隔离，应安置在隔离室。" },
+// 第1770题 试卷五 相关专业知识 第70题
+{ Q: "供应室包装后的物品，灭菌的时间是", options: ["A.2小时内", "B.3小时内", "C.4小时内", "D.6小时内", "E.12小时内"], answer: "D", explain: "包装后的物品应在6小时内灭菌。" },
+// 第1771题 试卷五 相关专业知识 第71题
+{ Q: "防止锐器刺伤的做法不包括", options: ["A.用过的针头采用双手复帽", "B.不能将针尖指向身体任何部位", "C.采用单手复帽技术", "D.污染针头置入防水、耐刺的容器内", "E.严禁处置前折弯或折断针头"], answer: "A", explain: "禁止双手回套针帽，应采用单手复帽技术。" },
+// 第1772题 试卷五 相关专业知识 第72题
+{ Q: "属于人员管理基本原则的是", options: ["A.以人为本原则", "B.责权一致原则", "C.经济效能原则", "D.用人之长原则", "E.合理结构原则"], answer: "D", explain: "用人之长是人员管理的重要原则。" },
+// 第1773题 试卷五 相关专业知识 第73题
+{ Q: "可杀灭结核分枝杆菌的条件是", options: ["A.紫外线灯管照射30分钟", "B.曝晒2小时", "C.氯己定消毒剂浸泡30分钟", "D.加热60℃5分钟", "E.放在阴凉干燥处24小时"], answer: "A", explain: "紫外线照射30分钟可杀灭结核菌。" },
+// 第1774题 试卷五 相关专业知识 第74题
+{ Q: "隔离的目的不包括", options: ["A.切断传播途径", "B.治疗疾病", "C.保护易感者", "D.控制传染源", "E.消灭感染源"], answer: "B", explain: "治疗疾病不是隔离的目的。" },
+// 第1775题 试卷五 相关专业知识 第75题
+{ Q: "五行中，土的特性是", options: ["A.曲直", "B.炎上", "C.润下", "D.从革", "E.稼穑"], answer: "E", explain: "土的特性是稼穑，指播种和收获。" },
+// 第1776题 试卷五 相关专业知识 第76题
+{ Q: "护理组织文化的核心是", options: ["A.护理理念", "B.护理程序", "C.整体护理", "D.护理价值观", "E.护理服务观"], answer: "D", explain: "组织文化的核心是价值观。" },
+// 第1777题 试卷五 相关专业知识 第77题
+{ Q: "护士小秦工作积极，责任心强，专业知识丰富，工作表现突出，护士长为重点培养，经常指派她负责一些工作，但小秦工作起来并不顺畅，常缩手缩脚，护士长意识到没有给小秦充分授权，造成了限制，遂任命她为护理组组长，小秦工作的积极性和创造性明显提高。护士长这种做法体现的组织设计原则是", options: ["A.职责与权限一致的原则", "B.集权分权结合原则", "C.任务和目标一致的原则", "D.有效管理幅度的原则", "E.专业化分工与协作的原则"], answer: "A", explain: "护士长给与职位和相应权力，体现了责权一致原则。" },
+// 第1778题 试卷五 相关专业知识 第78题
+{ Q: "健康教育诊断中，社会环境诊断指标不包括", options: ["A.入学率、文盲率", "B.人均年收入水平和人均住房面积", "C.卫生法规、政策的建立和执行情况", "D.医疗卫生服务机构专业人员组成和设备条件", "E.目标人群生活环境的物理、经济、文化和疾病状况"], answer: "D", explain: "D属于卫生服务资源诊断。" },
+// 第1779题 试卷五 相关专业知识 第79题
+{ Q: "能产生新生态氧，将菌体蛋白质氧化，使菌体死亡的化学消毒剂是", options: ["A.戊二醛", "B.甲醛", "C.环氧乙烷", "D.过氧乙酸", "E.碘伏"], answer: "D", explain: "过氧乙酸通过氧化作用杀菌。" },
+// 第1780题 试卷五 相关专业知识 第80题
+{ Q: "符合亲身传播技巧的是", options: ["A.谈话内容应尽量丰富多彩", "B.谈话重点内容应适当重复", "C.谈话中应避免被对象动作干扰", "D.应避免双目注视对象，使其紧张", "E.应尽量保持语调、节奏一致，以免分散对象注意力"], answer: "B", explain: "适当重复可加深理解和记忆。" },
+// 第1781题 试卷五 相关专业知识 第81题
+{ Q: "关于脉主要功能的叙述，正确的是", options: ["A.充养骨骼", "B.充养脑髓", "C.化生血液", "D.化生精微", "E.运行血液"], answer: "E", explain: "脉的主要功能是运行血液。" },
+// 第1782题 试卷五 相关专业知识 第82题
+{ Q: "敷料消毒用", options: ["A.压力蒸汽灭菌", "B.煮沸法", "C.干热法", "D.喷雾法", "E.消毒剂浸泡"], answer: "A", explain: "敷料应选择压力蒸汽灭菌。" },
+// 第1783题 试卷五 相关专业知识 第83题
+{ Q: "切开引流的橡胶管消毒用", options: ["A.压力蒸汽灭菌", "B.煮沸法", "C.干热法", "D.喷雾法", "E.消毒剂浸泡"], answer: "B", explain: "橡胶管可煮沸消毒。" },
+// 第1784题 试卷五 相关专业知识 第84题
+{ Q: "手术剪的消毒宜用", options: ["A.压力蒸汽灭菌", "B.煮沸法", "C.紫外线照射", "D.流动蒸汽", "E.戊二醛浸泡"], answer: "A", explain: "手术剪耐热，首选压力蒸汽灭菌。" },
+// 第1785题 试卷五 相关专业知识 第85题
+{ Q: "手术敷料的消毒宜用", options: ["A.压力蒸汽灭菌", "B.煮沸法", "C.紫外线照射", "D.流动蒸汽", "E.戊二醛浸泡"], answer: "A", explain: "敷料首选压力蒸汽灭菌。" },
+// 第1786题 试卷五 相关专业知识 第86题
+{ Q: "按职能分工实行专业化管理，各职能部门在分管业务范围内直接指挥下属的组织结构称为", options: ["A.直线型组织结构", "B.职能型组织结构", "C.矩阵型组织结构", "D.直线-职能型组织结构", "E.委员会"], answer: "B", explain: "职能型组织结构按职能分工管理。" },
+// 第1787题 试卷五 相关专业知识 第87题
+{ Q: "组织系统职权从上层直接“流向”基层，组织内部不设参谋部的组织结构称为", options: ["A.直线型组织结构", "B.职能型组织结构", "C.矩阵型组织结构", "D.直线-职能型组织结构", "E.委员会"], answer: "A", explain: "直线型组织结构职权从上到下直线流动。" },
+// 第1788题 试卷五 相关专业知识 第88题
+{ Q: "器官（或腔隙）感染是指", options: ["A.无植入物手术后30天内，仅限切口涉及的皮肤和皮下组织的感染", "B.无植入物手术后30天内，有植入物术后1年内发生的与手术有关并涉及切口深部软组织的感染", "C.无植入物手术后30天内，发生的与手术有关并涉及切口深部软组织的感染", "D.无植入物手术后30天内，有植入物术后1年内发生的与手术有关的器官或腔隙感染", "E.无植入物手术后30天内，发生的与手术有关的器官或腔隙感染"], answer: "E", explain: "器官或腔隙感染指无植入物术后30天内发生的器官或腔隙感染。" },
+// 第1789题 试卷五 相关专业知识 第89题
+{ Q: "深部手术切口感染是指", options: ["A.无植入物手术后30天内，仅限切口涉及的皮肤和皮下组织的感染", "B.无植入物手术后30天内，有植入物术后1年内发生的与手术有关并涉及切口深部软组织的感染", "C.无植入物手术后30天内，发生的与手术有关并涉及切口深部软组织的感染", "D.无植入物手术后30天内，有植入物术后1年内发生的与手术有关的器官或腔隙感染", "E.无植入物手术后30天内，发生的与手术有关的器官或腔隙感染"], answer: "B", explain: "深部切口感染指无植入物术后30天内或植入物术后1年内发生的深部软组织感染。" },
+// 第1790题 试卷五 相关专业知识 第90题
+{ Q: "用于防止经由飞沫传播的感染性疾病的隔离方式，称为", options: ["A.严密隔离", "B.接触隔离", "C.呼吸道隔离", "D.血液-体液隔离", "E.消化道隔离"], answer: "C", explain: "呼吸道隔离用于飞沫传播的疾病。" },
+// 第1791题 试卷五 相关专业知识 第91题
+{ Q: "预防具有高度传染性及致病性的强毒力病原体感染，以防止经空气和接触等途径的隔离方式，称为", options: ["A.严密隔离", "B.接触隔离", "C.呼吸道隔离", "D.血液-体液隔离", "E.消化道隔离"], answer: "A", explain: "严密隔离用于高度传染性的疾病。" },
+// 第1792题 试卷五 相关专业知识 第92题
+{ Q: "能全面反映健康教育项目的成功与不足，为今后计划制订和项目决策提供依据的是", options: ["A.形成评价", "B.过程评价", "C.效应评价", "D.结局评价", "E.总结评价"], answer: "E", explain: "总结评价对项目进行全面总结。" },
+// 第1793题 试卷五 相关专业知识 第93题
+{ Q: "能使健康教育计划更符合实际情况的评价是", options: ["A.形成评价", "B.过程评价", "C.效应评价", "D.结局评价", "E.总结评价"], answer: "A", explain: "形成评价在计划实施前进行，使计划更符合实际。" },
+// 第1794题 试卷五 相关专业知识 第94题
+{ Q: "通过健康教育使服务对象掌握自我保健知识和技能的人际传播形式称为", options: ["A.咨询", "B.个别访谈", "C.劝服", "D.指导", "E.反馈"], answer: "D", explain: "指导是帮助教育对象掌握知识和技能。" },
+// 第1795题 试卷五 相关专业知识 第95题
+{ Q: "与服务对象面对面地直接交流，传递健康信息和知识，帮助其改变相关态度的人际传播形式称为", options: ["A.咨询", "B.个别访谈", "C.劝服", "D.指导", "E.反馈"], answer: "B", explain: "个别访谈是面对面交流的形式。" },
+// 第1796题 试卷五 相关专业知识 第96题
+{ Q: "常规器械消毒灭菌合格率属于", options: ["A.基础质量评价", "B.服务质量评价", "C.环节质量评价", "D.综合评价", "E.终末质量评价"], answer: "A", explain: "消毒灭菌合格率是基础质量评价指标。" },
+// 第1797题 试卷五 相关专业知识 第97题
+{ Q: "护理表格书写合格率属于", options: ["A.基础质量评价", "B.服务质量评价", "C.环节质量评价", "D.综合评价", "E.终末质量评价"], answer: "C", explain: "表格书写是护理过程，属环节质量评价。" },
+// 第1798题 试卷五 相关专业知识 第98题
+{ Q: "层流洁净病房空气中的细菌总数应", options: ["A.≤5CFU/cm²", "B.≤10CFU/m³", "C.≤50CFU/m³", "D.≤100CFU/m³", "E.≤15CFU/cm²"], answer: "B", explain: "层流洁净病房为Ⅰ类环境，细菌总数≤10CFU/m³。" },
+// 第1799题 试卷五 相关专业知识 第99题
+{ Q: "传染病科病房物体表面的细菌总数应", options: ["A.≤5CFU/cm²", "B.≤10CFU/m³", "C.≤50CFU/m³", "D.≤100CFU/m³", "E.≤15CFU/cm²"], answer: "E", explain: "传染病科为Ⅳ类环境，物体表面细菌总数≤15CFU/cm²。" },
+// 第1800题 试卷五 相关专业知识 第100题
+{ Q: "普通手术室物体表面的细菌总数应", options: ["A.≤5CFU/cm²", "B.≤10CFU/m³", "C.≤50CFU/m³", "D.≤100CFU/m³", "E.≤15CFU/cm²"], answer: "A", explain: "普通手术室为Ⅱ类环境，物体表面细菌总数≤5CFU/cm²。" },
+// ==================== 模拟试卷五 专业知识 (第1801-1900题) ====================
+// 第1801题 试卷五 专业知识 第1题
+{ Q: "全身性感染应用抗生素不当的是", options: ["A.未获得培养结果前应联合、足量应用抗生素", "B.根据细菌培养及药物敏感试验结果选择抗生素", "C.联合、足量、广谱、全程使用抗生素", "D.真菌性脓毒症应使用有效、针对性强的抗生素", "E.真菌性脓毒症应全身应用抗真菌药物"], answer: "C", explain: "抗生素不应全程广谱使用，应根据药敏结果针对性用药。" },
+// 第1802题 试卷五 专业知识 第2题
+{ Q: "关于前置胎盘的临床表现，错误的是", options: ["A.贫血程度与阴道流血量成正比", "B.子宫大小与停经月份一致", "C.妊娠晚期胎先露无法入盆", "D.胎方位触及不清", "E.胎心可正常"], answer: "C", explain: "前置胎盘时胎先露可入盆，但不易触及。" },
+// 第1803题 试卷五 专业知识 第3题
+{ Q: "对于不稳定型心绞痛患者，优先考虑的护理诊断是", options: ["A.疼痛", "B.活动无耐力", "C.焦虑", "D.气体交换受损", "E.知识缺乏"], answer: "A", explain: "心绞痛发作时疼痛是首要问题，需优先处理。" },
+// 第1804题 试卷五 专业知识 第4题
+{ Q: "原发性肝癌的常用普查方法是", options: ["A.甲胎蛋白测定", "B.B超检查", "C.肝穿刺活检", "D.腹腔镜检查", "E.放射性核素断层扫描"], answer: "B", explain: "B超是肝癌普查的首选方法。" },
+// 第1805题 试卷五 专业知识 第5题
+{ Q: "食管癌首选的治疗方法", options: ["A.手术治疗", "B.放疗", "C.化疗", "D.中医中药治疗", "E.免疫治疗"], answer: "A", explain: "手术是食管癌首选治疗方法。" },
+// 第1806题 试卷五 专业知识 第6题
+{ Q: "最容易引起毛发脱落的妇科恶性肿瘤化疗药是", options: ["A.氮芥", "B.氟尿嘧啶", "C.放线菌素D", "D.长春新碱", "E.甲氨蝶呤"], answer: "D", explain: "长春新碱可引起严重脱发。" },
+// 第1807题 试卷五 专业知识 第7题
+{ Q: "酸性溶液阴道冲洗不宜用于", options: ["A.细菌性阴道病", "B.慢性子宫颈炎", "C.外阴阴道假丝酵母菌病", "D.萎缩性阴道炎", "E.滴虫阴道炎"], answer: "C", explain: "假丝酵母菌病应用碱性溶液冲洗。" },
+// 第1808题 试卷五 专业知识 第8题
+{ Q: "男，55岁。食管癌晚期。无法手术也无法经口进食。建立营养支持最适用的是", options: ["A.鼻胃管行短期管饲", "B.深静脉置管行长期全营养混合液输注", "C.胃造口管行长期管饲", "D.鼻肠管行长期管饲", "E.外周静脉行短期营养液输注"], answer: "C", explain: "食管癌晚期无法经口进食，胃造口适用于长期肠内营养。" },
+// 第1809题 试卷五 专业知识 第9题
+{ Q: "腰椎间盘突出症最有意义的体征是", options: ["A.腰部活动受限", "B.腰椎侧突", "C.腰椎压痛、叩击痛", "D.直腿抬高试验和加强试验阳性", "E.感觉和运动功能障碍"], answer: "D", explain: "直腿抬高试验和加强试验阳性是腰椎间盘突出症的重要体征。" },
+// 第1810题 试卷五 专业知识 第10题
+{ Q: "11岁小儿头围为53cm，其胸围正常大约是", options: ["A.63cm", "B.55cm", "C.52cm", "D.50cm", "E.48cm"], answer: "B", explain: "1岁后胸围大于头围，其差数约等于小儿岁数，11岁时胸围≈53+11=64cm，但实际测量值略小于公式计算值，约55cm。" },
+// 第1811题 试卷五 专业知识 第11题
+{ Q: "急性化脓性腹膜炎的临床表现不包括", options: ["A.腹痛", "B.恶心、呕吐", "C.呃逆", "D.腹肌紧张", "E.腹式呼吸减弱"], answer: "C", explain: "呃逆不是急性腹膜炎的典型表现。" },
+// 第1812题 试卷五 专业知识 第12题
+{ Q: "慢性盆腔结缔组织炎是指炎症蔓延至", options: ["A.腹膜", "B.输卵管", "C.卵巢", "D.膀胱", "E.宫骶韧带"], answer: "E", explain: "慢性盆腔结缔组织炎指炎症蔓延至宫骶韧带等结缔组织。" },
+// 第1813题 试卷五 专业知识 第13题
+{ Q: "产妇因某种原因不能哺乳时，可选择的退乳方法不包括", options: ["A.外敷芒硝", "B.生麦芽煎服", "C.口服维生素B₆", "D.停止哺乳", "E.口服溴隐亭"], answer: "D", explain: "停止哺乳是退乳的基本方法，但题干问不包括的选项，D是正确的退乳方法。" },
+// 第1814题 试卷五 专业知识 第14题
+{ Q: "男，25岁。有预激综合征。心电图示窦性心律，PR间期缩短，QRS波群正常。该患者并发心律失常最常见为", options: ["A.窦性心动过速", "B.房室传导阻滞", "C.心房扑动", "D.心房颤动", "E.室上性心动过速"], answer: "E", explain: "预激综合征最易并发室上性心动过速。" },
+// 第1815题 试卷五 专业知识 第15题
+{ Q: "小儿惊厥首要的治疗原则是", options: ["A.钙剂治疗", "B.控制惊厥", "C.支持疗法", "D.对症治疗", "E.针刺疗法"], answer: "B", explain: "惊厥发作时首先应控制惊厥。" },
+// 第1816题 试卷五 专业知识 第16题
+{ Q: "属于血管紧张素Ⅱ受体拮抗剂的药物是", options: ["A.吲哚帕胺", "B.美托洛尔", "C.依那普利", "D.氯沙坦", "E.非洛地平"], answer: "D", explain: "氯沙坦是血管紧张素Ⅱ受体拮抗剂。" },
+// 第1817题 试卷五 专业知识 第17题
+{ Q: "左侧小脑幕切迹疝的典型临床表现是", options: ["A.昏迷、右侧瞳孔散大，左侧肢体瘫痪", "B.昏迷、左侧瞳孔散大，左侧肢体瘫痪", "C.昏迷、左侧瞳孔散大，右侧肢体瘫痪", "D.昏迷、双侧瞳孔散大，右侧肢体瘫痪", "E.昏迷、右侧瞳孔散大，右侧肢体瘫痪"], answer: "C", explain: "左侧小脑幕切迹疝表现为左侧瞳孔散大，对侧肢体瘫痪。" },
+// 第1818题 试卷五 专业知识 第18题
+{ Q: "高钾血症患者出现心律失常时，首先应给予", options: ["A.5%NaHCO₃溶液", "B.葡萄糖加胰岛素", "C.5%葡萄糖氯化钠溶液", "D.10%葡萄糖酸钙溶液", "E.透析治疗"], answer: "D", explain: "钙剂可拮抗高钾对心肌的抑制作用，应立即静脉注射。" },
+// 第1819题 试卷五 专业知识 第19题
+{ Q: "射频消融术适用于", options: ["A.窦性心动过速", "B.房性期前收缩", "C.房室交界区性期前收缩", "D.阵发性室上性心动过速", "E.三度房室传导阻滞"], answer: "D", explain: "射频消融术主要用于治疗阵发性室上性心动过速。" },
+// 第1820题 试卷五 专业知识 第20题
+{ Q: "可反映有机磷农药中毒严重程度的指标是", options: ["A.尿中粪卟啉含量", "B.碳氧血红蛋白浓度", "C.血液黏稠度", "D.胆碱酯酶活力", "E.血糖"], answer: "D", explain: "胆碱酯酶活力降低程度与中毒严重程度一致。" },
+// 第1821题 试卷五 专业知识 第21题
+{ Q: "肺炎克雷伯菌肺炎痰液的性质为", options: ["A.铁锈色痰", "B.红色胶冻样黏痰", "C.大量恶臭味脓痰", "D.棕黄色脓痰", "E.白色泡沫样痰"], answer: "B", explain: "肺炎克雷伯菌肺炎的痰液为砖红色胶冻样。" },
+// 第1822题 试卷五 专业知识 第22题
+{ Q: "影响血运的股骨颈骨折为", options: ["A.头下型", "B.经颈型", "C.基底型", "D.头下型和经颈型", "E.经颈型和基底型"], answer: "D", explain: "头下型和经颈型骨折易损伤股骨头血运。" },
+// 第1823题 试卷五 专业知识 第23题
+{ Q: "水痘的治疗不包括", options: ["A.及早使用抗病毒药", "B.皮肤瘙痒者可服用抗组胺药", "C.高热患儿可用阿司匹林降温", "D.皮肤破溃处可用1%甲紫外涂", "E.避免使用糖皮质激素类药物"], answer: "C", explain: "水痘患儿禁用阿司匹林，以免诱发Reye综合征。" },
+// 第1824题 试卷五 专业知识 第24题
+{ Q: "急性上呼吸道感染常见的病原体是", options: ["A.细菌", "B.衣原体", "C.支原体", "D.病毒", "E.真菌"], answer: "D", explain: "急性上呼吸道感染90%以上由病毒引起。" },
+// 第1825题 试卷五 专业知识 第25题
+{ Q: "女，25岁。妊娠36周。产前检查时行四步触诊发现宫底部分硬且圆，腹部左侧平坦饱满，右侧高低不平，在耻骨联合上方可左右推动胎先露部分，骶骨位于母体骨盆的左前方。对其胎方位判断正确的是", options: ["A.LOA", "B.ROA", "C.LSA", "D.ROT", "E.RSP"], answer: "C", explain: "宫底为头，腹部左侧饱满提示胎背在左，骶骨位于左前方，为骶左前(LSA)。" },
+// 第1826题 试卷五 专业知识 第26题
+{ Q: "急性白血病与慢性白血病的主要区别是", options: ["A.肝、脾是否增大", "B.感染严重程度", "C.白血病细胞成熟程度", "D.贫血严重程度", "E.出血严重程度"], answer: "C", explain: "急慢性白血病的主要区别在于白血病细胞的成熟程度。" },
+// 第1827题 试卷五 专业知识 第27题
+{ Q: "某孕妇，24岁。患有先天性心脏病，心功能Ⅱ级，现妊娠22周，给予孕妇健康指导时不恰当的是", options: ["A.低盐饮食", "B.终止妊娠", "C.避免情绪激动", "D.预防上呼吸道感染", "E.增加产前检查次数"], answer: "B", explain: "心功能Ⅱ级可继续妊娠，不必终止。" },
+// 第1828题 试卷五 专业知识 第28题
+{ Q: "女，29岁。有正常性生活，婚后3年未孕，既往体健，月经规律、量中等，妇科检查正常，男方检查未发现异常。为确定不孕的原因，首选的检查是", options: ["A.基础体温测定", "B.输卵管通液术", "C.宫腔镜检查", "D.经前期取子宫内膜行组织学检查", "E.子宫输卵管造影"], answer: "B", explain: "男方正常，应首先检查女方输卵管是否通畅。" },
+// 第1829题 试卷五 专业知识 第29题
+{ Q: "麻醉前使用的抗胆碱药是", options: ["A.地西泮", "B.东莨菪碱", "C.异丙嗪", "D.吗啡", "E.芬太尼"], answer: "B", explain: "东莨菪碱为抗胆碱药，可减少呼吸道分泌物。" },
+// 第1830题 试卷五 专业知识 第30题
+{ Q: "肾病综合征患儿最常见的临床症状是", options: ["A.高血压", "B.血尿", "C.血栓", "D.感染", "E.水肿"], answer: "E", explain: "水肿是肾病综合征最常见的临床表现。" },
+// 第1831题 试卷五 专业知识 第31题
+{ Q: "2型糖尿病的首选药物是", options: ["A.格列齐特", "B.阿卡波糖", "C.二甲双胍", "D.胰岛素", "E.格列喹酮"], answer: "C", explain: "2型糖尿病肥胖患者首选二甲双胍。" },
+// 第1832题 试卷五 专业知识 第32题
+{ Q: "肺结核患者应采取的护理措施是", options: ["A.绝对卧床休息", "B.取健侧卧位", "C.症状消失后即可停药", "D.做好隔离消毒工作和对症护理", "E.饮食以肉食为主，增加抵抗力"], answer: "D", explain: "肺结核应做好隔离消毒和对症护理。" },
+// 第1833题 试卷五 专业知识 第33题
+{ Q: "革兰阴性菌感染的临床特点不包括", options: ["A.低体温", "B.白细胞减少", "C.低血压", "D.四肢厥冷", "E.后期出现感染性休克"], answer: "B", explain: "革兰阴性菌感染白细胞可正常或增高，一般不减少。" },
+// 第1834题 试卷五 专业知识 第34题
+{ Q: "男，20岁。因外伤入住监护室。监测结果显示：血压85/55mmHg，中心静脉压8cmH₂O，遵医嘱在10分钟内静脉快速输入等渗盐水250ml后，血压为95/60mmHg，中心静脉压为8cmH₂O。此结果提示患者存在", options: ["A.心力衰竭", "B.血容量不足", "C.血容量相对过多", "D.血管过度收缩", "E.血管过度扩张"], answer: "B", explain: "补液后血压升高，CVP不变，提示血容量不足。" },
+// 第1835题 试卷五 专业知识 第35题
+{ Q: "肌肉收缩可引起关节活动，但不能抬起，肌力定义为", options: ["A.0级", "B.1级", "C.2级", "D.3级", "E.4级"], answer: "C", explain: "肌力2级：肢体能在床上移动，但不能抬离床面。" },
+// 第1836题 试卷五 专业知识 第36题
+{ Q: "弥漫性甲状腺肿伴甲状腺功能亢进症的单纯性突眼最主要的原因是", options: ["A.眼外肌和上睑提肌的肌张力增高", "B.眼球后的组织浸润水肿", "C.眼球后新生物", "D.眼球肿胀增大", "E.精神紧张"], answer: "A", explain: "单纯性突眼由交感神经兴奋引起眼外肌和上睑提肌张力增高。" },
+// 第1837题 试卷五 专业知识 第37题
+{ Q: "口服避孕药的不良反应不包括", options: ["A.闭经", "B.色素沉着", "C.骨质疏松", "D.突破性出血", "E.体重增加"], answer: "C", explain: "口服避孕药不引起骨质疏松。" },
+// 第1838题 试卷五 专业知识 第38题
+{ Q: "女，50岁。因腹痛、呕吐、腹泻3天入院。查体见患者神情淡漠，眼窝凹陷，皮肤弹性降低，血压90/55mmHg，尿量减少，尿比重低。该患者最可能发生了", options: ["A.低渗性脱水", "B.高渗性脱水", "C.等渗性脱水", "D.水中毒", "E.急性脱水"], answer: "A", explain: "尿比重低提示低渗性脱水。" },
+// 第1839题 试卷五 专业知识 第39题
+{ Q: "1岁小儿的心脏重量为出生时的", options: ["A.1倍", "B.2倍", "C.3倍", "D.4倍", "E.5倍"], answer: "C", explain: "1岁小儿心脏重量为出生时的3倍。" },
+// 第1840题 试卷五 专业知识 第40题
+{ Q: "通过骨髓移植可根治的疾病是", options: ["A.再生障碍性贫血", "B.慢性髓系白血病", "C.多发性骨髓瘤", "D.血友病", "E.原发免疫性血小板减少症"], answer: "B", explain: "骨髓移植可根治慢性髓系白血病。" },
+// 第1841题 试卷五 专业知识 第41题
+{ Q: "弥散性血管内凝血主要的临床表现为", options: ["A.全身广泛性出血、休克", "B.黏膜出血", "C.全身皮下出血", "D.内脏出血", "E.感染"], answer: "A", explain: "DIC主要表现为全身广泛性出血和休克。" },
+// 第1842题 试卷五 专业知识 第42题
+{ Q: "男，出生后2天。因眼距宽，耳廓小等特殊面容及肌张力低，疑为唐氏综合征，为明确诊断，应做的辅助检查是", options: ["A.染色体核型分析", "B.多普勒超声检查", "C.胸部X线", "D.核磁共振", "E.骨龄测定"], answer: "A", explain: "染色体核型分析是确诊唐氏综合征的方法。" },
+// 第1843题 试卷五 专业知识 第43题
+{ Q: "消化性溃疡的主要症状是", options: ["A.畏食、消瘦", "B.恶心、呕吐", "C.反酸、嗳气", "D.呕血、黑便", "E.上腹部疼痛"], answer: "E", explain: "上腹部疼痛是消化性溃疡的主要症状。" },
+// 第1844题 试卷五 专业知识 第44题
+{ Q: "男，34岁。因反复泡沫尿半年，加重伴下肢水肿2周入院。查体：血压165/110mmHg。实验室检查：血红蛋白85g/L，尿蛋白2.5g/d，尿多形性红细胞(++)，血肌酐190μmol/L。对该患者的处理措施中，最重要的是", options: ["A.透析治疗", "B.降压治疗", "C.避免感染", "D.限制食物蛋白质", "E.使用抗血小板药"], answer: "B", explain: "控制高血压是延缓慢性肾炎进展的关键。" },
+// 第1845题 试卷五 专业知识 第45题
+{ Q: "女，19岁。患1型糖尿病2年，每天注射胰岛素40U，近1周因胰岛素用完而中断治疗。乏力3天，昏迷4小时，入院后护士应采取的措施不包括", options: ["A.查血糖、血酮", "B.建立静脉通道", "C.做血气分析", "D.输入10%葡萄糖溶液", "E.查尿糖、血酮"], answer: "D", explain: "患者可能为酮症酸中毒昏迷，应先查血糖、血酮，而不是输入葡萄糖。" },
+// 第1846题 试卷五 专业知识 第46题
+{ Q: "肺炎链球菌肺炎的抗菌治疗应首选", options: ["A.青霉素", "B.红霉素", "C.庆大霉素", "D.阿米卡星", "E.头孢菌素类"], answer: "A", explain: "肺炎链球菌肺炎首选青霉素。" },
+// 第1847题 试卷五 专业知识 第47题
+{ Q: "关节脱位的特征性表现为", options: ["A.肿胀", "B.压痛", "C.关节功能丧失", "D.关节盂空虚", "E.骨擦音"], answer: "D", explain: "关节盂空虚是脱位的特征体征。" },
+// 第1848题 试卷五 专业知识 第48题
+{ Q: "化疗药物不慎溢出血管外，错误的处理是", options: ["A.停止输注药液", "B.皮下注入解毒药", "C.热敷24小时", "D.局部涂氢化可的松", "E.保留针头回抽药液"], answer: "C", explain: "化疗药外渗应先冷敷，24-48小时后热敷，立即热敷会加重损伤。" },
+// 第1849题 试卷五 专业知识 第49题
+{ Q: "贫血的基本表现不包括", options: ["A.面色苍白", "B.活动耐力下降", "C.心悸", "D.食欲减退", "E.血压下降"], answer: "E", explain: "贫血一般不引起血压下降。" },
+// 第1850题 试卷五 专业知识 第50题
+{ Q: "女，42岁。双掌指关节、腕关节肿痛伴晨僵1个月。查体：双手腕关节、掌指关节肿胀和压痛，双手握力下降，双肘部发现无痛性皮下结节。诊断为类风湿关节炎，给予非甾体抗炎药和改善病情的抗风湿药治疗。非甾体抗炎药的不良反应不包括", options: ["A.胃出血", "B.胃穿孔", "C.肾间质性损害", "D.肌肉溶解", "E.胃溃疡"], answer: "D", explain: "NSAIDs不良反应主要是胃肠道和肾脏损害，不引起肌肉溶解。" },
+// 第1851题 试卷五 专业知识 第51题
+{ Q: "女，60岁。上午进食1小时后呕吐暗红色胃内容物，含有血凝块，量不详，排暗红色便数次，并出现表情淡漠。4年前明确诊断为肝硬化失代偿期。查体：面色苍白，呼吸急促，皮肤四肢厥冷。考虑出血量为循环血容量的", options: ["A.30%", "B.25%", "C.20%", "D.15%", "E.10%"], answer: "C", explain: "出现休克表现，出血量约为血容量的20%以上。" },
+// 第1852题 试卷五 专业知识 第52题
+{ Q: "自发性气胸的临床表现不包括", options: ["A.胸痛", "B.气促", "C.患侧胸廓饱满", "D.患侧叩诊浊音", "E.患侧呼吸音消失"], answer: "D", explain: "气胸叩诊呈鼓音，不是浊音。" },
+// 第1853题 试卷五 专业知识 第53题
+{ Q: "女，31岁。诊断为Graves病。甲状腺Ⅲ度肿大，伴呼吸困难、声音嘶哑。首选的治疗是", options: ["A.手术", "B.放射碘", "C.抗甲状腺药物", "D.抗甲状腺药物+复方碘化钠溶液", "E.抗甲状腺药物+甲状腺激素+糖皮质激素"], answer: "A", explain: "甲状腺肿大压迫症状明显时，应首选手术治疗。" },
+// 第1854题 试卷五 专业知识 第54题
+{ Q: "一般择期手术患者的术前呼吸道准备措施是", options: ["A.行体位引流", "B.应用抗生素", "C.应用支气管扩张药", "D.口服地塞米松", "E.吸烟患者戒烟2周"], answer: "E", explain: "吸烟患者应戒烟2周以上。" },
+// 第1855题 试卷五 专业知识 第55题
+{ Q: "休克代偿期临床表现的特点不包括", options: ["A.收缩压正常或稍高", "B.尿量正常", "C.口渴", "D.表情淡漠", "E.脉压缩小"], answer: "D", explain: "休克代偿期患者神志清醒，精神紧张，表情淡漠是失代偿期表现。" },
+// 第1856题 试卷五 专业知识 第56题
+{ Q: "新生儿自出生后2周开始，每天给予维生素D的剂量是", options: ["A.100-200U", "B.200-400U", "C.400-800U", "D.800-1600U", "E.1600U以上"], answer: "C", explain: "新生儿出生后2周开始补充维生素D 400-800U/d。" },
+// 第1857题 试卷五 专业知识 第57题
+{ Q: "原发性醛固酮增多症最突出的电解质紊乱是", options: ["A.高钾血症", "B.低钾血症", "C.高钠血症", "D.低钠血症", "E.低钙血症"], answer: "B", explain: "原发性醛固酮增多症排钾增多，导致低钾血症。" },
+// 第1858题 试卷五 专业知识 第58题
+{ Q: "女，28岁。水肿1周、血压172/95mmHg。实验室检查：尿蛋白(+++)，红细胞5-10个/HPF，白细胞2-3个/HPF，颗粒管型0-2个/HPF。经检查确诊为慢性肾小球肾炎。患者最先出现水肿的部位是", options: ["A.眼睑和颜面部", "B.足背和踝部", "C.胸腔和腹腔", "D.臀部和会阴部", "E.全身水肿"], answer: "A", explain: "肾炎性水肿最先出现于眼睑和颜面部。" },
+// 第1859题 试卷五 专业知识 第59题
+{ Q: "疱疹性咽峡炎的病原体是", options: ["A.腺病毒", "B.鼻病毒", "C.流感病毒", "D.柯萨奇A组病毒", "E.呼吸道合胞病毒"], answer: "D", explain: "疱疹性咽峡炎由柯萨奇A组病毒引起。" },
+// 第1860题 试卷五 专业知识 第60题
+{ Q: "艾滋病所致机会性感染死亡的主要原因是", options: ["A.卡氏肺孢子虫肺炎", "B.隐球菌脑膜炎", "C.脑弓形虫病", "D.巨细胞病毒脑炎", "E.卡波西肉瘤"], answer: "A", explain: "卡氏肺孢子虫肺炎是艾滋病最常见的机会性感染和主要死因。" },
+// 第1861题 试卷五 专业知识 第61题
+{ Q: "新生儿，日龄2天。出生时窒息5分钟。考虑轻度缺氧缺血性脑病。患儿症状明显是在出生后", options: ["A.24小时内", "B.24-72小时", "C.72-96小时", "D.5天", "E.7天"], answer: "A", explain: "轻度HIE症状在24小时内最明显。" },
+// 第1862题 试卷五 专业知识 第62题
+{ Q: "新生儿，日龄2天。出生时窒息5分钟。考虑轻度缺氧缺血性脑病。关于患儿的治疗，正确的是", options: ["A.给氧改善通气", "B.控制惊厥首选苯妥英钠", "C.顽固性抽搐者加用苯巴比妥", "D.治疗脑水肿使用糖皮质激素", "E.脑水肿严重者可用呋塞米静脉推注"], answer: "A", explain: "HIE治疗首先保持呼吸道通畅，给氧改善通气。" },
+// 第1863题 试卷五 专业知识 第63题
+{ Q: "女，70岁。大量呕血、黑便2天。既往有冠心病，肾动脉硬化病史。立即给予输血、补液等止血措施。指导患者液体入量及输入速度最有意义的参考指标是", options: ["A.中心静脉压", "B.血压", "C.肘静脉压", "D.尿量", "E.心率"], answer: "A", explain: "CVP是指导补液速度和量的重要指标。" },
+// 第1864题 试卷五 专业知识 第64题
+{ Q: "女，70岁。大量呕血、黑便2天。既往有冠心病，肾动脉硬化病史。立即给予输血、补液等止血措施。患者应采取的体位是", options: ["A.平卧位", "B.侧卧位", "C.半坐卧位", "D.头低足高位", "E.头高足低位"], answer: "A", explain: "休克患者应取平卧位或休克卧位。" },
+// 第1865题 试卷五 专业知识 第65题
+{ Q: "女，67岁。长期咳嗽伴咳脓痰，近来下肢水肿。查体：桶状胸，颈静脉怒张，肝大，肝颈静脉反流征阳性。患者最可能的诊断是", options: ["A.支气管肺炎", "B.慢性肺源性心脏病", "C.支气管哮喘急性发作", "D.原发性支气管肺癌", "E.自发性气胸"], answer: "B", explain: "慢支炎、肺气肿体征，加上右心衰表现，为肺心病。" },
+// 第1866题 试卷五 专业知识 第66题
+{ Q: "女，67岁。长期咳嗽伴咳脓痰，近来下肢水肿。查体：桶状胸，颈静脉怒张，肝大，肝颈静脉反流征阳性。诊断为慢性肺源性心脏病。患者出现表情淡漠、神志恍惚、谵妄等表现，应考虑", options: ["A.呼吸性酸中毒", "B.呼吸性碱中毒", "C.短暂性脑缺血发作", "D.肺性脑病", "E.窒息先兆"], answer: "D", explain: "肺心病患者出现神志改变，应考虑肺性脑病。" },
+// 第1867题 试卷五 专业知识 第67题
+{ Q: "女，67岁。长期咳嗽伴咳脓痰，近来下肢水肿。查体：桶状胸，颈静脉怒张，肝大，肝颈静脉反流征阳性。诊断为慢性肺源性心脏病。患者氧疗方法正确的是", options: ["A.50%乙醇湿化给氧", "B.低浓度、低流量持续吸氧", "C.低浓度、低流量间歇吸氧", "D.高浓度、高流量持续吸氧", "E.高浓度、高流量间歇给氧"], answer: "B", explain: "肺心病患者应低流量持续吸氧。" },
+// 第1868题 试卷五 专业知识 第68题
+{ Q: "女，55岁。高血压病史15年。情绪激动后突发昏迷，并呕吐咖啡样液体，急送入院。查体：体温39.5℃，右侧肢体瘫痪、偏身感觉障碍、偏盲。初步诊断为脑出血。估计其出血部位在", options: ["A.内囊", "B.小脑", "C.脑干", "D.丘脑", "E.蛛网膜下腔"], answer: "A", explain: "内囊出血表现为三偏征（偏瘫、偏盲、偏身感觉障碍）。" },
+// 第1869题 试卷五 专业知识 第69题
+{ Q: "女，55岁。高血压病史15年。情绪激动后突发昏迷，并呕吐咖啡样液体，急送入院。查体：体温39.5℃，右侧肢体瘫痪、偏身感觉障碍、偏盲。初步诊断为脑出血。护理措施正确的是", options: ["A.头部置冰袋", "B.取去枕平卧位，抬高床尾", "C.尽量限制对患者的探视", "D.给予营养丰富的流质饮食", "E.肢体康复后可行语言训练"], answer: "A", explain: "脑出血患者头部置冰袋可降低脑代谢，减轻脑水肿。" },
+// 第1870题 试卷五 专业知识 第70题
+{ Q: "女，55岁。肝硬化病史10年，近期常有牙龈出血，皮肤反复出现出血点，出现蜘蛛痣和肝掌。实验室检查：血小板20×10⁹/L。最可能的出血原因是", options: ["A.白蛋白合成减少", "B.毛细血管壁扩张", "C.血小板减少", "D.维生素C缺乏", "E.肝静脉回流不畅"], answer: "C", explain: "血小板减少导致出血倾向。" },
+// 第1871题 试卷五 专业知识 第71题
+{ Q: "女，55岁。肝硬化病史10年，近期常有牙龈出血，皮肤反复出现出血点，出现蜘蛛痣和肝掌。实验室检查：血小板20×10⁹/L。出现肝掌和蜘蛛痣的原因是", options: ["A.皮质醇增多", "B.雌激素增多", "C.雌激素减少", "D.雄激素增多", "E.雄激素减少"], answer: "B", explain: "肝功能减退对雌激素灭活减少，导致雌激素增多。" },
+// 第1872题 试卷五 专业知识 第72题
+{ Q: "女，3岁。诊断为营养性缺铁性贫血，需要口服铁剂治疗。服用铁剂时不正确的是", options: ["A.掌握正确的剂量", "B.疗程应至血红蛋白恢复正常", "C.应在两餐之间服用", "D.可与维生素C、果汁同服", "E.观察不良反应及疗效"], answer: "B", explain: "铁剂治疗应至血红蛋白正常后2个月停药。" },
+// 第1873题 试卷五 专业知识 第73题
+{ Q: "女，3岁。诊断为营养性缺铁性贫血，需要口服铁剂治疗。停用铁剂的时间是", options: ["A.症状消失后停药", "B.红细胞数恢复正常后停药", "C.血红蛋白恢复正常后停药", "D.血红蛋白正常后2个月停药", "E.血红蛋白正常后半年停药"], answer: "D", explain: "铁剂应在血红蛋白正常后继续服用2个月。" },
+// 第1874题 试卷五 专业知识 第74题
+{ Q: "女，30岁。十二指肠球部溃疡病史6年。突感上腹部剧烈疼痛1小时，继之满腹疼痛、大汗淋漓、出冷汗、四肢冰冷，血压88/62mmHg，脉搏110次/分，全腹压痛、反跳痛。患者最可能的诊断是", options: ["A.消化道出血", "B.急性阑尾炎", "C.十二指肠溃疡穿孔", "D.幽门梗阻", "E.感染性休克"], answer: "C", explain: "溃疡病史，突发剧痛，腹膜刺激征，为溃疡穿孔。" },
+// 第1875题 试卷五 专业知识 第75题
+{ Q: "女，30岁。十二指肠球部溃疡病史6年。突感上腹部剧烈疼痛1小时，继之满腹疼痛、大汗淋漓、出冷汗、四肢冰冷，血压88/62mmHg，脉搏110次/分，全腹压痛、反跳痛。考虑十二指肠溃疡穿孔。对其诊断最有价值的检查是", options: ["A.腹部CT检查", "B.血常规检查", "C.胃镜检查", "D.立位腹部X线检查", "E.血清淀粉酶测定"], answer: "D", explain: "立位腹部X线检查可见膈下游离气体，有助于诊断穿孔。" },
+// 第1876题 试卷五 专业知识 第76题
+{ Q: "女，30岁。十二指肠球部溃疡病史6年。突感上腹部剧烈疼痛1小时，继之满腹疼痛、大汗淋漓、出冷汗、四肢冰冷，血压88/62mmHg，脉搏110次/分，全腹压痛、反跳痛。考虑十二指肠溃疡穿孔。护理措施不包括", options: ["A.给予镇痛药、准备手术", "B.采取胃肠减压", "C.取半坐卧位", "D.通知患者立即禁食", "E.观察血压、脉搏等生命体征"], answer: "A", explain: "未明确诊断前禁用镇痛药，以免掩盖病情。" },
+// 第1877题 试卷五 专业知识 第77题
+{ Q: "女，26岁。原发不孕，月经周期24-45天，经期9-13天，量时多时少，妇科检查无异常，基础体温单相型。最可能的诊断是", options: ["A.正常月经", "B.子宫内膜不规则脱落", "C.无排卵性异常子宫出血", "D.排卵期出血", "E.黄体功能不足"], answer: "C", explain: "月经周期不规律，经期延长，基础体温单相，为无排卵性功血。" },
+// 第1878题 试卷五 专业知识 第78题
+{ Q: "女，26岁。原发不孕，月经周期24-45天，经期9-13天，量时多时少，妇科检查无异常，基础体温单相型。诊断为无排卵性异常子宫出血。目前的主要治疗是", options: ["A.纠正贫血", "B.恢复黄体功能", "C.止血、调整周期", "D.刮宫", "E.抗感染"], answer: "C", explain: "无排卵性功血治疗原则为止血和调整周期。" },
+// 第1879题 试卷五 专业知识 第79题
+{ Q: "女，26岁。因早期妊娠要求终止妊娠。在行负压吸引术时患者面色苍白，出汗，胸闷，心率缓慢，血压下降。最可能的诊断为", options: ["A.吸宫不全", "B.人工流产综合征", "C.子宫穿孔", "D.羊水栓塞", "E.Asherman综合征"], answer: "B", explain: "人流术中出现的迷走神经兴奋症状为人工流产综合征。" },
+// 第1880题 试卷五 专业知识 第80题
+{ Q: "女，26岁。因早期妊娠要求终止妊娠。在行负压吸引术时患者面色苍白，出汗，胸闷，心率缓慢，血压下降。诊断为人工流产综合征。诱发因素不包括", options: ["A.精神过度紧张", "B.吸引负压过高", "C.宫颈过度扩张", "D.未用镇痛药", "E.粗暴操作"], answer: "D", explain: "未用镇痛药不是诱发因素。" },
+// 第1881题 试卷五 专业知识 第81题
+{ Q: "女，26岁。因早期妊娠要求终止妊娠。在行负压吸引术时患者面色苍白，出汗，胸闷，心率缓慢，血压下降。诊断为人工流产综合征。首选的措施是", options: ["A.补充血容量", "B.肌内注射地塞米松", "C.协助其改变体位", "D.静脉注射阿托品", "E.安慰受术者并注意保暖"], answer: "D", explain: "出现人工流产综合征时，应静脉注射阿托品解除迷走神经兴奋。" },
+// 第1882题 试卷五 专业知识 第82题
+{ Q: "女，20岁。诊断为慢性原发免疫性血小板减少症，反复出血。患者经泼尼松治疗6个月后无好转，应采用", options: ["A.改用地塞米松", "B.输红细胞悬液", "C.输全血", "D.脾切除", "E.应用止血药"], answer: "D", explain: "激素治疗无效的ITP可行脾切除。" },
+// 第1883题 试卷五 专业知识 第83题
+{ Q: "女，20岁。诊断为慢性原发免疫性血小板减少症，反复出血。为预防颅内出血，护士最重要的观察项目是", options: ["A.嗜酸性粒细胞计数", "B.白细胞计数", "C.巨核细胞比例", "D.网织红细胞比例", "E.血小板计数"], answer: "E", explain: "血小板计数是观察出血风险的重要指标。" },
+// 第1884题 试卷五 专业知识 第84题
+{ Q: "男，59岁。行全胃切除术后第3天，肠蠕动正常，拟行肠内营养支持。有关肠内营养支持营养液的叙述，正确的是", options: ["A.特殊配方制剂仅含有一种营养物质", "B.要素饮食是有渣饮食", "C.匀浆膳是人工合成的营养液", "D.首选大分子聚合物营养液", "E.肝性脑病患者首选高支链氨基酸配方营养液"], answer: "E", explain: "肝性脑病患者应首选高支链氨基酸配方营养液。" },
+// 第1885题 试卷五 专业知识 第85题
+{ Q: "男，59岁。行全胃切除术后第3天，肠蠕动正常，拟行肠内营养支持。肠内营养的优点不包括", options: ["A.无感染性并发症", "B.提供途径方便", "C.相对安全", "D.价格低廉", "E.利用胃肠道的免疫防御功能"], answer: "A", explain: "肠内营养仍可能发生吸入性肺炎等感染并发症。" },
+// 第1886题 试卷五 专业知识 第86题
+{ Q: "男，59岁。行全胃切除术后第3天，肠蠕动正常，拟行肠内营养支持。关于患者营养液输注的速度及量，叙述不正确的是", options: ["A.液体量从少量开始，初始量250-500ml/d", "B.1周内逐渐达到全量", "C.达到全量后，总液体量2000ml/d", "D.连续输注速度从20ml/h开始，逐渐增加至120ml/h", "E.胃内残余量超过50ml时停止注射"], answer: "E", explain: "胃内残余量超过150ml时暂停输注。" },
+// 第1887题 试卷五 专业知识 第87题
+{ Q: "男，50岁。1周前行胆道探查，T管引流术。胆道远端通畅的表现是", options: ["A.体温正常，引流量增多", "B.腹痛和黄疸减轻，引流量增多", "C.黄疸消退，引流量增多，食欲无变化", "D.上腹胀痛，引流量骤减", "E.食欲好转，黄疸消退，引流量减少"], answer: "E", explain: "胆道通畅后，胆汁进入肠道，引流量减少，食欲好转，黄疸消退。" },
+// 第1888题 试卷五 专业知识 第88题
+{ Q: "男，50岁。1周前行胆道探查，T管引流术。术后观察患者排便情况最主要的目的是", options: ["A.及时发现患者有无胃肠道出血", "B.判断患者脂肪消化和吸收的能力", "C.判断患者肠道功能恢复情况", "D.判断患者胆总管通畅情况", "E.判断患者术后饮食是否合适"], answer: "D", explain: "大便颜色可判断胆道是否通畅。" },
+// 第1889题 试卷五 专业知识 第89题
+{ Q: "男，50岁。1周前行胆道探查，T管引流术。T管引流的护理措施不包括", options: ["A.常规留置1个月后拔管", "B.妥善固定防脱出", "C.保持引流通畅有效", "D.每天记录引流量", "E.按时更换引流袋"], answer: "A", explain: "T管留置时间一般为2周左右，不是1个月。" },
+// 第1890题 试卷五 专业知识 第90题
+{ Q: "男，50岁。1周前行胆道探查，T管引流术。拔除T管前须进行的检查是", options: ["A.X线检查", "B.T管造影", "C.逆行胰胆管造影", "D.经皮肝穿刺胆管造影", "E.MRI检查"], answer: "B", explain: "拔管前应行T管造影，确认胆道通畅。" },
+// 第1891题 试卷五 专业知识 第91题
+{ Q: "男，36岁。表现为淡漠，情绪欣快，注意力不集中，有慢性颅内压增高症状。CT检查显示颅内占位性病变，并压迫脑组织。诊断颅内肿瘤，首选的检查是", options: ["A.X线检查", "B.脑电图检查", "C.脑血管造影检查", "D.CT检查", "E.ECT检查"], answer: "D", explain: "CT是颅内肿瘤首选的检查方法。" },
+// 第1892题 试卷五 专业知识 第92题
+{ Q: "男，36岁。表现为淡漠，情绪欣快，注意力不集中，有慢性颅内压增高症状。CT检查显示颅内占位性病变，并压迫脑组织。诊断为颅内肿瘤。若该患者行手术治疗，术后输液量为", options: ["A.600-800ml/d", "B.1000-1500ml/d", "C.1500-2000ml/d", "D.2000-2500ml/d", "E.300-500ml/d"], answer: "C", explain: "颅内术后输液量应控制在1500-2000ml/d。" },
+// 第1893题 试卷五 专业知识 第93题
+{ Q: "男，36岁。表现为淡漠，情绪欣快，注意力不集中，有慢性颅内压增高症状。CT检查显示颅内占位性病变，并压迫脑组织。诊断为颅内肿瘤。该患者术后护理措施中错误的是", options: ["A.绝对卧床休息", "B.给予止血药", "C.给予镇静药", "D.给予抗生素", "E.便秘者给予肥皂水灌肠"], answer: "E", explain: "颅内术后便秘者禁用肥皂水灌肠，以免引起颅内压增高。" },
+// 第1894题 试卷五 专业知识 第94题
+{ Q: "男，11岁。发热，腮腺肿胀3天，睾丸肿胀2天，诊断为流行性腮腺炎并发睾丸炎。护理措施不妥的是", options: ["A.给予流质饮食，保持口腔清洁", "B.腮腺肿胀处可局部冷敷", "C.禁用冷疗降温，少饮水", "D.忌食酸性食物", "E.丁字带托起阴囊，以减轻疼痛"], answer: "C", explain: "发热时应鼓励多饮水，禁用冷疗降温不是正确护理。" },
+// 第1895题 试卷五 专业知识 第95题
+{ Q: "男，11岁。发热，腮腺肿胀3天，睾丸肿胀2天，诊断为流行性腮腺炎并发睾丸炎。患儿应隔离至", options: ["A.热退后", "B.发病后3周", "C.发病后2-3天", "D.腮腺肿大完全消退3天", "E.腮腺肿大完全消退7天"], answer: "D", explain: "流行性腮腺炎应隔离至腮腺肿大完全消退后3天。" },
+// 第1896题 试卷五 专业知识 第96题
+{ Q: "某孕妇，30岁。妊娠35周，血压165/112mmHg，尿蛋白4.5g/24h，下肢水肿。最可能的诊断是", options: ["A.子痫前期", "B.妊娠期高血压", "C.重度子痫前期", "D.妊娠合并慢性肾炎", "E.原发性高血压合并妊娠"], answer: "C", explain: "血压≥160/110mmHg，尿蛋白≥2.0g/24h，为重度子痫前期。" },
+// 第1897题 试卷五 专业知识 第97题
+{ Q: "某孕妇，30岁。妊娠35周，血压165/112mmHg，尿蛋白4.5g/24h，下肢水肿。诊断为重度子痫前期。治疗时首选药物是", options: ["A.利血平", "B.氯丙嗪", "C.甘露醇", "D.硫酸镁", "E.地塞米松"], answer: "D", explain: "重度子痫前期首选硫酸镁解痉治疗。" },
+// 第1898题 试卷五 专业知识 第98题
+{ Q: "某孕妇，30岁。妊娠35周，血压165/112mmHg，尿蛋白4.5g/24h，下肢水肿。诊断为重度子痫前期。应停用硫酸镁的情况是", options: ["A.呼吸18次/分", "B.膝腱反射存在", "C.血压135/90mmHg", "D.尿量300ml/24h", "E.自觉症状减轻或消失"], answer: "D", explain: "尿量<600ml/24h或<25ml/h应停用硫酸镁。" },
+// 第1899题 试卷五 专业知识 第99题
+{ Q: "某孕妇，29岁。停经58天。下腹部阵发性疼痛，阴道流血伴血块3小时。查体：子宫稍大，宫口已开，有胚胎组织堵塞。考虑该患者发生了", options: ["A.先兆流产", "B.难免流产", "C.不全流产", "D.完全流产", "E.稽留流产"], answer: "C", explain: "宫口已开，有胚胎组织堵塞，为不全流产。" },
+// 第1900题 试卷五 专业知识 第100题
+{ Q: "某孕妇，29岁。停经58天。下腹部阵发性疼痛，阴道流血伴血块3小时。查体：子宫稍大，宫口已开，有胚胎组织堵塞。诊断为不全流产。医生给予的最佳处理是", options: ["A.输液、输血", "B.卧床休息", "C.止血药止血", "D.纱条填塞阴道压迫止血", "E.刮宫术"], answer: "E", explain: "不全流产应行刮宫术清除宫腔内残留组织。" },
+
+// ==================== 模拟试卷五 专业实践能力 (第1901-2000题) ====================
+// 第1901题 试卷五 专业实践能力 第1题
+{ Q: "护士观察到原发性肝癌患者突然出现剧烈腹痛，弥漫全腹，腹肌紧张。应首先考虑其最可能发生", options: ["A.上消化道出血", "B.继发肠道感染", "C.癌结节破裂出血", "D.肿瘤转移", "E.胃肠道穿孔"], answer: "C", explain: "肝癌患者突发剧烈腹痛、腹膜刺激征，考虑癌结节破裂出血。" },
+// 第1902题 试卷五 专业实践能力 第2题
+{ Q: "弥散性血管内凝血（DIC）患者在使用肝素过程中，凝血时间检查结果提示肝素用量过多的是", options: ["A.5分钟", "B.15分钟", "C.18分钟", "D.20分钟", "E.30分钟"], answer: "E", explain: "肝素治疗时应维持凝血时间在正常值的1.5-2.5倍，超过30分钟提示过量。" },
+// 第1903题 试卷五 专业实践能力 第3题
+{ Q: "容易引起急性肾损伤的外伤是", options: ["A.挫伤", "B.冲击伤", "C.切割伤", "D.挤压伤", "E.腹部穿透伤"], answer: "D", explain: "挤压伤可引起肌红蛋白尿，导致急性肾损伤。" },
+// 第1904题 试卷五 专业实践能力 第4题
+{ Q: "女，28岁。妊娠39周，家中急产后6天。出现乏力、头痛、烦躁不安、打哈欠。诊断为破伤风。患者痉挛发作时，最先出现的症状是", options: ["A.苦笑面容", "B.颈强直", "C.角弓反张", "D.上肢屈曲，下肢伸直", "E.牙关紧闭，张口困难"], answer: "E", explain: "破伤风痉挛发作时，最先累及咀嚼肌，出现牙关紧闭。" },
+// 第1905题 试卷五 专业实践能力 第5题
+{ Q: "肾结核的主要临床表现为", options: ["A.尿急、尿痛、血尿、脓尿", "B.无痛性肉眼血尿", "C.老年男性进行性排尿困难", "D.小儿腹部巨大肿块", "E.反复腰部钝痛、酸胀感伴血尿"], answer: "A", explain: "肾结核表现为慢性膀胱刺激征、血尿、脓尿。" },
+// 第1906题 试卷五 专业实践能力 第6题
+{ Q: "新生儿生理性黄疸自然消退的时间是出生后", options: ["A.2天", "B.3-4天", "C.5-7天", "D.10-14天", "E.15-18天"], answer: "D", explain: "足月儿生理性黄疸10-14天消退。" },
+// 第1907题 试卷五 专业实践能力 第7题
+{ Q: "引起维生素D缺乏性手足搐搦症的直接原因是", options: ["A.血镁降低", "B.血镁降低", "C.血钠降低", "D.血游离钙降低", "E.血磷降低"], answer: "D", explain: "血游离钙降低是导致手足搐搦的直接原因。" },
+// 第1908题 试卷五 专业实践能力 第8题
+{ Q: "女，50岁。因接触性出血半年就诊。妇科检查：子宫正常大小。宫颈脱落细胞学检查：巴氏分级Ⅲ级。确诊的最佳检查是", options: ["A.诊断性刮宫", "B.宫颈活组织检查", "C.阴道涂片", "D.宫颈刮片细胞学检查", "E.宫颈锥切术"], answer: "B", explain: "宫颈活检是确诊宫颈癌的方法。" },
+// 第1909题 试卷五 专业实践能力 第9题
+{ Q: "女，28岁。闭经，疑为子宫内膜结核，行诊断性刮宫，正确的是", options: ["A.选择时间应在排卵后", "B.术前当天肌内注射链霉素", "C.术中应注意刮取两侧宫角处组织", "D.宫腔小、无组织物刮出者，可排除生殖器结核", "E.可了解激素对子宫内膜的影响"], answer: "C", explain: "子宫内膜结核应刮取两侧宫角处组织送检。" },
+// 第1910题 试卷五 专业实践能力 第10题
+{ Q: "肺炎患儿发生严重腹胀、肠鸣音消失是因为", options: ["A.低钾血症", "B.低钠血症", "C.坏死性小肠炎", "D.消化功能紊乱", "E.中毒性肠麻痹"], answer: "E", explain: "重症肺炎可导致中毒性肠麻痹，表现为腹胀、肠鸣音消失。" },
+// 第1911题 试卷五 专业实践能力 第11题
+{ Q: "全子宫切除术后患者恢复正常性生活时间应在术后", options: ["A.2周后", "B.3周后", "C.1个月后", "D.2个月后", "E.3个月后"], answer: "E", explain: "全子宫切除术后3个月可恢复性生活。" },
+// 第1912题 试卷五 专业实践能力 第12题
+{ Q: "神经末梢丰富，非常敏感的部位是", options: ["A.阴阜", "B.小阴唇", "C.大阴唇", "D.前庭大腺", "E.阴道前庭"], answer: "B", explain: "小阴唇神经末梢丰富，非常敏感。" },
+// 第1913题 试卷五 专业实践能力 第13题
+{ Q: "初孕妇，31岁。妊娠24周前来复诊，诉近来饮食、睡眠均正常，但常发生下肢肌肉抽搐，尤其是夜间静卧腿伸直时更为剧烈，且小腿疼痛。采取的首要护理措施是", options: ["A.嘱孕妇俯卧休息", "B.嘱尽可能采取左侧卧位", "C.伸腿时要把足尖伸向前", "D.遵医嘱口服钙片", "E.走路时足跟着地"], answer: "D", explain: "孕妇腿抽筋多因缺钙，应遵医嘱补钙。" },
+// 第1914题 试卷五 专业实践能力 第14题
+{ Q: "女，45岁。经皮肝穿刺胆管造影(PTC)术后3小时，患者腹痛，面色苍白，测脉搏100次/分，血压90/60mmHg，全腹有压痛、反跳痛及腹肌紧张。首先考虑的并发症是", options: ["A.感染性休克", "B.腹腔内出血", "C.血气胸", "D.胆道出血", "E.重症胆管炎"], answer: "B", explain: "PTC术后出现休克和腹膜刺激征，提示腹腔内出血。" },
+// 第1915题 试卷五 专业实践能力 第15题
+{ Q: "男，20岁。面色苍白、乏力3个月；体格检查：皮肤可见散在性出血点，肝、脾未触及；血常规：红细胞2.0×10¹²/L，血红蛋白60g/L，白细胞3.6×10⁹/L，分类：中性0.30、淋巴0.70，网织红细胞0.004，血小板30×10⁹/L。该患者最可能的诊断是", options: ["A.急性淋巴细胞白血病", "B.慢性淋巴细胞白血病", "C.巨幼细胞贫血", "D.非重型（慢性）再生障碍性贫血", "E.缺铁性贫血"], answer: "D", explain: "全血细胞减少，网织红细胞低，无肝脾大，为再障。" },
+// 第1916题 试卷五 专业实践能力 第16题
+{ Q: "测定卵巢排卵功能的检查不包括", options: ["A.基础体温测定", "B.内分泌激素检测", "C.宫颈黏液检查", "D.B超检查", "E.宫腔镜检查"], answer: "E", explain: "宫腔镜检查不能测定排卵功能。" },
+// 第1917题 试卷五 专业实践能力 第17题
+{ Q: "关于小儿注射疫苗的叙述，正确的是", options: ["A.注射所有疫苗常规使用碘酊及乙醇消毒皮肤", "B.注射疫苗最好在餐前进行", "C.安瓿内剩余药液可用无菌纱布覆盖保存4小时", "D.注射活疫苗时只用乙醇消毒皮肤", "E.小儿低热不影响注射疫苗"], answer: "D", explain: "活疫苗对消毒剂敏感，只能用乙醇消毒。" },
+// 第1918题 试卷五 专业实践能力 第18题
+{ Q: "女，30岁。经产妇，妊娠60天前来要求终止妊娠，应选用的方法是", options: ["A.药物流产", "B.负压吸引术", "C.钳刮术", "D.依沙吖啶羊膜腔内注入法", "E.静脉滴注缩宫素"], answer: "B", explain: "妊娠10周内可行负压吸引术。" },
+// 第1919题 试卷五 专业实践能力 第19题
+{ Q: "对发现肺癌早期病变及指导手术有重要意义的检查为", options: ["A.胸部CT检查", "B.X线检查", "C.B超检查", "D.支气管镜检查", "E.痰脱落细胞学检查"], answer: "D", explain: "支气管镜可直接观察病变范围，指导手术。" },
+// 第1920题 试卷五 专业实践能力 第20题
+{ Q: "血栓闭塞性脉管炎坏疽期的护理，正确的是", options: ["A.指导患者做伯格（Buerger）练习", "B.鼓励患者多进行户外活动", "C.热水泡脚", "D.用吗啡或哌替啶镇痛", "E.足底放热水袋保暖"], answer: "D", explain: "坏疽期疼痛剧烈，可用镇痛药止痛。" },
+// 第1921题 试卷五 专业实践能力 第21题
+{ Q: "大肠埃希菌肺炎的痰液表现为", options: ["A.铁锈色痰", "B.脓性或脓血性痰", "C.粉红色泡沫样痰", "D.脓臭痰", "E.砖红色胶冻样痰"], answer: "B", explain: "大肠埃希菌肺炎痰液为脓性或脓血性。" },
+// 第1922题 试卷五 专业实践能力 第22题
+{ Q: "子宫复旧的正常表现是", options: ["A.宫颈内口完全关闭需要到产后2周", "B.胎盘附着部位全部修复需要到产后4周", "C.产后1周在耻骨联合上方仍可触及宫底", "D.蜕膜全层变性、坏死、脱落", "E.肌细胞数目减少及体积缩小"], answer: "C", explain: "产后1周子宫缩小至约12周大小，耻骨联合上方可触及。" },
+// 第1923题 试卷五 专业实践能力 第23题
+{ Q: "糖尿病并发周围神经病变的表现是", options: ["A.四肢感觉异常", "B.胃蠕动减弱", "C.直立性低血压", "D.便秘", "E.视物模糊"], answer: "A", explain: "周围神经病变表现为对称性肢端感觉异常。" },
+// 第1924题 试卷五 专业实践能力 第24题
+{ Q: "女，27岁。右胸被撞伤2小时，出现胸痛，呼吸幅度小，呼吸音弱。胸部X线检查示右胸第5-8后肋单处骨折，无血气胸。治疗应选择", options: ["A.吸氧", "B.输液", "C.切开内固定", "D.大量抗生素预防感染", "E.多头胸带固定胸部"], answer: "E", explain: "单纯性肋骨骨折可用多头胸带固定，减少呼吸时疼痛。" },
+// 第1925题 试卷五 专业实践能力 第25题
+{ Q: "女，23岁。发热、咳嗽，咳脓性血丝痰3天，伴明显右侧胸痛。胸部X线检查：右肺下叶小片浸润影，其内可见气液囊腔。为缓解胸痛，患者应采取的体位是", options: ["A.患侧卧位", "B.健侧卧位", "C.头低足高位", "D.头高足低位", "E.中凹卧位"], answer: "A", explain: "患侧卧位可限制患侧呼吸活动，减轻胸痛。" },
+// 第1926题 试卷五 专业实践能力 第26题
+{ Q: "高龄初产妇，妊娠期骨盆测量在正常范围，行剖宫产，胎儿3800g。术后护理不正确的是", options: ["A.指导产妇咳嗽、翻身时轻按腹部两侧", "B.切口疼痛者，必要时给予镇痛药", "C.术后第3天取半坐卧位", "D.肛门未排气者，避免进食糖、牛奶等", "E.腹部系腹带"], answer: "C", explain: "术后第2天即可取半坐卧位，利于引流。" },
+// 第1927题 试卷五 专业实践能力 第27题
+{ Q: "某孕妇，32岁。停经50天，突然一侧剧烈下腹痛，阴道少量流血，子宫稍大，宫口关闭。最可能的诊断是", options: ["A.先兆流产", "B.难免流产", "C.异位妊娠", "D.完全流产", "E.稽留流产"], answer: "C", explain: "停经后突发一侧下腹痛，考虑异位妊娠破裂可能。" },
+// 第1928题 试卷五 专业实践能力 第28题
+{ Q: "外伤与骨折的救护原则是", options: ["A.保存生命第一、恢复功能第二、顾全解剖完整性第三", "B.保存生命第一、顾全解剖完整性第二、恢复功能第三", "C.顾全解剖完整性第一、保存生命第二、恢复功能第三", "D.顾全解剖完整性第一、恢复功能第二、保存生命第三", "E.恢复功能第一、保存生命第二、顾全解剖完整性第三"], answer: "A", explain: "骨折救护原则：先救命后治伤，先恢复功能后顾全解剖。" },
+// 第1929题 试卷五 专业实践能力 第29题
+{ Q: "对于帕金森病患者，预防并发症、促进康复的措施不包括", options: ["A.做关节的全范围运动", "B.以舒展的步伐行走", "C.取高枕卧位", "D.温水浴", "E.按摩"], answer: "C", explain: "帕金森患者不宜高枕卧位，应保持功能位。" },
+// 第1930题 试卷五 专业实践能力 第30题
+{ Q: "慢性肾小球肾炎的治疗原则是", options: ["A.早期透析治疗", "B.以消除蛋白尿和血尿为目标", "C.防止和延缓肾功能减退，改善症状", "D.使用激素治疗为主", "E.休息、饮食治疗为主"], answer: "C", explain: "慢性肾炎的治疗原则是延缓肾功能减退，改善症状。" },
+// 第1931题 试卷五 专业实践能力 第31题
+{ Q: "甲状腺危象的主要表现是", options: ["A.乏力、失眠、木僵、昏迷", "B.易激动、失眠、高血压", "C.心悸、胸闷、气促", "D.高热、心率增快、呕吐、意识障碍", "E.头痛、烦躁、心悸、呕吐"], answer: "D", explain: "甲状腺危象表现为高热、心率快、呕吐、意识障碍。" },
+// 第1932题 试卷五 专业实践能力 第32题
+{ Q: "妊娠36周出现胎膜早破，可能出现的并发症不包括", options: ["A.早产", "B.前置胎盘", "C.宫腔感染", "D.脐带脱垂", "E.胎儿窘迫"], answer: "B", explain: "前置胎盘是胎膜早破的病因，不是并发症。" },
+// 第1933题 试卷五 专业实践能力 第33题
+{ Q: "稳定型心绞痛的表现是", options: ["A.心绞痛发作与体力活动无关，可出现短暂ST段抬高", "B.过去未发生心绞痛或心肌梗死，近1个月内劳累时出现心绞痛", "C.心绞痛发作的性质在1-3个月内无改变，发作与劳累有关", "D.近3个月因劳累诱发的心绞痛频率、程度加重，含服硝酸甘油不易缓解", "E.劳累和休息时均可出现心绞痛"], answer: "C", explain: "稳定型心绞痛指1-3个月内发作性质稳定，与劳累有关。" },
+// 第1934题 试卷五 专业实践能力 第34题
+{ Q: "宫颈内口松弛者，为预防胎膜早破行宫颈环扎术的时间为妊娠", options: ["A.10-12周", "B.12-14周", "C.14-16周", "D.16-18周", "E.18-20周"], answer: "C", explain: "宫颈环扎术在妊娠14-16周进行。" },
+// 第1935题 试卷五 专业实践能力 第35题
+{ Q: "结肠癌最早出现的症状是", options: ["A.腹痛", "B.大便性状改变", "C.腹部包块", "D.肠梗阻症状", "E.消瘦、贫血"], answer: "B", explain: "结肠癌最早出现的症状是大便习惯和性状改变。" },
+// 第1936题 试卷五 专业实践能力 第36题
+{ Q: "唐氏综合征的预防措施不包括", options: ["A.孕妇避免接受X线照射", "B.禁止近亲结婚", "C.妊娠期勿滥用药物", "D.35岁以上妇女妊娠后应做羊水检查", "E.预防细菌感染"], answer: "E", explain: "预防细菌感染不能预防唐氏综合征。" },
+// 第1937题 试卷五 专业实践能力 第37题
+{ Q: "有机磷化肥厂工人应定期测定", options: ["A.血常规", "B.血糖", "C.血脂", "D.血胆碱酯酶活力", "E.血电解质"], answer: "D", explain: "接触有机磷的工人应定期测定胆碱酯酶活力。" },
+// 第1938题 试卷五 专业实践能力 第38题
+{ Q: "消化性溃疡最主要的临床表现是", options: ["A.消化道出血", "B.上腹部疼痛", "C.营养不良", "D.嗳气、反酸", "E.缺铁性贫血"], answer: "B", explain: "上腹部疼痛是消化性溃疡最主要的症状。" },
+// 第1939题 试卷五 专业实践能力 第39题
+{ Q: "产后出血患者的护理措施不包括", options: ["A.子宫收缩乏力所致出血者，立即按摩子宫", "B.失血过多，积极查找出血原因，针对病因止血", "C.胎盘部分残留，需要徒手剥离取出", "D.产后出血高危者，做好输血准备", "E.软产道裂伤造成的出血，及时做好缝合准备"], answer: "C", explain: "胎盘残留应在无菌操作下刮宫，不是徒手剥离。" },
+// 第1940题 试卷五 专业实践能力 第40题
+{ Q: "3岁健康小儿的身高应为", options: ["A.75cm", "B.84cm", "C.91cm", "D.96cm", "E.105cm"], answer: "C", explain: "2-12岁身高公式：年龄×7+75=3×7+75=96cm。" },
+// 第1941题 试卷五 专业实践能力 第41题
+{ Q: "新生儿，出生后8天。近3天反应差，不哭，吃奶少，体温35.2℃，全身皮肤黄染，脐部有脓性分泌物，诊断为新生儿败血症。护理措施中错误的是", options: ["A.保暖，维持正常体温", "B.必要时管饲喂养", "C.清洁脐部，并用过氧化氢和碘伏涂擦", "D.脐部敷以无菌纱布", "E.观察病情变化"], answer: "D", explain: "脐部有脓性分泌物时应保持干燥，不宜敷纱布覆盖。" },
+// 第1942题 试卷五 专业实践能力 第42题
+{ Q: "滴虫阴道炎的护理措施不包括", options: ["A.分泌物培养前24-48小时禁止性生活", "B.阴道分泌物培养标本应在低温下保存", "C.性伴侣同时治疗", "D.滴虫阴道炎应在每次月经后复查", "E.降低阴道pH可抑制其繁殖"], answer: "B", explain: "滴虫标本不需低温保存，应新鲜送检。" },
+// 第1943题 试卷五 专业实践能力 第43题
+{ Q: "对疼痛患者客观资料的评估不包括", options: ["A.生命体征", "B.非语言交流", "C.患者主诉", "D.对患者生活型态的影响", "E.疼痛评估工具"], answer: "C", explain: "患者主诉是主观资料，不是客观资料。" },
+// 第1944题 试卷五 专业实践能力 第44题
+{ Q: "关于宫内节育器并发症的描述，错误的是", options: ["A.子宫穿孔后应及时行修补术", "B.术后感染者应抗感染治疗", "C.宫内节育器脱落多发生于月经期", "D.带器妊娠者可继续妊娠", "E.宫内节育器异位时应及时取出"], answer: "D", explain: "带器妊娠者应终止妊娠，同时取出IUD。" },
+// 第1945题 试卷五 专业实践能力 第45题
+{ Q: "早产儿病室室温宜维持在", options: ["A.18-19℃", "B.20-21℃", "C.22-23℃", "D.24-26℃", "E.27-28℃"], answer: "D", explain: "早产儿室温应维持在24-26℃。" },
+// 第1946题 试卷五 专业实践能力 第46题
+{ Q: "正常脐带中血管分布为", options: ["A.1条脐动脉，1条脐静脉", "B.2条脐动脉，1条脐静脉", "C.1条脐动脉，2条脐静脉", "D.2条脐动脉，2条脐静脉", "E.只有2条脐动脉"], answer: "B", explain: "正常脐带有2条脐动脉，1条脐静脉。" },
+// 第1947题 试卷五 专业实践能力 第47题
+{ Q: "男，71岁。膀胱肿瘤。体重50kg。患病以来食欲减退，术前检查空腹血糖6.9mmol/L，血白蛋白28g/L，血压155/95mmHg。患者首先需要", options: ["A.调整血压", "B.缓解焦虑", "C.纠正低白蛋白血症", "D.调整睡眠", "E.调整血糖"], answer: "C", explain: "白蛋白低于正常，应先纠正低蛋白血症。" },
+// 第1948题 试卷五 专业实践能力 第48题
+{ Q: "输卵管妊娠破裂多见于", options: ["A.间质部妊娠", "B.基底部妊娠", "C.壶腹部妊娠", "D.峡部妊娠", "E.伞部妊娠"], answer: "D", explain: "输卵管峡部管腔最窄，易发生破裂。" },
+// 第1949题 试卷五 专业实践能力 第49题
+{ Q: "关于暴露疗法的护理要点，错误的是", options: ["A.随时用无菌敷料吸净创面渗液", "B.适当约束肢体", "C.焦痂用75%乙醇涂擦", "D.观察肢体远端血运", "E.创面不应覆盖任何敷料"], answer: "C", explain: "焦痂可用碘伏涂擦，75%乙醇刺激性大。" },
+// 第1950题 试卷五 专业实践能力 第50题
+{ Q: "肝硬化门静脉高压症患者脾功能亢进的典型表现是", options: ["A.脾大", "B.“三系”细胞减少", "C.呕血", "D.黑便", "E.牙龈出血"], answer: "B", explain: "脾功能亢进表现为全血细胞减少。" },
+// 第1951题 试卷五 专业实践能力 第51题
+{ Q: "男，45岁。反复空腹痛、夜间痛3个月，进食后可缓解，1小时前呕出300ml鲜血。查体：体温36.5℃，血压100/70mmHg，脉搏96次/分。患者应采取的体位是", options: ["A.平卧位", "B.膝胸卧位", "C.中凹卧位", "D.头低足高位", "E.俯卧位"], answer: "C", explain: "上消化道出血血压偏低，应取中凹卧位，利于呼吸和回心血量。" },
+// 第1952题 试卷五 专业实践能力 第52题
+{ Q: "猩红热患儿的护理措施不包括", options: ["A.急性期患儿卧床休息", "B.高热时给予乙醇拭浴", "C.提供充足水分", "D.及早使用青霉素", "E.复方硼砂溶液漱口"], answer: "B", explain: "高热时应温水擦浴，不宜乙醇擦浴。" },
+// 第1953题 试卷五 专业实践能力 第53题
+{ Q: "乳腺癌根治术后，预防皮下积液的主要措施是", options: ["A.半坐卧位", "B.患肢制动", "C.胸带加压包扎", "D.切口用沙袋压迫", "E.皮瓣下置管引流"], answer: "E", explain: "皮瓣下置管引流可有效预防皮下积液。" },
+// 第1954题 试卷五 专业实践能力 第54题
+{ Q: "男，6个月。腹泻2天，大便每天数十次，呈蛋花样，伴有发热。查体：体温38.8℃，脱水外貌，肛周皮肤发红。对该患儿的皮肤护理，不正确的是", options: ["A.用温水擦洗", "B.用橡皮布包裹臀部", "C.局部暴露于空气中", "D.灯光照射", "E.局部涂以氧化锌油"], answer: "B", explain: "腹泻患儿臀部不可用橡皮布包裹，应保持干燥透气。" },
+// 第1955题 试卷五 专业实践能力 第55题
+{ Q: "小儿缺铁性贫血最可能的原因是", options: ["A.先天性储铁不足", "B.铁摄入不足", "C.生长发育快", "D.铁丢失过多", "E.铁利用障碍"], answer: "B", explain: "铁摄入不足是小儿缺铁性贫血最主要原因。" },
+// 第1956题 试卷五 专业实践能力 第56题
+{ Q: "男，52岁。20年前患过肺结核，平素健康，近3个月刺激性咳嗽，痰中偶有血丝，有时发热。胸部X线检查示右肺上叶2.0cm×2.5cm的块状阴影，边缘不规整，呈分叶状，查痰脱落细胞3次均阴性。诊断首先考虑", options: ["A.肺结核", "B.肺囊肿", "C.肺脓肿", "D.肺癌", "E.肺良性肿瘤"], answer: "D", explain: "老年男性，长期吸烟，分叶状肿块，应首先考虑肺癌。" },
+// 第1957题 试卷五 专业实践能力 第57题
+{ Q: "小儿热性惊厥的好发年龄是", options: ["A.新生儿", "B.1-6个月", "C.6个月至5岁", "D.4-7岁", "E.8-14岁"], answer: "C", explain: "热性惊厥多见于6个月至5岁小儿。" },
+// 第1958题 试卷五 专业实践能力 第58题
+{ Q: "宫底高度在脐耻之间，妊娠周数应是", options: ["A.16周末", "B.20周末", "C.24周末", "D.28周末", "E.32周末"], answer: "A", explain: "妊娠16周末宫底在脐耻之间。" },
+// 第1959题 试卷五 专业实践能力 第59题
+{ Q: "男，3岁，因少尿、水肿4天来诊。查体：体温38.5℃，呼吸35次/分，血压正常，眼睑、面部、四肢、阴囊水肿明显，腹部移动性浊音(+)，双肾区无叩痛。尿液检查：尿蛋白(+++)，红细胞0-2个/HPF，白细胞3个/HPF，肾功能正常。最可能的诊断是", options: ["A.慢性肾小球肾炎", "B.肾病综合征", "C.急性间质性肾炎", "D.尿路感染", "E.急性肾小球肾炎"], answer: "B", explain: "大量蛋白尿，水肿明显，符合肾病综合征表现。" },
+// 第1960题 试卷五 专业实践能力 第60题
+{ Q: "全身麻醉患者清醒前最重要的护理是", options: ["A.防止意外损伤", "B.保持安静", "C.保持呼吸道通畅", "D.去枕平卧", "E.观察生命体征"], answer: "C", explain: "全麻清醒前最易发生舌后坠、误吸等，保持呼吸道通畅最重要。" },
+// 第1961题 试卷五 专业实践能力 第61题
+{ Q: "女，8岁。3天来眼睑水肿、每天尿量<300ml，镜下血尿，高血压。以急性肾小球肾炎收入院。关于急性肾小球肾炎，描述正确的临床表现是", options: ["A.多见于1-3岁的小儿", "B.发病前3天常有感染史", "C.典型表现为水肿、血尿及高血压", "D.发病4周后尿量增多", "E.血清补体C3增高"], answer: "C", explain: "急性肾炎典型表现为水肿、血尿、高血压。" },
+// 第1962题 试卷五 专业实践能力 第62题
+{ Q: "女，8岁。3天来眼睑水肿、每天尿量<300ml，镜下血尿，高血压。以急性肾小球肾炎收入院。护士在做入院评估时，最应仔细询问的是", options: ["A.家中是否有类似的患者", "B.患儿的睡眠习惯", "C.患儿的日常活动", "D.患儿的症状、体征", "E.患儿的语言表达方式"], answer: "A", explain: "应询问有无前驱感染史，家中是否有类似患者。" },
+// 第1963题 试卷五 专业实践能力 第63题
+{ Q: "女，6岁。因高热出疹就诊，经查诊断为“麻疹”。该患儿最先出现皮疹的部位是", options: ["A.四肢", "B.躯干", "C.颈部", "D.耳后发际", "E.手心足底"], answer: "D", explain: "麻疹出疹顺序为耳后发际→面部→躯干→四肢。" },
+// 第1964题 试卷五 专业实践能力 第64题
+{ Q: "女，6岁。因高热出疹就诊，经查诊断为“麻疹”。皮疹出现的时间是发热后", options: ["A.1-2天", "B.3-4天", "C.5-6天", "D.7-8天", "E.9-10天"], answer: "B", explain: "麻疹发热后3-4天出疹。" },
+// 第1965题 试卷五 专业实践能力 第65题
+{ Q: "女，6岁。因高热出疹就诊，经查诊断为“麻疹”。典型皮疹的特点是", options: ["A.皮肤普遍充血，有鲜红粟米粒疹", "B.小斑丘疹，疹退后无色素沉着", "C.针尖大小斑丘疹，疹间无正常皮肤", "D.红色斑丘疹，疹退后有色素沉着及细小脱屑", "E.红色出血性斑丘疹，疹退后无色素沉着"], answer: "D", explain: "麻疹皮疹为红色斑丘疹，疹退后有色素沉着和脱屑。" },
+// 第1966题 试卷五 专业实践能力 第66题
+{ Q: "女，6岁。因高热出疹就诊，经查诊断为“麻疹”。患儿在治疗过程中并发支气管肺炎。对患儿应隔离至出疹后的", options: ["A.2天", "B.4天", "C.6天", "D.8天", "E.10天"], answer: "E", explain: "麻疹并发肺炎者应隔离至出疹后10天。" },
+// 第1967题 试卷五 专业实践能力 第67题
+{ Q: "女，44岁。诊断为绒毛膜癌。首选的治疗方法", options: ["A.化疗", "B.放疗", "C.手术", "D.手术+放疗", "E.生物治疗"], answer: "A", explain: "绒毛膜癌首选化疗。" },
+// 第1968题 试卷五 专业实践能力 第68题
+{ Q: "女，44岁。诊断为绒毛膜癌。该患者的护理措施，不正确的是", options: ["A.鼓励家属探视，以加强患者的社会支持", "B.建议患者采用软毛牙刷刷牙，并用生理盐水漱口", "C.鼓励患者多咀嚼，以促进唾液的分泌", "D.发现药液外渗时，应立即停止用药", "E.密切监护患者有无出血倾向"], answer: "C", explain: "化疗患者口腔黏膜脆弱，不宜多咀嚼。" },
+// 第1969题 试卷五 专业实践能力 第69题
+{ Q: "女，44岁。诊断为绒毛膜癌。出院后随访最重要的内容是", options: ["A.血常规", "B.尿常规", "C.大便常规", "D.心电图", "E.hCG"], answer: "E", explain: "绒癌随访应定期检测hCG。" },
+// 第1970题 试卷五 专业实践能力 第70题
+{ Q: "女，34岁。因“不孕症”就诊。原发不孕是指夫妇同居住生活正常，未避孕", options: ["A.2年未孕者", "B.5年未孕者", "C.半年未孕者", "D.3年未孕者", "E.1年未孕者"], answer: "A", explain: "原发不孕指正常性生活未避孕2年未孕。" },
+// 第1971题 试卷五 专业实践能力 第71题
+{ Q: "女，34岁。因“不孕症”就诊。有助于预测排卵最简便的检查是", options: ["A.B超检查", "B.激素测定", "C.宫颈黏液检查", "D.基础体温测定", "E.阴道脱落细胞检查"], answer: "D", explain: "基础体温测定最简便。" },
+// 第1972题 试卷五 专业实践能力 第72题
+{ Q: "女，34岁。因“不孕症”就诊。卵巢过度刺激综合征常发生于注射人绒毛膜促性腺激素后", options: ["A.3天", "B.4天", "C.5天", "D.6天", "E.7天"], answer: "C", explain: "OHSS多发生在注射hCG后5-7天。" },
+// 第1973题 试卷五 专业实践能力 第73题
+{ Q: "女，30岁。患子宫肌瘤，为行手术入院治疗。责任护士询问其病史并查体。妇科护理程序中的护理评估不包括", options: ["A.以观察、会谈以及对患者检查等获取资料", "B.月经史、婚育史的采集是护理评估的重要内容", "C.外阴、阴道、宫颈、宫体、双侧附件的检查必不可少", "D.做好患者的用药指导和健康教育", "E.直肠-腹部诊适用于未婚女性的妇科检查"], answer: "D", explain: "用药指导和健康教育是护理计划的实施，不是评估内容。" },
+// 第1974题 试卷五 专业实践能力 第74题
+{ Q: "女，30岁。患子宫肌瘤，为行手术入院治疗。检查已婚妇女的子宫及附件情况常选用", options: ["A.外阴视诊", "B.阴道镜检查", "C.双合诊", "D.三合诊", "E.直肠-腹部诊"], answer: "C", explain: "双合诊是检查已婚妇女子宫及附件的常用方法。" },
+// 第1975题 试卷五 专业实践能力 第75题
+{ Q: "男，70岁。阵发性腹痛、腹胀，肛门停止排便排气5天。3年前曾行阑尾切除术。查体：腹部膨隆，可见肠型，腹软无压痛，肠鸣音亢进，腹部X线检查可见中下腹部小肠有数个液气平面，盲肠、升结肠肠腔扩张。最可能的诊断是", options: ["A.急性胃肠炎", "B.急性完全性肠梗阻", "C.粘连性肠梗阻", "D.克罗恩病", "E.克罗恩病癌变"], answer: "C", explain: "有腹部手术史，出现肠梗阻症状，应考虑粘连性肠梗阻。" },
+// 第1976题 试卷五 专业实践能力 第76题
+{ Q: "男，70岁。阵发性腹痛、腹胀，肛门停止排便排气5天。3年前曾行阑尾切除术。查体：腹部膨隆，可见肠型，腹软无压痛，肠鸣音亢进，腹部X线检查可见中下腹部小肠有数个液气平面，盲肠、升结肠肠腔扩张。诊断为粘连性肠梗阻。目前需要进行的处理是", options: ["A.给予大剂量广谱抗生素及肠道菌抑制药", "B.开腹探查，病变肠段切除术", "C.开腹探查解除梗阻", "D.禁食、输液、胃肠减压", "E.饮食调节，内科治疗"], answer: "D", explain: "单纯性肠梗阻应先保守治疗，包括禁食、胃肠减压、输液。" },
+// 第1977题 试卷五 专业实践能力 第77题
+{ Q: "男，6个月。足月顺产儿。体检指标均正常。保健护士应指导家长为婴儿添加食物，最重要的是", options: ["A.碎肉", "B.馄饨", "C.面片", "D.蛋黄", "E.面包"], answer: "D", explain: "6个月婴儿应添加蛋黄、菜泥等辅食。" },
+// 第1978题 试卷五 专业实践能力 第78题
+{ Q: "男，6个月。足月顺产儿。体检指标均正常。小儿断奶方法正确的是", options: ["A.断奶应果断，一次完成", "B.断奶最迟不晚于3岁", "C.一般在出生后10-12个月断奶", "D.断奶最好在夏季进行", "E.10个月后逐渐添加辅食"], answer: "C", explain: "一般10-12个月断奶，不宜在夏季断奶。" },
+// 第1979题 试卷五 专业实践能力 第79题
+{ Q: "男，50岁。车祸伤致左股骨中段粉碎性骨折，入院后予左胫骨结节牵引术及对症治疗。实施牵引的主要目的是", options: ["A.减少伤口出血", "B.促进愈合", "C.防止肌肉萎缩", "D.整复和维持复位", "E.促进损伤神经恢复"], answer: "D", explain: "牵引的目的是整复和维持复位。" },
+// 第1980题 试卷五 专业实践能力 第80题
+{ Q: "男，50岁。车祸伤致左股骨中段粉碎性骨折，入院后予左胫骨结节牵引术及对症治疗。行下肢骨牵引时，抬高床尾15-30cm的主要目的是", options: ["A.减轻疼痛", "B.对抗牵引力", "C.增强牵引效果", "D.减轻牵引重量", "E.防止牵引过度"], answer: "B", explain: "抬高床尾利用体重对抗牵引。" },
+// 第1981题 试卷五 专业实践能力 第81题
+{ Q: "男，50岁。车祸伤致左股骨中段粉碎性骨折，入院后予左胫骨结节牵引术及对症治疗。关于骨牵引的护理，叙述错误的是", options: ["A.牵引的重量为体重的1/20-1/15", "B.牵引针不可左右移动", "C.及时去除牵引针孔的分泌物", "D.维持肢体在复位或固定的位置", "E.鼓励患者功能锻炼"], answer: "A", explain: "骨牵引重量一般为体重的1/10-1/7。" },
+// 第1982题 试卷五 专业实践能力 第82题
+{ Q: "男，38岁。右侧头部着地摔伤，曾出现意识丧失。无头痛、呕吐。查体：血压120/70mmHg，心率80次/分，呼吸20次/分。神志清醒，对答切题。右耳有血性液体流出。根据患者目前情况，首先考虑为", options: ["A.颅盖骨折", "B.颅前窝骨折", "C.颅中窝骨折", "D.颅后窝骨折", "E.脑挫裂伤"], answer: "C", explain: "耳漏提示颅中窝骨折。" },
+// 第1983题 试卷五 专业实践能力 第83题
+{ Q: "男，38岁。右侧头部着地摔伤，曾出现意识丧失。无头痛、呕吐。查体：血压120/70mmHg，心率80次/分，呼吸20次/分。神志清醒，对答切题。右耳有血性液体流出。诊断为颅中窝骨折。目前该患者适宜的体位是", options: ["A.头低位", "B.平卧位", "C.仰卧位", "D.右侧卧位", "E.左侧卧位"], answer: "B", explain: "颅底骨折应取平卧位，避免用力。" },
+// 第1984题 试卷五 专业实践能力 第84题
+{ Q: "男，38岁。右侧头部着地摔伤，曾出现意识丧失。无头痛、呕吐。查体：血压120/70mmHg，心率80次/分，呼吸20次/分。神志清醒，对答切题。右耳有血性液体流出。诊断为颅中窝骨折。目前护理措施中不正确的是", options: ["A.抬高床头15°-30°", "B.严禁经鼻腔留置胃管", "C.右外耳道口放置干棉球，记录24小时浸湿的棉球数量", "D.定期用生理盐水冲洗右侧外耳道", "E.遵医嘱应用抗生素和破伤风抗毒素"], answer: "D", explain: "脑脊液漏不可冲洗，应任其流出。" },
+// 第1985题 试卷五 专业实践能力 第85题
+{ Q: "男，38岁。右侧头部着地摔伤，曾出现意识丧失。无头痛、呕吐。查体：血压120/70mmHg，心率80次/分，呼吸20次/分。神志清醒，对答切题。右耳有血性液体流出。诊断为颅中窝骨折。3小时后该患者头痛、呕吐加重，继而昏迷，右侧瞳孔散大，对光反射差，左侧肢体瘫痪，巴宾斯基征阳性。首先考虑并发了", options: ["A.硬膜外血肿和脑疝", "B.硬膜下血肿和脑疝", "C.脑血肿和脑疝", "D.脑挫裂伤和颅内压增高", "E.脑干损伤和颅内压增高"], answer: "A", explain: "中间清醒期后再次昏迷，为硬膜外血肿典型表现，继而出现脑疝。" },
+// 第1986题 试卷五 专业实践能力 第86题
+{ Q: "男，35岁。搬东西上楼后突然出现胸痛、干咳、呼吸困难。该患者最可能的诊断是", options: ["A.自发性气胸", "B.急性心肌梗死", "C.急性左心衰", "D.肺栓塞", "E.肺部感染导致呼吸衰竭"], answer: "A", explain: "突发胸痛、干咳、呼吸困难，应考虑自发性气胸。" },
+// 第1987题 试卷五 专业实践能力 第87题
+{ Q: "男，35岁。搬东西上楼后突然出现胸痛、干咳、呼吸困难。考虑自发性气胸。此时应进行的检查是", options: ["A.血气分析", "B.胸部X线检查", "C.肺功能检查", "D.血液检查", "E.痰涂片和痰培养"], answer: "B", explain: "气胸首选胸部X线检查确诊。" },
+// 第1988题 试卷五 专业实践能力 第88题
+{ Q: "男，35岁。搬东西上楼后突然出现胸痛、干咳、呼吸困难。考虑自发性气胸。该患者如果血压平稳，宜采取的体位是", options: ["A.侧卧位", "B.半坐卧位", "C.头高足低位", "D.头低足高位", "E.平卧位"], answer: "B", explain: "气胸患者宜取半坐卧位，利于呼吸。" },
+// 第1989题 试卷五 专业实践能力 第89题
+{ Q: "男，30岁。突然意识丧失，肢体抽动持续1分钟，事后无法回忆当时的情景，并有不停搓手的动作，诊断为癫痫，入院治疗。询问病史时应特别了解", options: ["A.有无内分泌紊乱症状", "B.有无代谢紊乱症状", "C.家族中有无类似患者", "D.有无强烈的情绪波动", "E.有无感染的症状"], answer: "C", explain: "癫痫与遗传有关，应询问家族史。" },
+// 第1990题 试卷五 专业实践能力 第90题
+{ Q: "男，30岁。突然意识丧失，肢体抽动持续1分钟，事后无法回忆当时的情景，并有不停搓手的动作，诊断为癫痫，入院治疗。确诊的有效辅助检查为", options: ["A.经颅多普勒超声", "B.血常规", "C.脑血管造影", "D.脑电图", "E.CT、MRI"], answer: "D", explain: "脑电图是诊断癫痫的重要检查。" },
+// 第1991题 试卷五 专业实践能力 第91题
+{ Q: "男，30岁。突然意识丧失，肢体抽动持续1分钟，事后无法回忆当时的情景，并有不停搓手的动作，诊断为癫痫，入院治疗。首选的药物是", options: ["A.苯妥英钠", "B.副醛", "C.苯巴比妥", "D.10%水合氯醛", "E.地西泮"], answer: "E", explain: "癫痫发作首选地西泮控制症状。" },
+// 第1992题 试卷五 专业实践能力 第92题
+{ Q: "男，30岁。突然意识丧失，肢体抽动持续1分钟，事后无法回忆当时的情景，并有不停搓手的动作，诊断为癫痫，入院治疗。服用该药物正确的时间为", options: ["A.晨起时服用", "B.上午服用", "C.餐前服用", "D.餐后服用", "E.发作时服用"], answer: "D", explain: "抗癫痫药应餐后服用，减少胃肠道反应。" },
+// 第1993题 试卷五 专业实践能力 第93题
+{ Q: "男，18岁。1型糖尿病3年，控制饮食及胰岛素治疗，近一周受凉后咳嗽，咳黄痰，发热，口渴、多尿明显，继之恶心、呕吐，呼吸加深加快，嗜睡急诊入院。查体：体温39.2℃，血压82/51mmHg，双肺散在干、湿啰音，不能正确回答问题。实验室检查：血糖33.3mmol/L，尿酮体强阳性，血浆胶体渗透压不高。首要的治疗措施为", options: ["A.治疗诱因", "B.注射胰岛素", "C.生理盐水静脉注射", "D.纠正电解质及酸碱平衡紊乱", "E.治疗并发症"], answer: "C", explain: "酮症酸中毒应首先补充血容量，用生理盐水静脉注射。" },
+// 第1994题 试卷五 专业实践能力 第94题
+{ Q: "男，18岁。1型糖尿病3年，控制饮食及胰岛素治疗，近一周受凉后咳嗽，咳黄痰，发热，口渴、多尿明显，继之恶心、呕吐，呼吸加深加快，嗜睡急诊入院。查体：体温39.2℃，血压82/51mmHg，双肺散在干、湿啰音，不能正确回答问题。实验室检查：血糖33.3mmol/L，尿酮体强阳性，血浆胶体渗透压不高。诊断为糖尿病酮症酸中毒。关于该患者的饮食护理指导，错误的是", options: ["A.关键在于控制总热量", "B.严格定时进食", "C.少食含纤维素高的食物", "D.每周定期测量1次体重", "E.高维生素饮食"], answer: "C", explain: "糖尿病患者应多食含纤维素高的食物。" },
+// 第1995题 试卷五 专业实践能力 第95题
+{ Q: "男，12岁。因消瘦、乏力一月余，伴低热来诊。胸部X线检查：典型“哑铃状”双极影。结核菌素试验红肿硬结直径22mm。最可能的诊断是", options: ["A.颈部淋巴结炎", "B.肺结核中的原发综合征", "C.粟粒型肺结核", "D.支气管肺炎", "E.支气管淋巴结结核"], answer: "B", explain: "哑铃状双极影是原发综合征的典型X线表现。" },
+// 第1996题 试卷五 专业实践能力 第96题
+{ Q: "男，12岁。因消瘦、乏力一月余，伴低热来诊。胸部X线检查：典型“哑铃状”双极影。结核菌素试验红肿硬结直径22mm。诊断为原发综合征。首优的护理诊断是", options: ["A.活动无耐力", "B.潜在并发症：抗结核药的不良反应", "C.继发感染", "D.营养失调", "E.知识缺乏"], answer: "B", explain: "抗结核治疗时间长，药物不良反应是首要关注点。" },
+// 第1997题 试卷五 专业实践能力 第97题
+{ Q: "男，12岁。因消瘦、乏力一月余，伴低热来诊。胸部X线检查：典型“哑铃状”双极影。结核菌素试验红肿硬结直径22mm。诊断为原发综合征。使用乙胺丁醇治疗过程中，护士应注意观察", options: ["A.肝毒性", "B.视神经炎", "C.胃肠道症状", "D.听神经损害", "E.末梢神经炎"], answer: "B", explain: "乙胺丁醇的主要不良反应是视神经炎。" },
+// 第1998题 试卷五 专业实践能力 第98题
+{ Q: "某孕妇，妊娠35周，有规律子宫收缩，诊断为先兆早产。由于胎儿、胎盘因素导致早产的常见原因不包括", options: ["A.前置胎盘", "B.胎儿畸形", "C.胎膜早破", "D.羊水过少", "E.多胎妊娠"], answer: "C", explain: "胎膜早破是早产的病因，但不是胎儿、胎盘因素。" },
+// 第1999题 试卷五 专业实践能力 第99题
+{ Q: "某孕妇，妊娠35周，有规律子宫收缩，诊断为先兆早产。在保胎过程中为了抑制宫缩，可应用", options: ["A.硫酸镁", "B.孕激素", "C.地西泮", "D.地塞米松", "E.前列腺素"], answer: "A", explain: "硫酸镁可抑制宫缩，用于保胎治疗。" },
+// 第2000题 试卷五 专业实践能力 第100题
+{ Q: "某孕妇，妊娠35周，有规律子宫收缩，诊断为先兆早产。针对该患者的护理措施正确的是", options: ["A.给予孕妇持续吸氧", "B.若胎膜已破，则应尽快终止妊娠", "C.分娩前应用盐皮质激素促进胎肺成熟", "D.分娩过程中应用缩宫素促进子宫收缩", "E.经阴道分娩者，尽可能缩短产程"], answer: "E", explain: "早产不可避免时，应缩短产程，减少对胎儿的损伤。" },
+// ==================== 模拟试卷六 基础知识 (第2001-2100题) ====================
+// 第2001题 试卷六 基础知识 第1题
+{ Q: "导致股骨颈骨折的原因主要是", options: ["A.直接暴力", "B.间接暴力", "C.肌肉牵拉", "D.累积应力", "E.骨质疏松"], answer: "E", explain: "股骨颈骨折多见于老年人，主要与骨质疏松有关。" },
+// 第2002题 试卷六 基础知识 第2题
+{ Q: "最易引起胸腺肥大的自身免疫性疾病是", options: ["A.系统性红斑狼疮", "B.类风湿关节炎", "C.重症肌无力", "D.帕金森病", "E.癫痫"], answer: "C", explain: "重症肌无力常伴有胸腺肥大或胸腺瘤。" },
+// 第2003题 试卷六 基础知识 第3题
+{ Q: "女，40岁。室间隔缺损30年。3个月前拔牙后持续发热至今。查体：体温37.9℃，睑结膜苍白，有瘀点，胸骨左缘第3肋间可闻及全收缩期杂音，脾肋下可触及。最有助于确诊的检查是", options: ["A.尿蛋白", "B.血清铁", "C.血培养", "D.血常规", "E.腹部B超"], answer: "C", explain: "感染性心内膜炎应行血培养检查确诊。" },
+// 第2004题 试卷六 基础知识 第4题
+{ Q: "易患急性坏死性小肠结肠炎的小儿是", options: ["A.少进食甘薯的小儿", "B.喜进食肉类的小儿", "C.长期营养不良的患儿", "D.维生素D缺乏性佝偻病患儿", "E.肺炎患儿"], answer: "C", explain: "长期营养不良的患儿易患急性坏死性小肠结肠炎。" },
+// 第2005题 试卷六 基础知识 第5题
+{ Q: "妊娠滋养细胞疾病共同的病理变化特点是", options: ["A.侵蚀子宫肌层", "B.以血行转移为主", "C.病变局限在宫腔内", "D.滋养细胞呈不同程度的增生", "E.保持完整的绒毛结构"], answer: "D", explain: "滋养细胞疾病的共同病理特点是滋养细胞异常增生。" },
+// 第2006题 试卷六 基础知识 第6题
+{ Q: "腹部四步触诊检查不包括", options: ["A.子宫大小", "B.胎儿大小", "C.胎方位", "D.胎先露", "E.胎先露是否衔接"], answer: "B", explain: "四步触诊可了解子宫大小、胎方位、胎先露及衔接情况，不能准确判断胎儿大小。" },
+// 第2007题 试卷六 基础知识 第7题
+{ Q: "引起手部急性化脓性感染的主要致病菌是", options: ["A.金黄色葡萄球菌", "B.表皮葡萄球菌", "C.大肠埃希菌", "D.真菌", "E.溶血性链球菌"], answer: "A", explain: "手部急性化脓性感染最常见致病菌为金黄色葡萄球菌。" },
+// 第2008题 试卷六 基础知识 第8题
+{ Q: "男，68岁。糖尿病。服二甲双胍治疗，血糖控制在8-10mmol/L，血压160/95mmHg。近三天受凉后出现咳嗽、咳痰。昨天神志不清，血压90/60mmHg，血糖28.9mmol/L，血钠140mmol/L，尿酮(+++)，诊断为", options: ["A.乳酸性酸中毒", "B.高渗高血糖综合征", "C.低血糖昏迷", "D.糖尿病酮症酸中毒", "E.脑血管意外"], answer: "D", explain: "血糖明显增高，尿酮体强阳性，符合糖尿病酮症酸中毒。" },
+// 第2009题 试卷六 基础知识 第9题
+{ Q: "女性性功能成熟的标志是", options: ["A.月经初潮", "B.规律月经", "C.子宫增大", "D.乳房丰满", "E.阴毛出现"], answer: "B", explain: "规律月经是女性性功能成熟的标志。" },
+// 第2010题 试卷六 基础知识 第10题
+{ Q: "消化性溃疡形成最直接的原因是", options: ["A.吸烟", "B.胃酸过多", "C.胃蛋白酶过少", "D.非甾体抗炎药", "E.幽门螺杆菌"], answer: "B", explain: "胃酸过多是消化性溃疡形成的最直接原因。" },
+// 第2011题 试卷六 基础知识 第11题
+{ Q: "脊髓损伤最轻的类型是", options: ["A.脊髓挫伤", "B.脊髓震荡", "C.脊髓受压", "D.脊髓断裂", "E.马尾神经损伤"], answer: "B", explain: "脊髓震荡是最轻的脊髓损伤，可完全恢复。" },
+// 第2012题 试卷六 基础知识 第12题
+{ Q: "目前我国产妇最常见的死亡原因是", options: ["A.产褥感染", "B.产后出血", "C.羊水栓塞", "D.子宫破裂", "E.妊娠合并心脏病"], answer: "B", explain: "产后出血是我国产妇首位死亡原因。" },
+// 第2013题 试卷六 基础知识 第13题
+{ Q: "神经根型颈椎病选用的检查方法是", options: ["A.臂丛牵拉试验", "B.托马斯征", "C.束臂试验", "D.闭孔内肌试验", "E.直腿抬高试验"], answer: "A", explain: "臂丛牵拉试验阳性提示神经根型颈椎病。" },
+// 第2014题 试卷六 基础知识 第14题
+{ Q: "女，38岁。近2天无明显诱因出现高热，查体除显著贫血貌外，无特殊阳性体征。实验室检查：血象全血细胞减少，网织红细胞明显减少；骨髓象提示骨髓增生低下。该患者最可能的诊断是", options: ["A.白血病", "B.缺铁性贫血", "C.再生障碍性贫血", "D.巨幼细胞贫血", "E.脾功能亢进"], answer: "C", explain: "全血细胞减少，网织红细胞减少，骨髓增生低下，为再障表现。" },
+// 第2015题 试卷六 基础知识 第15题
+{ Q: "抗癫痫药物的使用原则中，错误的是", options: ["A.严格按照癫痫发作类型选药", "B.多以单一药物治疗", "C.应掌握药物的剂量", "D.注意用药的个体差异", "E.发作控制后即停药"], answer: "E", explain: "抗癫痫药需长期服用，不能突然停药。" },
+// 第2016题 试卷六 基础知识 第16题
+{ Q: "休克期微循环变化的中期改变是", options: ["A.收缩期", "B.扩张期", "C.衰竭期", "D.DIC期", "E.痉挛期"], answer: "B", explain: "休克期微循环改变分为微循环收缩期、扩张期和衰竭期。" },
+// 第2017题 试卷六 基础知识 第17题
+{ Q: "吉兰-巴雷综合征的常见病原菌是", options: ["A.金黄色葡萄球菌", "B.空肠弯曲菌", "C.铜绿假单胞菌", "D.溶血性链球菌", "E.大肠埃希菌"], answer: "B", explain: "空肠弯曲菌感染与吉兰-巴雷综合征发病相关。" },
+// 第2018题 试卷六 基础知识 第18题
+{ Q: "医院为提高医疗护理服务质量，开展医院质量安全和风险防范的教育活动，不符合此项活动目的是", options: ["A.教育员工加强工作责任心", "B.学习不良事件报告制度和流程", "C.通过各种方式加强与患者的有效沟通", "D.积极化解工作中出现的医患矛盾", "E.为医务人员投保医疗保险"], answer: "E", explain: "为医务人员投保不属于质量安全和风险防范教育的目的。" },
+// 第2019题 试卷六 基础知识 第19题
+{ Q: "婴儿期生理性流涎的月龄是", options: ["A.1-2个月", "B.3-4个月", "C.5-6个月", "D.7-8个月", "E.9-10个月"], answer: "C", explain: "5-6个月婴儿唾液分泌增多，出现生理性流涎。" },
+// 第2020题 试卷六 基础知识 第20题
+{ Q: "男，25岁。体温39.5-39.9℃持续1周，脉搏102次/分，呼吸28次/分，怀疑为脓毒症。血培养的目的是", options: ["A.测定血清酶", "B.查找致病菌", "C.做药物敏感试验", "D.测定特异性抗体", "E.测定肝肾功能"], answer: "C", explain: "血培养可明确致病菌并进行药物敏感试验。" },
+// 第2021题 试卷六 基础知识 第21题
+{ Q: "细菌性肝脓肿致病菌侵入的主要途径是", options: ["A.肝动脉", "B.胆道、门静脉", "C.肠系膜上静脉", "D.开放性肝损伤", "E.肝静脉"], answer: "B", explain: "细菌性肝脓肿多经胆道和门静脉侵入。" },
+// 第2022题 试卷六 基础知识 第22题
+{ Q: "慢性胃炎的主要病因是", options: ["A.自身免疫反应", "B.十二指肠液反流", "C.幽门螺杆菌感染", "D.理化因素", "E.机械损伤"], answer: "C", explain: "幽门螺杆菌感染是慢性胃炎的主要病因。" },
+// 第2023题 试卷六 基础知识 第23题
+{ Q: "治疗乳腺癌的主要方法是早期", options: ["A.激素治疗", "B.服用抗肿瘤药", "C.根治性手术", "D.生物治疗", "E.放疗"], answer: "C", explain: "早期乳腺癌首选根治性手术治疗。" },
+// 第2024题 试卷六 基础知识 第24题
+{ Q: "颅底骨折属于", options: ["A.闭合性骨折", "B.开放性骨折", "C.不稳定性骨折", "D.青枝骨折", "E.凹陷性骨折"], answer: "B", explain: "颅底骨折常伴有脑脊液漏，属于开放性骨折。" },
+// 第2025题 试卷六 基础知识 第25题
+{ Q: "新生儿寒冷损伤综合征产生的主要原因不包括", options: ["A.寒冷", "B.早产", "C.感染", "D.低体重", "E.局部皮肤受压"], answer: "E", explain: "局部皮肤受压不是新生儿寒冷损伤综合征的主要原因。" },
+// 第2026题 试卷六 基础知识 第26题
+{ Q: "护士为肝炎、肝硬化患者行健康宣教时，关于诱发肝性脑病最主要的因素，正确的是", options: ["A.进食富含维生素C的新鲜水果", "B.限制蛋白质摄入", "C.上消化道出血", "D.保持排便通畅", "E.饮食细软"], answer: "C", explain: "上消化道出血是肝性脑病最常见的诱因。" },
+// 第2027题 试卷六 基础知识 第27题
+{ Q: "严密隔离的要求不包括", options: ["A.同种病原体患者可同住一室", "B.禁止随意开放病室门窗", "C.患者不得离开病室", "D.禁止探视和陪住", "E.每天消毒病室"], answer: "B", explain: "严密隔离病室应关闭门窗，避免空气对流。" },
+// 第2028题 试卷六 基础知识 第28题
+{ Q: "血钠正常见于", options: ["A.高渗性脱水", "B.低渗性脱水", "C.等渗性脱水", "D.水中毒", "E.慢性脱水"], answer: "C", explain: "等渗性脱水血钠在正常范围。" },
+// 第2029题 试卷六 基础知识 第29题
+{ Q: "正常月经周期，若卵子未受精，黄体开始萎缩的时间在排卵后", options: ["A.5-6天", "B.7-8天", "C.9-10天", "D.11-12天", "E.13-14天"], answer: "C", explain: "排卵后9-10天黄体开始萎缩。" },
+// 第2030题 试卷六 基础知识 第30题
+{ Q: "属于特异性感染的是", options: ["A.铜绿假单胞菌感染", "B.大肠埃希菌感染", "C.结核分枝杆菌感染", "D.变形杆菌感染", "E.链球菌感染"], answer: "C", explain: "结核分枝杆菌感染属于特异性感染。" },
+// 第2031题 试卷六 基础知识 第31题
+{ Q: "关于胸围、头围的生长，错误的是", options: ["A.头围测量在2岁前最有价值", "B.出生时胸围比头围小1-2cm", "C.1岁时头围、胸围相等", "D.1岁至青春前期两者差数（cm）约等于小儿岁数", "E.头围可反映颅骨发育，胸围可反映肺发育"], answer: "D", explain: "1岁至青春前期胸围与头围的差数约等于小儿岁数减1。" },
+// 第2032题 试卷六 基础知识 第32题
+{ Q: "直肠癌最主要的诊断方法是", options: ["A.直肠指诊", "B.X线钡剂灌肠检查", "C.大便常规检查", "D.直肠镜检查", "E.活组织病理学检查"], answer: "A", explain: "直肠指诊是诊断直肠癌最简单、最重要的方法。" },
+// 第2033题 试卷六 基础知识 第33题
+{ Q: "女性内生殖器不包括", options: ["A.阴道", "B.阴蒂", "C.子宫", "D.输卵管", "E.卵巢"], answer: "B", explain: "阴蒂属于外生殖器。" },
+// 第2034题 试卷六 基础知识 第34题
+{ Q: "慢性原发免疫性血小板减少症最常见于", options: ["A.婴幼儿", "B.青少年", "C.青年女性", "D.青年男性", "E.中年人"], answer: "C", explain: "慢性ITP多见于青年女性。" },
+// 第2035题 试卷六 基础知识 第35题
+{ Q: "小儿最容易发生意外事故的时期为", options: ["A.新生儿期", "B.婴儿期", "C.幼儿期", "D.学龄前期", "E.学龄期"], answer: "C", explain: "幼儿期活动范围扩大，最容易发生意外事故。" },
+// 第2036题 试卷六 基础知识 第36题
+{ Q: "肘关节脱位的表现不包括", options: ["A.肘关节疼痛、肿胀、功能障碍", "B.“餐叉样”畸形", "C.肘关节呈半屈曲位", "D.尺骨鹰嘴明显向后凸", "E.肘后三角失去正常关系"], answer: "B", explain: "餐叉样畸形是Colles骨折的表现。" },
+// 第2037题 试卷六 基础知识 第37题
+{ Q: "哮喘发作的本质是", options: ["A.基因遗传", "B.环境因素影响", "C.气道慢性炎症", "D.气道高反应性", "E.神经递质平衡失调"], answer: "C", explain: "气道慢性炎症是哮喘发作的本质。" },
+// 第2038题 试卷六 基础知识 第38题
+{ Q: "吉兰-巴雷综合征发病2-3周时，可证明髓鞘受损的检查是", options: ["A.脑电图", "B.头颅CT", "C.心电图", "D.肌电图", "E.脑脊液检查"], answer: "D", explain: "肌电图可显示髓鞘受损的神经传导速度减慢。" },
+// 第2039题 试卷六 基础知识 第39题
+{ Q: "继发性化脓性腹膜炎最多见的致病菌是", options: ["A.大肠埃希菌", "B.厌氧拟杆菌", "C.链球菌", "D.金黄色葡萄球菌", "E.变形杆菌"], answer: "A", explain: "继发性腹膜炎多为混合感染，大肠埃希菌最常见。" },
+// 第2040题 试卷六 基础知识 第40题
+{ Q: "新生儿颅内出血的病因不包括", options: ["A.孕母患有心力衰竭", "B.产程延长", "C.高位产钳助产", "D.母亲妊娠前3个月患有风疹", "E.出生后快速滴注高渗性溶液"], answer: "D", explain: "妊娠早期风疹与新生儿颅内出血无关。" },
+// 第2041题 试卷六 基础知识 第41题
+{ Q: "我国首创的检查食管癌的方法是", options: ["A.食管X线钡剂检查", "B.食管拉网脱落细胞学检查", "C.食管镜检查", "D.CT检查", "E.B超检查"], answer: "B", explain: "食管拉网细胞学检查是我国首创的食管癌筛查方法。" },
+// 第2042题 试卷六 基础知识 第42题
+{ Q: "尿瘘的最主要病因是", options: ["A.产伤", "B.膀胱癌", "C.膀胱结石", "D.妇科手术损伤", "E.长期放置子宫托"], answer: "A", explain: "产伤是尿瘘最主要病因。" },
+// 第2043题 试卷六 基础知识 第43题
+{ Q: "分娩过程中，宫腔内压力在第二产程期间最高可达", options: ["A.6-12mmHg", "B.25-30mmHg", "C.40-60mmHg", "D.80-100mmHg", "E.100-150mmHg"], answer: "E", explain: "第二产程宫腔压力可达100-150mmHg。" },
+// 第2044题 试卷六 基础知识 第44题
+{ Q: "外阴阴道假丝酵母菌病的诱发因素不包括", options: ["A.妊娠", "B.大量雌激素治疗", "C.糖尿病", "D.长期服用抗生素", "E.长期服用维生素C"], answer: "E", explain: "维生素C不诱发假丝酵母菌病。" },
+// 第2045题 试卷六 基础知识 第45题
+{ Q: "关于肠外营养的描述，正确的是", options: ["A.肠外营养时，应首选中心静脉营养", "B.禁止用输注营养液的中心静脉导管给药、输血和取血", "C.怀疑导管脓毒症时，立即应用大剂量抗生素", "D.肠外营养时，监测尿糖，以阴性为最佳", "E.无3L袋时，可将葡萄糖、氨基酸和脂肪乳剂依次单独输入"], answer: "B", explain: "中心静脉导管为专用通道，禁止用于输血、给药和取血。" },
+// 第2046题 试卷六 基础知识 第46题
+{ Q: "表现为上腹部持续性“刀割样”疼痛的疾病是", options: ["A.胆石病", "B.胃十二指肠溃疡穿孔", "C.胆道蛔虫病", "D.输尿管结石", "E.机械性肠梗阻"], answer: "B", explain: "溃疡穿孔表现为上腹部持续性刀割样疼痛。" },
+// 第2047题 试卷六 基础知识 第47题
+{ Q: "关于产后激素变化的叙述，正确的是", options: ["A.高雌激素，高缩宫素", "B.低雌激素，高催乳素", "C.高雌激素，低催乳素", "D.高雌激素，高催乳素", "E.低雌激素，低催乳素"], answer: "B", explain: "产后雌激素水平下降，催乳素水平升高促进泌乳。" },
+// 第2048题 试卷六 基础知识 第48题
+{ Q: "高钾血症时，早期心电图的改变是", options: ["A.ST段低平", "B.出现u波", "C.T波倒置", "D.QT间期缩短", "E.T波高尖，PR间期延长"], answer: "E", explain: "高钾血症早期心电图表现为T波高尖，PR间期延长。" },
+// 第2049题 试卷六 基础知识 第49题
+{ Q: "对可疑糖尿病患者最有诊断价值的检查是", options: ["A.口服葡萄糖耐量试验", "B.尿糖定性试验", "C.胰岛素抗体测定", "D.尿糖定量试验", "E.空腹血糖测定"], answer: "A", explain: "口服葡萄糖耐量试验是诊断糖尿病的金标准。" },
+// 第2050题 试卷六 基础知识 第50题
+{ Q: "引起膀胱癌的主要因素是", options: ["A.吸烟", "B.食用蔗糖", "C.长期应用抗生素", "D.长期尿失禁", "E.急性膀胱炎"], answer: "A", explain: "吸烟是膀胱癌最重要的危险因素。" },
+// 第2051题 试卷六 基础知识 第51题
+{ Q: "关于重症胰腺炎的病因，正确的是", options: ["A.以细菌感染为主，与胆道疾病无关", "B.某些感染性疾病也可诱发", "C.一般不会由药物诱发", "D.可能与低脂血症有关", "E.可能与低钙血症有关"], answer: "B", explain: "某些感染性疾病如腮腺炎可诱发胰腺炎。" },
+// 第2052题 试卷六 基础知识 第52题
+{ Q: "急性心肌梗死患者最有诊断意义的心肌酶是", options: ["A.肌酸激酶同工酶", "B.肌酸磷酸激酶", "C.乳酸脱氢酶", "D.肌钙蛋白I", "E.天冬氨酸氨基转移酶"], answer: "D", explain: "肌钙蛋白I是诊断心梗最特异、最敏感的标志物。" },
+// 第2053题 试卷六 基础知识 第53题
+{ Q: "有关血胸的病理描述，错误的是", options: ["A.肺组织破裂出血多可自行停止", "B.因肋骨断端活动刺破肋间血管，发生延迟出现的血胸", "C.出血量多时纵隔移向患侧", "D.短期大量出血，超过胸膜去纤维化作用，积血凝固，形成凝固性血胸", "E.血块机化后形成纤维板，限制肺与胸廓活动，损害呼吸功能"], answer: "C", explain: "大量血胸时纵隔移向健侧，不是患侧。" },
+// 第2054题 试卷六 基础知识 第54题
+{ Q: "对诊断肠结核最有价值的是", options: ["A.血沉增快", "B.结核菌素试验", "C.X线钡剂检查", "D.X线钡剂灌肠", "E.结肠镜活组织检查"], answer: "E", explain: "结肠镜活检找到结核菌或干酪样肉芽肿是确诊肠结核的依据。" },
+// 第2055题 试卷六 基础知识 第55题
+{ Q: "女，65岁。患肝硬化3年，近来发现牙龈出血，皮肤有许多出血点，且有尿频、尿急、腰痛。经检查后诊断为肝硬化、脾功能亢进、全血细胞减少，伴尿路感染。尿路感染是由于", options: ["A.血红蛋白减少", "B.血小板减少", "C.嗜酸性粒细胞减少", "D.中性粒细胞减少", "E.嗜碱性粒细胞减少"], answer: "D", explain: "中性粒细胞减少导致机体防御能力下降，易发生感染。" },
+// 第2056题 试卷六 基础知识 第56题
+{ Q: "系统性红斑狼疮标准筛选试验是", options: ["A.抗核抗体检查", "B.抗双链DNA检查", "C.抗Sm抗体检查", "D.内因子抗体检查", "E.抗磷脂抗体检查"], answer: "A", explain: "抗核抗体是SLE的筛选试验。" },
+// 第2057题 试卷六 基础知识 第57题
+{ Q: "对放疗最不敏感的肿瘤是", options: ["A.霍奇金病", "B.精原细胞瘤", "C.乳腺癌", "D.鼻咽癌", "E.黑色素瘤"], answer: "E", explain: "黑色素瘤对放疗不敏感。" },
+// 第2058题 试卷六 基础知识 第58题
+{ Q: "小儿急性肾小球肾炎发生心力衰竭的主要原因是", options: ["A.心肌炎", "B.血压升高", "C.贫血、缺氧", "D.血容量增加", "E.心肌间质水肿"], answer: "D", explain: "急性肾炎心衰主要因水钠潴留导致血容量增加。" },
+// 第2059题 试卷六 基础知识 第59题
+{ Q: "男，36岁。患慢性肾小球肾炎。24小时尿蛋白定量最可能的检查结果为", options: ["A.<1g/24h", "B.<2g/24h", "C.>3.5g/24h", "D.<150mg/24h", "E.1-3g/24h"], answer: "E", explain: "慢性肾炎尿蛋白多为1-3g/24h，达不到肾病综合征标准。" },
+// 第2060题 试卷六 基础知识 第60题
+{ Q: "机体提供热量最主要的营养素是", options: ["A.脂肪", "B.碳水化合物", "C.蛋白质", "D.维生素", "E.无机盐"], answer: "B", explain: "碳水化合物是机体提供热量的主要来源。" },
+// 第2061题 试卷六 基础知识 第61题
+{ Q: "开放性气胸产生纵隔扑动的主要原因是", options: ["A.患侧肺萎陷", "B.健侧肺复张不全", "C.纵隔移向健侧", "D.吸气与呼气时两侧胸膜腔内的压力改变", "E.患侧胸膜腔内压力超过大气压"], answer: "D", explain: "开放性气胸时两侧胸腔压力随呼吸交替变化，导致纵隔扑动。" },
+// 第2062题 试卷六 基础知识 第62题
+{ Q: "原发免疫性血小板减少症的主要病因是", options: ["A.骨髓造血小板功能下降", "B.骨髓造血小板原料缺乏", "C.免疫反应造成骨髓抑制", "D.免疫反应致血小板破坏", "E.出血造成血小板大量丢失"], answer: "D", explain: "ITP是免疫反应导致血小板破坏过多。" },
+// 第2063题 试卷六 基础知识 第63题
+{ Q: "下肢深静脉血栓形成的病因除外", options: ["A.静脉血流缓慢", "B.门静脉高压", "C.静脉内膜损伤", "D.血液高凝状态", "E.因烧伤、创伤和手术后引起的血液高凝状态"], answer: "B", explain: "门静脉高压不是下肢深静脉血栓形成的病因。" },
+// 第2064题 试卷六 基础知识 第64题
+{ Q: "免疫抑制药常见的不良反应不包括", options: ["A.机会感染", "B.肝炎复发", "C.新生肿瘤", "D.呼吸抑制", "E.骨髓抑制"], answer: "D", explain: "免疫抑制药一般不引起呼吸抑制。" },
+// 第2065题 试卷六 基础知识 第65题
+{ Q: "男，40岁。左下肢静脉扩张、迂曲14年逐渐加重，左小腿大隐静脉重度曲张，胫前凹陷性水肿，此时关键的检查是", options: ["A.大隐静脉功能检查", "B.浅静脉瓣膜功能检查", "C.深浅静脉交通支瓣膜功能检查", "D.深静脉通畅和瓣膜检查", "E.静脉曲张并发症检查"], answer: "D", explain: "下肢静脉曲张术前必须检查深静脉是否通畅，确定手术适应证。" },
+// 第2066题 试卷六 基础知识 第66题
+{ Q: "骨与关节结核的致病菌，多数来自", options: ["A.胃肠道结核", "B.淋巴系统结核", "C.肾结核", "D.肺结核", "E.循环系统结核"], answer: "D", explain: "骨与关节结核多继发于肺结核。" },
+// 第2067题 试卷六 基础知识 第67题
+{ Q: "正常胎儿妊娠32周时身长约为", options: ["A.30cm", "B.35cm", "C.40cm", "D.45cm", "E.50cm"], answer: "C", explain: "妊娠32周胎儿身长约40cm。" },
+// 第2068题 试卷六 基础知识 第68题
+{ Q: "与吸烟关系最密切的原发性支气管肺癌组织学类型是", options: ["A.腺癌", "B.鳞癌", "C.小细胞癌", "D.大细胞癌", "E.上皮细胞癌"], answer: "B", explain: "鳞癌与吸烟关系最密切。" },
+// 第2069题 试卷六 基础知识 第69题
+{ Q: "易感儿童接触水痘患儿后的发病率是", options: ["A.10%", "B.30%", "C.50%", "D.70%", "E.90%"], answer: "E", explain: "水痘传染性极强，易感儿童接触后发病率约90%。" },
+// 第2070题 试卷六 基础知识 第70题
+{ Q: "正常成人若要将体内固体代谢产物排出体外，每天至少需要排尿", options: ["A.100-200ml", "B.300-400ml", "C.500-600ml", "D.800-900ml", "E.1000-1500ml"], answer: "C", explain: "每天至少需要500-600ml尿液才能排出体内固体代谢产物。" },
+// 第2071题 试卷六 基础知识 第71题
+{ Q: "用B超能看见胎心搏动的最早时期是", options: ["A.妊娠24周", "B.妊娠20周", "C.妊娠8周", "D.妊娠12周", "E.妊娠28周"], answer: "C", explain: "妊娠8周B超可见胎心搏动。" },
+// 第2072题 试卷六 基础知识 第72题
+{ Q: "符合营养不良的检查结果是", options: ["A.血白蛋白35g/L", "B.血转铁蛋白2.0g/L", "C.血清总蛋白70g/L", "D.24小时氮平衡测试持续负平衡", "E.迟发性皮肤超敏试验(+++)"], answer: "D", explain: "持续负氮平衡是营养不良的重要指标。" },
+// 第2073题 试卷六 基础知识 第73题
+{ Q: "小儿原发型肺结核的原发病灶常位于", options: ["A.肺尖部，以右侧多见", "B.两肺底部", "C.肺上叶底部和下叶上部", "D.肺门处", "E.右肺上叶尖部"], answer: "C", explain: "原发综合征的原发病灶多位于肺上叶底部或下叶上部。" },
+// 第2074题 试卷六 基础知识 第74题
+{ Q: "双合诊不易查清的部位是", options: ["A.阴道", "B.宫颈", "C.子宫", "D.宫旁组织", "E.直肠子宫陷凹"], answer: "E", explain: "直肠子宫陷凹需通过三合诊检查。" },
+// 第2075题 试卷六 基础知识 第75题
+{ Q: "甲状腺功能亢进症、高热、心动过速患者术前使用的药物不包括", options: ["A.苯巴比妥钠", "B.吗啡", "C.阿托品", "D.地西泮", "E.哌替啶"], answer: "C", explain: "甲亢患者术前禁用阿托品，以免加重心动过速。" },
+// 第2076题 试卷六 基础知识 第76题
+{ Q: "关于慢性阻塞性肺疾病患者的肺功能检查结果，正确的是", options: ["A.残气量增加", "B.残气量减少", "C.潮气量增加", "D.最大通气量增加", "E.时间肺活量增加"], answer: "A", explain: "COPD患者残气量增加。" },
+// 第2077题 试卷六 基础知识 第77题
+{ Q: "心脏病患者可以妊娠的情况是", options: ["A.心功能Ⅰ-Ⅱ级", "B.心力衰竭病史", "C.肺动脉高压病史", "D.围生期心肌病遗留心脏扩大", "E.风湿热活动期"], answer: "A", explain: "心功能Ⅰ-Ⅱ级可妊娠，Ⅲ-Ⅳ级不宜妊娠。" },
+// 第2078题 试卷六 基础知识 第78题
+{ Q: "原发性肝癌最主要的转移部位是", options: ["A.左锁骨上淋巴结", "B.腹腔内种植", "C.肝内", "D.肺", "E.骨"], answer: "C", explain: "肝癌最早、最常见的转移是肝内血行转移。" },
+// 第2079题 试卷六 基础知识 第79题
+{ Q: "某血尿患者，行尿三杯试验后第一杯为血尿，提示出血部位为", options: ["A.肾脏", "B.前列腺", "C.膀胱颈部", "D.后尿道", "E.前尿道"], answer: "E", explain: "初始血尿提示前尿道出血。" },
+// 第2080题 试卷六 基础知识 第80题
+{ Q: "急性白血病患儿发生急性肾损伤最常见的原因是", options: ["A.白血病细胞浸润肾脏", "B.剧烈呕吐和腹泻所致严重失水", "C.高尿酸血症和尿酸性肾病", "D.肾盂肾炎", "E.大量使用肾毒性化疗药物或抗生素"], answer: "C", explain: "白血病化疗后大量细胞破坏，产生高尿酸血症，导致尿酸性肾病。" },
+// 第2081题 试卷六 基础知识 第81题
+{ Q: "小儿出生时存在，以后逐渐消失的反射是", options: ["A.角膜反射", "B.提睾反射", "C.膝腱反射", "D.握持反射", "E.腹壁反射"], answer: "D", explain: "握持反射是新生儿暂时性反射，3-4个月消失。" },
+// 第2082题 试卷六 基础知识 第82题
+{ Q: "关于急性上呼吸道感染的描述，错误的是", options: ["A.成人普通感冒多由细菌感染引起", "B.普通感冒主要表现为咽干、喉痒、打喷嚏、流鼻涕、鼻塞，一般肺部无干、湿啰音", "C.急性细菌性扁桃体炎患者可有高热、咽部明显充血，扁桃体肿大、充血、表面常有黄色点状渗出物", "D.感冒患者如出现耳痛、耳鸣、听力减退、外耳道流脓等常提示并发中耳炎", "E.受凉、过度疲劳是急性上呼吸道感染的诱因"], answer: "A", explain: "成人普通感冒多由病毒感染引起。" },
+// 第2083题 试卷六 基础知识 第83题
+{ Q: "关于儿茶酚胺症描述正确的是", options: ["A.以10-20岁多见", "B.女性多于男性", "C.以高血压、高代谢、高血糖为主要表现", "D.由肾上腺皮质增生所致", "E.由醛固酮分泌过多所致"], answer: "C", explain: "儿茶酚胺症主要表现为高血压、高代谢、高血糖。" },
+// 第2084题 试卷六 基础知识 第84题
+{ Q: "临床上鉴别颈部肿物是否与甲状腺有关的特有体征是", options: ["A.肿物质地较硬", "B.有压痛感", "C.有压迫感", "D.随吞咽移动", "E.肿块突出"], answer: "D", explain: "甲状腺肿物可随吞咽上下移动，是鉴别要点。" },
+// 第2085题 试卷六 基础知识 第85题
+{ Q: "二尖瓣狭窄引起", options: ["A.左心房扩张", "B.右心房扩张", "C.左心室扩张", "D.右心室扩张", "E.全心室肥厚"], answer: "A", explain: "二尖瓣狭窄首先导致左心房压力增高，左心房扩张。" },
+// 第2086题 试卷六 基础知识 第86题
+{ Q: "主动脉瓣关闭不全引起", options: ["A.左心房扩张", "B.右心房扩张", "C.左心室扩张", "D.右心室扩张", "E.全心室肥厚"], answer: "C", explain: "主动脉瓣关闭不全导致左心室舒张期容量增加，左心室扩张。" },
+// 第2087题 试卷六 基础知识 第87题
+{ Q: "用于判断肾小管功能的检查是", options: ["A.内生肌酐清除率测定", "B.血尿素氮测定", "C.血肌酐测定", "D.尿量及其比重测定", "E.血清补体成分测定"], answer: "D", explain: "尿量及尿比重反映肾小管浓缩稀释功能。" },
+// 第2088题 试卷六 基础知识 第88题
+{ Q: "最常用并且可以早期反映肾小球滤过率功能异常的检查是", options: ["A.内生肌酐清除率测定", "B.血尿素氮测定", "C.血肌酐测定", "D.尿量及其比重测定", "E.血清补体成分测定"], answer: "A", explain: "内生肌酐清除率是早期反映肾小球滤过功能的敏感指标。" },
+// 第2089题 试卷六 基础知识 第89题
+{ Q: "肾后性急性肾损伤最可能的原因是", options: ["A.蛇咬伤", "B.心力衰竭", "C.大面积烧伤", "D.双侧输尿管结石", "E.低血容量性休克"], answer: "D", explain: "双侧输尿管结石引起尿路梗阻，属于肾后性AKI。" },
+// 第2090题 试卷六 基础知识 第90题
+{ Q: "肾性急性肾损伤最可能的原因是", options: ["A.蛇咬伤", "B.心力衰竭", "C.大面积烧伤", "D.双侧输尿管结石", "E.低血容量性休克"], answer: "C", explain: "大面积烧伤可导致急性肾小管坏死，属于肾性AKI。" },
+// 第2091题 试卷六 基础知识 第91题
+{ Q: "尿道膜部撕裂多见于", options: ["A.骑跨伤", "B.枪弹锐器伤", "C.骨盆骨折", "D.腰部撞击伤", "E.盆腔手术或腹膜后手术"], answer: "C", explain: "尿道膜部撕裂多由骨盆骨折引起。" },
+// 第2092题 试卷六 基础知识 第92题
+{ Q: "肾外伤多见于", options: ["A.骑跨伤", "B.枪弹锐器伤", "C.骨盆骨折", "D.腰部撞击伤", "E.盆腔手术或腹膜后手术"], answer: "D", explain: "肾外伤多由腰部直接暴力引起。" },
+// 第2093题 试卷六 基础知识 第93题
+{ Q: "常由于吸烟、感染等因素引起，表现为晨间咳嗽较重，痰液多为白色黏液痰，X线检查可见肺纹理增多及紊乱。最可能的疾病是", options: ["A.肺结核", "B.慢性支气管炎", "C.原发性支气管肺癌", "D.支气管扩张症", "E.支原体肺炎"], answer: "B", explain: "慢性支气管炎表现为晨咳、白痰，X线肺纹理增粗。" },
+// 第2094题 试卷六 基础知识 第94题
+{ Q: "由于吸烟、空气污染等因素引起，表现为阵发性刺激性呛咳，咳少量白色黏液痰，痰中带血，X线检查：局限性小斑片状阴影。最可能的疾病是", options: ["A.肺结核", "B.慢性支气管炎", "C.原发性支气管肺癌", "D.支气管扩张症", "E.支原体肺炎"], answer: "C", explain: "肺癌表现为刺激性干咳、痰中带血，X线可见块影。" },
+// 第2095题 试卷六 基础知识 第95题
+{ Q: "室性期前收缩二联律的心电图特点是", options: ["A.PR间期>0.20秒，无QRS波群脱落", "B.PR间期>0.20秒，有QRS波群脱落", "C.连续3个或以上的室性期前收缩", "D.窦性心搏后紧接一个室性期前收缩", "E.QRS-T波消失，呈快慢不一、强弱不等振幅"], answer: "D", explain: "二联律指每个窦性心搏后紧跟一个期前收缩。" },
+// 第2096题 试卷六 基础知识 第96题
+{ Q: "室性心动过速的心电图特点是", options: ["A.PR间期>0.20秒，无QRS波群脱落", "B.PR间期>0.20秒，有QRS波群脱落", "C.连续3个或以上的室性期前收缩", "D.窦性心搏后紧接一个室性期前收缩", "E.QRS-T波消失，呈快慢不一、强弱不等振幅"], answer: "C", explain: "连续3个或以上室性期前收缩为室性心动过速。" },
+// 第2097题 试卷六 基础知识 第97题
+{ Q: "心室颤动的心电图特点是", options: ["A.PR间期>0.20秒，无QRS波群脱落", "B.PR间期>0.20秒，有QRS波群脱落", "C.连续3个或以上的室性期前收缩", "D.窦性心搏后紧接一个室性期前收缩", "E.QRS-T波消失，呈快慢不一、强弱不等振幅"], answer: "E", explain: "室颤心电图表现为QRS-T波消失，代之以不规则颤动波。" },
+// 第2098题 试卷六 基础知识 第98题
+{ Q: "一度房室传导阻滞的心电图特点是", options: ["A.PR间期>0.20秒，无QRS波群脱落", "B.PR间期>0.20秒，有QRS波群脱落", "C.连续3个或以上的室性期前收缩", "D.窦性心搏后紧接一个室性期前收缩", "E.QRS-T波消失，呈快慢不一、强弱不等振幅"], answer: "A", explain: "一度房室传导阻滞PR间期>0.20秒，无QRS脱落。" },
+// 第2099题 试卷六 基础知识 第99题
+{ Q: "中骨盆平面前后径平均长度为", options: ["A.11.5cm", "B.11.0cm", "C.10.5cm", "D.10.0cm", "E.9.0cm"], answer: "A", explain: "中骨盆前后径平均11.5cm。" },
+// 第2100题 试卷六 基础知识 第100题
+{ Q: "骨盆出口平面横径平均长度为", options: ["A.11.5cm", "B.11.0cm", "C.10.5cm", "D.10.0cm", "E.9.0cm"], answer: "E", explain: "出口横径平均9cm。" },
+
+// ==================== 模拟试卷六 相关专业知识 (第2101-2200题) ====================
+// 第2101题 试卷六 相关专业知识 第1题
+{ Q: "非语言传播技巧不包括", options: ["A.手势", "B.触摸", "C.同类语言", "D.时空语", "E.提问"], answer: "E", explain: "提问属于语言传播技巧。" },
+// 第2102题 试卷六 相关专业知识 第2题
+{ Q: "在时间消耗相等的情况下，为提高时间利用率和有效性而进行的一系列活动是指", options: ["A.决策", "B.目标管理", "C.计划", "D.时间管理", "E.评估"], answer: "D", explain: "时间管理是提高时间利用率的活动。" },
+// 第2103题 试卷六 相关专业知识 第3题
+{ Q: "“水之上源”是", options: ["A.脾", "B.心", "C.肺", "D.肝", "E.肾"], answer: "C", explain: "肺为水之上源，主通调水道。" },
+// 第2104题 试卷六 相关专业知识 第4题
+{ Q: "原位菌群三度失调的表现为", options: ["A.慢性腹泻", "B.肠功能紊乱", "C.口腔炎", "D.阴道炎", "E.假膜性肠炎"], answer: "E", explain: "三度失调表现为急性重症腹泻，如假膜性肠炎。" },
+// 第2105题 试卷六 相关专业知识 第5题
+{ Q: "常用的手消毒剂不包括", options: ["A.液体皂液", "B.含醇类复合制剂", "C.5000mg/L碘伏溶液", "D.75%乙醇溶液", "E.氧化电位水"], answer: "C", explain: "5000mg/L碘伏浓度过高，不适用于手消毒。" },
+// 第2106题 试卷六 相关专业知识 第6题
+{ Q: "质量观的发展阶段不包括", options: ["A.符合性质量阶段", "B.适用性质量阶段", "C.有效性质量阶段", "D.满意性质量阶段", "E.卓越性质量阶段"], answer: "C", explain: "质量观发展分为符合性、适用性、满意性和卓越性质量阶段。" },
+// 第2107题 试卷六 相关专业知识 第7题
+{ Q: "健康教育要提供人们行为改变所必需的", options: ["A.医疗技术", "B.诊断技术", "C.生化检测技术", "D.知识、技术与服务", "E.救护技术"], answer: "D", explain: "健康教育提供知识、技能和服务，促进行为改变。" },
+// 第2108题 试卷六 相关专业知识 第8题
+{ Q: "护士长根据患者数量、病情配备数量适当、优势互补的护理人员，体现了护理排班的", options: ["A.以患者为中心原则", "B.公平公正原则", "C.合理结构原则", "D.满足需要原则", "E.经济效能原则"], answer: "C", explain: "优势互补体现了合理结构原则。" },
+// 第2109题 试卷六 相关专业知识 第9题
+{ Q: "预防无菌手术切口感染的措施，错误的是", options: ["A.缩短住院时间", "B.敷料被液体渗透后及时更换", "C.尽量采用封闭式重力引流", "D.严格无菌操作", "E.保持室内空气清洁"], answer: "C", explain: "无菌手术切口不应采用封闭式重力引流。" },
+// 第2110题 试卷六 相关专业知识 第10题
+{ Q: "传染病病区中属于半污染区的是", options: ["A.治疗室、库房", "B.厕所、洗涤间", "C.配餐间、更衣室", "D.内走廊、病区检验室", "E.病室、浴室"], answer: "D", explain: "内走廊、病区检验室属于半污染区。" },
+// 第2111题 试卷六 相关专业知识 第11题
+{ Q: "健康教育的学习目标是", options: ["A.认知目标", "B.入院教育目标", "C.住院教育目标", "D.手术教育目标", "E.出院前教育目标"], answer: "A", explain: "学习目标包括认知、情感和技能目标。" },
+// 第2112题 试卷六 相关专业知识 第12题
+{ Q: "按照格林模式，“价值观”属于影响健康教育诊断的", options: ["A.倾向因素", "B.促成因素", "C.强化因素", "D.遗传因素", "E.学习因素"], answer: "A", explain: "价值观是倾向因素。" },
+// 第2113题 试卷六 相关专业知识 第13题
+{ Q: "压力蒸汽灭菌时物品包的体积要求不超过", options: ["A.30cm×30cm×40cm", "B.20cm×30cm×25cm", "C.30cm×30cm×25cm", "D.30cm×25cm×25cm", "E.30cm×30cm×20cm"], answer: "D", explain: "灭菌包体积不超过30cm×30cm×25cm。" },
+// 第2114题 试卷六 相关专业知识 第14题
+{ Q: "健康教育程序的第一步是", options: ["A.调查研究", "B.传播健康信息", "C.预防疾病", "D.促进健康", "E.提高生活质量"], answer: "A", explain: "健康教育程序首先进行需求评估，即调查研究。" },
+// 第2115题 试卷六 相关专业知识 第15题
+{ Q: "有效沟通的要求包括", options: ["A.目的明确、沟通及时、信息明确", "B.信息完整、沟通及时、目的明确", "C.目的明确、沟通及时、信息灵活", "D.目的明确、信息完整、信息灵活", "E.沟通及时、信息准确、信息完整"], answer: "B", explain: "有效沟通要求目的明确、信息完整、沟通及时。" },
+// 第2116题 试卷六 相关专业知识 第16题
+{ Q: "生理功能主受纳与腐熟水谷的脏器是", options: ["A.胃", "B.三焦", "C.小肠", "D.胆", "E.大肠"], answer: "A", explain: "胃主受纳、腐熟水谷。" },
+// 第2117题 试卷六 相关专业知识 第17题
+{ Q: "流行性出血热的病原体是", options: ["A.肠道病毒属", "B.汉坦病毒属", "C.副黏病毒属", "D.单纯疱疹病毒", "E.黄热病毒属"], answer: "B", explain: "流行性出血热由汉坦病毒引起。" },
+// 第2118题 试卷六 相关专业知识 第18题
+{ Q: "应采用连续给药方案，以避免毒性反应的抗生素是", options: ["A.红霉素", "B.青霉素G", "C.氨苄西林", "D.双氯西林", "E.头孢菌素类"], answer: "A", explain: "红霉素应采用连续给药，避免浓度过高引起毒性反应。" },
+// 第2119题 试卷六 相关专业知识 第19题
+{ Q: "护士长为今天当班的护士小白、小兰、小于和小柯安排工作，小白是处理医嘱的主班护士，小兰是治疗护士，小于是药疗护士，小柯是生活护理护士。每隔一段时间护士长安排她们调换岗位。这种临床护理组织方式是", options: ["A.个案护理", "B.功能制护理", "C.责任制护理", "D.小组护理", "E.临床路径"], answer: "B", explain: "按工作内容分工是功能制护理的特点。" },
+// 第2120题 试卷六 相关专业知识 第20题
+{ Q: "个体的行为取向一般是以", options: ["A.知识为基础", "B.技能为基础", "C.信心为基础", "D.态度为基础", "E.价值观为基础"], answer: "D", explain: "行为取向以态度为基础。" },
+// 第2121题 试卷六 相关专业知识 第21题
+{ Q: "与血液的生成和运行关系密切的两脏是", options: ["A.心与肺", "B.心与脾", "C.心与肝", "D.肺与脾", "E.肺与肾"], answer: "B", explain: "心主血，脾生血，与血液生成运行关系密切。" },
+// 第2122题 试卷六 相关专业知识 第22题
+{ Q: "男，28岁。因食用苍蝇叮咬过的食物，1周后出现全身不适，体温39.0-40.0℃，呈稽留热，脉搏60-70次/分，表情淡漠。病程第2周出现玫瑰疹。对患者采取的隔离种类是", options: ["A.严密隔离", "B.接触隔离", "C.昆虫隔离", "D.消化道隔离", "E.保护性隔离"], answer: "D", explain: "伤寒经消化道传播，应消化道隔离。" },
+// 第2123题 试卷六 相关专业知识 第23题
+{ Q: "把影响质量的因素进行合理分类，并按影响程度从大到小的顺序排列。这种质量评价统计方法为", options: ["A.分层法", "B.调查表法", "C.控制图", "D.排列图法", "E.因果分析图"], answer: "D", explain: "排列图（帕累托图）按影响程度大小排列。" },
+// 第2124题 试卷六 相关专业知识 第24题
+{ Q: "目标管理的第一步是", options: ["A.找出管理中的问题", "B.建立信息反馈制度", "C.制订组织整体目标", "D.协议授权", "E.咨询指导"], answer: "C", explain: "目标管理首先制订组织整体目标。" },
+// 第2125题 试卷六 相关专业知识 第25题
+{ Q: "“原正常菌群大部分被抑制，只有少数菌种占决定性优势”，这种菌群失调属于", options: ["A.原位菌群失调", "B.一度失调", "C.二度失调", "D.三度失调", "E.四度失调"], answer: "D", explain: "三度失调指少数菌占决定性优势。" },
+// 第2126题 试卷六 相关专业知识 第26题
+{ Q: "健康教育评价过程中，目标人群因得知自己正在被观察而表现出行为异常从而影响了评价效果。此现象称为", options: ["A.时间效应", "B.霍桑效应", "C.暗示效应", "D.回归效应", "E.偶然效应"], answer: "B", explain: "被观察时行为改变为霍桑效应。" },
+// 第2127题 试卷六 相关专业知识 第27题
+{ Q: "2011年原卫生部发布的《中国护理事业发展规划(2011-2015)》明确要求，三级综合医院护士总数与实际开放床位比不低于", options: ["A.0.8:1", "B.0.7:1", "C.0.6:1", "D.0.5:1", "E.0.4:1"], answer: "A", explain: "三级医院护士与床位比不低于0.8:1。" },
+// 第2128题 试卷六 相关专业知识 第28题
+{ Q: "关于耐甲氧西林金黄色葡萄球菌的描述，错误的是", options: ["A.首选青霉素治疗", "B.对全身各系统均可引起感染", "C.耐多种抗菌药物", "D.有活动性金黄色葡萄球菌感染的患者是主要感染源", "E.医务人员中可有慢性携带者"], answer: "A", explain: "MRSA对青霉素耐药，首选万古霉素。" },
+// 第2129题 试卷六 相关专业知识 第29题
+{ Q: "全面质量管理的重要组成部分是", options: ["A.强烈地关注顾客", "B.精确地度量", "C.持续质量改进", "D.向员工授权", "E.组织成员的质量培训"], answer: "C", explain: "持续质量改进是TQM的核心。" },
+// 第2130题 试卷六 相关专业知识 第30题
+{ Q: "属于高可变性行为的是", options: ["A.植根于文化传统的行为", "B.尚无成功改变实例的行为", "C.与传统生活方式关系密切的行为", "D.形成时间已久的行为", "E.正处在发展时期的行为"], answer: "E", explain: "发展时期的行为易改变。" },
+// 第2131题 试卷六 相关专业知识 第31题
+{ Q: "易使回答者感到困惑，应尽量避免使用的提问形式是", options: ["A.封闭式提问", "B.开放式提问", "C.探索式提问", "D.偏向式提问", "E.复合式提问"], answer: "E", explain: "复合式提问包含多个问题，易使回答者困惑。" },
+// 第2132题 试卷六 相关专业知识 第32题
+{ Q: "消毒灭菌手术器械时首选", options: ["A.等离子体灭菌", "B.压力蒸汽灭菌", "C.电离辐射灭菌", "D.2%戊二醛浸泡灭菌", "E.紫外线照射消毒"], answer: "B", explain: "手术器械首选压力蒸汽灭菌。" },
+// 第2133题 试卷六 相关专业知识 第33题
+{ Q: "关于组织文化的描述，错误的是", options: ["A.是组织在长期发展过程中形成的", "B.组织文化的核心是价值观", "C.是一种隐藏的价值因素和精神源泉", "D.是价值观、群体意识、道德规范、行为准则、特色、管理风格以及传统习惯的总和", "E.是组织经营活动和文化活动的总和"], answer: "E", explain: "组织文化是组织的价值观念和行为规范，不是经营活动的总和。" },
+// 第2134题 试卷六 相关专业知识 第34题
+{ Q: "通过阅读患者的病历、分析病史及其健康影响因素来评估患者健康需求的方法是", options: ["A.直接评估法", "B.间接评估法", "C.病历评估法", "D.非语言评估法", "E.语言评估法"], answer: "C", explain: "通过病历分析评估为病历评估法。" },
+// 第2135题 试卷六 相关专业知识 第35题
+{ Q: "危害健康行为的特点是", options: ["A.规律性", "B.和谐性", "C.一致性", "D.适宜性", "E.稳定性"], answer: "E", explain: "危害健康行为具有稳定性，不易改变。" },
+// 第2136题 试卷六 相关专业知识 第36题
+{ Q: "某乡政府为鼓励住院分娩，决定减少住院分娩妇女丈夫的义务工，这种干预手段属于", options: ["A.行政干预", "B.法规干预", "C.信息干预", "D.教育干预", "E.技能干预"], answer: "A", explain: "政府通过政策调整进行干预属于行政干预。" },
+// 第2137题 试卷六 相关专业知识 第37题
+{ Q: "医院感染罹患率是", options: ["A.暴露组与非暴露组医院感染概率之比", "B.特定部位感染危险人群中新发生该部位医院感染的频率", "C.在一定时间和一定人群中新发生的医院感染的频率", "D.用于统计处于危险人群中新发生医院感染的频率", "E.一定时间内在一定危险人群中实际感染例数所占百分比"], answer: "D", explain: "罹患率用于统计危险人群中新发感染频率。" },
+// 第2138题 试卷六 相关专业知识 第38题
+{ Q: "应用压力蒸汽灭菌的物品不包括", options: ["A.金属器械", "B.腹腔镜", "C.敷料类", "D.玻璃类", "E.瓷类"], answer: "B", explain: "腹腔镜不耐热，不能用压力蒸汽灭菌。" },
+// 第2139题 试卷六 相关专业知识 第39题
+{ Q: "外感六淫是咳嗽的常见病因，称为先导的病邪是", options: ["A.风", "B.寒", "C.湿", "D.燥", "E.火"], answer: "A", explain: "风为百病之长，常为先导。" },
+// 第2140题 试卷六 相关专业知识 第40题
+{ Q: "属于革兰阴性杆菌的是", options: ["A.曲霉菌", "B.克雷伯菌", "C.金黄色葡萄球菌", "D.白假丝酵母菌", "E.病毒"], answer: "B", explain: "克雷伯菌为革兰阴性杆菌。" },
+// 第2141题 试卷六 相关专业知识 第41题
+{ Q: "症见失眠、健忘、心悸，病在", options: ["A.肝", "B.心", "C.脾", "D.肺", "E.肾"], answer: "B", explain: "心主神明，失眠、健忘、心悸病在心。" },
+// 第2142题 试卷六 相关专业知识 第42题
+{ Q: "PDCA循环常用于护理质量管理，其中“C”代表的是", options: ["A.计划", "B.实施", "C.检查", "D.处理", "E.评价"], answer: "C", explain: "C代表检查(Check)。" },
+// 第2143题 试卷六 相关专业知识 第43题
+{ Q: "医院感染中，泌尿道感染的主要病原体是", options: ["A.大肠埃希菌", "B.金黄色葡萄球菌", "C.铜绿假单胞菌", "D.变形杆菌", "E.肠球菌"], answer: "A", explain: "大肠埃希菌是泌尿道感染最常见病原体。" },
+// 第2144题 试卷六 相关专业知识 第44题
+{ Q: "健康信念模式认为，个体采取健康行为的前提是", options: ["A.感知到疾病的威胁", "B.感知到行为的益处", "C.感知到行为的障碍", "D.自我效能", "E.社会支持"], answer: "A", explain: "感知到疾病的易感性和严重性是行为改变的前提。" },
+// 第2145题 试卷六 相关专业知识 第45题
+{ Q: "关于人际沟通的特点，错误的是", options: ["A.沟通双方对交流情境有相同的理解", "B.沟通双方建立共识", "C.沟通双方是互为主体的关系", "D.沟通双方使用相同的符号系统", "E.沟通双方是相互影响的过程"], answer: "A", explain: "沟通双方对情境的理解可能不同，不一定相同。" },
+// 第2146题 试卷六 相关专业知识 第46题
+{ Q: "属于负强化的是", options: ["A.护士因工作做得好受到表扬", "B.患者因配合治疗得到护士的赞许", "C.护士因迟到被扣奖金", "D.学生因考试及格避免补考", "E.员工因加班获得加班费"], answer: "D", explain: "负强化是消除不良刺激以增加行为发生的概率。" },
+// 第2147题 试卷六 相关专业知识 第47题
+{ Q: "组织的生命周期理论中，成熟期的特点是", options: ["A.组织结构简单", "B.创新性强", "C.规章制度完善", "D.官僚化严重", "E.灵活性高"], answer: "C", explain: "成熟期组织规章制度完善，运行稳定。" },
+// 第2148题 试卷六 相关专业知识 第48题
+{ Q: "关于医院感染监测的描述，错误的是", options: ["A.全面综合性监测是基础", "B.目标监测是在全面监测基础上开展的", "C.现患率调查属于目标监测", "D.暴发监测是及时发现疫情的重要手段", "E.监测内容包括感染部位、病原体等"], answer: "C", explain: "现患率调查属于全面综合性监测。" },
+// 第2149题 试卷六 相关专业知识 第49题
+{ Q: "关于抗菌药物联合用药的指征，错误的是", options: ["A.病因未明的严重感染", "B.单一药物不能控制的严重感染", "C.单一药物不能控制的混合感染", "D.长期用药可能产生耐药者", "E.病毒性感染"], answer: "E", explain: "病毒性感染不需联合使用抗菌药物。" },
+// 第2150题 试卷六 相关专业知识 第50题
+{ Q: "关于医疗废物的处理，错误的是", options: ["A.医疗废物应分类收集", "B.感染性废物用黄色专用包装袋", "C.锐器放入专用锐器盒", "D.化学性废物可用普通垃圾袋包装", "E.医疗废物不得露天存放"], answer: "D", explain: "化学性废物需用专用容器包装。" },
+// 第2151题 试卷六 相关专业知识 第51题
+{ Q: "关于护患沟通的技巧，错误的是", options: ["A.倾听时应保持目光接触", "B.提问时避免使用专业术语", "C.沉默也是一种沟通技巧", "D.患者哭泣时应立即安慰", "E.适当使用触摸表达关心"], answer: "D", explain: "患者哭泣时应给予时间表达情感，不要立即打断。" },
+// 第2152题 试卷六 相关专业知识 第52题
+{ Q: "关于疼痛的护理评估，错误的是", options: ["A.应评估疼痛的部位", "B.应评估疼痛的性质", "C.应评估疼痛的时间", "D.应评估疼痛的程度", "E.应以医护人员的主观判断为准"], answer: "E", explain: "疼痛评估应以患者的主诉为准。" },
+// 第2153题 试卷六 相关专业知识 第53题
+{ Q: "关于临终关怀的护理原则，错误的是", options: ["A.以治愈疾病为中心", "B.提高临终生活质量", "C.维护临终患者的尊严", "D.提供全面的身心照护", "E.协助患者平静地度过人生最后阶段"], answer: "A", explain: "临终关怀不以治愈疾病为中心，而以提高生活质量为中心。" },
+// 第2154题 试卷六 相关专业知识 第54题
+{ Q: "关于护理查房的分类，错误的是", options: ["A.晨间护理查房", "B.晚间护理查房", "C.教学查房", "D.个案查房", "E.护理部主任查房"], answer: "B", explain: "护理查房不分晨间和晚间。" },
+// 第2155题 试卷六 相关专业知识 第55题
+{ Q: "人类不断接受新的经验，并改变自己的行为方式，以适应客观环境的变化。此种适应形式为", options: ["A.自我控制", "B.调适", "C.应对", "D.顺应", "E.应激"], answer: "B", explain: "调适是改变行为适应环境。" },
+// 第2156题 试卷六 相关专业知识 第56题
+{ Q: "人本原理管理思想的根本是", options: ["A.提高组织管理效益", "B.调动员工的积极性", "C.建立公平的分配制度", "D.重视员工的发展需要", "E.营造良好的工作氛围"], answer: "B", explain: "人本原理的核心是调动人的积极性。" },
+// 第2157题 试卷六 相关专业知识 第57题
+{ Q: "关于艾滋病的描述，错误的是", options: ["A.艾滋病患者、HIV感染者是HIV的主要传染源", "B.HIV急性期患者不具备传染性，无任何症状", "C.用于杀灭HBV的消毒剂完全可以杀灭HIV", "D.艾滋病防治工作的方针为预防为主，防治结合", "E.确诊HIV感染要通过HIV抗体确证试验的验证"], answer: "B", explain: "HIV急性期患者有传染性，可出现症状。" },
+// 第2158题 试卷六 相关专业知识 第58题
+{ Q: "感染的发生必须要具备的三个环节是", options: ["A.感染源、人体及其所处的环境", "B.感染源、自然因素、社会因素", "C.感染源、传播途径、易感人群", "D.传染源、传播途径、自然因素", "E.病原体毒力、数量及适当的入侵门户"], answer: "C", explain: "感染链包括传染源、传播途径、易感人群。" },
+// 第2159题 试卷六 相关专业知识 第59题
+{ Q: "按照管理者控制和改进工作的不同方式，控制可分为", options: ["A.质量控制和安全控制", "B.间接控制和直接控制", "C.日常控制和定期控制", "D.专项控制和全面控制", "E.技术控制和人员控制"], answer: "B", explain: "按控制方式分为直接控制和间接控制。" },
+// 第2160题 试卷六 相关专业知识 第60题
+{ Q: "护理技术人员每年参加继续护理学教育的最低学分为", options: ["A.18分", "B.22分", "C.25分", "D.28分", "E.30分"], answer: "C", explain: "护理技术人员每年继续教育学分不低于25分。" },
+// 第2161题 试卷六 相关专业知识 第61题
+{ Q: "灭菌是指", options: ["A.杀灭或清除外环境中传播媒介物上的病原微生物及有害微生物", "B.杀灭外环境的传播媒介上的所有活的微生物", "C.用物理或化学方法杀灭除芽孢外的病原微生物及其他微生物", "D.用物理方法清除污染物表面的有机物和污迹尘埃", "E.用物理方法清除或杀灭全部活的微生物"], answer: "B", explain: "灭菌指杀灭所有活的微生物，包括芽孢。" },
+// 第2162题 试卷六 相关专业知识 第62题
+{ Q: "出现医院感染散发流行时，医院报告当地卫生行政部门的时间是", options: ["A.2小时内", "B.12小时内", "C.24小时内", "D.36小时内", "E.48小时内"], answer: "C", explain: "出现医院感染暴发应在24小时内报告。" },
+// 第2163题 试卷六 相关专业知识 第63题
+{ Q: "对组织内部具体工作问题，在较小范围内和较短时间内实施的计划称为", options: ["A.指令性计划", "B.指导性计划", "C.战略性计划", "D.战术性计划", "E.基础性计划"], answer: "D", explain: "战术性计划是具体、短期的行动计划。" },
+// 第2164题 试卷六 相关专业知识 第64题
+{ Q: "某护士护理一位肺结核患者，关于治疗后产生的废弃物和有机垃圾的处理方法，正确的是", options: ["A.深埋2m以下", "B.置双层黑色密封塑料袋内", "C.用浓度为4000mg/L有效含氯消毒剂处理后丢弃", "D.环氧乙烷熏蒸后丢弃", "E.焚烧处理"], answer: "E", explain: "感染性医疗废物应焚烧处理。" },
+// 第2165题 试卷六 相关专业知识 第65题
+{ Q: "男，36岁。建筑工人，左脚外伤后感染破伤风。伤口更换的敷料处理，正确的是", options: ["A.压力蒸汽灭菌后再清洗", "B.送焚烧炉焚烧", "C.曝晒6小时后再清洗", "D.过氧乙酸浸泡后清洗", "E.丢入污物桶后再集中处理"], answer: "B", explain: "破伤风患者用过的敷料应焚烧。" },
+// 第2166题 试卷六 相关专业知识 第66题
+{ Q: "上焦生理功能的特点是", options: ["A.若雾露之溉", "B.主气之升发", "C.通行宗、营、卫三气", "D.原气之别使", "E.主宣发与肃降"], answer: "A", explain: "上焦如雾，若雾露之溉。" },
+// 第2167题 试卷六 相关专业知识 第67题
+{ Q: "通过倡导健康生活方式来预防疾病属于", options: ["A.一级预防", "B.二级预防", "C.三级预防", "D.四级预防", "E.五级预防"], answer: "A", explain: "健康生活方式属于一级预防。" },
+// 第2168题 试卷六 相关专业知识 第68题
+{ Q: "护理人才群体结构不包括", options: ["A.专业结构", "B.能级结构", "C.年龄结构", "D.智能结构", "E.知识结构"], answer: "D", explain: "智能结构不属于群体结构，是个体结构。" },
+// 第2169题 试卷六 相关专业知识 第69题
+{ Q: "关于预防针刺伤发生的描述，错误的是", options: ["A.不再回套针头帽，就可以完全防止针刺伤的发生", "B.手术中用托盘传递锐器是防止手术室刺伤的安全措施", "C.用后的锐器放入防穿透的容器内", "D.用后的针头直接放入防穿透的容器内", "E.在工作人员中加强防止针刺伤的教育和培训"], answer: "A", explain: "不回套针帽可以减少但不能完全防止针刺伤。" },
+// 第2170题 试卷六 相关专业知识 第70题
+{ Q: "产房的空气卫生学标准是", options: ["A.≤10CFU/m³", "B.≤100CFU/m³", "C.≤200CFU/m³", "D.≤500CFU/m³", "E.≤20CFU/m³"], answer: "C", explain: "产房为Ⅱ类环境，细菌总数≤200CFU/m³。" },
+// 第2171题 试卷六 相关专业知识 第71题
+{ Q: "医院感染中与不恰当的医疗护理操作有关的百分比是", options: ["A.10%-20%", "B.20%-30%", "C.30%-40%", "D.30%-50%", "E.40%-60%"], answer: "D", explain: "约30%-50%的医院感染与不恰当的医疗护理操作有关。" },
+// 第2172题 试卷六 相关专业知识 第72题
+{ Q: "病毒性肝炎患者入院行卫生处置时，衣服的最佳处理方法是", options: ["A.包好存放在住院处", "B.交家属带回家", "C.消毒后交患者保管", "D.消毒后存放在住院处", "E.曝晒后存放病室"], answer: "D", explain: "肝炎患者衣物应消毒后存放在住院处。" },
+// 第2173题 试卷六 相关专业知识 第73题
+{ Q: "健康促进的基本策略是", options: ["A.调整、倡导、支持", "B.调整、支持、赋权", "C.倡导、赋权、协调", "D.倡导、支持、协调", "E.倡导、赋权、支持"], answer: "C", explain: "健康促进的基本策略是倡导、赋权、协调。" },
+// 第2174题 试卷六 相关专业知识 第74题
+{ Q: "人际关系是指人与人通过交往而产生", options: ["A.心理上的关系", "B.社会上的关系", "C.生理上的关系", "D.沟通上的关系", "E.角色上的关系"], answer: "A", explain: "人际关系是心理上的联系。" },
+// 第2175题 试卷六 相关专业知识 第75题
+{ Q: "根据组织设计原则，从高层领导到基层领导适宜的管理层次是", options: ["A.1-3层", "B.2-4层", "C.3-5层", "D.4-6层", "E.5-7层"], answer: "B", explain: "管理层次一般2-4层为宜。" },
+// 第2176题 试卷六 相关专业知识 第76题
+{ Q: "医院一般环境的处理原则是", options: ["A.以清洁为主", "B.以化学消毒为主", "C.以灭菌为主", "D.以清除医疗垃圾为主", "E.以清除传染源为主"], answer: "A", explain: "一般环境以清洁为主，必要时消毒。" },
+// 第2177题 试卷六 相关专业知识 第77题
+{ Q: "临床护理质量标准中规定无菌物品的合格率应为", options: ["A.100%", "B.99%", "C.98%", "D.95%", "E.90%"], answer: "A", explain: "无菌物品合格率应为100%。" },
+// 第2178题 试卷六 相关专业知识 第78题
+{ Q: "对有机物污染严重的器具消毒应做到", options: ["A.加大消毒剂的使用剂量", "B.减少消毒剂的使用剂量", "C.给予一般消毒的使用剂量", "D.加大消毒剂的使用剂量，延长消毒作用时间", "E.加大消毒剂的使用剂量，缩短作用时间"], answer: "D", explain: "有机物污染严重应增加消毒剂浓度和作用时间。" },
+// 第2179题 试卷六 相关专业知识 第79题
+{ Q: "中医的五脏是指", options: ["A.胆、胃、小肠、大肠、膀胱", "B.心、肝、胆、肺、肾", "C.心、肝、脾、肺、肾", "D.脑、髓、骨、脉、胆", "E.胆、胃、小肠、脾、肺、肾"], answer: "C", explain: "五脏包括心、肝、脾、肺、肾。" },
+// 第2180题 试卷六 相关专业知识 第80题
+{ Q: "根据格林模式，亲属的鼓励和支持将成为影响个体行为的", options: ["A.遗传因素", "B.环境因素", "C.倾向因素", "D.促成因素", "E.强化因素"], answer: "E", explain: "强化因素包括亲属的鼓励和支持。" },
+// 第2181题 试卷六 相关专业知识 第81题
+{ Q: "使用戊二醛溶液灭菌的常用灭菌浓度和浸泡时间是", options: ["A.1%，5小时", "B.2%，5小时", "C.1%，10小时", "D.2%，10小时", "E.0.5%，24小时"], answer: "D", explain: "2%戊二醛浸泡10小时可达灭菌。" },
+// 第2182题 试卷六 相关专业知识 第82题
+{ Q: "目标管理的特点不包括", options: ["A.以自我管理为中心", "B.强调自我评价", "C.重视成果", "D.强调领导的权威性", "E.员工参与管理"], answer: "D", explain: "目标管理强调自我管理，不是领导权威。" },
+// 第2183题 试卷六 相关专业知识 第83题
+{ Q: "美国管理学家莱金提出的ABC时间管理方法中，B级目标是", options: ["A.最重要的目标", "B.最优先的目标", "C.较重要的目标", "D.不太重要的目标", "E.必须完成的目标"], answer: "C", explain: "B级是较重要的目标。" },
+// 第2184题 试卷六 相关专业知识 第84题
+{ Q: "美国管理学家莱金提出的ABC时间管理方法中，C级目标是指", options: ["A.最重要的目标", "B.最优先的目标", "C.较重要的目标", "D.不太重要的目标", "E.必须完成的目标"], answer: "D", explain: "C级是不太重要的目标。" },
+// 第2185题 试卷六 相关专业知识 第85题
+{ Q: "对医疗事故分级描述不正确的是", options: ["A.造成患者生活不能自理", "B.造成患者死亡、重度残疾", "C.造成患者明显人身损害的其他后果", "D.造成患者中度残疾、器官组织损伤导致严重功能障碍", "E.造成患者轻度残疾、器官组织损伤导致一般功能障碍"], answer: "A", explain: "医疗事故分级中无生活不能自理一项。" },
+// 第2186题 试卷六 相关专业知识 第86题
+{ Q: "二级医疗事故是", options: ["A.造成患者生活不能自理", "B.造成患者死亡、重度残疾", "C.造成患者明显人身损害的其他后果", "D.造成患者中度残疾、器官组织损伤导致严重功能障碍", "E.造成患者轻度残疾、器官组织损伤导致一般功能障碍"], answer: "D", explain: "二级医疗事故指中度残疾、严重功能障碍。" },
+// 第2187题 试卷六 相关专业知识 第87题
+{ Q: "四级医疗事故是", options: ["A.造成患者生活不能自理", "B.造成患者死亡、重度残疾", "C.造成患者明显人身损害的其他后果", "D.造成患者中度残疾、器官组织损伤导致严重功能障碍", "E.造成患者轻度残疾、器官组织损伤导致一般功能障碍"], answer: "C", explain: "四级医疗事故指造成明显人身损害的其他后果。" },
+// 第2188题 试卷六 相关专业知识 第88题
+{ Q: "ICU中最常见的条件致病菌是", options: ["A.金黄色葡萄球菌", "B.铜绿假单胞菌", "C.大肠埃希菌", "D.克雷伯菌", "E.白假丝酵母菌"], answer: "B", explain: "铜绿假单胞菌是ICU常见条件致病菌。" },
+// 第2189题 试卷六 相关专业知识 第89题
+{ Q: "对外界环境抵抗力最强的细菌是", options: ["A.金黄色葡萄球菌", "B.铜绿假单胞菌", "C.大肠埃希菌", "D.克雷伯菌", "E.白假丝酵母菌"], answer: "A", explain: "金黄色葡萄球菌对外界环境抵抗力最强。" },
+// 第2190题 试卷六 相关专业知识 第90题
+{ Q: "按照传播规模，人类传播活动不包括", options: ["A.人际传播", "B.社区传播", "C.大众传播", "D.组织传播", "E.自我传播"], answer: "B", explain: "人类传播活动包括自我传播、人际传播、组织传播、大众传播。" },
+// 第2191题 试卷六 相关专业知识 第91题
+{ Q: "个体之间相互沟通的传播活动称为", options: ["A.人际传播", "B.社区传播", "C.大众传播", "D.组织传播", "E.自我传播"], answer: "A", explain: "人际传播是个体之间的信息交流。" },
+// 第2192题 试卷六 相关专业知识 第92题
+{ Q: "人内传播又称", options: ["A.人际传播", "B.社区传播", "C.大众传播", "D.组织传播", "E.自我传播"], answer: "E", explain: "人内传播即自我传播。" },
+// 第2193题 试卷六 相关专业知识 第93题
+{ Q: "已发展成为一个独立研究领域，即公共关系学的传播活动是", options: ["A.人际传播", "B.社区传播", "C.大众传播", "D.组织传播", "E.自我传播"], answer: "D", explain: "组织传播发展为公共关系学。" },
+// 第2194题 试卷六 相关专业知识 第94题
+{ Q: "对目标人群因健康教育项目所导致的相关行为及其影响因素变化的评价，属于健康教育评价中的", options: ["A.形成评价", "B.过程评价", "C.效应评价", "D.结局评价", "E.总结评价"], answer: "C", explain: "效应评价评价行为及其影响因素的变化。" },
+// 第2195题 试卷六 相关专业知识 第95题
+{ Q: "通过查阅档案资料、目标人群调查和现场观察等方法完成的健康教育评价属于", options: ["A.形成评价", "B.过程评价", "C.效应评价", "D.结局评价", "E.总结评价"], answer: "B", explain: "过程评价通过查阅资料、观察等方法进行。" },
+// 第2196题 试卷六 相关专业知识 第96题
+{ Q: "过氧乙酸属于", options: ["A.清洁剂", "B.高效消毒剂", "C.灭菌剂", "D.中效消毒剂", "E.低效消毒剂"], answer: "C", explain: "过氧乙酸为灭菌剂。" },
+// 第2197题 试卷六 相关专业知识 第97题
+{ Q: "苯扎溴铵属于", options: ["A.清洁剂", "B.高效消毒剂", "C.灭菌剂", "D.中效消毒剂", "E.低效消毒剂"], answer: "E", explain: "苯扎溴铵为低效消毒剂。" },
+// 第2198题 试卷六 相关专业知识 第98题
+{ Q: "碘伏属于", options: ["A.清洁剂", "B.高效消毒剂", "C.灭菌剂", "D.中效消毒剂", "E.低效消毒剂"], answer: "D", explain: "碘伏为中效消毒剂。" },
+// 第2199题 试卷六 相关专业知识 第99题
+{ Q: "对影响健康行为的强化因素的评价内容包括", options: ["A.知识、信念、态度和价值观", "B.保健设施、诊所和医务人员", "C.医疗费用和交通工具", "D.家庭、单位社会的支持", "E.个人保健技术和相关政策法规"], answer: "D", explain: "强化因素包括家庭、社会的支持。" },
+// 第2200题 试卷六 相关专业知识 第100题
+{ Q: "对影响健康行为的倾向因素的评价内容包括", options: ["A.知识、信念、态度和价值观", "B.保健设施、诊所和医务人员", "C.医疗费用和交通工具", "D.家庭、单位社会的支持", "E.个人保健技术和相关政策法规"], answer: "A", explain: "倾向因素包括知识、态度、信念、价值观。" },
+
+// ==================== 模拟试卷六 专业知识 (第2201-2300题) ====================
+// 第2201题 试卷六 专业知识 第1题
+{ Q: "缺铁性贫血铁剂治疗有效，最早的变化指标是", options: ["A.血清铁升高", "B.红细胞体积增大", "C.血红蛋白升高", "D.网织红细胞增多", "E.红细胞增多"], answer: "D", explain: "铁剂治疗有效后，网织红细胞首先升高。" },
+// 第2202题 试卷六 专业知识 第2题
+{ Q: "维生素D缺乏性佝偻病，激期患儿出现胸部骨骼畸形的年龄多在", options: ["A.3个月以前", "B.6个月左右", "C.1岁左右", "D.2岁左右", "E.2岁以后"], answer: "C", explain: "激期骨骼改变多见于1岁左右。" },
+// 第2203题 试卷六 专业知识 第3题
+{ Q: "人工肛门术后为防止大便污染腹部切口，患者宜取", options: ["A.右侧卧位", "B.左侧卧位", "C.平卧位", "D.低半坐卧位", "E.屈膝仰卧位"], answer: "B", explain: "人工肛门术后取左侧卧位，防止大便污染伤口。" },
+// 第2204题 试卷六 专业知识 第4题
+{ Q: "皮牵引适用于", options: ["A.成人肱骨骨折", "B.青枝骨折", "C.成人股骨干骨折", "D.儿童骨折", "E.脊柱骨折"], answer: "D", explain: "皮牵引适用于儿童骨折和老年人下肢骨折。" },
+// 第2205题 试卷六 专业知识 第5题
+{ Q: "对白血病患者做口腔护理的主要目的是", options: ["A.去除氨味", "B.擦除血痂", "C.增进食欲", "D.预防感染", "E.使患者舒适"], answer: "D", explain: "白血病患者易感染，口腔护理主要预防口腔感染。" },
+// 第2206题 试卷六 专业知识 第6题
+{ Q: "结核性脑膜炎患儿出现脑神经损害，最常见的是", options: ["A.嗅神经瘫痪", "B.视神经瘫痪", "C.面神经瘫痪", "D.展神经瘫痪", "E.动眼神经瘫痪"], answer: "C", explain: "结核性脑膜炎最常见面神经损害。" },
+// 第2207题 试卷六 专业知识 第7题
+{ Q: "男，10岁。面部浅Ⅱ度烧伤2天，肿胀明显，入院后最主要观察", options: ["A.神志", "B.呼吸", "C.脉搏", "D.尿量", "E.饮食状况"], answer: "B", explain: "面部烧伤可导致呼吸道水肿，应重点观察呼吸。" },
+// 第2208题 试卷六 专业知识 第8题
+{ Q: "溃疡性结肠炎患者的排便特点不包括", options: ["A.黏液脓血便", "B.伴里急后重", "C.腹泻便秘交替，以便秘为主", "D.排便后腹痛可减轻", "E.大便的情况可反映病情的轻重"], answer: "C", explain: "溃疡性结肠炎以腹泻为主，不是便秘为主。" },
+// 第2209题 试卷六 专业知识 第9题
+{ Q: "患儿行心导管介入术，应术前禁食", options: ["A.1小时", "B.2小时", "C.4小时", "D.5小时", "E.6小时"], answer: "E", explain: "心导管术前禁食6小时。" },
+// 第2210题 试卷六 专业知识 第10题
+{ Q: "某产妇在胎儿娩出后，随即出现阴道大量流血，颜色鲜红。目前最佳的处理办法是", options: ["A.立即徒手剥离", "B.立即应用宫缩药", "C.立即配血，做好输血准备", "D.检查软产道有无裂伤", "E.立即输液"], answer: "D", explain: "胎儿娩出后立即出血，色鲜红，应考虑软产道裂伤，需检查并缝合。" },
+// 第2211题 试卷六 专业知识 第11题
+{ Q: "前尿道外伤后多见", options: ["A.全程血尿", "B.初始血尿", "C.终末血尿", "D.镜下血尿", "E.血红蛋白尿"], answer: "B", explain: "前尿道损伤表现为初始血尿。" },
+// 第2212题 试卷六 专业知识 第12题
+{ Q: "治疗消化性溃疡的药物中，可引起黑便的是", options: ["A.西咪替丁", "B.氢氧化铝凝胶", "C.枸橼酸铋钾", "D.甲硝唑", "E.阿莫西林"], answer: "C", explain: "枸橼酸铋钾可使粪便呈黑色。" },
+// 第2213题 试卷六 专业知识 第13题
+{ Q: "子宫脱垂是指宫颈外口达", options: ["A.坐骨结节水平以上", "B.坐骨结节水平以下", "C.坐骨棘水平以上", "D.坐骨棘水平以下", "E.骶尾骨以下"], answer: "D", explain: "子宫脱垂指宫颈外口降至坐骨棘水平以下。" },
+// 第2214题 试卷六 专业知识 第14题
+{ Q: "破伤风患者的各项操作，集中在使用镇静药后", options: ["A.10分钟内", "B.30分钟内", "C.60分钟内", "D.2小时内", "E.4小时内"], answer: "A", explain: "操作应在镇静药作用高峰10分钟内完成。" },
+// 第2215题 试卷六 专业知识 第15题
+{ Q: "开胸术后置胸膜腔闭式引流管，水封瓶中长管的水柱波动范围应是", options: ["A.1-3cm", "B.4-6cm", "C.7-8cm", "D.8-10cm", "E.11-12cm"], answer: "B", explain: "正常水柱波动4-6cm。" },
+// 第2216题 试卷六 专业知识 第16题
+{ Q: "女，42岁。反复大量呕吐4天，尿少，伴恶心、乏力。查体：脉搏126次/分，血压75/45mmHg；口唇干燥，眼窝凹陷，皮肤弹性差。实验室检查：血钠135mmol/L。患者最可能发生了", options: ["A.高渗性脱水", "B.原发性脱水", "C.等渗性脱水", "D.低渗性脱水", "E.水中毒"], answer: "C", explain: "血钠正常，为等渗性脱水。" },
+// 第2217题 试卷六 专业知识 第17题
+{ Q: "肺癌患者出现声音嘶哑、声带麻痹，应首先考虑", options: ["A.有纵隔淋巴结转移", "B.肿瘤侵及喉上神经", "C.肿瘤压迫喉返神经", "D.肿瘤侵及声带", "E.肿瘤压迫大支气管"], answer: "C", explain: "声音嘶哑提示喉返神经受压。" },
+// 第2218题 试卷六 专业知识 第18题
+{ Q: "易引起洋地黄中毒的电解质紊乱是", options: ["A.低钾血症", "B.高钾血症", "C.高钠血症", "D.高镁血症", "E.低钠血症"], answer: "A", explain: "低钾血症易诱发洋地黄中毒。" },
+// 第2219题 试卷六 专业知识 第19题
+{ Q: "帕金森病的主要临床特征不包括", options: ["A.震颤", "B.抽搐", "C.肌强直", "D.步态异常", "E.运动迟缓"], answer: "B", explain: "抽搐不是帕金森病的特征。" },
+// 第2220题 试卷六 专业知识 第20题
+{ Q: "急性肾小球肾炎患者水肿消退、血压正常、肉眼血尿消失后的休息活动指导是", options: ["A.卧床休息", "B.绝对卧床休息", "C.室内轻度活动", "D.从事日常活动", "E.从事轻体力劳动"], answer: "C", explain: "症状消失后可室内轻度活动。" },
+// 第2221题 试卷六 专业知识 第21题
+{ Q: "单纯性突眼的特征是", options: ["A.突眼度<18mm，左右眼球突眼度不对称", "B.突眼度<18mm，双眼向下看时上眼睑不能随眼球同时下垂", "C.突眼度>19mm，左右眼球突眼度不对称", "D.突眼度>19mm，双眼向下看时上眼睑不能随眼球同时下垂", "E.突眼度<18mm，眼球活动度变小甚至固定"], answer: "B", explain: "单纯性突眼突眼度<18mm，可有眼睑迟落。" },
+// 第2222题 试卷六 专业知识 第22题
+{ Q: "代谢性酸中毒最突出的症状是", options: ["A.呼吸深快，呼气时有酮味", "B.呼吸浅慢，呼气时有酮味", "C.全身乏力，头痛眩晕", "D.心率增快，血压下降", "E.唇干舌燥，眼窝凹陷"], answer: "A", explain: "代谢性酸中毒表现为呼吸深快，有酮味。" },
+// 第2223题 试卷六 专业知识 第23题
+{ Q: "女，75岁。因冠心病、不稳定型心绞痛入院。为了解患者心功能，应首选的辅助检查是", options: ["A.心脏CT", "B.胸部X线", "C.超声心动图", "D.心电图", "E.急诊生化"], answer: "C", explain: "超声心动图可评估心功能。" },
+// 第2224题 试卷六 专业知识 第24题
+{ Q: "癫痫持续状态表现为", options: ["A.局部抽搐持续数小时或数天", "B.持续性运动性发作", "C.长时间失神发作", "D.发作间歇期内患者持续昏迷", "E.全面强直-阵挛发作"], answer: "D", explain: "癫痫持续状态指发作间歇期意识不恢复。" },
+// 第2225题 试卷六 专业知识 第25题
+{ Q: "异烟肼的主要不良反应是", options: ["A.周围神经炎", "B.听神经损害", "C.视神经炎", "D.胃肠道反应", "E.肝损害"], answer: "A", explain: "异烟肼主要不良反应为周围神经炎。" },
+// 第2226题 试卷六 专业知识 第26题
+{ Q: "男，8个月。因维生素D缺乏性手足搐搦症引发惊厥急诊入院。当惊厥控制后，给予氯化钙溶液口服，其氯化钙溶液的浓度应是", options: ["A.3%", "B.5%", "C.10%", "D.25%", "E.50%"], answer: "C", explain: "口服氯化钙浓度为10%。" },
+// 第2227题 试卷六 专业知识 第27题
+{ Q: "慢性肾小球肾炎患者应积极控制血压，对容量依赖性高血压应首先给予的药物是", options: ["A.β受体阻滞剂", "B.血管紧张素转换酶抑制剂（ACEI）", "C.钙通道阻滞剂", "D.血管紧张素Ⅱ受体拮抗剂（ARB）", "E.利尿药"], answer: "E", explain: "容量依赖性高血压首选利尿药。" },
+// 第2228题 试卷六 专业知识 第28题
+{ Q: "女，3个月。体重3.8kg。腹部皮下脂肪厚度0.3cm，肌肉松弛，烦躁不安。其营养状况为", options: ["A.正常", "B.轻度营养不良", "C.中度营养不良", "D.重度营养不良", "E.肥胖"], answer: "C", explain: "皮下脂肪0.3cm为中度营养不良。" },
+// 第2229题 试卷六 专业知识 第29题
+{ Q: "男，50岁。因肝硬化食管静脉曲张破裂出血入院，经三腔二囊管压迫止血后病情稳定。拔管前需口服石蜡油，其目的是", options: ["A.防止拔管时引起疼痛", "B.防止拔管时再出血", "C.防止囊管与黏膜粘连", "D.润滑气囊便于拔出", "E.刺激肠蠕动"], answer: "C", explain: "口服石蜡油防止囊管与黏膜粘连。" },
+// 第2230题 试卷六 专业知识 第30题
+{ Q: "女，30岁。因高热、寒战、咳嗽、胸痛入院。查体：体温39.5℃，右下肺呼吸音减弱，可闻及湿啰音。诊断为肺炎链球菌肺炎。其痰液性状为", options: ["A.白色泡沫痰", "B.铁锈色痰", "C.脓臭痰", "D.砖红色胶冻样痰", "E.粉红色泡沫痰"], answer: "B", explain: "肺炎链球菌肺炎痰液为铁锈色。" },
+// 第2231题 试卷六 专业知识 第31题
+{ Q: "男，45岁。因上腹部持续性疼痛向腰背部放射，伴恶心、呕吐，呕吐后腹痛不缓解，疑为急性胰腺炎。为明确诊断，首选的检查是", options: ["A.血常规", "B.血清淀粉酶测定", "C.尿淀粉酶测定", "D.腹部X线平片", "E.腹部B超"], answer: "B", explain: "血清淀粉酶是诊断急性胰腺炎的重要指标。" },
+// 第2232题 试卷六 专业知识 第32题
+{ Q: "女，28岁。因尿频、尿急、尿痛伴发热入院。查体：体温38.5℃，双肾区叩击痛。尿常规：白细胞满视野，红细胞5-8个/HPF。最可能的诊断是", options: ["A.急性肾小球肾炎", "B.急性肾盂肾炎", "C.急性膀胱炎", "D.肾结核", "E.尿道综合征"], answer: "B", explain: "发热、肾区叩痛、脓尿提示急性肾盂肾炎。" },
+// 第2233题 试卷六 专业知识 第33题
+{ Q: "男，60岁。因进行性排尿困难入院。直肠指诊：前列腺增大，中央沟消失。血清PSA 4.5ng/ml。最可能的诊断是", options: ["A.前列腺癌", "B.前列腺增生", "C.前列腺炎", "D.膀胱颈梗阻", "E.尿道狭窄"], answer: "B", explain: "前列腺增生表现为进行性排尿困难，PSA轻度升高。" },
+// 第2234题 试卷六 专业知识 第34题
+{ Q: "女，35岁。因右侧乳房胀痛，可触及肿块，与月经周期有关。最可能的诊断是", options: ["A.乳腺癌", "B.乳腺囊性增生病", "C.乳腺纤维腺瘤", "D.乳管内乳头状瘤", "E.急性乳腺炎"], answer: "B", explain: "乳腺囊性增生病与月经周期有关。" },
+// 第2235题 试卷六 专业知识 第35题
+{ Q: "男，25岁。因右侧睾丸肿痛入院。查体：右侧睾丸肿大，触痛明显，透光试验阴性。最可能的诊断是", options: ["A.睾丸鞘膜积液", "B.睾丸炎", "C.睾丸肿瘤", "D.附睾炎", "E.腹股沟疝"], answer: "B", explain: "睾丸炎表现为睾丸肿痛，透光试验阴性。" },
+// 第2236题 试卷六 专业知识 第36题
+{ Q: "女，45岁。因接触性出血半年入院。妇科检查：宫颈糜烂样改变，触之易出血。宫颈活检示鳞状细胞癌。该患者首选的治疗方法是", options: ["A.放疗", "B.化疗", "C.手术治疗", "D.免疫治疗", "E.靶向治疗"], answer: "C", explain: "早期宫颈癌首选手术治疗。" },
+// 第2237题 试卷六 专业知识 第37题
+{ Q: "男，8岁。因发热、咽痛、皮疹入院。查体：体温39℃，咽部充血，扁桃体肿大，全身皮肤弥漫性充血，可见针尖大小红色丘疹，疹间无正常皮肤。最可能的诊断是", options: ["A.麻疹", "B.风疹", "C.猩红热", "D.幼儿急疹", "E.水痘"], answer: "C", explain: "猩红热表现为弥漫性充血性皮疹，疹间无正常皮肤。" },
+// 第2238题 试卷六 专业知识 第38题
+{ Q: "男，3岁。因发热、咳嗽3天，呼吸困难1天入院。查体：体温38.5℃，呼吸40次/分，三凹征阳性，双肺可闻及细湿啰音。最可能的诊断是", options: ["A.急性支气管炎", "B.支气管肺炎", "C.支气管哮喘", "D.急性喉炎", "E.胸腔积液"], answer: "B", explain: "发热、咳嗽、呼吸困难，三凹征，肺部湿啰音，符合支气管肺炎。" },
+// 第2239题 试卷六 专业知识 第39题
+{ Q: "男，6个月。因惊厥入院。查体：体温38.2℃，前囟饱满，颈抵抗阳性。脑脊液检查：外观浑浊，白细胞1200×10⁶/L，多核细胞80%，蛋白升高，糖降低。最可能的诊断是", options: ["A.病毒性脑膜炎", "B.化脓性脑膜炎", "C.结核性脑膜炎", "D.真菌性脑膜炎", "E.脑脓肿"], answer: "B", explain: "脑脊液浑浊，白细胞明显升高，多核为主，符合化脓性脑膜炎。" },
+// 第2240题 试卷六 专业知识 第40题
+{ Q: "女，25岁。因乏力、面色苍白半年入院。实验室检查：Hb 65g/L，MCV 105fl，MCHC 34%。最可能的诊断是", options: ["A.缺铁性贫血", "B.巨幼细胞贫血", "C.再生障碍性贫血", "D.溶血性贫血", "E.慢性病贫血"], answer: "B", explain: "MCV>100fl为大细胞性贫血，提示巨幼细胞贫血。" },
+// 第2241题 试卷六 专业知识 第41题
+{ Q: "男，50岁。因呕血、黑便1天入院。有肝硬化病史5年。查体：血压90/60mmHg，心率110次/分，腹水征阳性。最可能的出血原因是", options: ["A.消化性溃疡", "B.食管胃底静脉曲张破裂", "C.急性胃黏膜病变", "D.胃癌", "E. Mallory-Weiss综合征"], answer: "B", explain: "肝硬化患者最常见的出血原因是食管胃底静脉曲张破裂。" },
+// 第2242题 试卷六 专业知识 第42题
+{ Q: "女，30岁。因怕热、多汗、心悸、消瘦3个月入院。查体：甲状腺Ⅱ度肿大，可闻及血管杂音，手颤阳性。最可能的诊断是", options: ["A.单纯性甲状腺肿", "B.甲状腺功能亢进症", "C.甲状腺炎", "D.甲状腺腺瘤", "E.甲状腺癌"], answer: "B", explain: "高代谢症状、甲状腺肿大伴血管杂音，提示甲亢。" },
+// 第2243题 试卷六 专业知识 第43题
+{ Q: "男，40岁。因多饮、多尿、多食、体重下降3个月入院。空腹血糖12.5mmol/L。诊断为2型糖尿病。首选的治疗药物是", options: ["A.格列本脲", "B.二甲双胍", "C.阿卡波糖", "D.胰岛素", "E.罗格列酮"], answer: "B", explain: "2型糖尿病肥胖患者首选二甲双胍。" },
+// 第2244题 试卷六 专业知识 第44题
+{ Q: "女，65岁。因右侧肢体无力、言语不清2小时入院。头颅CT未见异常。最可能的诊断是", options: ["A.脑出血", "B.脑梗死", "C.短暂性脑缺血发作", "D.蛛网膜下腔出血", "E.脑肿瘤"], answer: "B", explain: "发病2小时CT可正常，符合脑梗死早期表现。" },
+// 第2245题 试卷六 专业知识 第45题
+{ Q: "男，70岁。因排尿困难10年，急性尿潴留入院。导尿后引出尿液500ml，但患者仍感排尿困难。最可能的并发症是", options: ["A.膀胱结石", "B.前列腺癌", "C.膀胱颈梗阻", "D.膀胱憩室", "E.尿道狭窄"], answer: "C", explain: "前列腺增生可导致膀胱颈梗阻，导尿后仍感排尿困难。" },
+// 第2246题 试卷六 专业知识 第46题
+{ Q: "女，28岁。因腹痛、腹泻、黏液脓血便1个月入院。肠镜检查示直肠、乙状结肠黏膜充血、水肿，可见浅表溃疡。最可能的诊断是", options: ["A.克罗恩病", "B.溃疡性结肠炎", "C.肠结核", "D.细菌性痢疾", "E.结肠癌"], answer: "B", explain: "溃疡性结肠炎好发于直肠、乙状结肠，表现为黏液脓血便。" },
+// 第2247题 试卷六 专业知识 第47题
+{ Q: "男，55岁。因右上腹隐痛、食欲减退、消瘦3个月入院。查体：肝肋下3cm，质硬，表面不光滑。AFP 500ng/ml。最可能的诊断是", options: ["A.肝硬化", "B.原发性肝癌", "C.肝脓肿", "D.肝血管瘤", "E.肝囊肿"], answer: "B", explain: "肝大、质硬、AFP明显升高，符合原发性肝癌。" },
+// 第2248题 试卷六 专业知识 第48题
+{ Q: "女，35岁。因双腕、双手指关节肿痛、晨僵1年入院。查体：双腕关节肿胀、压痛，双手指关节呈梭形肿胀。类风湿因子阳性。最可能的诊断是", options: ["A.骨关节炎", "B.类风湿关节炎", "C.强直性脊柱炎", "D.银屑病关节炎", "E.痛风"], answer: "B", explain: "对称性小关节肿痛、晨僵、RF阳性，符合类风湿关节炎。" },
+// 第2249题 试卷六 专业知识 第49题
+{ Q: "男，30岁。因发热、咳嗽、胸痛1周入院。查体：右下肺呼吸音减弱，可闻及胸膜摩擦音。胸部X线示右下肺大片高密度影。最可能的诊断是", options: ["A.肺炎链球菌肺炎", "B.结核性胸膜炎", "C.肺脓肿", "D.肺癌", "E.肺栓塞"], answer: "B", explain: "胸膜摩擦音提示胸膜炎，结合X线表现，考虑结核性胸膜炎。" },
+// 第2250题 试卷六 专业知识 第50题
+{ Q: "女，50岁。因右侧乳房肿块入院。查体：右乳外上象限可触及2cm×2cm肿块，质硬，活动度差，无压痛。最可能的诊断是", options: ["A.乳腺囊性增生病", "B.乳腺纤维腺瘤", "C.乳腺癌", "D.乳管内乳头状瘤", "E.急性乳腺炎"], answer: "C", explain: "无痛性、质硬、活动度差的肿块，应首先考虑乳腺癌。" },
+// 第2251题 试卷六 专业知识 第51题
+{ Q: "男，20岁。因突发左侧胸痛、呼吸困难2小时入院。查体：气管向右偏移，左肺呼吸音消失，叩诊鼓音。最可能的诊断是", options: ["A.急性心肌梗死", "B.自发性气胸", "C.肺栓塞", "D.胸腔积液", "E.肺不张"], answer: "B", explain: "突发的胸痛、呼吸困难，气管移位，患侧呼吸音消失、鼓音，符合自发性气胸。" },
+// 第2252题 试卷六 专业知识 第52题
+{ Q: "女，25岁。因低热、盗汗、乏力、咳嗽2周入院。胸部X线示右上肺斑片状阴影。结核菌素试验强阳性。最可能的诊断是", options: ["A.肺炎", "B.肺结核", "C.肺癌", "D.肺脓肿", "E.支气管扩张"], answer: "B", explain: "低热、盗汗、乏力为结核中毒症状，PPD强阳性，考虑肺结核。" },
+// 第2253题 试卷六 专业知识 第53题
+{ Q: "男，45岁。因上腹部疼痛、反酸、嗳气2年，加重1周入院。胃镜检查示胃窦部溃疡，直径1.5cm，边缘光滑，覆白苔。Hp(+)。该患者的治疗首选", options: ["A.质子泵抑制剂+两种抗生素", "B.H₂受体拮抗剂", "C.胃黏膜保护剂", "D.手术治疗", "E.抗酸药"], answer: "A", explain: "Hp阳性的消化性溃疡应根除Hp治疗，首选PPI+两种抗生素。" },
+// 第2254题 试卷六 专业知识 第54题
+{ Q: "女，30岁。因双下肢水肿1周入院。尿蛋白(+++)，血浆白蛋白25g/L，总胆固醇8.5mmol/L。最可能的诊断是", options: ["A.急性肾小球肾炎", "B.肾病综合征", "C.慢性肾小球肾炎", "D.糖尿病肾病", "E.狼疮性肾炎"], answer: "B", explain: "大量蛋白尿、低蛋白血症、高脂血症、水肿，符合肾病综合征。" },
+// 第2255题 试卷六 专业知识 第55题
+{ Q: "男，65岁。因右侧肢体无力、言语不清1天入院。头颅CT示左侧基底节区低密度灶。最可能的诊断是", options: ["A.脑出血", "B.脑梗死", "C.脑肿瘤", "D.脑脓肿", "E.脑外伤"], answer: "B", explain: "CT低密度灶提示脑梗死。" },
+// 第2256题 试卷六 专业知识 第56题
+{ Q: "女，40岁。因怕热、多汗、心悸、消瘦1年，加重1周入院。查体：甲状腺Ⅱ度肿大，可闻及血管杂音，突眼征阳性。诊断为Graves病。首选的药物治疗是", options: ["A.甲巯咪唑", "B.丙硫氧嘧啶", "C.普萘洛尔", "D.复方碘溶液", "E.放射性碘"], answer: "B", explain: "Graves病首选抗甲状腺药物治疗，丙硫氧嘧啶为常用药物。" },
+// 第2257题 试卷六 专业知识 第57题
+{ Q: "男，30岁。因右侧睾丸无痛性肿大1个月入院。查体：右侧睾丸肿大，质硬，沉重感。最可能的诊断是", options: ["A.睾丸炎", "B.附睾炎", "C.睾丸鞘膜积液", "D.睾丸肿瘤", "E.精索静脉曲张"], answer: "D", explain: "无痛性睾丸肿大、质硬、沉重感，提示睾丸肿瘤。" },
+// 第2258题 试卷六 专业知识 第58题
+{ Q: "女，28岁。因产后第3天出现高热、寒战、下腹痛。查体：体温39.5℃，宫底压痛，恶露有臭味。最可能的诊断是", options: ["A.急性乳腺炎", "B.产褥感染", "C.上呼吸道感染", "D.尿路感染", "E.盆腔炎"], answer: "B", explain: "产后高热、下腹痛、宫底压痛、恶露臭味，符合产褥感染。" },
+// 第2259题 试卷六 专业知识 第59题
+{ Q: "男，50岁。因进食哽噎感3个月，进行性加重1周入院。食管吞钡X线检查示食管中段管腔狭窄，黏膜破坏。最可能的诊断是", options: ["A.食管炎", "B.食管癌", "C.食管良性狭窄", "D.贲门失弛缓症", "E.食管静脉曲张"], answer: "B", explain: "进行性吞咽困难，X线示黏膜破坏、管腔狭窄，符合食管癌。" },
+// 第2260题 试卷六 专业知识 第60题
+{ Q: "女，35岁。因双下肢皮肤瘀点、瘀斑1周入院。血小板30×10⁹/L，骨髓巨核细胞增多，产板型减少。最可能的诊断是", options: ["A.再生障碍性贫血", "B.原发免疫性血小板减少症", "C.白血病", "D.过敏性紫癜", "E.血友病"], answer: "B", explain: "血小板减少，骨髓巨核细胞增多但产板减少，符合ITP。" },
+// 第2261题 试卷六 专业知识 第61题
+{ Q: "男，40岁。因腹痛、腹胀、停止排气排便3天入院。查体：腹部膨隆，可见肠型，肠鸣音亢进，气过水声。X线示多个气液平面。最可能的诊断是", options: ["A.急性胰腺炎", "B.肠梗阻", "C.消化道穿孔", "D.急性阑尾炎", "E.急性胆囊炎"], answer: "B", explain: "腹痛、腹胀、停止排便排气，肠鸣音亢进，X线气液平面，符合肠梗阻。" },
+// 第2262题 试卷六 专业知识 第62题
+{ Q: "女，20岁。因发热、咽痛、颈部淋巴结肿大1周入院。查体：体温38.5℃，双侧颈部可触及多个肿大淋巴结，活动度好。血常规示淋巴细胞增多，可见异型淋巴细胞。最可能的诊断是", options: ["A.急性淋巴细胞白血病", "B.传染性单核细胞增多症", "C.淋巴瘤", "D.结核病", "E.淋巴结炎"], answer: "B", explain: "发热、咽痛、淋巴结肿大，异型淋巴细胞增多，符合传染性单核细胞增多症。" },
+// 第2263题 试卷六 专业知识 第63题
+{ Q: "男，55岁。因右上腹疼痛、发热、黄疸1天入院。查体：体温39.5℃，右上腹压痛，Murphy征阳性。B超示胆囊增大，壁厚，可见结石。最可能的诊断是", options: ["A.急性胆囊炎", "B.急性胆管炎", "C.急性胰腺炎", "D.急性肝炎", "E.肝脓肿"], answer: "A", explain: "Murphy征阳性是急性胆囊炎的特征。" },
+// 第2264题 试卷六 专业知识 第64题
+{ Q: "女，30岁。因心悸、手抖、多汗、易饥3个月入院。查体：甲状腺Ⅰ度肿大，可闻及血管杂音，手颤阳性。诊断为甲亢。给予丙硫氧嘧啶治疗。用药期间应监测的指标是", options: ["A.肝功能", "B.肾功能", "C.血常规", "D.甲状腺功能", "E.血糖"], answer: "C", explain: "抗甲状腺药物可导致粒细胞缺乏，应监测血常规。" },
+// 第2265题 试卷六 专业知识 第65题
+{ Q: "男，60岁。因头痛、头晕、视物模糊1年，加重1周入院。查体：血压180/110mmHg。诊断为高血压。应首选的治疗药物是", options: ["A.利尿药", "B.β受体阻滞剂", "C.钙通道阻滞剂", "D.ACEI", "E.ARB"], answer: "D", explain: "高血压伴靶器官损害首选ACEI。" },
+// 第2266题 试卷六 专业知识 第66题
+{ Q: "女，25岁。因关节痛、面部红斑、发热1个月入院。查体：面部蝶形红斑，双腕关节肿胀。抗核抗体阳性。最可能的诊断是", options: ["A.类风湿关节炎", "B.系统性红斑狼疮", "C.皮肌炎", "D.硬皮病", "E.混合性结缔组织病"], answer: "B", explain: "蝶形红斑、关节痛、ANA阳性，符合SLE。" },
+// 第2267题 试卷六 专业知识 第67题
+{ Q: "男，40岁。因酗酒后上腹剧痛、呕吐1天入院。查体：上腹压痛，反跳痛。血清淀粉酶1200U/L。最可能的诊断是", options: ["A.急性胆囊炎", "B.急性胰腺炎", "C.消化道穿孔", "D.急性胃炎", "E.肠梗阻"], answer: "B", explain: "酗酒后上腹痛，淀粉酶明显升高，符合急性胰腺炎。" },
+// 第2268题 试卷六 专业知识 第68题
+{ Q: "女，65岁。因多饮、多尿、消瘦2年入院。空腹血糖8.5mmol/L，餐后2小时血糖13.5mmol/L。诊断为2型糖尿病。首先应采取的治疗措施是", options: ["A.胰岛素治疗", "B.口服降糖药", "C.饮食控制+运动疗法", "D.健康教育", "E.血糖监测"], answer: "C", explain: "2型糖尿病初诊首选饮食控制和运动疗法。" },
+// 第2269题 试卷六 专业知识 第69题
+{ Q: "男，70岁。因进行性排尿困难5年，急性尿潴留入院。导尿失败，应如何处理", options: ["A.继续尝试导尿", "B.膀胱穿刺造瘘", "C.耻骨上膀胱穿刺抽尿", "D.急诊手术", "E.药物治疗"], answer: "B", explain: "导尿失败可行膀胱穿刺造瘘引流尿液。" },
+// 第2270题 试卷六 专业知识 第70题
+{ Q: "女，28岁。因产后第3天出现乳房胀痛、发热。查体：体温39℃，右乳外上象限红肿、压痛，可触及硬结。最可能的诊断是", options: ["A.急性乳腺炎", "B.乳腺囊性增生病", "C.乳腺纤维腺瘤", "D.乳腺癌", "E.乳腺导管扩张症"], answer: "A", explain: "产后乳腺炎表现为乳房红肿热痛，发热。" },
+// 第2271题 试卷六 专业知识 第71题
+{ Q: "男，30岁。因发热、咳嗽、咳脓臭痰1周入院。胸部X线示右下肺空洞，内有液平。最可能的诊断是", options: ["A.肺结核", "B.肺癌", "C.肺脓肿", "D.支气管扩张", "E.肺炎"], answer: "C", explain: "发热、脓臭痰，X线空洞伴液平，符合肺脓肿。" },
+// 第2272题 试卷六 专业知识 第72题
+{ Q: "女，45岁。因右侧乳房无痛性肿块入院。查体：右乳外上象限2cm×2cm肿块，质硬，活动度差。乳腺钼靶示肿块边缘不规则，有毛刺。最可能的诊断是", options: ["A.乳腺纤维腺瘤", "B.乳腺癌", "C.乳腺囊性增生病", "D.乳腺导管内乳头状瘤", "E.乳腺炎"], answer: "B", explain: "无痛性肿块、质硬、毛刺征，符合乳腺癌。" },
+// 第2273题 试卷六 专业知识 第73题
+{ Q: "男，50岁。因上腹部隐痛、食欲减退、黑便2个月入院。查体：贫血貌，上腹轻压痛。大便潜血阳性。最可能的诊断是", options: ["A.胃炎", "B.消化性溃疡", "C.胃癌", "D.结肠癌", "E.食管癌"], answer: "C", explain: "上腹痛、黑便、贫血，应考虑胃癌。" },
+// 第2274题 试卷六 专业知识 第74题
+{ Q: "女，35岁。因发热、盗汗、咳嗽、胸痛2周入院。胸部X线示右上肺斑片状阴影，PPD强阳性。应给予的治疗方案是", options: ["A.异烟肼+利福平+吡嗪酰胺+乙胺丁醇", "B.异烟肼+利福平", "C.异烟肼+链霉素", "D.异烟肼+对氨基水杨酸", "E.利福平+乙胺丁醇"], answer: "A", explain: "初治肺结核采用四联抗结核方案。" },
+// 第2275题 试卷六 专业知识 第75题
+{ Q: "男，20岁。因突发言语不清、右侧肢体无力1小时入院。有房颤病史。头颅CT未见异常。最可能的诊断是", options: ["A.脑出血", "B.脑梗死", "C.脑栓塞", "D.短暂性脑缺血发作", "E.脑肿瘤"], answer: "C", explain: "房颤患者易发生脑栓塞，CT早期可正常。" },
+// 第2276题 试卷六 专业知识 第76题
+{ Q: "女，55岁。因关节痛、晨僵、乏力半年入院。查体：双手近端指间关节肿胀、压痛，双腕关节肿胀。类风湿因子阳性。最可能的诊断是", options: ["A.骨关节炎", "B.类风湿关节炎", "C.痛风", "D.银屑病关节炎", "E.强直性脊柱炎"], answer: "B", explain: "对称性小关节肿痛、晨僵、RF阳性，符合RA。" },
+// 第2277题 试卷六 专业知识 第77题
+{ Q: "男，60岁。因头痛、头晕、恶心、呕吐1天入院。查体：血压200/120mmHg，视神经乳头水肿。最可能的诊断是", options: ["A.高血压脑病", "B.脑出血", "C.脑梗死", "D.颅内肿瘤", "E.脑膜炎"], answer: "A", explain: "血压急剧升高伴视乳头水肿，符合高血压脑病。" },
+// 第2278题 试卷六 专业知识 第78题
+{ Q: "女，30岁。因怕热、多汗、心悸、消瘦1年入院。查体：甲状腺Ⅱ度肿大，可闻及血管杂音。诊断为甲亢。首选的治疗方案是", options: ["A.抗甲状腺药物治疗", "B.放射性碘治疗", "C.手术治疗", "D.β受体阻滞剂", "E.碘剂治疗"], answer: "A", explain: "Graves病首选抗甲状腺药物治疗。" },
+// 第2279题 试卷六 专业知识 第79题
+{ Q: "男，40岁。因腰痛、右下肢放射痛1个月入院。查体：腰椎右侧弯，腰4-5棘间压痛，右直腿抬高试验40°阳性，加强试验阳性。最可能的诊断是", options: ["A.腰椎间盘突出症", "B.腰椎管狭窄症", "C.腰肌劳损", "D.腰椎结核", "E.强直性脊柱炎"], answer: "A", explain: "腰痛伴下肢放射痛，直腿抬高试验阳性，符合腰椎间盘突出症。" },
+// 第2280题 试卷六 专业知识 第80题
+{ Q: "女，50岁。因右侧腰部钝痛、间歇性肉眼血尿3个月入院。B超示右肾中部4cm×5cm占位，边界不清。最可能的诊断是", options: ["A.肾囊肿", "B.肾癌", "C.肾错构瘤", "D.肾盂癌", "E.肾结石"], answer: "B", explain: "无痛性肉眼血尿，肾占位，边界不清，符合肾癌。" },
+// 第2281题 试卷六 专业知识 第81题
+{ Q: "男，30岁。因尿频、尿急、尿痛、终末血尿1周入院。尿常规：白细胞满视野，红细胞20-30个/HPF。尿细菌培养阴性。最可能的诊断是", options: ["A.急性膀胱炎", "B.急性肾盂肾炎", "C.肾结核", "D.尿道炎", "E.前列腺炎"], answer: "C", explain: "慢性膀胱刺激征，普通细菌培养阴性，应考虑肾结核。" },
+// 第2282题 试卷六 专业知识 第82题
+{ Q: "女，65岁。因右侧股骨颈骨折行人工髋关节置换术。术后预防深静脉血栓形成最有效的措施是", options: ["A.早期活动", "B.穿弹力袜", "C.使用抗凝药物", "D.按摩下肢", "E.抬高患肢"], answer: "C", explain: "抗凝药物是预防深静脉血栓最有效的措施。" },
+// 第2283题 试卷六 专业知识 第83题
+{ Q: "男，50岁。因上腹痛、反酸、嗳气5年，加重伴呕血1小时入院。胃镜检查示胃窦部溃疡出血。首选的治疗措施是", options: ["A.口服止血药", "B.静脉注射质子泵抑制剂", "C.内镜下止血", "D.手术治疗", "E.输血"], answer: "C", explain: "消化性溃疡出血首选内镜下止血。" },
+// 第2284题 试卷六 专业知识 第84题
+{ Q: "女，25岁。因产后第2天出现高热、寒战。查体：体温39.5℃，右乳外上象限红肿、压痛，可触及硬结。最可能的诊断是", options: ["A.急性乳腺炎", "B.乳腺囊性增生病", "C.乳腺纤维腺瘤", "D.乳腺癌", "E.乳腺导管扩张症"], answer: "A", explain: "产后乳腺炎好发于产后3-4周，表现为乳房红肿热痛。" },
+// 第2285题 试卷六 专业知识 第85题
+{ Q: "男，45岁。因双下肢乏力、行走不稳1年入院。查体：双下肢肌力4级，腱反射亢进，病理征阳性。颈椎MRI示颈4-5椎间盘突出，脊髓受压。最可能的诊断是", options: ["A.脊髓型颈椎病", "B.神经根型颈椎病", "C.椎动脉型颈椎病", "D.交感神经型颈椎病", "E.混合型颈椎病"], answer: "A", explain: "脊髓受压出现肢体无力、行走不稳，为脊髓型颈椎病。" },
+// 第2286题 试卷六 专业知识 第86题
+{ Q: "女，55岁。因右侧肩关节疼痛、活动受限1个月入院。查体：右肩关节外展、外旋受限，压痛明显。最可能的诊断是", options: ["A.肩周炎", "B.肩袖损伤", "C.肩关节脱位", "D.肩峰撞击综合征", "E.肱二头肌长头腱炎"], answer: "A", explain: "肩周炎表现为肩关节活动受限，好发于50岁左右。" },
+// 第2287题 试卷六 专业知识 第87题
+{ Q: "男，60岁。因左侧肢体无力、言语不清3天入院。头颅CT示右侧基底节区低密度灶。诊断脑梗死。发病后何时开始康复训练最佳", options: ["A.24小时内", "B.24-48小时", "C.48-72小时", "D.3-7天", "E.1周后"], answer: "B", explain: "脑梗死病情稳定后24-48小时即可开始康复训练。" },
+// 第2288题 试卷六 专业知识 第88题
+{ Q: "女，35岁。因发热、咳嗽、胸痛1周入院。查体：右下肺呼吸音减弱，可闻及湿啰音。胸部X线示右下肺斑片状阴影。诊断为肺炎。首选抗生素是", options: ["A.青霉素", "B.头孢菌素", "C.大环内酯类", "D.喹诺酮类", "E.氨基糖苷类"], answer: "C", explain: "社区获得性肺炎首选大环内酯类或呼吸喹诺酮类。" },
+// 第2289题 试卷六 专业知识 第89题
+{ Q: "男，40岁。因突发上腹痛6小时入院。查体：上腹压痛、反跳痛、肌紧张。腹部X线示膈下游离气体。最可能的诊断是", options: ["A.急性胰腺炎", "B.消化道穿孔", "C.急性胆囊炎", "D.肠梗阻", "E.急性阑尾炎"], answer: "B", explain: "膈下游离气体是消化道穿孔的特征。" },
+// 第2290题 试卷六 专业知识 第90题
+{ Q: "女，25岁。因月经量增多、经期延长1年入院。查体：子宫增大如孕3个月，表面凹凸不平，质硬。最可能的诊断是", options: ["A.子宫肌瘤", "B.子宫腺肌症", "C.子宫内膜癌", "D.卵巢肿瘤", "E.盆腔炎"], answer: "A", explain: "子宫增大、质硬、表面凹凸不平，符合子宫肌瘤。" },
+// 第2291题 试卷六 专业知识 第91题
+{ Q: "男，65岁。因右侧阴囊肿大半年入院。查体：右侧阴囊肿大，透光试验阳性。最可能的诊断是", options: ["A.睾丸鞘膜积液", "B.睾丸肿瘤", "C.附睾炎", "D.腹股沟疝", "E.精索静脉曲张"], answer: "A", explain: "透光试验阳性提示鞘膜积液。" },
+// 第2292题 试卷六 专业知识 第92题
+{ Q: "女，30岁。因心悸、手抖、多汗、易饥1年，加重1个月入院。查体：甲状腺Ⅱ度肿大，可闻及血管杂音，手颤阳性。诊断为甲亢。首选治疗方案是", options: ["A.抗甲状腺药物", "B.放射性碘", "C.手术", "D.β受体阻滞剂", "E.碘剂"], answer: "A", explain: "年轻甲亢患者首选抗甲状腺药物治疗。" },
+// 第2293题 试卷六 专业知识 第93题
+{ Q: "男，50岁。因右下肢疼痛、发凉1年，加重1个月入院。查体：右足皮肤苍白，皮温低，足背动脉搏动消失。最可能的诊断是", options: ["A.血栓闭塞性脉管炎", "B.动脉硬化闭塞症", "C.糖尿病足", "D.深静脉血栓", "E.雷诺综合征"], answer: "B", explain: "动脉硬化闭塞症多见于老年人，表现为肢体缺血症状。" },
+// 第2294题 试卷六 专业知识 第94题
+{ Q: "女，40岁。因双手遇冷变白、变紫、变红5年入院。诊断为雷诺综合征。健康教育错误的是", options: ["A.注意保暖", "B.戒烟", "C.避免情绪激动", "D.使用热水袋保暖", "E.手指按摩"], answer: "D", explain: "雷诺综合征患者应避免使用热水袋，以免烫伤。" },
+// 第2295题 试卷六 专业知识 第95题
+{ Q: "男，30岁。因左侧腰部疼痛2小时入院。疼痛剧烈，向会阴部放射。查体：左肾区叩击痛。尿常规：红细胞满视野。B超示左肾轻度积水。最可能的诊断是", options: ["A.肾结石", "B.输尿管结石", "C.肾盂肾炎", "D.肾结核", "E.肾肿瘤"], answer: "B", explain: "剧烈疼痛、向会阴放射、血尿、肾积水，符合输尿管结石。" },
+// 第2296题 试卷六 专业知识 第96题
+{ Q: "女，50岁。因右侧乳腺改良根治术后3天。患肢功能锻炼正确的是", options: ["A.术后当天即开始肩关节活动", "B.术后1-3天开始上肢屈肘、伸臂", "C.术后4-5天开始肩关节活动", "D.术后1周开始肩关节活动", "E.术后2周开始肩关节活动"], answer: "D", explain: "乳腺癌术后1周开始肩关节活动。" },
+// 第2297题 试卷六 专业知识 第97题
+{ Q: "男，60岁。因前列腺增生行经尿道前列腺电切术后。持续膀胱冲洗的目的是", options: ["A.预防感染", "B.防止血凝块堵塞", "C.促进伤口愈合", "D.减轻疼痛", "E.观察出血情况"], answer: "B", explain: "持续膀胱冲洗可防止血凝块堵塞尿管。" },
+// 第2298题 试卷六 专业知识 第98题
+{ Q: "女，30岁。因右侧乳腺纤维腺瘤行肿块切除术。术后切口护理正确的是", options: ["A.术后24小时内热敷", "B.术后24小时内冷敷", "C.术后第1天开始按摩", "D.术后第2天开始热敷", "E.术后第3天开始活动"], answer: "B", explain: "术后24小时内冷敷可减轻水肿和疼痛。" },
+// 第2299题 试卷六 专业知识 第99题
+{ Q: "男，40岁。因右侧腹股沟可复性肿块2年入院。诊断为腹股沟斜疝。术后健康指导错误的是", options: ["A.术后1个月内避免重体力劳动", "B.保持大便通畅", "C.预防感冒", "D.术后即可恢复正常活动", "E.多饮水"], answer: "D", explain: "术后需休息1个月后才能逐渐恢复正常活动。" },
+// 第2300题 试卷六 专业知识 第100题
+{ Q: "女，25岁。因右侧卵巢囊肿行腹腔镜囊肿剥除术。术后健康教育正确的是", options: ["A.术后1个月可恢复正常活动", "B.术后3个月可恢复性生活", "C.术后半年可再次妊娠", "D.术后1年需复查", "E.术后2年需复查"], answer: "A", explain: "腹腔镜术后1个月可恢复正常活动。" },
+
+// ==================== 模拟试卷六 专业实践能力 (第2301-2400题) ====================
+// 第2301题 试卷六 专业实践能力 第1题
+{ Q: "测血压时，袖带过窄会导致血压", options: ["A.偏高", "B.偏低", "C.无影响", "D.脉压增大", "E.脉压减小"], answer: "A", explain: "袖带过窄需用较高压力才能阻断血流，测值偏高。" },
+// 第2302题 试卷六 专业实践能力 第2题
+{ Q: "鼻导管给氧时，氧流量与氧浓度的换算公式是", options: ["A.21+4×氧流量(L/min)", "B.21+5×氧流量(L/min)", "C.20+4×氧流量(L/min)", "D.20+5×氧流量(L/min)", "E.21+3×氧流量(L/min)"], answer: "A", explain: "吸氧浓度%=21+4×氧流量(L/min)。" },
+// 第2303题 试卷六 专业实践能力 第3题
+{ Q: "测量脉搏时，不可用拇指诊脉的原因是", options: ["A.拇指动脉搏动较强", "B.拇指感觉迟钝", "C.拇指感觉过敏", "D.拇指有静脉", "E.拇指有动脉"], answer: "E", explain: "拇指有动脉搏动，易与患者脉搏混淆。" },
+// 第2304题 试卷六 专业实践能力 第4题
+{ Q: "正常成人口腔温度的测量范围是", options: ["A.36.2-37.2℃", "B.36.3-37.2℃", "C.36.5-37.5℃", "D.36.5-37.7℃", "E.36.2-37.5℃"], answer: "B", explain: "口腔温度正常值为36.3-37.2℃。" },
+// 第2305题 试卷六 专业实践能力 第5题
+{ Q: "呼吸增快是指成人呼吸频率超过", options: ["A.18次/分", "B.20次/分", "C.22次/分", "D.24次/分", "E.26次/分"], answer: "D", explain: "成人呼吸频率>24次/分为呼吸增快。" },
+// 第2306题 试卷六 专业实践能力 第6题
+{ Q: "物理降温后30分钟测得的体温应记录在", options: ["A.降温前同一纵格内", "B.降温后下一纵格内", "C.降温前纵格内用红圈", "D.降温后纵格内用红圈", "E.降温前纵格内用蓝圈"], answer: "A", explain: "物理降温后30分钟测得的体温以红圈表示，画在降温前温度的同一纵格内。" },
+// 第2307题 试卷六 专业实践能力 第7题
+{ Q: "下列哪种患者禁用冷疗", options: ["A.扁桃体术后", "B.牙痛", "C.局部血液循环障碍", "D.鼻出血", "E.中暑"], answer: "C", explain: "冷疗可加重血液循环障碍，因此禁用。" },
+// 第2308题 试卷六 专业实践能力 第8题
+{ Q: "热水袋的使用温度，一般应在", options: ["A.50-60℃", "B.60-70℃", "C.70-80℃", "D.80-90℃", "E.40-50℃"], answer: "B", explain: "热水袋温度一般为60-70℃。" },
+// 第2309题 试卷六 专业实践能力 第9题
+{ Q: "下列哪种患者禁用热水坐浴", options: ["A.痔疮术后", "B.肛裂", "C.盆腔炎", "D.月经期", "E.外阴炎"], answer: "D", explain: "月经期禁止坐浴，以防感染。" },
+// 第2310题 试卷六 专业实践能力 第10题
+{ Q: "吸痰时，每次抽吸的时间不宜超过", options: ["A.5秒", "B.10秒", "C.15秒", "D.20秒", "E.30秒"], answer: "C", explain: "每次吸痰时间不超过15秒，以免引起缺氧。" },
+// 第2311题 试卷六 专业实践能力 第11题
+{ Q: "为昏迷患者做口腔护理时，应特别注意", options: ["A.口角干燥", "B.牙龈出血", "C.口腔异味", "D.棉球不可过湿", "E.舌苔厚腻"], answer: "D", explain: "昏迷患者吞咽反射差，棉球过湿易引起误吸。" },
+// 第2312题 试卷六 专业实践能力 第12题
+{ Q: "鼻饲液的适宜温度是", options: ["A.30-35℃", "B.35-38℃", "C.38-40℃", "D.40-45℃", "E.45-50℃"], answer: "C", explain: "鼻饲液温度应为38-40℃，避免过冷过热刺激胃黏膜。" },
+// 第2313题 试卷六 专业实践能力 第13题
+{ Q: "鼻饲时，胃管插入的长度相当于从鼻尖到耳垂再到", options: ["A.剑突", "B.胸骨角", "C.脐部", "D.肋缘", "E.胸骨上窝"], answer: "A", explain: "胃管插入长度相当于鼻尖至耳垂至剑突的距离。" },
+// 第2314题 试卷六 专业实践能力 第14题
+{ Q: "判断胃管在胃内最可靠的方法是", options: ["A.胃管末端放入水中无气泡", "B.注入空气听气过水声", "C.抽出胃液", "D.患者无呛咳", "E.胃管长度合适"], answer: "C", explain: "抽出胃液是证实胃管在胃内最可靠的方法。" },
+// 第2315题 试卷六 专业实践能力 第15题
+{ Q: "肠内营养时，床头应抬高", options: ["A.15-30°", "B.30-45°", "C.45-60°", "D.10-15°", "E.60-90°"], answer: "B", explain: "肠内营养时应取半坐卧位，床头抬高30-45°。" },
+// 第2316题 试卷六 专业实践能力 第16题
+{ Q: "全胃肠外营养时，中心静脉导管护理错误的是", options: ["A.每天更换输液器", "B.每24小时更换敷料", "C.输液前后生理盐水冲管", "D.可用于输血", "E.保持导管通畅"], answer: "D", explain: "中心静脉导管为专用通道，不可用于输血。" },
+// 第2317题 试卷六 专业实践能力 第17题
+{ Q: "关于留置导尿管的护理，错误的是", options: ["A.保持引流通畅", "B.每日更换集尿袋", "C.每周更换导尿管", "D.尿道口每日消毒2次", "E.鼓励患者多饮水"], answer: "C", explain: "导尿管可根据材质2-4周更换，不是每周更换。" },
+// 第2318题 试卷六 专业实践能力 第18题
+{ Q: "尿潴留患者第一次放尿量不宜超过", options: ["A.500ml", "B.800ml", "C.1000ml", "D.1200ml", "E.1500ml"], answer: "C", explain: "第一次放尿不超过1000ml，以免引起虚脱和血尿。" },
+// 第2319题 试卷六 专业实践能力 第19题
+{ Q: "为女患者导尿时，正确的操作是", options: ["A.初次消毒由内向外", "B.再次消毒由外向内", "C.导尿管插入4-6cm见尿", "D.见尿后再插入5-7cm", "E.气囊注入空气固定"], answer: "D", explain: "见尿后再插入5-7cm，气囊注入生理盐水固定。" },
+// 第2320题 试卷六 专业实践能力 第20题
+{ Q: "大量不保留灌肠时，灌肠筒内液面距肛门的距离为", options: ["A.20-30cm", "B.30-40cm", "C.40-60cm", "D.60-80cm", "E.80-100cm"], answer: "C", explain: "灌肠液面距离肛门40-60cm。" },
+// 第2321题 试卷六 专业实践能力 第21题
+{ Q: "小量不保留灌肠时，所用“1、2、3”灌肠液的成分是", options: ["A.50%硫酸镁30ml，甘油60ml，温开水90ml", "B.50%硫酸镁60ml，甘油30ml，温开水90ml", "C.50%硫酸镁90ml，甘油60ml，温开水30ml", "D.50%硫酸镁30ml，甘油90ml，温开水60ml", "E.50%硫酸镁60ml，甘油90ml，温开水30ml"], answer: "A", explain: "1、2、3灌肠液指硫酸镁30ml、甘油60ml、温开水90ml。" },
+// 第2322题 试卷六 专业实践能力 第22题
+{ Q: "肝性脑病患者禁用肥皂水灌肠的原因是", options: ["A.刺激肠道", "B.引起腹胀", "C.引起腹痛", "D.减少氨的吸收", "E.增加氨的吸收"], answer: "E", explain: "肥皂水呈碱性，使NH₃生成增加，加重肝性脑病。" },
+// 第2323题 试卷六 专业实践能力 第23题
+{ Q: "直肠癌术后保留肛管患者的排便训练，正确的是", options: ["A.术后第1天开始", "B.术后第2天开始", "C.术后1周开始", "D.术后2周开始", "E.拆线后开始"], answer: "C", explain: "术后1周开始排便训练。" },
+// 第2324题 试卷六 专业实践能力 第24题
+{ Q: "肛门坐浴的水温应为", options: ["A.20-30℃", "B.30-40℃", "C.40-45℃", "D.45-50℃", "E.50-60℃"], answer: "C", explain: "坐浴水温40-45℃为宜。" },
+// 第2325题 试卷六 专业实践能力 第25题
+{ Q: "阴道灌洗的常用溶液是", options: ["A.1:5000高锰酸钾", "B.2%碳酸氢钠", "C.0.5%醋酸", "D.生理盐水", "E.以上都是"], answer: "E", explain: "阴道灌洗可根据病情选择不同溶液。" },
+// 第2326题 试卷六 专业实践能力 第26题
+{ Q: "阴道灌洗时，灌洗筒距床面高度为", options: ["A.30-40cm", "B.40-50cm", "C.50-60cm", "D.60-70cm", "E.70-80cm"], answer: "D", explain: "阴道灌洗筒距床面60-70cm。" },
+// 第2327题 试卷六 专业实践能力 第27题
+{ Q: "会阴擦洗的顺序是", options: ["A.由上到下，由内向外", "B.由上到下，由外向内", "C.由下到上，由内向外", "D.由下到上，由外向内", "E.无顺序要求"], answer: "A", explain: "会阴擦洗应从上到下，从内到外，防止污染。" },
+// 第2328题 试卷六 专业实践能力 第28题
+{ Q: "会阴湿热敷的温度是", options: ["A.30-35℃", "B.35-40℃", "C.40-45℃", "D.45-50℃", "E.50-55℃"], answer: "C", explain: "会阴湿热敷温度40-45℃。" },
+// 第2329题 试卷六 专业实践能力 第29题
+{ Q: "剖宫产术后腹部切口拆线时间一般为", options: ["A.3-4天", "B.4-5天", "C.5-6天", "D.6-7天", "E.7-8天"], answer: "D", explain: "腹部切口拆线时间6-7天。" },
+// 第2330题 试卷六 专业实践能力 第30题
+{ Q: "新生儿沐浴的室温应为", options: ["A.22-24℃", "B.24-26℃", "C.26-28℃", "D.28-30℃", "E.30-32℃"], answer: "C", explain: "新生儿沐浴室温26-28℃。" },
+// 第2331题 试卷六 专业实践能力 第31题
+{ Q: "新生儿脐部护理错误的是", options: ["A.保持脐部干燥", "B.尿布不可盖过脐部", "C.用75%乙醇消毒", "D.脐部有分泌物时涂抗生素软膏", "E.脐部用纱布包扎"], answer: "E", explain: "脐部应暴露，不宜包扎。" },
+// 第2332题 试卷六 专业实践能力 第32题
+{ Q: "新生儿黄疸行蓝光照射时，下列哪项错误", options: ["A.全身裸露", "B.戴眼罩", "C.穿尿布", "D.每小时测体温", "E.增加水分补充"], answer: "A", explain: "光疗时应穿尿布，保护会阴部。" },
+// 第2333题 试卷六 专业实践能力 第33题
+{ Q: "婴儿配方奶的配制方法正确的是", options: ["A.先加水后加奶粉", "B.先加奶粉后加水", "C.奶粉和水同时加入", "D.奶粉浓度越高越好", "E.水温越高越好"], answer: "A", explain: "先加水再加奶粉，便于准确配比。" },
+// 第2334题 试卷六 专业实践能力 第34题
+{ Q: "关于母乳喂养的指导，错误的是", options: ["A.按需哺乳", "B.哺乳前清洗乳头", "C.哺乳时只含乳头", "D.哺乳后排空剩余乳汁", "E.两侧乳房交替哺乳"], answer: "C", explain: "婴儿应含住乳晕，不能只含乳头。" },
+// 第2335题 试卷六 专业实践能力 第35题
+{ Q: "新生儿窒息的复苏程序是", options: ["A.清理呼吸道-建立呼吸-维持循环-用药", "B.建立呼吸-清理呼吸道-维持循环-用药", "C.维持循环-清理呼吸道-建立呼吸-用药", "D.用药-清理呼吸道-建立呼吸-维持循环", "E.清理呼吸道-维持循环-建立呼吸-用药"], answer: "A", explain: "复苏按A（气道）、B（呼吸）、C（循环）、D（药物）顺序。" },
+// 第2336题 试卷六 专业实践能力 第36题
+{ Q: "新生儿Apgar评分的项目不包括", options: ["A.心率", "B.呼吸", "C.体温", "D.肌张力", "E.皮肤颜色"], answer: "C", explain: "Apgar评分包括心率、呼吸、肌张力、皮肤颜色、反射。" },
+// 第2337题 试卷六 专业实践能力 第37题
+{ Q: "重度新生儿窒息Apgar评分为", options: ["A.0-3分", "B.4-7分", "C.8-10分", "D.0-4分", "E.5-8分"], answer: "A", explain: "0-3分为重度窒息，4-7分为轻度窒息。" },
+// 第2338题 试卷六 专业实践能力 第38题
+{ Q: "新生儿寒冷损伤综合征复温的要求是", options: ["A.快速复温", "B.缓慢复温", "C.每小时升高1℃", "D.每小时升高2℃", "E.每小时升高3℃"], answer: "C", explain: "每小时提高箱温1℃，12-24小时恢复正常体温。" },
+// 第2339题 试卷六 专业实践能力 第39题
+{ Q: "新生儿寒冷损伤综合征硬肿的护理，错误的是", options: ["A.测体温每小时1次", "B.温水浴后立即擦干", "C.皮下注射时避开硬肿部位", "D.吸吮困难者管饲喂养", "E.尽量减少肌内注射"], answer: "B", explain: "硬肿患儿不宜温水浴，以免增加耗氧量。" },
+// 第2340题 试卷六 专业实践能力 第40题
+{ Q: "新生儿肺炎的护理措施错误的是", options: ["A.保持呼吸道通畅", "B.合理用氧", "C.控制输液速度", "D.保持体温过低", "E.预防交叉感染"], answer: "D", explain: "应保持体温正常，不能过低。" },
+// 第2341题 试卷六 专业实践能力 第41题
+{ Q: "新生儿缺氧缺血性脑病的护理，正确的是", options: ["A.常规吸氧", "B.保持安静", "C.减少喂养次数", "D.头部抬高", "E.控制性降温"], answer: "B", explain: "HIE应保持安静，减少刺激。" },
+// 第2342题 试卷六 专业实践能力 第42题
+{ Q: "小儿腹泻的饮食护理错误的是", options: ["A.继续母乳喂养", "B.暂停辅食", "C.可饮用含乳糖奶粉", "D.少量多餐", "E.由少到多逐渐过渡"], answer: "C", explain: "腹泻时可暂不含乳糖奶粉，避免加重腹泻。" },
+// 第2343题 试卷六 专业实践能力 第43题
+{ Q: "口服补液盐的张力是", options: ["A.1/3张", "B.1/2张", "C.2/3张", "D.等张", "E.高张"], answer: "C", explain: "口服补液盐为2/3张。" },
+// 第2344题 试卷六 专业实践能力 第44题
+{ Q: "小儿腹泻中度脱水第一天补液总量为", options: ["A.90-120ml/kg", "B.120-150ml/kg", "C.150-180ml/kg", "D.180-200ml/kg", "E.200-250ml/kg"], answer: "B", explain: "中度脱水第一天补液120-150ml/kg。" },
+// 第2345题 试卷六 专业实践能力 第45题
+{ Q: "静脉补钾的浓度不宜超过", options: ["A.0.1%", "B.0.2%", "C.0.3%", "D.0.4%", "E.0.5%"], answer: "C", explain: "补钾浓度不超过0.3%。" },
+// 第2346题 试卷六 专业实践能力 第46题
+{ Q: "小儿高热惊厥的护理，错误的是", options: ["A.保持安静", "B.头偏向一侧", "C.按压肢体", "D.吸氧", "E.监测体温"], answer: "C", explain: "不可按压抽搐肢体，以免骨折。" },
+// 第2347题 试卷六 专业实践能力 第47题
+{ Q: "小儿气管异物时，正确的急救措施是", options: ["A.拍打背部", "B.喂水", "C.倒立拍背", "D.海姆立克法", "E.气管插管"], answer: "D", explain: "海姆立克法是气管异物的急救方法。" },
+// 第2348题 试卷六 专业实践能力 第48题
+{ Q: "CPR时，胸外按压与人工呼吸的比例是", options: ["A.15:1", "B.15:2", "C.30:1", "D.30:2", "E.5:1"], answer: "D", explain: "成人单人复苏按压呼吸比30:2。" },
+// 第2349题 试卷六 专业实践能力 第49题
+{ Q: "判断CPR有效的指标不包括", options: ["A.瞳孔缩小", "B.自主呼吸恢复", "C.可触及大动脉搏动", "D.面色转红润", "E.瞳孔散大固定"], answer: "E", explain: "瞳孔散大固定是复苏无效的表现。" },
+// 第2350题 试卷六 专业实践能力 第50题
+{ Q: "电除颤时，电极板应放置的位置是", options: ["A.心尖部-心底部", "B.心尖部-胸骨右缘第2肋间", "C.心尖部-胸骨左缘第2肋间", "D.心尖部-胸骨右缘第4肋间", "E.心尖部-左肩胛下"], answer: "B", explain: "一个电极板放在心尖部，另一个放在胸骨右缘第2肋间。" },
+// 第2351题 试卷六 专业实践能力 第51题
+{ Q: "中心静脉压的正常值是", options: ["A.1-5cmH₂O", "B.5-10cmH₂O", "C.5-12cmH₂O", "D.6-12cmH₂O", "E.10-15cmH₂O"], answer: "C", explain: "CVP正常值为5-12cmH₂O。" },
+// 第2352题 试卷六 专业实践能力 第52题
+{ Q: "休克患者应取的体位是", options: ["A.平卧位", "B.半坐卧位", "C.头低脚高位", "D.头高脚低位", "E.中凹卧位"], answer: "E", explain: "中凹卧位利于呼吸和回心血量。" },
+// 第2353题 试卷六 专业实践能力 第53题
+{ Q: "烧伤休克期补液，第一个24小时输入总量的分配是", options: ["A.前8小时1/2，后16小时1/2", "B.前8小时1/3，后16小时2/3", "C.前12小时1/2，后12小时1/2", "D.前24小时均匀输入", "E.前4小时1/2，后20小时1/2"], answer: "A", explain: "第一个24小时补液量，前8小时输入1/2，后16小时输入1/2。" },
+// 第2354题 试卷六 专业实践能力 第54题
+{ Q: "烧伤创面包扎疗法护理错误的是", options: ["A.保持敷料干燥", "B.观察末梢血运", "C.抬高患肢", "D.患肢制动", "E.出现湿渍及时更换"], answer: "D", explain: "烧伤肢体应适当活动，防止关节僵硬。" },
+// 第2355题 试卷六 专业实践能力 第55题
+{ Q: "烧伤暴露疗法的护理，错误的是", options: ["A.保持创面干燥", "B.控制室温28-32℃", "C.创面不覆盖任何敷料", "D.焦痂涂75%乙醇", "E.及时吸净渗液"], answer: "D", explain: "焦痂可用碘伏涂擦，75%乙醇刺激性大。" },
+// 第2356题 试卷六 专业实践能力 第56题
+{ Q: "关于胸腔闭式引流的护理，错误的是", options: ["A.保持引流通畅", "B.定时挤压引流管", "C.水封瓶低于胸腔60cm", "D.长玻璃管插入液面下3-4cm", "E.观察水柱波动"], answer: "D", explain: "长玻璃管应插入液面下1-2cm。" },
+// 第2357题 试卷六 专业实践能力 第57题
+{ Q: "胸腔闭式引流拔管后24小时内，应重点观察", options: ["A.体温", "B.血压", "C.呼吸", "D.切口敷料", "E.疼痛程度"], answer: "C", explain: "拔管后重点观察有无气促、呼吸困难等。" },
+// 第2358题 试卷六 专业实践能力 第58题
+{ Q: "胃肠减压的护理，错误的是", options: ["A.保持引流通畅", "B.观察引流液性状", "C.每日口腔护理", "D.口服药物后关闭胃管", "E.拔管前夹管观察"], answer: "D", explain: "口服药物前应夹管，服药后30分钟再开放。" },
+// 第2359题 试卷六 专业实践能力 第59题
+{ Q: "T管引流患者拔管前需要", options: ["A.夹管2-3天", "B.夹管3-5天", "C.夹管5-7天", "D.开放引流", "E.冲洗胆道"], answer: "A", explain: "拔管前夹管2-3天，无不适方可拔管。" },
+// 第2360题 试卷六 专业实践能力 第60题
+{ Q: "肠造口护理错误的是", options: ["A.观察造口颜色", "B.及时更换造口袋", "C.造口周围涂氧化锌软膏", "D.造口拆线后开始训练排便", "E.饮食无特殊要求"], answer: "E", explain: "造口患者应少食产气、产臭食物。" },
+// 第2361题 试卷六 专业实践能力 第61题
+{ Q: "结肠造口术后，患者宜取", options: ["A.平卧位", "B.健侧卧位", "C.患侧卧位", "D.半坐卧位", "E.膝胸卧位"], answer: "B", explain: "造口术后取健侧卧位，防止压迫造口。" },
+// 第2362题 试卷六 专业实践能力 第62题
+{ Q: "膀胱冲洗时，冲洗液的温度应为", options: ["A.20-25℃", "B.25-30℃", "C.30-35℃", "D.35-37℃", "E.37-40℃"], answer: "D", explain: "膀胱冲洗液温度35-37℃。" },
+// 第2363题 试卷六 专业实践能力 第63题
+{ Q: "肾损伤患者非手术治疗期间，最重要的观察项目是", options: ["A.尿量", "B.尿色", "C.腰腹部肿块", "D.血压脉搏", "E.血红蛋白"], answer: "D", explain: "血压脉搏变化是判断有无继续出血的重要指标。" },
+// 第2364题 试卷六 专业实践能力 第64题
+{ Q: "前列腺增生术后膀胱冲洗的目的是", options: ["A.预防感染", "B.防止血凝块堵塞", "C.促进伤口愈合", "D.减轻疼痛", "E.观察出血情况"], answer: "B", explain: "持续膀胱冲洗可防止血凝块堵塞尿管。" },
+// 第2365题 试卷六 专业实践能力 第65题
+{ Q: "骨折患者现场急救，首要的措施是", options: ["A.包扎伤口", "B.固定骨折", "C.抢救生命", "D.迅速转运", "E.镇痛"], answer: "C", explain: "现场急救应首先抢救生命。" },
+// 第2366题 试卷六 专业实践能力 第66题
+{ Q: "开放性骨折的处理，错误的是", options: ["A.用无菌敷料包扎", "B.外露骨端立即还纳", "C.止血带止血", "D.注射破伤风抗毒素", "E.尽早使用抗生素"], answer: "B", explain: "外露骨端不可还纳，以免污染伤口深部。" },
+// 第2367题 试卷六 专业实践能力 第67题
+{ Q: "石膏固定患者的护理，正确的是", options: ["A.石膏干固后即可负重", "B.肢体肿胀时抬高", "C.出现疼痛时自行服药", "D.石膏内有异味时打开", "E.每天检查局部皮肤"], answer: "B", explain: "石膏固定后应抬高患肢，促进静脉回流。" },
+// 第2368题 试卷六 专业实践能力 第68题
+{ Q: "骨牵引的护理，错误的是", options: ["A.保持牵引针孔干燥", "B.每天用75%乙醇消毒", "C.去除牵引针孔血痂", "D.观察肢体血运", "E.防止牵引针滑动"], answer: "C", explain: "血痂可保护针孔，不应去除。" },
+// 第2369题 试卷六 专业实践能力 第69题
+{ Q: "腰椎间盘突出症术后，患者直腿抬高练习的目的是", options: ["A.防止神经根粘连", "B.增强腰背肌力", "C.减轻疼痛", "D.促进血循环", "E.预防肌肉萎缩"], answer: "A", explain: "直腿抬高可防止术后神经根粘连。" },
+// 第2370题 试卷六 专业实践能力 第70题
+{ Q: "人工髋关节置换术后，患者应避免", options: ["A.坐低矮沙发", "B.床上翻身", "C.散步", "D.骑车", "E.游泳"], answer: "A", explain: "术后应避免坐低矮沙发，防止髋关节过度屈曲。" },
+// 第2371题 试卷六 专业实践能力 第71题
+{ Q: "膝关节镜术后，患者错误的康复指导是", options: ["A.早期股四头肌等长收缩", "B.直腿抬高练习", "C.膝关节主动屈伸", "D.下地负重行走", "E.CPM机被动活动"], answer: "D", explain: "术后早期不可负重行走，需遵医嘱逐渐负重。" },
+// 第2372题 试卷六 专业实践能力 第72题
+{ Q: "断肢再植术后，护理错误的是", options: ["A.抬高患肢", "B.局部保温", "C.观察血运", "D.遵医嘱使用抗凝药", "E.病房绝对禁烟"], answer: "B", explain: "局部可用灯烤保暖，但不可加温，以免增加代谢。" },
+// 第2373题 试卷六 专业实践能力 第73题
+{ Q: "急性胰腺炎患者，禁食的目的是", options: ["A.减少胃酸分泌", "B.减少胰液分泌", "C.减轻呕吐", "D.减少腹胀", "E.减少疼痛"], answer: "B", explain: "禁食可减少胰液分泌，减轻胰腺自身消化。" },
+// 第2374题 试卷六 专业实践能力 第74题
+{ Q: "消化性溃疡出血患者，护理错误的是", options: ["A.卧床休息", "B.禁食", "C.观察血压脉搏", "D.冰盐水洗胃", "E.呕血时取平卧位头偏向一侧"], answer: "B", explain: "出血期间可进温凉流质，不必完全禁食。" },
+// 第2375题 试卷六 专业实践能力 第75题
+{ Q: "肝性脑病患者，错误的饮食护理是", options: ["A.高热量", "B.高维生素", "C.高蛋白", "D.低脂肪", "E.易消化"], answer: "C", explain: "肝性脑病应限制蛋白质摄入。" },
+// 第2376题 试卷六 专业实践能力 第76题
+{ Q: "肝硬化腹水患者，每天钠盐摄入量应低于", options: ["A.0.5g", "B.1.0g", "C.1.5g", "D.2.0g", "E.2.5g"], answer: "D", explain: "腹水患者每日钠盐摄入应低于2g。" },
+// 第2377题 试卷六 专业实践能力 第77题
+{ Q: "急性肾小球肾炎患者，最主要的护理措施是", options: ["A.卧床休息", "B.低盐饮食", "C.记录出入量", "D.观察尿量", "E.预防感染"], answer: "A", explain: "卧床休息可减轻肾脏负担，是最主要的措施。" },
+// 第2378题 试卷六 专业实践能力 第78题
+{ Q: "肾病综合征患者，饮食护理错误的是", options: ["A.高蛋白", "B.低盐", "C.低脂肪", "D.高热量", "E.高维生素"], answer: "A", explain: "肾病综合征应给予适量优质蛋白，不宜过高。" },
+// 第2379题 试卷六 专业实践能力 第79题
+{ Q: "慢性肾衰竭患者，错误的饮食护理是", options: ["A.低蛋白", "B.高热量", "C.高维生素", "D.高磷", "E.低盐"], answer: "D", explain: "慢性肾衰竭应限制磷的摄入。" },
+// 第2380题 试卷六 专业实践能力 第80题
+{ Q: "血液透析患者，护理错误的是", options: ["A.监测血压", "B.观察穿刺点", "C.记录出入量", "D.透析前测体重", "E.透析前进食"], answer: "E", explain: "透析前不宜进食，以免引起低血压。" },
+// 第2381题 试卷六 专业实践能力 第81题
+{ Q: "腹膜透析患者，护理错误的是", options: ["A.无菌操作", "B.观察引流液", "C.记录出入量", "D.透析液加温", "E.透析后立即进食"], answer: "E", explain: "透析后休息片刻再进食。" },
+// 第2382题 试卷六 专业实践能力 第82题
+{ Q: "甲状腺功能亢进症患者，术前准备错误的是", options: ["A.高热量饮食", "B.高维生素饮食", "C.高碘饮食", "D.休息", "E.镇静剂"], answer: "C", explain: "术前应限制含碘食物，以免影响手术效果。" },
+// 第2383题 试卷六 专业实践能力 第83题
+{ Q: "甲亢患者，服用复方碘溶液时错误的是", options: ["A.饭后服用", "B.滴入水中稀释", "C.用吸管吸入", "D.直接口服", "E.观察有无过敏"], answer: "D", explain: "碘剂刺激性强，应稀释后服用。" },
+// 第2384题 试卷六 专业实践能力 第84题
+{ Q: "糖尿病患者，胰岛素治疗护理错误的是", options: ["A.餐前注射", "B.注射部位轮流", "C.注射后立即进食", "D.抽取胰岛素摇匀", "E.剩余胰岛素冷藏"], answer: "C", explain: "普通胰岛素注射后30分钟进食。" },
+// 第2385题 试卷六 专业实践能力 第85题
+{ Q: "糖尿病酮症酸中毒患者，护理错误的是", options: ["A.建立静脉通道", "B.监测血糖", "C.记录出入量", "D.快速补充碳酸氢钠", "E.观察神志变化"], answer: "D", explain: "碳酸氢钠应缓慢输入，过快可加重脑水肿。" },
+// 第2386题 试卷六 专业实践能力 第86题
+{ Q: "系统性红斑狼疮患者，皮肤护理错误的是", options: ["A.避免日晒", "B.温水洗脸", "C.碱性肥皂", "D.防晒霜", "E.长袖衣裤"], answer: "C", explain: "SLE患者应避免使用碱性肥皂等刺激性物品。" },
+// 第2387题 试卷六 专业实践能力 第87题
+{ Q: "类风湿关节炎患者，护理错误的是", options: ["A.急性期卧床", "B.关节功能位", "C.定时活动", "D.热敷", "E.冷敷"], answer: "E", explain: "RA患者应热敷缓解晨僵，不宜冷敷。" },
+// 第2388题 试卷六 专业实践能力 第88题
+{ Q: "帕金森病患者，康复护理错误的是", options: ["A.鼓励自理", "B.防止跌倒", "C.指导行走", "D.低枕卧位", "E.保持功能位"], answer: "D", explain: "帕金森患者不宜低枕卧位，应保持功能位。" },
+// 第2389题 试卷六 专业实践能力 第89题
+{ Q: "癫痫患者，健康教育错误的是", options: ["A.按时服药", "B.禁止驾车", "C.避免登高", "D.发作时按压肢体", "E.随身携带病情卡"], answer: "D", explain: "发作时不可按压肢体，以免骨折。" },
+// 第2390题 试卷六 专业实践能力 第90题
+{ Q: "脑梗死患者，吞咽困难护理错误的是", options: ["A.坐位进食", "B.头偏向健侧", "C.小口慢咽", "D.流质为主", "E.进食后漱口"], answer: "B", explain: "吞咽困难时应头偏向患侧，防止误吸。" },
+// 第2391题 试卷六 专业实践能力 第91题
+{ Q: "脑出血患者，急性期护理错误的是", options: ["A.绝对卧床", "B.头部抬高", "C.冰袋冷敷", "D.翻身拍背", "E.保持大便通畅"], answer: "D", explain: "急性期应减少搬动，不宜翻身拍背。" },
+// 第2392题 试卷六 专业实践能力 第92题
+{ Q: "蛛网膜下腔出血患者，护理错误的是", options: ["A.绝对卧床4-6周", "B.保持情绪稳定", "C.镇静止痛", "D.高压灌肠", "E.保持大便通畅"], answer: "D", explain: "禁用高压灌肠，以免引起颅内压增高。" },
+// 第2393题 试卷六 专业实践能力 第93题
+{ Q: "病毒性脑炎患者，高热护理错误的是", options: ["A.物理降温", "B.药物降温", "C.冰袋冷敷", "D.乙醇擦浴", "E.多饮水"], answer: "D", explain: "乙醇擦浴可引起惊厥，不宜使用。" },
+// 第2394题 试卷六 专业实践能力 第94题
+{ Q: "化脓性脑膜炎患者，颅内高压护理错误的是", options: ["A.抬高床头", "B.控制输液速度", "C.观察瞳孔", "D.记录出入量", "E.腰椎穿刺后平卧4-6小时"], answer: "E", explain: "腰穿后应去枕平卧4-6小时。" },
+// 第2395题 试卷六 专业实践能力 第95题
+{ Q: "结核性脑膜炎患者，护理错误的是", options: ["A.绝对卧床", "B.高热量饮食", "C.高蛋白饮食", "D.低盐饮食", "E.观察药物反应"], answer: "D", explain: "结脑不需低盐饮食。" },
+// 第2396题 试卷六 专业实践能力 第96题
+{ Q: "艾滋病患者，护理错误的是", options: ["A.保护隐私", "B.心理支持", "C.严格隔离", "D.标准预防", "E.健康教育"], answer: "C", explain: "艾滋病采用血液-体液隔离，不是严格隔离。" },
+// 第2397题 试卷六 专业实践能力 第97题
+{ Q: "破伤风患者，护理错误的是", options: ["A.单人病房", "B.光线明亮", "C.减少刺激", "D.专人护理", "E.备好气管切开"], answer: "B", explain: "破伤风应避免光线刺激，宜拉窗帘。" },
+// 第2398题 试卷六 专业实践能力 第98题
+{ Q: "狂犬病患者，护理错误的是", options: ["A.单间隔离", "B.光线暗淡", "C.环境安静", "D.避免水声", "E.多交谈"], answer: "E", explain: "避免刺激患者，不宜多交谈。" },
+// 第2399题 试卷六 专业实践能力 第99题
+{ Q: "中暑患者，降温护理错误的是", options: ["A.冰水擦浴", "B.冰袋冷敷", "C.冰水灌肠", "D.冰水浴", "E.快速降温"], answer: "A", explain: "冰水擦浴可导致血管收缩，不利于散热。" },
+// 第2400题 试卷六 专业实践能力 第100题
+{ Q: "淹溺患者，急救护理错误的是", options: ["A.清除口鼻异物", "B.控水", "C.立即CPR", "D.保暖", "E.观察并发症"], answer: "B", explain: "控水可能延误抢救，应立即CPR。" }
+];
+
+
+   
+        console.log('题库加载完成，总题数:', questionsData.length);
+
+        // ---------- 持久化存储键 ----------
+        const STORAGE_KEY = 'nurse_exam_data_group5';
+
+        // 从localStorage读取保存的数据
+        let savedSelections = {};
+        let savedWrongSet = [];
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                savedSelections = parsed.selections || {};
+                savedWrongSet = parsed.wrongSet || [];
+            }
+        } catch (e) {
+            console.warn('读取存储数据失败', e);
+        }
+
+        const { createApp, ref, computed, watch } = Vue;
+
+        const app = createApp({
+            setup() {
+                // ---------- 基础数据 ----------
+                const questions = ref(questionsData);          // 所有题目
+                const mode = ref('order');                      // 当前模式
+                const index = ref(0);                            // 当前题目在过滤后列表中的索引
+                const showAnswer = ref(false);
+                const userSelections = ref(savedSelections);    // 用户答案记录（原始索引 -> 选项）
+                const wrongSet = ref(new Set(savedWrongSet));    // 错题集合（原始索引）
+
+                // ---------- 模拟考试专用状态 ----------
+                const examQuestions = ref([]);                   // 随机抽取的100题（原始题目对象）
+                const examTimeLeft = ref(90 * 60);                // 剩余时间（秒）
+                const examTimer = ref(null);
+                const examFinished = ref(false);
+                const examScore = ref(0);
+                const showExamResult = ref(false);
+
+                // ---------- 持久化存储（自动保存）----------
+                watch(
+                    [userSelections, wrongSet],
+                    () => {
+                        const toStore = {
+                            selections: userSelections.value,
+                            wrongSet: Array.from(wrongSet.value)
+                        };
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+                    },
+                    { deep: true }
+                );
+
+                // ---------- 过滤后的题目列表 ----------
+                const filteredList = computed(() => {
+                    if (mode.value === 'wrong') {
+                        return Array.from(wrongSet.value).map(idx => questions.value[idx]).filter(q => q);
+                    } else if (mode.value === 'exam') {
+                        return examQuestions.value;
+                    } else {
+                        return questions.value;
+                    }
+                });
+
+                const total = computed(() => filteredList.value.length);
+                const currentQuestion = computed(() => filteredList.value[index.value]);
+                const currentRawIndex = computed(() => {
+                    if (!currentQuestion.value) return -1;
+                    return questions.value.findIndex(q => q === currentQuestion.value);
+                });
+                const atFirst = computed(() => index.value === 0);
+                const atLast = computed(() => index.value === total.value - 1);
+                const answeredCount = computed(() => Object.keys(userSelections.value).length);
+                const correctCount = computed(() => {
+                    let cnt = 0;
+                    for (let rawIdx in userSelections.value) {
+                        if (userSelections.value[rawIdx] === questions.value[rawIdx]?.answer) cnt++;
+                    }
+                    return cnt;
+                });
+                const wrongList = computed(() => Array.from(wrongSet.value).sort((a,b)=>a-b));
+
+                // 格式化时间 mm:ss
+                const formattedTime = computed(() => {
+                    const minutes = Math.floor(examTimeLeft.value / 60);
+                    const seconds = examTimeLeft.value % 60;
+                    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                });
+
+                // ---------- 工具函数：随机抽取100题 ----------
+                function pickRandomQuestions() {
+                    const totalCount = questions.value.length;
+                    if (totalCount <= 100) return questions.value.slice();
+                    // Fisher-Yates 洗牌
+                    const shuffled = [...questions.value];
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                    }
+                    return shuffled.slice(0, 100);
+                }
+
+                // ---------- 模拟考试控制 ----------
+                function startExam() {
+                    examQuestions.value = pickRandomQuestions();
+                    examTimeLeft.value = 90 * 60;
+                    examFinished.value = false;
+                    showExamResult.value = false;
+                    index.value = 0;
+                    showAnswer.value = false;
+
+                    if (examTimer.value) clearInterval(examTimer.value);
+                    examTimer.value = setInterval(() => {
+                        if (examTimeLeft.value > 0) {
+                            examTimeLeft.value--;
+                        } else {
+                            finishExam(); // 时间到自动交卷
+                        }
+                    }, 1000);
+                }
+
+                function finishExam() {
+                    if (examFinished.value) return;
+                    if (examTimer.value) {
+                        clearInterval(examTimer.value);
+                        examTimer.value = null;
+                    }
+                    // 检查漏答题目
+                    const missed = examQuestions.value.filter(q => {
+                        const rawIdx = questions.value.findIndex(item => item === q);
+                        return !userSelections.value[rawIdx];
+                    });
+                    if (missed.length > 0) {
+                        // 提示用户
+                        alert(`您有 ${missed.length} 道题未作答，已自动标记为错误。`);
+                        // 将漏答题目加入错题本
+                        const newSet = new Set(wrongSet.value);
+                        missed.forEach(q => {
+                            const rawIdx = questions.value.findIndex(item => item === q);
+                            newSet.add(rawIdx);
+                        });
+                        wrongSet.value = newSet;
+                    }
+                    examFinished.value = true;
+                    examScore.value = correctCount.value; // correctCount只计算已答正确的
+                    showExamResult.value = true;
+                }
+
+                // ---------- 模式切换 ----------
+                function switchMode(newMode) {
+                    mode.value = newMode;
+                    index.value = 0;
+                    showAnswer.value = false;
+
+                    if (newMode === 'exam') {
+                        startExam();
+                    } else {
+                        // 离开考试模式时清理计时器
+                        if (examTimer.value) {
+                            clearInterval(examTimer.value);
+                            examTimer.value = null;
+                        }
+                        examFinished.value = false;
+                        showExamResult.value = false;
+                    }
+                }
+
+                // ---------- 题目导航 ----------
+                function nextQuestion() {
+                    if (index.value < total.value - 1) {
+                        index.value++;
+                        showAnswer.value = false;
+                    }
+                }
+                function previousQuestion() {
+                    if (index.value > 0) {
+                        index.value--;
+                        showAnswer.value = false;
+                    }
+                }
+                function toggleAnswer() {
+                    showAnswer.value = !showAnswer.value;
+                }
+
+                // ---------- 选择选项 ----------
+                function selectOption(opt) {
+                    if (!currentQuestion.value) return;
+                    const rawIdx = currentRawIndex.value;
+                    if (rawIdx === -1) return;
+
+                    userSelections.value[rawIdx] = opt;  // 记录答案
+
+                    // 模拟考试中自动判断错题
+                    if (mode.value === 'exam' && !examFinished.value) {
+                        const correctAns = questions.value[rawIdx]?.answer;
+                        if (opt !== correctAns) {
+                            const newSet = new Set(wrongSet.value);
+                            newSet.add(rawIdx);
+                            wrongSet.value = newSet;
+                        }
+                    }
+                }
+
+                // ---------- 标记错题（考试模式下禁用）----------
+                function markWrong() {
+                    if (mode.value === 'exam') return;
+                    if (!currentQuestion.value) return;
+                    const rawIdx = currentRawIndex.value;
+                    if (rawIdx === -1) return;
+                    const newSet = new Set(wrongSet.value);
+                    if (newSet.has(rawIdx)) {
+                        newSet.delete(rawIdx);
+                    } else {
+                        newSet.add(rawIdx);
+                    }
+                    wrongSet.value = newSet;
+                }
+
+                // ---------- 随机跳题 ----------
+                function randomJump() {
+                    if (total.value === 0) return;
+                    const rand = Math.floor(Math.random() * total.value);
+                    index.value = rand;
+                    showAnswer.value = false;
+                }
+
+                // ---------- 跳转到错题 ----------
+                function jumpToWrongQuestion(rawId) {
+                    if (mode.value !== 'wrong') switchMode('wrong');
+                    const pos = filteredList.value.findIndex(q => questions.value[rawId] === q);
+                    if (pos !== -1) {
+                        index.value = pos;
+                        showAnswer.value = false;
+                    }
+                }
+
+                // ---------- 清空错题本 ----------
+                function clearWrongSet() {
+                    wrongSet.value = new Set();
+                }
+
+                return {
+                    questions,
+                    mode,
+                    index,
+                    showAnswer,
+                    userSelections,
+                    wrongSet,
+                    filteredList,
+                    total,
+                    currentQuestion,
+                    currentRawIndex,
+                    atFirst,
+                    atLast,
+                    answeredCount,
+                    correctCount,
+                    wrongList,
+                    // 模拟考试专用
+                    examTimeLeft,
+                    examFinished,
+                    examScore,
+                    showExamResult,
+                    formattedTime,
+                    // 方法
+                    switchMode,
+                    nextQuestion,
+                    previousQuestion,
+                    toggleAnswer,
+                    selectOption,
+                    markWrong,
+                    randomJump,
+                    jumpToWrongQuestion,
+                    finishExam,
+                    clearWrongSet
+                };
+            }
+        });
+
+        app.mount('#app');
+    })();
+
+</script>
+</body>
+</html>
