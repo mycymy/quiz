@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>主管护师·800题混编练习</title>
+    <!-- 引入 Chart.js 用于统计图表 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 6px;
+        }
+
+        #app {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 12px 12px 16px;
+            margin: 5px 0 15px;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #0b3b5c;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            border-left: 6px solid #2a7faa;
+            padding-left: 12px;
+        }
+
+        .today-stats {
+            display: flex;
+            gap: 12px;
+            background: #e6f0f9;
+            padding: 8px 16px;
+            border-radius: 40px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #0b3b5c;
+            font-weight: 500;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .today-stats span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+            background: #e6f0f9;
+            padding: 10px 8px;
+            border-radius: 28px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            background: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            flex: 1 0 auto;
+            font-size: 0.85rem;
+        }
+
+        .mode-btn.active {
+            background: #2a7faa;
+            color: white;
+            box-shadow: 0 4px 8px -4px #2a7faacc;
+            border-color: #1f5a7a;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0 10px;
+            align-items: center;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            justify-content: center;
+            background: #f8fafc;
+        }
+
+        .btn.primary {
+            background: #2a7faa;
+            border-color: #1e5f82;
+            color: white;
+        }
+
+        .btn.warning {
+            background: #f97316;
+            border-color: #c2410c;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-btn {
+            flex: 1 1 0;
+            min-width: 80px;
+        }
+        .jump-btn {
+            flex: 1 1 0;
+            min-width: 80px;
+        }
+        .jump-input {
+            flex: 0 1 100px;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.85rem;
+            background: #f8fafc;
+            min-width: 90px;
+        }
+
+        .search-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0 8px;
+            align-items: center;
+        }
+        .search-box {
+            flex: 2 1 180px;
+            display: flex;
+            gap: 6px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.85rem;
+            background: white;
+        }
+        .search-results {
+            max-height: 150px;
+            overflow-y: auto;
+            margin: 4px 0 0;
+            background: white;
+            border-radius: 20px;
+            padding: 4px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .search-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .search-item small {
+            color: #2a7faa;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px 16px;
+            background: #fff3cd;
+            border-radius: 40px;
+            border: 1px solid #ffeeba;
+            font-size: 0.9rem;
+        }
+
+        .timer {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .question-panel {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 16px 12px;
+            box-shadow: inset 0 1px 4px #e2e8f0, 0 4px 8px -6px #94a3b8;
+            border: 1px solid #e9eef3;
+        }
+
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .q-num {
+            background: #dbeafe;
+            padding: 4px 14px;
+            border-radius: 40px;
+            color: #1e3a8a;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .q-type {
+            background: #e2f3e4;
+            padding: 4px 14px;
+            border-radius: 40px;
+            color: #166534;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .favorite-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 5px;
+            color: #ccc;
+            transition: transform 0.1s ease, color 0.1s ease;
+        }
+        .favorite-btn.active {
+            color: #fbbf24;
+            text-shadow: 0 0 2px #f59e0b;
+        }
+        .favorite-btn:active {
+            transform: scale(1.2);
+        }
+
+        .q-text {
+            font-size: 1.15rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin: 12px 0 12px;
+            color: #0a1e2f;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .quick-mode .options {
+            display: none !important;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 10px 12px;
+            border-radius: 30px;
+            border: 1px solid #dee7ef;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        .option-item.selected {
+            background: #e0f2fe;
+            border-color: #0369a1;
+            box-shadow: 0 0 0 2px #bae6fd;
+        }
+
+        .option-prefix {
+            font-weight: 700;
+            background: white;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .option-item.selected .option-prefix {
+            background: #0369a1;
+            border-color: #0369a1;
+            color: white;
+        }
+
+        .option-content {
+            flex: 1;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #0f2b40;
+        }
+
+        .answer-area {
+            margin: 12px 0 8px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+
+        .correct-badge, .wrong-badge {
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .explanation {
+            margin-top: 8px;
+            color: #2c3e50;
+            font-size: 0.85rem;
+            background: white;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0 5px;
+            color: #4b5563;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .favorite-book, .stats-page, .wrong-book {
+            background: #fff1f0;
+            padding: 12px;
+            border-radius: 24px;
+            margin-top: 12px;
+            border: 1px solid #ffccc7;
+            font-size: 0.85rem;
+        }
+
+        .favorite-item, .wrong-item {
+            padding: 8px;
+            border-bottom: 1px dashed #fbb9b5;
+            cursor: pointer;
+        }
+
+        .stats-page {
+            background: #e6f0f9;
+            border-color: #2a7faa;
+        }
+
+        .chart-container {
+            height: 200px;
+            margin: 15px 0;
+        }
+
+        .exam-result {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            margin: 12px 0;
+            border: 2px solid #2a7faa;
+            font-size: 0.9rem;
+        }
+        .wrong-answer {
+            background: #fff1f0;
+            padding: 12px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+        }
+        .wrong-answer p {
+            margin: 6px 0;
+        }
+        .wrong-answer hr {
+            margin-top: 10px;
+            border: 0;
+            border-top: 1px dashed #fbb9b5;
+        }
+
+        footer {
+            margin-top: 12px;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            max-width: 85%;
+            width: 360px;
+            padding: 20px 18px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .modal-content .correct-ans {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #b91c1c;
+            margin-bottom: 12px;
+        }
+        .modal-content .explain {
+            color: #2c3e50;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .modal-content .remember-btn {
+            background: #2a7faa;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .home-btn {
+            width: auto;
+            min-width: 100px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+
+        .speak-btn {
+            background: #2a7faa;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .speak-all-btn {
+            background: #f97316;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .speak-stop-btn {
+            background: #6b7280;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <h1 style="margin-bottom: 0;">
+                📚 主管护师·800题混编练习 <span style="font-size:0.9rem; color:#4b5563; font-weight:400;">（共{{ totalQuestions }}题）</span>
+            </h1>
+            <a href="https://mycymy.github.io/quiz" target="_self" class="btn home-btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none;">🏠 返回主页</a>
+        </div>
+
+        <!-- 今日累计统计行 -->
+        <div class="today-stats">
+            <span>⏱️ 今日练习: {{ formatTodayTime }}</span>
+            <span>📝 今日做题: {{ todayPracticeCount }} 题</span>
+            <span>⭐ 收藏 {{ favoritesList.length }}</span>
+        </div>
+
+        <!-- 模式切换工具栏 -->
+        <div class="toolbar">
+            <button class="mode-btn" :class="{active: mode === 'order'}" @click="switchMode('order')">📋 顺序</button>
+            <button class="mode-btn" :class="{active: mode === 'random'}" @click="switchMode('random')">🎲 随机</button>
+            <button class="mode-btn" :class="{active: mode === 'exam'}" @click="switchMode('exam')">✍️ 模拟</button>
+            <button class="mode-btn" :class="{active: mode === 'wrong'}" @click="switchMode('wrong')">📌 错题本</button>
+            <button class="mode-btn" :class="{active: mode === 'favorite'}" @click="switchMode('favorite')">⭐ 收藏</button>
+            <button class="mode-btn" :class="{active: mode === 'stats'}" @click="switchMode('stats')">📊 学习统计</button>
+            <button class="mode-btn" :class="{active: mode === 'quick'}" @click="switchMode('quick')">⚡ 背题</button>
+        </div>
+
+        <!-- 第二行：导航 + 手动跳转（仅顺序/背题模式显示跳转，背题模式增加语音按钮） -->
+        <div class="action-row" v-if="!isStatsMode">
+            <button class="btn nav-btn" @click="previousQuestion" :disabled="atFirst">◀ 上一题</button>
+            <button class="btn primary nav-btn" @click="toggleAnswer">{{ showAnswer ? '隐藏' : '查看答案' }}</button>
+            <button class="btn nav-btn" @click="nextQuestion" :disabled="atLast">下一题 ▶</button>
+            <!-- 背题模式下的语音按钮组 -->
+            <template v-if="mode === 'quick'">
+                <button class="speak-btn" @click="speakCurrentQuestion">🔊 朗读本题</button>
+                <button class="speak-all-btn" @click="speakAllFromStart">🔊 全部(从头)</button>
+                <button class="speak-all-btn" @click="speakAllFromCurrent">🔊 全部(从当前)</button>
+                <button class="speak-stop-btn" @click="stopSpeaking">⏹️ 停止</button>
+            </template>
+            <template v-if="mode === 'order'">
+                <input type="number" v-model.number="jumpInput" class="jump-input" min="1" :max="total" placeholder="输入题号">
+                <button class="btn primary jump-btn" @click="jumpToNumber">跳转</button>
+            </template>
+        </div>
+
+        <!-- 模拟考试计时器栏 -->
+        <div v-if="mode === 'exam' && !examFinished" class="exam-info">
+            <span class="timer">⏱️ {{ formattedTime }}</span>
+            <button class="btn primary" style="padding:6px 12px;" @click="finishExam">交卷</button>
+        </div>
+
+        <!-- 第三行：搜索 + 标记错题/随机跳题（非统计/收藏模式显示，背题模式不显示标记错题） -->
+        <div class="search-row" v-if="!isStatsMode && !isFavoriteMode">
+            <div class="search-box">
+                <input type="text" v-model="searchKeyword" @keyup.enter="performSearch" placeholder="搜索题目">
+                <button class="btn primary" style="padding:8px 12px;" @click="performSearch">搜索</button>
+            </div>
+            <div v-if="mode !== 'wrong' && mode !== 'quick'" style="display: flex; gap: 6px;">
+                <button class="btn warning" style="padding:8px 10px;" @click="markWrong">📕 标记</button>
+                <button class="btn" style="padding:8px 10px;" @click="randomJump">🎯 随机</button>
+            </div>
+        </div>
+
+        <!-- 搜索结果 -->
+        <div class="search-results" v-if="searchResults.length > 0">
+            <div v-for="item in searchResults" :key="item.rawIndex" class="search-item" @click="goToSearchResult(item.rawIndex)">
+                <small>#{{ item.rawIndex+1 }}</small> {{ item.question.Q.substring(0, 30) }}...
+            </div>
+        </div>
+
+        <!-- 题目卡片（仅在非统计/收藏模式显示，背题模式下应用quick-mode类隐藏选项） -->
+        <div class="question-panel" :class="{ 'quick-mode': mode === 'quick' }" v-if="currentQuestion && !isStatsMode && !isFavoriteMode">
+            <div class="q-header">
+                <span class="q-num">第 {{ index+1 }}/{{ total }} 题</span>
+                <span class="q-type">单选</span>
+                <!-- 收藏按钮（未收藏灰色，收藏金色） -->
+                <button class="favorite-btn" :class="{active: isFavorite(currentRawIndex)}" @click="toggleFavorite(currentRawIndex)">⭐</button>
+            </div>
+            <div class="q-text">{{ currentQuestion.Q }}</div>
+            <!-- 选项区域 - 背题模式下通过CSS隐藏 -->
+            <div class="options">
+                <div v-for="(opt, idx) in currentQuestion.options" :key="idx" class="option-item" 
+                     :class="{selected: !isQuickMode && userSelections[currentRawIndex] === String.fromCharCode(65+idx)}" 
+                     @click="!isQuickMode && selectOption(String.fromCharCode(65+idx))">
+                    <span class="option-prefix">{{ String.fromCharCode(65+idx) }}</span>
+                    <span class="option-content">{{ opt }}</span>
+                </div>
+            </div>
+
+            <!-- 答案区域（背题模式下始终显示，其他模式由showAnswer控制） -->
+            <div class="answer-area" v-if="isQuickMode || showAnswer">
+                <div>
+                    <span class="correct-badge" v-if="!isQuickMode && userSelections[currentRawIndex] === currentQuestion.answer">✓ 正确</span>
+                    <span class="wrong-badge" v-else-if="!isQuickMode && userSelections[currentRawIndex] && userSelections[currentRawIndex] !== currentQuestion.answer">✗ 错误</span>
+                    <span style="font-weight:600;">答案：{{ currentQuestion.answer }}</span>
+                </div>
+                <div class="explanation" v-if="currentQuestion.explain">
+                    <strong>📖 解析：</strong> {{ currentQuestion.explain }}
+                </div>
+            </div>
+        </div>
+
+        <!-- 收藏列表页面（安全渲染） -->
+        <div v-if="mode === 'favorite'" class="favorite-book">
+            <h3 style="color:#b91c1c; margin-bottom:10px; font-size:1rem;">⭐ 我的收藏 ({{ favoritesList.length }})</h3>
+            <div v-if="favoritesList.length === 0" style="color: #4b5563;">暂无收藏题目</div>
+            <div v-for="(id, idx) in favoritesList" :key="idx" class="favorite-item" @click="jumpToFavorite(id)">
+                <span style="font-weight:500;">题 {{ id+1 }}：</span>
+                {{ (questions[id]?.Q || '').substring(0,20) }}…
+                <span style="color:#a5a;">[{{ questions[id]?.answer || '?' }}]</span>
+            </div>
+        </div>
+
+        <!-- 学习统计页面 -->
+        <div v-if="mode === 'stats'" class="stats-page">
+            <h3 style="color:#2a7faa; margin-bottom:10px; font-size:1rem;">📊 学习统计</h3>
+            <div style="margin-bottom:10px;">
+                <select v-model="statsPeriod" @change="renderChart">
+                    <option value="week">最近7天</option>
+                    <option value="month">最近30天</option>
+                </select>
+            </div>
+            <div class="chart-container">
+                <canvas id="statsChart"></canvas>
+            </div>
+            <p>总练习天数: {{ dailyStats.length }}</p>
+            <p>总答题数: {{ totalAnswers }}</p>
+            <p>总正确数: {{ totalCorrect }}</p>
+            <p>总正确率: {{ totalCorrectRate }}%</p>
+        </div>
+
+        <!-- 错题本详情（错题模式下显示，安全渲染） -->
+        <div class="wrong-book" v-if="mode === 'wrong'">
+            <h3 style="color:#b91c1c; margin-bottom:10px; font-size:1rem;">❌ 错题本 ({{ wrongList.length }})</h3>
+            <div v-if="wrongList.length === 0" style="color: #4b5563;">还没有错题</div>
+            <div v-for="(id, idx) in wrongList" :key="idx" class="wrong-item" @click="jumpToWrongQuestion(id)">
+                <span style="font-weight:500;">题 {{ id+1 }}：</span>
+                {{ (questions[id]?.Q || '').substring(0,20) }}…
+                <span style="color:#a5a;">[{{ questions[id]?.answer || '?' }}]</span>
+            </div>
+            <button v-if="wrongList.length > 0" class="btn warning" @click="clearWrongSet" style="margin-top:10px; padding:8px;">🧹 清空</button>
+        </div>
+
+        <!-- 进度统计（非统计/收藏模式显示） -->
+        <div class="progress" v-if="!isStatsMode && !isFavoriteMode">
+            <span>✅ 已完成 {{ answeredCount }}/{{ total }}</span>
+            <span>🎯 正确 {{ correctCount }}</span>
+            <span>📕 错题 {{ wrongList.length }}</span>
+        </div>
+
+        <!-- 考试成绩单（交卷后显示） -->
+        <div v-if="showExamResult" class="exam-result">
+            <h2 style="font-size:1.2rem;">📊 模拟考试成绩</h2>
+            <p>得分: {{ examScore }} / {{ total }} ({{ (examScore/total*100).toFixed(1) }}%)</p>
+            <p>正确题数: {{ correctCount }}</p>
+            <p>错题数: {{ wrongList.length }}</p>
+            <div v-if="wrongList.length > 0">
+                <h3 style="font-size:1rem; margin:12px 0 8px;">❌ 错题解析</h3>
+                <div v-for="(rawId, idx) in wrongList" :key="idx" class="wrong-answer">
+                    <p><strong>题号 {{ rawId+1 }}:</strong> {{ questions[rawId]?.Q || '题目缺失' }}</p>
+                    <p><span style="color:red;">您的答案: {{ userSelections[rawId] || '未答' }}</span> → <span style="color:green;">正确答案: {{ questions[rawId]?.answer || '?' }}</span></p>
+                    <p>📖 解析: {{ questions[rawId]?.explain || '无解析' }}</p>
+                    <hr>
+                </div>
+            </div>
+            <button class="btn primary" @click="switchMode('order')">返回练习模式</button>
+        </div>
+
+        <!-- 答错提示对话框（模态） -->
+        <div v-if="showWrongFeedback" class="modal-overlay" @click.self="dismissWrongFeedback">
+            <div class="modal-content">
+                <div class="correct-ans">正确答案：{{ wrongFeedback.answer }}</div>
+                <div class="explain" v-if="wrongFeedback.explain"><strong>📖 解析：</strong><br>{{ wrongFeedback.explain }}</div>
+                <div class="explain" v-else>（本题无解析）</div>
+                <button class="remember-btn" @click="dismissWrongFeedback">我记住了</button>
+            </div>
+        </div>
+
+        <footer>⭐ 主管护师 800题混编练习</footer>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        (function() {
+            // ---------- 题库数据（示例5题，实际使用时替换为完整800题）----------
+            const questionsData = [
+                { Q: "丈夫为X连锁显性遗传病患者，妻子正常，如生一女儿，其发病概率为", options: ["100%", "50%", "25%", "12.50%", "6.25%"], answer: "A", explain: "X连锁显性遗传，父亲患病与正常母亲所生女儿100%为患者。", type: "single" },
+                { Q: "对急性一氧化碳中毒有诊断价值的检查是", options: ["碳氧血红蛋白测定", "胆碱酯酶活力测定", "淀粉酶测定", "心肌酶测定", "碱性磷酸酶测定"], answer: "A", explain: "CO中毒形成碳氧血红蛋白，测定有诊断价值。", type: "single" },
+                { Q: "护理人员在未取得执业证书期间可以独立进行的临床护理工作是", options: ["与患者沟通观察病情", "肌内注射", "过敏试验", "给患者服药", "静脉穿刺"], answer: "A", explain: "未注册不得独立操作，但沟通观察可。", type: "single" },
+                { Q: "心脏骤停最常见的原因是", options: ["冠心病", "先天性心脏病", "病毒性心肌炎", "慢性肺源性心脏病", "心肌疾病"], answer: "A", explain: "冠心病是心脏骤停最常见病因。", type: "single" },
+                { Q: "新生儿败血症最常见的致病菌是", options: ["大肠埃希菌", "厌氧菌", "葡萄球菌", "溶血性链球菌", "肺炎链球菌"], answer: "C", explain: "葡萄球菌为主，尤其是金黄色葡萄球菌。", type: "single" }
+            ];
+
+            // ---------- 持久化存储键 ----------
+            const STORAGE_KEY = 'nurse_exam_data';
+            const LAST_STATE_KEY = 'nurse_last_state';
+            const TODAY_STATS_KEY = 'nurse_today_stats';
+            const FAVORITES_KEY = 'nurse_favorites';
+            const DAILY_STATS_KEY = 'nurse_daily_stats';
+
+            // 获取今日日期字符串 yyyy-mm-dd
+            function getTodayString() {
+                const d = new Date();
+                return `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+            }
+
+            // 初始化今日统计
+            let savedTodayStats = { date: getTodayString(), seconds: 0, count: 0 };
+            try {
+                const stored = localStorage.getItem(TODAY_STATS_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed.date === getTodayString()) savedTodayStats = parsed;
+                    else savedTodayStats = { date: getTodayString(), seconds: 0, count: 0 };
+                }
+            } catch (e) {}
+
+            // 初始化每日历史统计
+            let savedDailyStats = [];
+            try {
+                const stored = localStorage.getItem(DAILY_STATS_KEY);
+                if (stored) savedDailyStats = JSON.parse(stored);
+            } catch (e) {}
+
+            let savedSelections = {};
+            let savedWrongSet = [];
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    savedSelections = parsed.selections || {};
+                    savedWrongSet = parsed.wrongSet || [];
+                }
+            } catch (e) {}
+
+            // 初始化收藏
+            let savedFavorites = [];
+            try {
+                const stored = localStorage.getItem(FAVORITES_KEY);
+                if (stored) savedFavorites = JSON.parse(stored);
+            } catch (e) {}
+
+            let lastState = null;
+            try {
+                const saved = localStorage.getItem(LAST_STATE_KEY);
+                if (saved) lastState = JSON.parse(saved);
+            } catch (e) {}
+
+            const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vue;
+
+            const app = createApp({
+                setup() {
+                    // ---------- 基础数据 ----------
+                    const questions = ref(questionsData);
+                    const mode = ref('order');
+                    const index = ref(0);
+                    const showAnswer = ref(false);
+                    const userSelections = ref(savedSelections);
+                    const wrongSet = ref(new Set(savedWrongSet));
+                    const favorites = ref(new Set(savedFavorites));
+                    const jumpInput = ref(1);
+                    const searchKeyword = ref('');
+                    const searchResults = ref([]);
+                    const showWrongFeedback = ref(false);
+                    const wrongFeedback = ref({ answer: '', explain: '' });
+                    const examQuestions = ref([]);
+                    const examTimeLeft = ref(90 * 60);
+                    const examTimer = ref(null);
+                    const examFinished = ref(false);
+                    const examScore = ref(0);
+                    const showExamResult = ref(false);
+
+                    // 每日历史统计
+                    const dailyStats = ref(savedDailyStats);
+                    const statsPeriod = ref('week');
+                    let chartInstance = null;
+
+                    // 总题数
+                    const totalQuestions = computed(() => questions.value.length);
+
+                    // 今日累计统计
+                    const todayStats = ref(savedTodayStats);
+                    let timerInterval = null;
+
+                    // 格式化今日练习时间
+                    const formatTodayTime = computed(() => {
+                        const totalSec = todayStats.value.seconds;
+                        const hours = Math.floor(totalSec / 3600);
+                        const minutes = Math.floor((totalSec % 3600) / 60);
+                        const secs = totalSec % 60;
+                        if (hours > 0) return `${hours}小时${minutes}分钟`;
+                        if (minutes > 0) return `${minutes}分钟${secs}秒`;
+                        return `${secs}秒`;
+                    });
+
+                    const todayPracticeCount = computed(() => todayStats.value.count);
+
+                    // 收藏列表（过滤无效索引）
+                    const favoritesList = computed(() => 
+                        Array.from(favorites.value)
+                            .filter(id => id >= 0 && id < questions.value.length)
+                            .sort((a, b) => a - b)
+                    );
+
+                    // 总答题数、正确数、正确率
+                    const totalAnswers = computed(() => Object.keys(userSelections.value).length);
+                    const totalCorrect = computed(() => {
+                        let cnt = 0;
+                        for (let rawIdx in userSelections.value) {
+                            if (userSelections.value[rawIdx] === questions.value[rawIdx]?.answer) cnt++;
+                        }
+                        return cnt;
+                    });
+                    const totalCorrectRate = computed(() => totalAnswers.value ? (totalCorrect.value / totalAnswers.value * 100).toFixed(1) : 0);
+
+                    // 错题列表（过滤无效索引）
+                    const wrongList = computed(() => 
+                        Array.from(wrongSet.value)
+                            .filter(id => id >= 0 && id < questions.value.length)
+                            .sort((a, b) => a - b)
+                    );
+
+                    // 模式判断辅助
+                    const isStatsMode = computed(() => mode.value === 'stats');
+                    const isFavoriteMode = computed(() => mode.value === 'favorite');
+                    const isQuickMode = computed(() => mode.value === 'quick');
+
+                    // 保存今日统计
+                    function saveTodayStats() {
+                        localStorage.setItem(TODAY_STATS_KEY, JSON.stringify(todayStats.value));
+                    }
+
+                    // 启动计时器
+                    function startTimer() {
+                        if (timerInterval) clearInterval(timerInterval);
+                        timerInterval = setInterval(() => {
+                            todayStats.value.seconds++;
+                            saveTodayStats();
+                        }, 1000);
+                    }
+
+                    function stopTimer() {
+                        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+                    }
+
+                    onMounted(() => {
+                        startTimer();
+                        restoreLastState();
+                        updateDailyStats();
+                        // 预加载语音引擎（移动端优化）
+                        if (window.speechSynthesis) {
+                            // 静默获取语音列表，触发引擎初始化
+                            window.speechSynthesis.getVoices();
+                        }
+                    });
+
+                    onUnmounted(() => {
+                        stopTimer();
+                    });
+
+                    // 更新每日历史统计
+                    function updateDailyStats() {
+                        const today = getTodayString();
+                        let found = dailyStats.value.find(d => d.date === today);
+                        if (!found) {
+                            found = { date: today, count: 0, correct: 0, seconds: 0 };
+                            dailyStats.value.push(found);
+                        }
+                        found.seconds = todayStats.value.seconds;
+                        localStorage.setItem(DAILY_STATS_KEY, JSON.stringify(dailyStats.value));
+                    }
+
+                    function saveAllStats() {
+                        saveTodayStats();
+                        localStorage.setItem(DAILY_STATS_KEY, JSON.stringify(dailyStats.value));
+                    }
+
+                    // 持久化存储
+                    watch([userSelections, wrongSet, favorites], () => {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                            selections: userSelections.value,
+                            wrongSet: Array.from(wrongSet.value)
+                        }));
+                        localStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.from(favorites.value)));
+                    }, { deep: true });
+
+                    // 过滤后的题目列表
+                    const filteredList = computed(() => {
+                        if (mode.value === 'wrong') return wrongList.value.map(idx => questions.value[idx]).filter(q => q);
+                        if (mode.value === 'favorite') return favoritesList.value.map(idx => questions.value[idx]).filter(q => q);
+                        if (mode.value === 'exam') return examQuestions.value;
+                        if (mode.value === 'quick') return questions.value;
+                        return questions.value;
+                    });
+
+                    const total = computed(() => filteredList.value.length);
+                    const currentQuestion = computed(() => filteredList.value[index.value]);
+                    const currentRawIndex = computed(() => {
+                        if (!currentQuestion.value) return -1;
+                        return questions.value.findIndex(q => q === currentQuestion.value);
+                    });
+                    const atFirst = computed(() => index.value === 0);
+                    const atLast = computed(() => index.value === total.value - 1);
+                    const answeredCount = computed(() => Object.keys(userSelections.value).length);
+                    const correctCount = computed(() => {
+                        let cnt = 0;
+                        for (let rawIdx in userSelections.value) {
+                            if (userSelections.value[rawIdx] === questions.value[rawIdx]?.answer) cnt++;
+                        }
+                        return cnt;
+                    });
+
+                    const formattedTime = computed(() => {
+                        const m = Math.floor(examTimeLeft.value / 60);
+                        const s = examTimeLeft.value % 60;
+                        return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                    });
+
+                    // 保存上次位置
+                    function saveLastState() {
+                        if (mode.value === 'order') {
+                            localStorage.setItem(LAST_STATE_KEY, JSON.stringify({ mode: mode.value, rawIndex: currentRawIndex.value }));
+                        }
+                    }
+                    watch([mode, index, currentRawIndex], saveLastState);
+
+                    function restoreLastState() {
+                        if (lastState && lastState.mode === 'order') {
+                            mode.value = 'order';
+                            const targetRaw = lastState.rawIndex;
+                            if (targetRaw >= 0 && targetRaw < questions.value.length) {
+                                const pos = filteredList.value.findIndex(q => questions.value[targetRaw] === q);
+                                if (pos !== -1) index.value = pos;
+                            }
+                        }
+                    }
+
+                    // 模拟考试随机抽题
+                    function pickRandomQuestions() {
+                        if (questions.value.length <= 100) return questions.value.slice();
+                        const shuffled = [...questions.value];
+                        for (let i = shuffled.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                        }
+                        return shuffled.slice(0, 100);
+                    }
+
+                    function startExam() {
+                        examQuestions.value = pickRandomQuestions();
+                        examTimeLeft.value = 90 * 60;
+                        examFinished.value = false;
+                        showExamResult.value = false;
+                        index.value = 0;
+                        if (examTimer.value) clearInterval(examTimer.value);
+                        examTimer.value = setInterval(() => {
+                            if (examTimeLeft.value > 0) examTimeLeft.value--;
+                            else finishExam();
+                        }, 1000);
+                    }
+
+                    function finishExam() {
+                        if (examFinished.value) return;
+                        if (examTimer.value) clearInterval(examTimer.value);
+                        const missed = examQuestions.value.filter(q => !userSelections.value[questions.value.findIndex(item => item === q)]);
+                        if (missed.length) {
+                            alert(`有 ${missed.length} 题未答，已加入错题本。`);
+                            const newSet = new Set(wrongSet.value);
+                            missed.forEach(q => newSet.add(questions.value.findIndex(item => item === q)));
+                            wrongSet.value = newSet;
+                        }
+                        examFinished.value = true;
+                        examScore.value = correctCount.value;
+                        showExamResult.value = true;
+                    }
+
+                    // 模式切换
+                    function switchMode(newMode) {
+                        mode.value = newMode;
+                        index.value = 0;
+                        showAnswer.value = false;
+                        showWrongFeedback.value = false;
+                        if (newMode === 'exam') startExam();
+                        else {
+                            if (examTimer.value) clearInterval(examTimer.value);
+                            examFinished.value = false;
+                            showExamResult.value = false;
+                        }
+                        if (newMode === 'stats') {
+                            nextTick(() => renderChart());
+                        }
+                    }
+
+                    // 题目导航
+                    function nextQuestion() {
+                        if (index.value < total.value - 1) { index.value++; showAnswer.value = false; showWrongFeedback.value = false; }
+                    }
+                    function previousQuestion() {
+                        if (index.value > 0) { index.value--; showAnswer.value = false; showWrongFeedback.value = false; }
+                    }
+                    function toggleAnswer() { showAnswer.value = !showAnswer.value; }
+
+                    // 选择选项
+                    function selectOption(opt) {
+                        if (isQuickMode.value) return;
+                        if (!currentQuestion.value) return;
+                        const rawIdx = currentRawIndex.value;
+                        if (rawIdx === -1) return;
+
+                        todayStats.value.count++;
+                        const today = getTodayString();
+                        let dayStat = dailyStats.value.find(d => d.date === today);
+                        if (!dayStat) {
+                            dayStat = { date: today, count: 0, correct: 0, seconds: 0 };
+                            dailyStats.value.push(dayStat);
+                        }
+                        dayStat.count++;
+                        const correctAns = questions.value[rawIdx]?.answer;
+                        if (opt === correctAns) {
+                            dayStat.correct++;
+                        }
+                        dayStat.seconds = todayStats.value.seconds;
+                        saveAllStats();
+
+                        userSelections.value[rawIdx] = opt;
+
+                        if (mode.value === 'order' || mode.value === 'random') {
+                            if (opt !== correctAns) {
+                                const newSet = new Set(wrongSet.value);
+                                newSet.add(rawIdx);
+                                wrongSet.value = newSet;
+                                wrongFeedback.value = { answer: correctAns, explain: questions.value[rawIdx]?.explain || '' };
+                                showWrongFeedback.value = true;
+                            } else {
+                                nextQuestion();
+                            }
+                        } else if (mode.value === 'exam' && !examFinished.value) {
+                            if (opt !== correctAns) {
+                                const newSet = new Set(wrongSet.value);
+                                newSet.add(rawIdx);
+                                wrongSet.value = newSet;
+                            }
+                        }
+                    }
+
+                    function dismissWrongFeedback() { showWrongFeedback.value = false; }
+
+                    // 标记错题
+                    function markWrong() {
+                        if (mode.value === 'exam' || !currentQuestion.value) return;
+                        const rawIdx = currentRawIndex.value;
+                        if (rawIdx === -1) return;
+                        const newSet = new Set(wrongSet.value);
+                        newSet.has(rawIdx) ? newSet.delete(rawIdx) : newSet.add(rawIdx);
+                        wrongSet.value = newSet;
+                    }
+
+                    // 随机跳题
+                    function randomJump() {
+                        if (total.value === 0) return;
+                        index.value = Math.floor(Math.random() * total.value);
+                        showAnswer.value = false;
+                        showWrongFeedback.value = false;
+                    }
+
+                    // 跳转到错题（增加安全性检查）
+                    function jumpToWrongQuestion(rawId) {
+                        if (rawId < 0 || rawId >= questions.value.length || !questions.value[rawId]) return;
+                        if (mode.value !== 'wrong') switchMode('wrong');
+                        const pos = filteredList.value.findIndex(q => q && questions.value[rawId] === q);
+                        if (pos !== -1) { index.value = pos; showAnswer.value = false; showWrongFeedback.value = false; }
+                    }
+
+                    // 清空错题本
+                    function clearWrongSet() { wrongSet.value = new Set(); }
+
+                    // 手动跳转
+                    function jumpToNumber() {
+                        if (mode.value !== 'order') { alert('仅顺序模式支持跳转'); return; }
+                        const num = jumpInput.value;
+                        if (num >= 1 && num <= total.value) { index.value = num - 1; showAnswer.value = false; showWrongFeedback.value = false; }
+                        else alert(`请输入1-${total.value}之间的题号`);
+                    }
+
+                    // 搜索
+                    function performSearch() {
+                        const kw = searchKeyword.value.trim().toLowerCase();
+                        if (!kw) { searchResults.value = []; return; }
+                        const res = [];
+                        questions.value.forEach((q, idx) => { if (q.Q.toLowerCase().includes(kw)) res.push({ rawIndex: idx, question: q }); });
+                        searchResults.value = res.slice(0, 20);
+                    }
+
+                    function goToSearchResult(rawIdx) {
+                        if (mode.value !== 'order') switchMode('order');
+                        const pos = filteredList.value.findIndex(q => questions.value[rawIdx] === q);
+                        if (pos !== -1) {
+                            index.value = pos;
+                            showAnswer.value = false;
+                            showWrongFeedback.value = false;
+                            searchKeyword.value = '';
+                            searchResults.value = [];
+                        }
+                    }
+
+                    // 收藏
+                    function isFavorite(rawIdx) {
+                        return favorites.value.has(rawIdx);
+                    }
+                    function toggleFavorite(rawIdx) {
+                        const newSet = new Set(favorites.value);
+                        if (newSet.has(rawIdx)) newSet.delete(rawIdx);
+                        else newSet.add(rawIdx);
+                        favorites.value = newSet;
+                    }
+                    function jumpToFavorite(rawId) {
+                        if (rawId < 0 || rawId >= questions.value.length || !questions.value[rawId]) return;
+                        if (mode.value !== 'favorite') switchMode('favorite');
+                        const pos = filteredList.value.findIndex(q => q && questions.value[rawId] === q);
+                        if (pos !== -1) { index.value = pos; showAnswer.value = false; showWrongFeedback.value = false; }
+                    }
+
+                    // ---------- 语音模块（移动端优化）----------
+                    let isSpeakingAll = false;   // 是否正在连续朗读
+                    let currentSpeechIdx = 0;    // 当前朗读的索引
+                    let speechList = [];          // 待朗读的题目列表
+
+                    // 朗读当前题目（完全同步，无异步等待）
+                    function speakCurrentQuestion() {
+                        if (!currentQuestion.value) {
+                            console.warn('没有当前题目');
+                            return;
+                        }
+                        // 停止任何正在进行的连续朗读
+                        if (isSpeakingAll) {
+                            window.speechSynthesis.cancel();
+                            isSpeakingAll = false;
+                        }
+                        const q = currentQuestion.value;
+                        let text = `第${index.value + 1}题：${q.Q}。正确答案是${q.answer}。`;
+                        if (q.explain) {
+                            text += `解析：${q.explain}`;
+                        } else {
+                            text += `无解析。`;
+                        }
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'zh-CN';
+                        utterance.rate = 0.9;
+                        window.speechSynthesis.cancel(); // 清空现有队列
+                        window.speechSynthesis.speak(utterance);
+                        console.log('朗读本题:', text);
+                    }
+
+                    // 从指定索引开始连续朗读
+                    function speakAllFromIndex(startIdx) {
+                        const list = filteredList.value;
+                        if (list.length === 0) return;
+                        // 如果已经在朗读，先停止
+                        if (isSpeakingAll) {
+                            window.speechSynthesis.cancel();
+                            isSpeakingAll = false;
+                        }
+                        speechList = list;
+                        currentSpeechIdx = startIdx;
+                        isSpeakingAll = true;
+                        speakNext();
+                    }
+
+                    function speakNext() {
+                        if (!isSpeakingAll) return;
+                        if (currentSpeechIdx >= speechList.length) {
+                            isSpeakingAll = false;
+                            return;
+                        }
+                        const q = speechList[currentSpeechIdx];
+                        let text = `第${currentSpeechIdx + 1}题：${q.Q}。正确答案是${q.answer}。`;
+                        if (q.explain) {
+                            text += `解析：${q.explain}`;
+                        } else {
+                            text += `无解析。`;
+                        }
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'zh-CN';
+                        utterance.rate = 0.9;
+                        utterance.onend = () => {
+                            currentSpeechIdx++;
+                            speakNext();
+                        };
+                        utterance.onerror = (event) => {
+                            console.error('语音播放出错:', event);
+                            // 出错时继续播放下一个
+                            if (isSpeakingAll) {
+                                currentSpeechIdx++;
+                                speakNext();
+                            }
+                        };
+                        window.speechSynthesis.speak(utterance);
+                    }
+
+                    function speakAllFromStart() {
+                        speakAllFromIndex(0);
+                    }
+
+                    function speakAllFromCurrent() {
+                        speakAllFromIndex(index.value);
+                    }
+
+                    function stopSpeaking() {
+                        window.speechSynthesis.cancel();
+                        isSpeakingAll = false;
+                        console.log('语音已停止');
+                    }
+
+                    // 统计图表渲染
+                    function renderChart() {
+                        const ctx = document.getElementById('statsChart')?.getContext('2d');
+                        if (!ctx) return;
+                        if (chartInstance) chartInstance.destroy();
+
+                        const days = statsPeriod.value === 'week' ? 7 : 30;
+                        const data = [];
+                        const labels = [];
+                        for (let i = days-1; i >= 0; i--) {
+                            const d = new Date();
+                            d.setDate(d.getDate() - i);
+                            const dateStr = `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+                            const stat = dailyStats.value.find(s => s.date === dateStr) || { count: 0, correct: 0 };
+                            data.push(stat.count);
+                            labels.push(`${d.getMonth()+1}/${d.getDate()}`);
+                        }
+
+                        chartInstance = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: '答题数',
+                                    data: data,
+                                    backgroundColor: '#2a7faa',
+                                    borderRadius: 6
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false }
+                                },
+                                scales: {
+                                    y: { beginAtZero: true, stepSize: 1 }
+                                }
+                            }
+                        });
+                    }
+
+                    return {
+                        questions, mode, index, showAnswer, userSelections, wrongSet, favorites, filteredList, total, currentQuestion, currentRawIndex,
+                        atFirst, atLast, answeredCount, correctCount, wrongList, examTimeLeft, examFinished, examScore, showExamResult, formattedTime,
+                        jumpInput, searchKeyword, searchResults, showWrongFeedback, wrongFeedback,
+                        switchMode, nextQuestion, previousQuestion, toggleAnswer, selectOption, dismissWrongFeedback,
+                        markWrong, randomJump, jumpToWrongQuestion, finishExam, clearWrongSet, jumpToNumber, performSearch, goToSearchResult,
+                        // 今日统计
+                        formatTodayTime, todayPracticeCount,
+                        // 总题数
+                        totalQuestions,
+                        // 收藏
+                        favoritesList, isFavorite, toggleFavorite, jumpToFavorite,
+                        // 模式判断
+                        isStatsMode, isFavoriteMode, isQuickMode,
+                        // 统计
+                        statsPeriod, dailyStats, totalAnswers, totalCorrect, totalCorrectRate, renderChart,
+                        // 语音
+                        speakCurrentQuestion, speakAllFromStart, speakAllFromCurrent, stopSpeaking
+                    };
+                }
+            });
+
+            app.mount('#app');
+        })();
+    </script>
+</body>
+</html>
