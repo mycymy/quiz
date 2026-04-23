@@ -1,0 +1,2868 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>主管护师·800题混编练习（二）</title>
+    <!-- 引入 Chart.js 用于统计图表 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* 全局压缩样式（保持紧凑） */
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 6px;
+        }
+
+        #app {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 12px 12px 16px;
+            margin: 5px 0 15px;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #0b3b5c;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            border-left: 6px solid #2a7faa;
+            padding-left: 12px;
+        }
+
+        .today-stats {
+            display: flex;
+            gap: 12px;
+            background: #e6f0f9;
+            padding: 8px 16px;
+            border-radius: 40px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #0b3b5c;
+            font-weight: 500;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .today-stats span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+            background: #e6f0f9;
+            padding: 10px 8px;
+            border-radius: 28px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            background: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            flex: 1 0 auto;
+            font-size: 0.85rem;
+        }
+
+        .mode-btn.active {
+            background: #2a7faa;
+            color: white;
+            box-shadow: 0 4px 8px -4px #2a7faacc;
+            border-color: #1f5a7a;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0 10px;
+            align-items: center;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            justify-content: center;
+            background: #f8fafc;
+        }
+
+        .btn.primary {
+            background: #2a7faa;
+            border-color: #1e5f82;
+            color: white;
+        }
+
+        .btn.warning {
+            background: #f97316;
+            border-color: #c2410c;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-btn {
+            flex: 1 1 0;
+            min-width: 80px;
+        }
+        .jump-btn {
+            flex: 1 1 0;
+            min-width: 80px;
+        }
+        .jump-input {
+            flex: 0 1 100px;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.85rem;
+            background: #f8fafc;
+            min-width: 90px;
+        }
+
+        .search-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0 8px;
+            align-items: center;
+        }
+        .search-box {
+            flex: 2 1 180px;
+            display: flex;
+            gap: 6px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.85rem;
+            background: white;
+        }
+        .search-results {
+            max-height: 150px;
+            overflow-y: auto;
+            margin: 4px 0 0;
+            background: white;
+            border-radius: 20px;
+            padding: 4px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .search-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .search-item small {
+            color: #2a7faa;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px 16px;
+            background: #fff3cd;
+            border-radius: 40px;
+            border: 1px solid #ffeeba;
+            font-size: 0.9rem;
+        }
+
+        .timer {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .question-panel {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 16px 12px;
+            box-shadow: inset 0 1px 4px #e2e8f0, 0 4px 8px -6px #94a3b8;
+            border: 1px solid #e9eef3;
+        }
+
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .q-num {
+            background: #dbeafe;
+            padding: 4px 14px;
+            border-radius: 40px;
+            color: #1e3a8a;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .q-type {
+            background: #e2f3e4;
+            padding: 4px 14px;
+            border-radius: 40px;
+            color: #166534;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* 收藏按钮样式：未收藏灰色，收藏金色，点击缩放 */
+        .favorite-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 5px;
+            color: #ccc; /* 未收藏灰色 */
+            transition: transform 0.1s ease, color 0.1s ease;
+        }
+        .favorite-btn.active {
+            color: #fbbf24; /* 收藏金色 */
+            text-shadow: 0 0 2px #f59e0b;
+        }
+        .favorite-btn:active {
+            transform: scale(1.2);
+        }
+
+        /* 题干字体增大 */
+        .q-text {
+            font-size: 1.15rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin: 12px 0 12px;
+            color: #0a1e2f;
+        }
+
+        /* 选项区域 - 在背题模式下隐藏 */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .quick-mode .options {
+            display: none !important;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 10px 12px;
+            border-radius: 30px;
+            border: 1px solid #dee7ef;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        .option-item.selected {
+            background: #e0f2fe;
+            border-color: #0369a1;
+            box-shadow: 0 0 0 2px #bae6fd;
+        }
+
+        .option-prefix {
+            font-weight: 700;
+            background: white;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .option-item.selected .option-prefix {
+            background: #0369a1;
+            border-color: #0369a1;
+            color: white;
+        }
+
+        /* 选项字体增大 */
+        .option-content {
+            flex: 1;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #0f2b40;
+        }
+
+        .answer-area {
+            margin: 12px 0 8px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+
+        .correct-badge, .wrong-badge {
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .explanation {
+            margin-top: 8px;
+            color: #2c3e50;
+            font-size: 0.85rem;
+            background: white;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0 5px;
+            color: #4b5563;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        /* 收藏列表和统计页样式 */
+        .favorite-book, .stats-page, .wrong-book {
+            background: #fff1f0;
+            padding: 12px;
+            border-radius: 24px;
+            margin-top: 12px;
+            border: 1px solid #ffccc7;
+            font-size: 0.85rem;
+        }
+
+        .favorite-item, .wrong-item {
+            padding: 8px;
+            border-bottom: 1px dashed #fbb9b5;
+            cursor: pointer;
+        }
+
+        .stats-page {
+            background: #e6f0f9;
+            border-color: #2a7faa;
+        }
+
+        .chart-container {
+            height: 200px;
+            margin: 15px 0;
+        }
+
+        /* 考试结果中的错题样式 */
+        .exam-result {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            margin: 12px 0;
+            border: 2px solid #2a7faa;
+            font-size: 0.9rem;
+        }
+        .wrong-answer {
+            background: #fff1f0;
+            padding: 12px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+        }
+        .wrong-answer p {
+            margin: 6px 0;
+        }
+        .wrong-answer hr {
+            margin-top: 10px;
+            border: 0;
+            border-top: 1px dashed #fbb9b5;
+        }
+
+        footer {
+            margin-top: 12px;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        /* 模态对话框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            max-width: 85%;
+            width: 360px;
+            padding: 20px 18px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .modal-content .correct-ans {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #b91c1c;
+            margin-bottom: 12px;
+        }
+        .modal-content .explain {
+            color: #2c3e50;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .modal-content .remember-btn {
+            background: #2a7faa;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .home-btn {
+            width: auto;
+            min-width: 100px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* 语音按钮组 */
+        .speak-btn {
+            background: #2a7faa;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .speak-all-btn {
+            background: #f97316;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .speak-stop-btn {
+            background: #6b7280;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <h1 style="margin-bottom: 0;">
+                📚 主管护师·800题混编练习（二） <span style="font-size:0.9rem; color:#4b5563; font-weight:400;">（共{{ totalQuestions }}题）</span>
+            </h1>
+            <a href="https://mycymy.github.io/quiz" target="_self" class="btn home-btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none;">🏠 返回主页</a>
+        </div>
+
+        <!-- 今日累计统计行 -->
+        <div class="today-stats">
+            <span>⏱️ 今日练习: {{ formatTodayTime }}</span>
+            <span>📝 今日做题: {{ todayPracticeCount }} 题</span>
+            <span>⭐ 收藏 {{ favoritesList.length }}</span>
+        </div>
+
+        <!-- 模式切换工具栏（移除了推荐按钮） -->
+        <div class="toolbar">
+            <button class="mode-btn" :class="{active: mode === 'order'}" @click="switchMode('order')">📋 顺序</button>
+            <button class="mode-btn" :class="{active: mode === 'random'}" @click="switchMode('random')">🎲 随机</button>
+            <button class="mode-btn" :class="{active: mode === 'exam'}" @click="switchMode('exam')">✍️ 模拟</button>
+            <button class="mode-btn" :class="{active: mode === 'wrong'}" @click="switchMode('wrong')">📌 错题本</button>
+            <button class="mode-btn" :class="{active: mode === 'favorite'}" @click="switchMode('favorite')">⭐ 收藏</button>
+            <button class="mode-btn" :class="{active: mode === 'stats'}" @click="switchMode('stats')">📊 学习统计</button>
+            <button class="mode-btn" :class="{active: mode === 'quick'}" @click="switchMode('quick')">⚡ 背题</button>
+        </div>
+
+        <!-- 第二行：导航 + 手动跳转（仅顺序/背题模式显示跳转，背题模式增加语音按钮） -->
+        <div class="action-row" v-if="!isStatsMode">
+            <button class="btn nav-btn" @click="previousQuestion" :disabled="atFirst">◀ 上一题</button>
+            <button class="btn primary nav-btn" @click="toggleAnswer">{{ showAnswer ? '隐藏' : '查看答案' }}</button>
+            <button class="btn nav-btn" @click="nextQuestion" :disabled="atLast">下一题 ▶</button>
+            <!-- 背题模式下的语音按钮组 -->
+            <template v-if="mode === 'quick'">
+                <button class="speak-btn" @click="speakCurrentQuestion">🔊 朗读本题</button>
+                <button class="speak-all-btn" @click="speakAllFromStart">🔊 全部(从头)</button>
+                <button class="speak-all-btn" @click="speakAllFromCurrent">🔊 全部(从当前)</button>
+                <button class="speak-stop-btn" @click="stopSpeaking">⏹️ 停止</button>
+            </template>
+            <template v-if="mode === 'order'">
+                <input type="number" v-model.number="jumpInput" class="jump-input" min="1" :max="total" placeholder="输入题号">
+                <button class="btn primary jump-btn" @click="jumpToNumber">跳转</button>
+            </template>
+        </div>
+
+        <!-- 模拟考试计时器栏 -->
+        <div v-if="mode === 'exam' && !examFinished" class="exam-info">
+            <span class="timer">⏱️ {{ formattedTime }}</span>
+            <button class="btn primary" style="padding:6px 12px;" @click="finishExam">交卷</button>
+        </div>
+
+        <!-- 第三行：搜索 + 标记错题/随机跳题（非统计/收藏模式显示，背题模式不显示标记错题） -->
+        <div class="search-row" v-if="!isStatsMode && !isFavoriteMode">
+            <div class="search-box">
+                <input type="text" v-model="searchKeyword" @keyup.enter="performSearch" placeholder="搜索题目">
+                <button class="btn primary" style="padding:8px 12px;" @click="performSearch">搜索</button>
+            </div>
+            <div v-if="mode !== 'wrong' && mode !== 'quick'" style="display: flex; gap: 6px;">
+                <button class="btn warning" style="padding:8px 10px;" @click="markWrong">📕 标记</button>
+                <button class="btn" style="padding:8px 10px;" @click="randomJump">🎯 随机</button>
+            </div>
+        </div>
+
+        <!-- 搜索结果 -->
+        <div class="search-results" v-if="searchResults.length > 0">
+            <div v-for="item in searchResults" :key="item.rawIndex" class="search-item" @click="goToSearchResult(item.rawIndex)">
+                <small>#{{ item.rawIndex+1 }}</small> {{ item.question.Q.substring(0, 30) }}...
+            </div>
+        </div>
+
+        <!-- 题目卡片（仅在非统计/收藏模式显示，背题模式下应用quick-mode类隐藏选项） -->
+        <div class="question-panel" :class="{ 'quick-mode': mode === 'quick' }" v-if="currentQuestion && !isStatsMode && !isFavoriteMode">
+            <div class="q-header">
+                <span class="q-num">第 {{ index+1 }}/{{ total }} 题</span>
+                <span class="q-type">单选</span>
+                <!-- 收藏按钮（未收藏灰色，收藏金色） -->
+                <button class="favorite-btn" :class="{active: isFavorite(currentRawIndex)}" @click="toggleFavorite(currentRawIndex)">⭐</button>
+            </div>
+            <div class="q-text">{{ currentQuestion.Q }}</div>
+            <!-- 选项区域 - 背题模式下通过CSS隐藏 -->
+            <div class="options">
+                <div v-for="(opt, idx) in currentQuestion.options" :key="idx" class="option-item" 
+                     :class="{selected: !isQuickMode && userSelections[currentRawIndex] === String.fromCharCode(65+idx)}" 
+                     @click="!isQuickMode && selectOption(String.fromCharCode(65+idx))">
+                    <span class="option-prefix">{{ String.fromCharCode(65+idx) }}</span>
+                    <span class="option-content">{{ opt }}</span>
+                </div>
+            </div>
+
+            <!-- 答案区域（背题模式下始终显示，其他模式由showAnswer控制） -->
+            <div class="answer-area" v-if="isQuickMode || showAnswer">
+                <div>
+                    <span class="correct-badge" v-if="!isQuickMode && userSelections[currentRawIndex] === currentQuestion.answer">✓ 正确</span>
+                    <span class="wrong-badge" v-else-if="!isQuickMode && userSelections[currentRawIndex] && userSelections[currentRawIndex] !== currentQuestion.answer">✗ 错误</span>
+                    <span style="font-weight:600;">答案：{{ currentQuestion.answer }}</span>
+                </div>
+                <div class="explanation" v-if="currentQuestion.explain">
+                    <strong>📖 解析：</strong> {{ currentQuestion.explain }}
+                </div>
+            </div>
+        </div>
+
+        <!-- 收藏列表页面 -->
+        <div v-if="mode === 'favorite'" class="favorite-book">
+            <h3 style="color:#b91c1c; margin-bottom:10px; font-size:1rem;">⭐ 我的收藏 ({{ favoritesList.length }})</h3>
+            <div v-if="favoritesList.length === 0" style="color: #4b5563;">暂无收藏题目</div>
+            <div v-for="(id, idx) in favoritesList" :key="idx" class="favorite-item" @click="jumpToFavorite(id)">
+                <span style="font-weight:500;">题 {{ id+1 }}：</span>
+                {{ questions[id].Q.substring(0,20) }}…
+                <span style="color:#a5a;">[{{ questions[id].answer }}]</span>
+            </div>
+        </div>
+
+        <!-- 学习统计页面 -->
+        <div v-if="mode === 'stats'" class="stats-page">
+            <h3 style="color:#2a7faa; margin-bottom:10px; font-size:1rem;">📊 学习统计</h3>
+            <div style="margin-bottom:10px;">
+                <select v-model="statsPeriod" @change="renderChart">
+                    <option value="week">最近7天</option>
+                    <option value="month">最近30天</option>
+                </select>
+            </div>
+            <div class="chart-container">
+                <canvas id="statsChart"></canvas>
+            </div>
+            <p>总练习天数: {{ dailyStats.length }}</p>
+            <p>总答题数: {{ totalAnswers }}</p>
+            <p>总正确数: {{ totalCorrect }}</p>
+            <p>总正确率: {{ totalCorrectRate }}%</p>
+        </div>
+
+        <!-- 错题本详情（错题模式下显示） -->
+        <div class="wrong-book" v-if="mode === 'wrong'">
+            <h3 style="color:#b91c1c; margin-bottom:10px; font-size:1rem;">❌ 错题本 ({{ wrongList.length }})</h3>
+            <div v-if="wrongList.length === 0" style="color: #4b5563;">还没有错题</div>
+            <div v-for="(id, idx) in wrongList" :key="idx" class="wrong-item" @click="jumpToWrongQuestion(id)">
+                <span style="font-weight:500;">题 {{ id+1 }}：</span>
+                {{ questions[id].Q.substring(0,20) }}…
+                <span style="color:#a5a;">[{{ questions[id].answer }}]</span>
+            </div>
+            <button v-if="wrongList.length > 0" class="btn warning" @click="clearWrongSet" style="margin-top:10px; padding:8px;">🧹 清空</button>
+        </div>
+
+        <!-- 进度统计（非统计/收藏模式显示） -->
+        <div class="progress" v-if="!isStatsMode && !isFavoriteMode">
+            <span>✅ 已完成 {{ answeredCount }}/{{ total }}</span>
+            <span>🎯 正确 {{ correctCount }}</span>
+            <span>📕 错题 {{ wrongList.length }}</span>
+        </div>
+
+        <!-- 考试成绩单（交卷后显示） -->
+        <div v-if="showExamResult" class="exam-result">
+            <h2 style="font-size:1.2rem;">📊 模拟考试成绩</h2>
+            <p>得分: {{ examScore }} / {{ total }} ({{ (examScore/total*100).toFixed(1) }}%)</p>
+            <p>正确题数: {{ correctCount }}</p>
+            <p>错题数: {{ wrongList.length }}</p>
+            <div v-if="wrongList.length > 0">
+                <h3 style="font-size:1rem; margin:12px 0 8px;">❌ 错题解析</h3>
+                <div v-for="(rawId, idx) in wrongList" :key="idx" class="wrong-answer">
+                    <p><strong>题号 {{ rawId+1 }}:</strong> {{ questions[rawId].Q }}</p>
+                    <p><span style="color:red;">您的答案: {{ userSelections[rawId] || '未答' }}</span> → <span style="color:green;">正确答案: {{ questions[rawId].answer }}</span></p>
+                    <p>📖 解析: {{ questions[rawId].explain || '无解析' }}</p>
+                    <hr>
+                </div>
+            </div>
+            <button class="btn primary" @click="switchMode('order')">返回练习模式</button>
+        </div>
+
+        <!-- 答错提示对话框（模态） -->
+        <div v-if="showWrongFeedback" class="modal-overlay" @click.self="dismissWrongFeedback">
+            <div class="modal-content">
+                <div class="correct-ans">正确答案：{{ wrongFeedback.answer }}</div>
+                <div class="explain" v-if="wrongFeedback.explain"><strong>📖 解析：</strong><br>{{ wrongFeedback.explain }}</div>
+                <div class="explain" v-else>（本题无解析）</div>
+                <button class="remember-btn" @click="dismissWrongFeedback">我记住了</button>
+            </div>
+        </div>
+
+        <footer>⭐ 主管护师 800题混编练习（二）</footer>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        (function() {
+            // ---------- 示例题库（仅10题，便于验证，实际使用时替换为完整1000题）----------
+            const questionsData = [
+// 第801题  第1题
+{ Q: "新生儿呼吸窘迫综合征的病理基础是", options: ["A.窒息", "B.胎盘老化", "C.缺乏肺表面活性物质", "D.肺发育不良", "E.缺乏棕色脂肪"], answer: "C", explain: "新生儿呼吸窘迫综合征主要由于缺乏肺表面活性物质所致。" },
+// 第802题  第2题
+{ Q: "对化疗较敏感但预后较差的肺癌病理类型是", options: ["A.腺癌", "B.柱状细胞癌", "C.小细胞癌", "D.大细胞癌", "E.鳞状细胞癌"], answer: "C", explain: "小细胞肺癌对化疗敏感，但预后较差。" },
+// 第803题  第3题
+{ Q: "门静脉高压症的常见原因是", options: ["A.门静脉血栓形成", "B.门静脉主干畸形", "C.肿瘤压迫门静脉", "D.门静脉炎", "E.肝硬化"], answer: "E", explain: "肝硬化是门静脉高压症最常见的原因。" },
+// 第804题  第4题
+{ Q: "女，34岁。经检查诊断为甲状腺功能减退症，其诊断最敏感的指标是", options: ["A.FT₃降低", "B.FT₄降低", "C.TSH升高", "D.¹³¹I摄取率降低", "E.T₃、T₄降低"], answer: "C", explain: "TSH是诊断甲减最敏感的指标。" },
+// 第805题  第5题
+{ Q: "小儿营养性缺铁性贫血最常见的原因是", options: ["A.红细胞结构缺陷", "B.红细胞丢失过多", "C.红细胞酶缺乏", "D.自身免疫因素", "E.造血原料缺乏"], answer: "B", explain: "小儿缺铁性贫血最常见原因是铁摄入不足，但选项中最常见的是红细胞丢失过多（如慢性失血）。" },
+// 第806题  第6题
+{ Q: "生殖器结核叙述正确的是", options: ["A.30-50岁为好友人群", "B.主要通过淋巴系统直接蔓延至生殖器", "C.以子宫内膜结核为主", "D.是原发性不孕症的主要原因之一", "E.卵巢结核占生殖器结核的30%-40%"], answer: "D", explain: "生殖器结核是原发性不孕症的主要原因之一。" },
+// 第807题  第7题
+{ Q: "小儿整体和各器官的成长，表示机体在量的方面的增加定义为", options: ["A.发育", "B.生长", "C.进化", "D.成熟", "E.演进"], answer: "B", explain: "生长指机体在量的方面的增加。" },
+// 第808题  第8题
+{ Q: "主要反映肾小球滤过功能的检查是", options: ["A.酚红排泄试验", "B.尿浓缩稀释试验", "C.酸碱失衡试验", "D.血清补体成分测定", "E.内生肌酐清除率测定"], answer: "E", explain: "内生肌酐清除率反映肾小球滤过功能。" },
+// 第809题  第9题
+{ Q: "以肺淤血为主要表现的疾病是", options: ["A.心绞痛", "B.右心衰竭", "C.左心衰竭", "D.慢性肺源性心脏病", "E.高血压"], answer: "C", explain: "左心衰竭主要表现为肺淤血。" },
+// 第810题  第10题
+{ Q: "传染病的特征中对诊断有重要意义的是", options: ["A.病原体", "B.传染性", "C.流行性", "D.季节性", "E.免疫性"], answer: "A", explain: "病原体的检出或分离培养对传染病诊断有重要意义。" },
+// 第811题  第11题
+{ Q: "人体主要内分泌腺不包括", options: ["A.下丘脑", "B.垂体", "C.甲状腺", "D.肾上腺", "E.肝"], answer: "E", explain: "肝不属于内分泌腺。" },
+// 第812题  第12题
+{ Q: "男，50岁。肝硬化10余年，近2天因呕血、黑便、腹水入院。2天来情绪亢奋、多语，初步诊断为“肝性脑病”。本次发病的诱因最可能是", options: ["A.放腹水", "B.进食过量蛋白质", "C.感染", "D.上消化道出血", "E.服用镇静药"], answer: "D", explain: "上消化道出血是肝性脑病最常见的诱因。" },
+// 第813题  第13题
+{ Q: "引起产褥感染的主要病原体是", options: ["A.真菌", "B.衣原体", "C.支原体", "D.螺旋体", "E.需氧菌"], answer: "E", explain: "产褥感染的主要病原体是需氧菌和厌氧菌的混合感染。" },
+// 第814题  第14题
+{ Q: "男，8岁。3天前体温39.5℃，左侧面颊部肿胀并伴有周围组织水肿、灼热、疼痛。患儿可分离出病原体的体液不包括", options: ["A.唾液", "B.胃液", "C.尿液", "D.血液", "E.脑脊液"], answer: "B", explain: "流行性腮腺炎病毒可从唾液、尿液、血液、脑脊液中分离，胃液不能分离。" },
+// 第815题  第15题
+{ Q: "蛛网膜下腔出血最常见的病因是", options: ["A.先天性动脉瘤破裂", "B.脑动静脉畸形", "C.高血压动脉硬化", "D.血液病", "E.脑动脉炎"], answer: "A", explain: "先天性动脉瘤破裂是蛛网膜下腔出血最常见病因。" },
+// 第816题  第16题
+{ Q: "应用阿托品治疗有机磷农药中毒患者时，“阿托品化”的表现不包括", options: ["A.颜面潮红", "B.口干、皮肤干燥", "C.心率增快", "D.瞳孔缩小", "E.肺部湿啰音消失"], answer: "D", explain: "阿托品化表现为瞳孔较前扩大，不是缩小。" },
+// 第817题  第17题
+{ Q: "子痫前期患者24小时尿蛋白定量超过", options: ["A.0.2g", "B.0.3g", "C.0.4g", "D.0.5g", "E.0.6g"], answer: "D", explain: "子痫前期尿蛋白≥0.5g/24h。" },
+// 第818题  第18题
+{ Q: "颅内压增高的“三主征”是", options: ["A.偏瘫、偏盲、抽搐", "B.头痛、呕吐、视神经乳头水肿", "C.头痛、抽搐、偏瘫", "D.偏瘫、偏盲、偏身感觉障碍", "E.头痛、呕吐、偏瘫"], answer: "B", explain: "颅内压增高三主征为头痛、呕吐、视神经乳头水肿。" },
+// 第819题  第19题
+{ Q: "二尖瓣狭窄时，最先累及的心脏是", options: ["A.左心房", "B.右心房", "C.左心室", "D.右心室", "E.右心房和左心室"], answer: "A", explain: "二尖瓣狭窄首先导致左心房压力增高，左心房扩大。" },
+// 第820题  第20题
+{ Q: "有关吉兰-巴雷综合征的描述，正确的是", options: ["A.周围神经脱髓鞘性疾病", "B.中枢神经脱髓鞘性疾病", "C.脊髓变性疾病", "D.中枢神经系统感染性疾病", "E.神经肌肉接头疾病"], answer: "A", explain: "吉兰-巴雷综合征是周围神经脱髓鞘性疾病。" },
+// 第821题  第21题
+{ Q: "某市区3岁小儿，因发热伴出疹来院就诊，诊断为麻疹。按照要求，其上报的时间为", options: ["A.24小时以内", "B.48小时以内", "C.2小时以内", "D.6小时以内", "E.12小时以内"], answer: "A", explain: "麻疹为乙类传染病，应于24小时内上报。" },
+// 第822题  第22题
+{ Q: "术后急性胃扩张最重要的处理措施是", options: ["A.输液", "B.洗胃", "C.灌肠", "D.禁饮、禁食", "E.胃肠减压"], answer: "E", explain: "急性胃扩张首选胃肠减压。" },
+// 第823题  第23题
+{ Q: "确诊冠心病最重要的检查方法是", options: ["A.24小时动态心电图", "B.超声心动图", "C.放射性核素检查", "D.运动心电图", "E.冠状动脉造影"], answer: "E", explain: "冠状动脉造影是诊断冠心病的金标准。" },
+// 第824题  第24题
+{ Q: "乳腺的解剖生理不包括", options: ["A.成年女性乳房有15-20个腺叶", "B.乳腺是内分泌器官的靶器官", "C.腺小叶和小乳管是乳腺的基本单位", "D.绝经后，乳腺腺体逐渐萎缩", "E.妊娠期和哺乳期乳腺明显增生"], answer: "C", explain: "乳腺的基本单位是腺小叶，由小乳管和腺泡组成。" },
+// 第825题  第25题
+{ Q: "属于不完全性骨折的是", options: ["A.横行骨折", "B.青枝骨折", "C.压缩骨折", "D.凹陷骨折", "E.嵌插骨折"], answer: "B", explain: "青枝骨折属于不完全性骨折。" },
+// 第826题  第26题
+{ Q: "吸气时每分钟进入肺泡进行气体交换的气量，称为", options: ["A.潮气量", "B.肺泡通气量", "C.最大通气量", "D.每分通气量", "E.功能残气量"], answer: "B", explain: "肺泡通气量是指每分钟进入肺泡进行气体交换的气量。" },
+// 第827题  第27题
+{ Q: "胆绞痛发作时，禁用的药物是", options: ["A.哌替啶", "B.阿托品", "C.吗啡", "D.抗生素", "E.维生素K"], answer: "C", explain: "吗啡可致Oddi括约肌痉挛，加重胆绞痛。" },
+// 第828题  第28题
+{ Q: "胸外伤时纵隔扑动可发生在", options: ["A.张力性气胸", "B.闭合性气胸", "C.肋骨骨折有反常呼吸时", "D.外伤性血胸", "E.外伤性血气胸"], answer: "C", explain: "多根多处肋骨骨折出现反常呼吸，可导致纵隔扑动。" },
+// 第829题  第29题
+{ Q: "急性白血病出血的主要原因是", options: ["A.红细胞减少", "B.血小板减少", "C.白细胞减少", "D.白血病", "E.弥散性血管内凝血"], answer: "B", explain: "急性白血病出血主要因血小板减少。" },
+// 第830题  第30题
+{ Q: "麻醉前使用异丙嗪的目的是", options: ["A.镇静", "B.催眠", "C.镇痛", "D.抗胆碱", "E.抗组胺"], answer: "E", explain: "异丙嗪有抗组胺和镇静作用，主要用于抗组胺。" },
+// 第831题  第31题
+{ Q: "人乳中钙与磷的比例是", options: ["A.1:1", "B.2:1", "C.3:1", "D.1:2", "E.3:2"], answer: "B", explain: "人乳中钙磷比例为2:1，利于钙吸收。" },
+// 第832题  第32题
+{ Q: "可以有效诊断慢性阻塞性肺疾病的是", options: ["A.残气量降低", "B.肺活量低于正常", "C.残气量占肺总量百分比增加", "D.潮气量高于正常", "E.PaO₂下降"], answer: "C", explain: "COPD肺功能检查示残气量占肺总量百分比增加。" },
+// 第833题  第33题
+{ Q: "属于消化系统的是", options: ["A.肝、脾、胰", "B.消化管、消化腺", "C.肝、胆、肾", "D.胃、肠、肛管", "E.口腔、食管、肾"], answer: "B", explain: "消化系统由消化管和消化腺组成。" },
+// 第834题  第34题
+{ Q: "感觉疼痛的中枢位于", options: ["A.大脑皮质感觉区", "B.脊髓前角灰质", "C.脊髓后角白质", "D.大脑边缘系统", "E.视丘"], answer: "E", explain: "疼痛中枢位于视丘。" },
+// 第835题  第35题
+{ Q: "有关骨折的病因叙述正确的是", options: ["A.踢球时股直肌收缩致髌骨骨折称为直接暴力骨折", "B.跌倒时手掌撑地致桡骨骨折是间接暴力骨折", "C.长途行军时第2跖骨骨折是间接暴力骨折", "D.慢性骨髓炎致局部骨折称为肌牵拉性骨折", "E.股骨骨肉瘤处受撞击致骨折称为疲劳性骨折"], answer: "B", explain: "跌倒时手掌撑地致桡骨骨折是间接暴力骨折。" },
+// 第836题  第36题
+{ Q: "肺炎支原体肺炎的临床特点是", options: ["A.婴儿多见", "B.多无发热", "C.刺激性干咳突出", "D.肺部体征明显", "E.有严重的全身中毒症状"], answer: "C", explain: "支原体肺炎以刺激性干咳为突出表现。" },
+// 第837题  第37题
+{ Q: "孕妇自觉胎动时间为", options: ["A.妊娠7-8周末", "B.妊娠16-17周末", "C.妊娠18-20周末", "D.妊娠21-23周末", "E.妊娠14-25周末"], answer: "C", explain: "孕妇自觉胎动一般在妊娠18-20周。" },
+// 第838题  第38题
+{ Q: "婴幼儿腹泻的易感因素不包括", options: ["A.消化系统发育不完善", "B.胃肠道防御功能较差", "C.肠道菌群失调", "D.母乳喂养", "E.生长发育快"], answer: "D", explain: "母乳喂养可降低婴幼儿腹泻发生率。" },
+// 第839题  第39题
+{ Q: "对绞窄性肠梗阻的诊断最有意义的检查是", options: ["A.白细胞明显增高，中性粒细胞分类0.90", "B.腹部X线检查可见多个气液平面", "C.腹腔穿刺抽出血性液体", "D.血气分析示血氧分压降低", "E.血生化检查示电解质紊乱"], answer: "C", explain: "腹腔穿刺抽出血性液体提示绞窄性肠梗阻。" },
+// 第840题  第40题
+{ Q: "营养不良主要是指缺乏", options: ["A.能量和(或)碳水化合物", "B.能量和(或)脂肪", "C.能量和(或)蛋白质", "D.能量和(或)维生素", "E.能量和(或)微量元素"], answer: "C", explain: "营养不良是指缺乏能量和(或)蛋白质。" },
+// 第841题  第41题
+{ Q: "可引起急性肾小球肾炎的细菌是", options: ["A.葡萄球菌", "B.溶血性链球菌", "C.肺炎链球菌", "D.大肠埃希菌", "E.副大肠埃希菌"], answer: "B", explain: "急性肾小球肾炎多由A组β溶血性链球菌感染后引起。" },
+// 第842题  第42题
+{ Q: "门静脉压力增高时，病理变化最早出现的是", options: ["A.腹水", "B.充血性脾大", "C.上消化道出血", "D.食管胃底静脉曲张", "E.腹壁静脉曲张"], answer: "B", explain: "门静脉高压最早出现充血性脾大。" },
+// 第843题  第43题
+{ Q: "腰椎间盘突出症最重要的体征是", options: ["A.脊柱活动受限", "B.脊柱变形", "C.压痛并引起下肢放射痛", "D.直腿抬高试验和加强试验阳性", "E.感觉减退、肌力下降、腱反射减弱"], answer: "D", explain: "直腿抬高试验和加强试验阳性是腰椎间盘突出症的重要体征。" },
+// 第844题  第44题
+{ Q: "胎膜早破的原因是", options: ["A.妊娠期高血压疾病", "B.枕后位", "C.前置胎盘", "D.胎盘早剥", "E.胎先露衔接不良"], answer: "E", explain: "胎先露衔接不良是胎膜早破的常见原因。" },
+// 第845题  第45题
+{ Q: "改善急性呼吸窘迫综合征患者缺氧的最佳措施是", options: ["A.持续高流量吸氧", "B.大剂量有效抗生素", "C.呼气末正压通气", "D.避免输液过量、过快", "E.鼓励深呼吸和排痰"], answer: "C", explain: "ARDS最佳氧疗措施是呼气末正压通气(PEEP)。" },
+// 第846题  第46题
+{ Q: "最简便易行杀灭结核分枝杆菌的方法是", options: ["A.煮沸", "B.乙醇消毒", "C.阳光暴晒", "D.来苏消毒", "E.焚烧带菌痰纸"], answer: "A", explain: "煮沸是最简便易行的杀灭结核分枝杆菌的方法。" },
+// 第847题  第47题
+{ Q: "法洛四联症中对病情轻重起决定性作用的病变是", options: ["A.室间隔缺损", "B.主动脉骑跨", "C.右心室肥厚", "D.肺动脉狭窄", "E.房间隔缺损"], answer: "D", explain: "肺动脉狭窄程度决定法洛四联症病情轻重。" },
+// 第848题  第48题
+{ Q: "极低出生体重儿是指", options: ["A.出生1小时内体重不足2500g的新生儿", "B.出生1小时内体重不足2000g的新生儿", "C.出生1小时内体重不足1500g的新生儿", "D.出生1小时内体重不足1000g的新生儿", "E.出生1小时内体重不足750g的新生儿"], answer: "C", explain: "极低出生体重儿指出生体重<1500g。" },
+// 第849题  第49题
+{ Q: "男，27岁。间歇性跛行1个月，疑为血栓闭塞性脉管炎。为检查患者动脉搏动情况，可采取的检查是", options: ["A.X线检查", "B.CT检查", "C.静脉造影检查", "D.动脉造影检查", "E.多普勒超声检查"], answer: "E", explain: "多普勒超声可无创检查动脉搏动情况。" },
+// 第850题  第50题
+{ Q: "腰椎间盘突出症、腰椎管狭窄症的基本病因是", options: ["A.遗传因素", "B.先天性椎管狭窄", "C.慢性损伤", "D.退行性变", "E.软组织炎症"], answer: "D", explain: "腰椎间盘突出症和腰椎管狭窄症的基本病因是退行性变。" },
+// 第851题  第51题
+{ Q: "慢性脓胸是指急性脓胸未及时治愈，病程超过", options: ["A.2周", "B.3周", "C.4周", "D.6周", "E.12周"], answer: "D", explain: "慢性脓胸指病程超过6周。" },
+// 第852题  第52题
+{ Q: "表现为持续性腹痛的疾病是", options: ["A.胃十二指肠溃疡穿孔", "B.胆石病", "C.输尿管结石", "D.机械性肠梗阻", "E.胆道蛔虫病"], answer: "A", explain: "溃疡穿孔表现为持续性剧烈腹痛。" },
+// 第853题  第53题
+{ Q: "按照类毒素、灭活菌（疫）苗、减毒活菌（疫）苗的顺序进行排列的免疫原是", options: ["A.白喉、破伤风、麻疹", "B.破伤风、麻疹、脊髓灰质炎", "C.白喉、百日咳、卡介苗", "D.破伤风、流行性脑脊髓膜炎、流行性乙型脑炎", "E.百日咳、麻疹、流行性脑脊髓膜炎"], answer: "C", explain: "白喉类毒素、百日咳灭活疫苗、卡介苗减毒活疫苗。" },
+// 第854题  第54题
+{ Q: "糖尿病患者出现多尿、多饮、多食的原因不包括", options: ["A.血糖升高，携带水从肾脏排出", "B.多尿失水出现口渴多饮", "C.碳水化合物是体内主要能量来源", "D.机体对葡萄糖的利用能力下降", "E.蛋白质、脂肪消耗减少"], answer: "E", explain: "糖尿病时蛋白质、脂肪消耗增加，不是减少。" },
+// 第855题  第55题
+{ Q: "急性胰腺炎的病因不包括", options: ["A.十二指肠乳头邻近部位的病变", "B.暴饮暴食", "C.高脂血症", "D.胰管阻塞", "E.粗纤维食物"], answer: "E", explain: "粗纤维食物不是急性胰腺炎的病因。" },
+// 第856题  第56题
+{ Q: "女，25岁。已婚未孕，阴道有脱出物，拟诊为Ⅱ度轻型子宫脱垂。发生子宫脱垂最可能的病因是", options: ["A.分娩损伤", "B.手术损伤", "C.腹压增加", "D.盆底组织发育不良", "E.盆底组织退行性变"], answer: "A", explain: "分娩损伤是子宫脱垂最主要病因。" },
+// 第857题  第57题
+{ Q: "引起支气管扩张症的主要原因是", options: ["A.先天性发育缺陷", "B.支气管、肺组织感染和支气管阻塞", "C.支气管外部纤维的牵拉", "D.遗传因素", "E.过敏体质"], answer: "B", explain: "支气管-肺组织感染和支气管阻塞是支扩的主要病因。" },
+// 第858题  第58题
+{ Q: "高位硬膜外阻滞的穿刺部位是", options: ["A.胸₂-₄", "B.胸₄-₁₀", "C.颈₅至胸₆", "D.胸₆-₁₂", "E.腰部各棘突间隙"], answer: "C", explain: "高位硬膜外阻滞穿刺部位为颈₅至胸₆。" },
+// 第859题  第59题
+{ Q: "食管癌术后吻合口处于充血水肿期，需要禁饮禁食", options: ["A.1-2天", "B.3-4天", "C.5-6天", "D.7-10天", "E.11-12天"], answer: "B", explain: "食管癌术后禁食3-4天，待吻合口水肿消退。" },
+// 第860题  第60题
+{ Q: "多灶萎缩性胃炎最主要的病因及其最好发的部位分别是", options: ["A.幽门螺杆菌感染，胃体", "B.幽门螺杆菌感染，胃窦", "C.服用非甾体抗炎药，胃体", "D.服用非甾体抗炎药，胃窦", "E.自身免疫因素，胃体"], answer: "B", explain: "多灶萎缩性胃炎为B型胃炎，幽门螺杆菌感染，好发于胃窦。" },
+// 第861题  第61题
+{ Q: "前尿道外伤最多见于", options: ["A.尿道阴茎部", "B.尿道悬垂部", "C.尿道球部", "D.尿道膜部", "E.尿道前列腺部"], answer: "C", explain: "前尿道损伤多见于尿道球部。" },
+// 第862题  第62题
+{ Q: "促肾上腺皮质激素（ACTH）试验对诊断有意义的疾病是", options: ["A.垂体性库欣病", "B.原发性肾上腺皮质肿瘤", "C.原发性甲状腺功能减退症", "D.弥漫性甲状腺肿", "E.垂体功能减退"], answer: "B", explain: "ACTH试验可鉴别原发性与继发性肾上腺皮质功能减退。" },
+// 第863题  第63题
+{ Q: "判断心脏骤停的指标不包括", options: ["A.叹息样呼吸", "B.皮肤苍白或发绀", "C.瞳孔缩小", "D.大动脉搏动消失", "E.意识丧失或抽搐"], answer: "C", explain: "心脏骤停时瞳孔散大，不是缩小。" },
+// 第864题  第64题
+{ Q: "宫颈癌的好发部位是", options: ["A.宫颈阴道部", "B.宫颈扁平上皮与柱状上皮交界处", "C.宫颈管内", "D.子宫峡部", "E.宫颈外口"], answer: "B", explain: "宫颈癌好发于鳞-柱状上皮交界处。" },
+// 第865题  第65题
+{ Q: "系统性红斑狼疮发病机制是", options: ["A.自身免疫", "B.烈日暴晒", "C.烟酒过多", "D.劳累过度", "E.药物过敏"], answer: "A", explain: "SLE是自身免疫性疾病。" },
+// 第866题  第66题
+{ Q: "男，89岁。因排尿困难入院，诊断为良性前列腺增生，入院后给予留置导尿术，5天后患者出现尿路感染。该患者尿路感染最直接的因素是", options: ["A.性别", "B.年龄", "C.留置导尿", "D.卧床", "E.前列腺增生"], answer: "C", explain: "留置导尿是医院感染尿路感染最常见原因。" },
+// 第867题  第67题
+{ Q: "正常小儿乳牙出齐的年龄为", options: ["A.1岁", "B.1-1.5岁", "C.1.5-2岁", "D.2-2.5岁", "E.3岁"], answer: "D", explain: "小儿乳牙出齐年龄为2-2.5岁。" },
+// 第868题  第68题
+{ Q: "原发性腹膜炎的常见致病菌是", options: ["A.类杆菌", "B.金黄色葡萄球菌", "C.肺炎链球菌", "D.大肠埃希菌", "E.变形杆菌"], answer: "C", explain: "原发性腹膜炎常见致病菌为肺炎链球菌。" },
+// 第869题  第69题
+{ Q: "稀释痰液、促进痰液排出，快速、有效的方法是", options: ["A.药物超声雾化吸入", "B.痰液黏稠可使用祛痰药", "C.使用有效的抗生素", "D.限制水分摄入，以免痰液生成过多", "E.翻身、叩背或导管插入吸痰"], answer: "A", explain: "超声雾化吸入是稀释痰液最快速有效的方法。" },
+// 第870题  第70题
+{ Q: "引起小儿热性惊厥最常见的疾病是", options: ["A.急性上呼吸道感染", "B.消化道感染", "C.中毒性细菌性痢疾", "D.急性尿路感染", "E.脓毒症"], answer: "A", explain: "上呼吸道感染是小儿热性惊厥最常见原因。" },
+// 第871题  第71题
+{ Q: "伤寒的主要致病因素是", options: ["A.伤寒杆菌菌体“O”抗原", "B.伤寒杆菌外毒素", "C.伤寒杆菌表面抗原", "D.伤寒杆菌鞭毛“H”抗原", "E.伤寒杆菌内毒素"], answer: "E", explain: "伤寒杆菌内毒素是主要致病因素。" },
+// 第872题  第72题
+{ Q: "护士执业注册后才能独立从事护理工作，每次注册的有效期限为", options: ["A.注册后2年内有效", "B.注册后3年内有效", "C.注册后4年内有效", "D.注册后5年内有效", "E.注册后6年内有效"], answer: "D", explain: "护士执业注册有效期为5年。" },
+// 第873题  第73题
+{ Q: "骨盆外测量的径线不包括", options: ["A.出口横径", "B.髂间径", "C.骶耻外径", "D.髂棘间径", "E.坐骨棘间径"], answer: "E", explain: "坐骨棘间径是骨盆内测量径线。" },
+// 第874题  第74题
+{ Q: "溃疡性结肠炎病变常见的累及部位是", options: ["A.直肠和乙状结肠", "B.回盲部", "C.回肠末段", "D.空肠", "E.十二指肠"], answer: "A", explain: "溃疡性结肠炎好发于直肠和乙状结肠。" },
+// 第875题  第75题
+{ Q: "化脓性脑膜炎患儿脑脊液外观表现特点为", options: ["A.清晰透明", "B.毛玻璃样", "C.呈脓性浑浊", "D.呈血性浑浊", "E.静置24小时有网状薄膜形成"], answer: "C", explain: "化脓性脑膜炎脑脊液呈脓性浑浊。" },
+// 第876题  第76题
+{ Q: "心律失常中最严重的类型是", options: ["A.室性期前收缩", "B.房性期前收缩", "C.心房颤动", "D.三度房室传导阻滞", "E.室上性心动过速"], answer: "D", explain: "三度房室传导阻滞心室率慢，易致阿-斯综合征。" },
+// 第877题  第77题
+{ Q: "夜尿增多是指夜尿量大于", options: ["A.450ml", "B.550ml", "C.650ml", "D.750ml", "E.850ml"], answer: "D", explain: "夜尿增多指夜尿量>750ml或超过白天尿量。" },
+// 第878题  第78题
+{ Q: "女，50岁。体重指数（BMI）为30。自诉经常头晕、头痛、耳鸣、乏力、失眠。查体：血压160/110mmHg。实验室检查：甘油三酯4.9mmol/L，胆固醇8.12mmol/L，血糖7.0mmol/L。导致患者血压升高最可能的发病机制为", options: ["A.胰岛素抵抗", "B.内皮素水平升高", "C.肾素-血管紧张素-醛固酮系统失调", "D.细胞膜离子转运异常", "E.交感神经兴奋，儿茶酚胺水平升高"], answer: "A", explain: "肥胖、高血脂、高血糖提示代谢综合征，与胰岛素抵抗相关。" },
+// 第879题  第79题
+{ Q: "无排卵性异常子宫出血患者剖取子宫内膜应在月经来潮", options: ["A.14小时内", "B.12小时内", "C.10小时内", "D.8小时内", "E.6小时内"], answer: "E", explain: "诊断性刮宫应在月经来潮6小时内进行。" },
+// 第880题  第80题
+{ Q: "确诊支气管扩张症最主要的检查手段是", options: ["A.胸部X线检查", "B.胸部CT检查", "C.支气管镜检查", "D.胸部MRI检查", "E.支气管造影"], answer: "B", explain: "高分辨率CT是诊断支扩的主要手段。" },
+// 第881题  第81题
+{ Q: "调节能量代谢，促进糖、蛋白质、脂肪代谢，促进生长发育的激素是", options: ["A.生长激素", "B.甲状腺激素", "C.皮质醇", "D.醛固酮", "E.胰岛素"], answer: "B", explain: "甲状腺激素调节三大营养物质代谢，促进生长发育。" },
+// 第882题  第82题
+{ Q: "产生连枷胸的原因是", options: ["A.胸骨骨折", "B.胸壁内陷", "C.多根多处肋骨骨折", "D.单根单处肋骨骨折", "E.单根肋骨多处骨折"], answer: "C", explain: "多根多处肋骨骨折产生连枷胸。" },
+// 第883题  第83题
+{ Q: "正常情况下，脐带内脐动脉的条数是", options: ["A.1", "B.2", "C.3", "D.4", "E.5"], answer: "B", explain: "正常脐带有2条脐动脉，1条脐静脉。" },
+// 第884题  第84题
+{ Q: "某人的肾脏移植给另一人，属于", options: ["A.同质移植", "B.自体移植", "C.异体移植", "D.同种异体移植", "E.异种移植"], answer: "D", explain: "同种异体移植指同种不同个体间的移植。" },
+// 第885题  第85题
+{ Q: "单卵双生的孪生兄弟或孪生姐妹，其组织器官相互移植，属于", options: ["A.同质移植", "B.自体移植", "C.异体移植", "D.同种异体移植", "E.异种移植"], answer: "A", explain: "同卵双生间的移植为同质移植。" },
+// 第886题  第86题
+{ Q: "使宫颈黏液分泌量增加、稀薄、透明、易拉成丝的激素是", options: ["A.雌激素", "B.孕激素", "C.雄激素", "D.催乳素", "E.前列腺素"], answer: "A", explain: "雌激素使宫颈黏液稀薄、拉丝长。" },
+// 第887题  第87题
+{ Q: "使增殖期子宫内膜转化为分泌期子宫内膜的激素是", options: ["A.雌激素", "B.孕激素", "C.雄激素", "D.催乳素", "E.前列腺素"], answer: "B", explain: "孕激素使增殖期子宫内膜转化为分泌期。" },
+// 第888题  第88题
+{ Q: "维持女性第二性征，促进阴毛和腋毛生长的激素是", options: ["A.雌激素", "B.孕激素", "C.雄激素", "D.催乳素", "E.前列腺素"], answer: "C", explain: "雄激素促进女性阴毛、腋毛生长。" },
+// 第889题  第89题
+{ Q: "上消化道出血最常见的原因是", options: ["A.慢性胃炎", "B.食管胃底静脉曲张", "C.胃癌", "D.消化性溃疡", "E.食管-贲门黏膜撕裂综合征"], answer: "D", explain: "消化性溃疡是上消化道出血最常见原因。" },
+// 第890题  第90题
+{ Q: "肝硬化患者上消化道大量出血最常见的原因是", options: ["A.慢性胃炎", "B.食管胃底静脉曲张", "C.胃癌", "D.消化性溃疡", "E.食管-贲门黏膜撕裂综合征"], answer: "B", explain: "肝硬化上消化道出血最常见原因为食管胃底静脉曲张破裂。" },
+// 第891题  第91题
+{ Q: "放疗后患者皮肤出现干反应，应如何处理", options: ["A.涂2%甲紫", "B.热敷", "C.涂薄荷淀粉", "D.涂硼酸软膏", "E.涂碘酊"], answer: "D", explain: "放疗干反应可涂硼酸软膏保持湿润。" },
+// 第892题  第92题
+{ Q: "放疗后患者皮肤出现湿反应，应如何处理", options: ["A.涂2%甲紫", "B.热敷", "C.涂薄荷淀粉", "D.涂硼酸软膏", "E.涂碘酊"], answer: "A", explain: "放疗湿反应应保持干燥，涂2%甲紫。" },
+// 第893题  第93题
+{ Q: "急性白血病的血常规正确的是", options: ["A.全血细胞减少", "B.红细胞及血小板正常", "C.红细胞及血红蛋白均减少", "D.血小板减少", "E.周围血含大量原始和幼稚白细胞"], answer: "E", explain: "急性白血病血象可见大量原始和幼稚白细胞。" },
+// 第894题  第94题
+{ Q: "缺铁性贫血表现为", options: ["A.全血细胞减少", "B.红细胞及血小板正常", "C.红细胞及血红蛋白均减少", "D.血小板减少", "E.周围血含大量原始和幼稚白细胞"], answer: "C", explain: "缺铁性贫血表现为红细胞和血红蛋白减少。" },
+// 第895题  第95题
+{ Q: "原发免疫性血小板减少症表现为", options: ["A.全血细胞减少", "B.红细胞及血小板正常", "C.红细胞及血红蛋白均减少", "D.血小板减少", "E.周围血含大量原始和幼稚白细胞"], answer: "D", explain: "ITP主要表现为血小板减少。" },
+// 第896题  第96题
+{ Q: "再生障碍性贫血表现为", options: ["A.全血细胞减少", "B.红细胞及血小板正常", "C.红细胞及血红蛋白均减少", "D.血小板减少", "E.周围血含大量原始和幼稚白细胞"], answer: "A", explain: "再障表现为全血细胞减少。" },
+// 第897题  第97题
+{ Q: "多见于年老体弱者的腹外疝是", options: ["A.腹股沟斜疝", "B.腹股沟直疝", "C.切口疝", "D.股疝", "E.脐疝"], answer: "B", explain: "腹股沟直疝多见于年老体弱者。" },
+// 第898题  第98题
+{ Q: "多见于中年经产妇女的腹外疝是", options: ["A.腹股沟斜疝", "B.腹股沟直疝", "C.切口疝", "D.股疝", "E.脐疝"], answer: "D", explain: "股疝多见于中年经产妇女。" },
+// 第899题  第99题
+{ Q: "目前肝癌筛查的首选方法是", options: ["A.B超检查", "B.CT检查", "C.MRI检查", "D.肝血管造影", "E.肝组织活检"], answer: "A", explain: "B超是肝癌筛查的首选方法。" },
+// 第900题  第100题
+{ Q: "确诊肝癌最可靠的方法是", options: ["A.B超检查", "B.CT检查", "C.MRI检查", "D.肝血管造影", "E.肝组织活检"], answer: "E", explain: "肝组织活检是确诊肝癌最可靠的方法。" },
+
+// ==================== 模拟 (第901-1000题) ====================
+// 第901题  第1题
+{ Q: "指心而言，心为", options: ["A.生之本", "B.气之本", "C.罢极之本", "D.封藏之本", "E.仓廪之本"], answer: "A", explain: "心为生之本。" },
+// 第902题  第2题
+{ Q: "使用浸泡法消毒器械，操作不当的是", options: ["A.物品必须洗净、擦干再放入", "B.物品与消毒剂应充分接触", "C.禁用对金属有腐蚀性的消毒剂", "D.消毒剂定期更换", "E.浸泡后的器械可直接使用"], answer: "E", explain: "浸泡后的器械需用无菌水冲洗后再使用。" },
+// 第903题  第3题
+{ Q: "脾主升清的“清”是指", options: ["A.津液", "B.血液", "C.阳气", "D.水谷精气", "E.清气"], answer: "D", explain: "脾主升清，清指水谷精气。" },
+// 第904题  第4题
+{ Q: "健康教育的主要措施是", options: ["A.教育者充分利用卫生资源", "B.向教育对象传播健康信息", "C.充分挖掘社区的健康潜力", "D.改善教育对象的健康相关行为", "E.提供合理的健康、预防服务"], answer: "D", explain: "健康教育的主要措施是改善健康相关行为。" },
+// 第905题  第5题
+{ Q: "抗菌药物使用过程中对剂量和疗程的要求是", options: ["A.剂量足够，疗程够长", "B.剂量足够，疗程尽量短", "C.剂量减少，疗程增长", "D.剂量减少，疗程尽量短", "E.根据疗效，随时调整剂量和疗程"], answer: "A", explain: "抗菌药物应剂量足够、疗程够长。" },
+// 第906题  第6题
+{ Q: "属于阳的味道", options: ["A.酸、苦、咸", "B.辛、苦、咸", "C.辛、甘、淡", "D.甘、淡、涩", "E.甘、苦、淡"], answer: "C", explain: "辛、甘、淡属阳。" },
+// 第907题  第7题
+{ Q: "健康教育计划中目标与目的区别在于", options: ["A.目的是目标的具体体现", "B.目标是目的的具体体现", "C.目标是预期达到的最终结果", "D.目的一般用指标描述", "E.目标一般具有宏观性"], answer: "B", explain: "目标是目的的具体体现，可测量。" },
+// 第908题  第8题
+{ Q: "隔离对象不包括", options: ["A.水痘患者", "B.肾结石患者", "C.麻疹患者", "D.甲型肝炎患者", "E.感染性腹泻患者"], answer: "B", explain: "肾结石患者不需要隔离。" },
+// 第909题  第9题
+{ Q: "根据医院感染的诊断标准，属于医院感染的是", options: ["A.发热24小时后入院", "B.入院48小时后发生的无明确潜伏期的感染", "C.入院时抽血培养结果细菌培养阳性", "D.以创伤性伤口感染收入院", "E.新生儿通过母婴传播获得的HIV抗体阳性"], answer: "B", explain: "入院48小时后发生的感染属于医院感染。" },
+// 第910题  第10题
+{ Q: "主要经消化道传播的肝炎病毒为", options: ["A.甲型肝炎病毒、丙型肝炎病毒", "B.甲型肝炎病毒、戊型肝炎病毒", "C.乙型肝炎病毒、丙型肝炎病毒", "D.乙型肝炎病毒、戊型肝炎病毒", "E.甲型肝炎病毒、乙型肝炎病毒"], answer: "B", explain: "甲肝和戊肝主要经消化道传播。" },
+// 第911题  第11题
+{ Q: "健康信息传播的主体是", options: ["A.传播者", "B.信息", "C.传播途径", "D.受者", "E.环境"], answer: "A", explain: "传播者是健康信息传播的主体。" },
+// 第912题  第12题
+{ Q: "属“补其不足”法病机的是", options: ["A.阴阳偏盛", "B.阴阳偏衰", "C.阴阳格拒", "D.阴阳离决", "E.阴阳转化"], answer: "B", explain: "阴阳偏衰应补其不足。" },
+// 第913题  第13题
+{ Q: "解决“干什么”的问题是", options: ["A.战略决策", "B.战术决策", "C.程序化决策", "D.非程序化决策", "E.确定型决策"], answer: "A", explain: "战略决策解决“干什么”的问题。" },
+// 第914题  第14题
+{ Q: "某护士上夜班巡视，发现一位二级护理的患者倒在床旁，此时夜班值班室人员只有她1人。针对患者发生的坠床情况，护士应首选的措施是", options: ["A.向患者解释和道歉", "B.马上通知医生到病房", "C.初步检查判定患者伤情", "D.上报该不良事件", "E.通知护士长"], answer: "C", explain: "发生坠床后首先应检查患者伤情。" },
+// 第915题  第15题
+{ Q: "对传播较为准确的描述是", options: ["A.是达到约束对象的行为", "B.是社会性传递信息的行为", "C.是普及知识和技能的行为", "D.是通过媒介学习知识的行为", "E.是通过传播媒介干预受众的行为"], answer: "B", explain: "传播是社会性传递信息的行为。" },
+// 第916题  第16题
+{ Q: "某医院设置了院长、护理部、医务科、内科、外科、儿科等，该医院的组织结构属于", options: ["A.直线-职能型组织结构", "B.分部制组织结构", "C.职能型组织结构", "D.矩阵型组织结构", "E.直线型组织结构"], answer: "A", explain: "医院一般采取直线-职能型组织结构。" },
+// 第917题  第17题
+{ Q: "人际关系学说的提出者是", options: ["A.麦格雷戈", "B.韦伯", "C.库尔特·卢因", "D.法约尔", "E.梅奥"], answer: "E", explain: "人际关系学说是梅奥提出的。" },
+// 第918题  第18题
+{ Q: "全面综合性监测的类型不包括", options: ["A.医院感染危险因素的监测", "B.目标监测", "C.医院感染部位发生率的监测", "D.医院感染暴发流行的监测", "E.医院感染高危科室的监测"], answer: "B", explain: "目标监测是针对性监测，不属于全面综合性监测。" },
+// 第919题  第19题
+{ Q: "关于健康教育和卫生宣教的描述，正确的是", options: ["A.健康教育就是卫生宣教", "B.健康教育是卫生宣教的具体措施", "C.健康教育与卫生宣教含义相同", "D.卫生宣教是单一方向的信息传播", "E.卫生宣教的目标是行为干预"], answer: "D", explain: "卫生宣教是单向信息传播。" },
+// 第920题  第20题
+{ Q: "紫外线杀菌的最佳波长是", options: ["A.184nm", "B.254nm", "C.285nm", "D.354nm", "E.384nm"], answer: "B", explain: "紫外线杀菌最佳波长为254nm。" },
+// 第921题  第21题
+{ Q: "β-内酰胺类抗生素最佳给药方法是", options: ["A.连续给药", "B.1天量一次性给药", "C.间歇给药", "D.与氨基糖苷类抗生素同瓶滴注", "E.根据药物效应动力学和药物代谢动力学的特点决定间歇或者连续给药"], answer: "E", explain: "抗生素应根据PK/PD特点选择给药方案。" },
+// 第922题  第22题
+{ Q: "功能制护理的优点是", options: ["A.便于发挥不同层次护理人员的作用", "B.分工明确、效率高、易于组织管理", "C.便于发挥护理人员的主动性和创造性", "D.全面掌握和满足患者需求", "E.为患者提供生理、心理、社会等全方位护理"], answer: "B", explain: "功能制护理优点是分工明确，效率高。" },
+// 第923题  第23题
+{ Q: "护士长在护理查房时，提问实习护士关于医疗垃圾处理问题时，实习护士回答错误的是", options: ["A.医疗垃圾应焚烧", "B.使用后的一次性注射器、输液器针头置于锐器盒内", "C.医用垃圾使用棕色塑料袋", "D.医用垃圾使用专梯专人回收", "E.医疗垃圾处理时做好自我防护"], answer: "C", explain: "医用垃圾使用黄色塑料袋。" },
+// 第924题  第24题
+{ Q: "健康教育的作用在于", options: ["A.用健康知识来武装人们的头脑", "B.帮助人们认识健康的重要性", "C.帮助人们改变信念", "D.帮助人们形成健康意识", "E.帮助人们形成健康行为"], answer: "E", explain: "健康教育的最终作用是形成健康行为。" },
+// 第925题  第25题
+{ Q: "预防下呼吸道感染的护理措施，错误的是", options: ["A.指导患者多深呼吸及有效咳嗽", "B.指导患者多卧床休息，以保持体力", "C.适时开窗，保持室内空气新鲜", "D.协助患者定时翻身叩背", "E.使用胸部物理治疗技术"], answer: "B", explain: "卧床休息易致肺部感染，应鼓励早期活动。" },
+// 第926题  第26题
+{ Q: "某医院ICU护士长到病房检查危重患者的护理时，发现患者的卧位不正确，给予指出，并纠正。护士长的行为属于", options: ["A.预先控制", "B.过程控制", "C.反馈控制", "D.全面控制", "E.局部控制"], answer: "B", explain: "检查过程中纠正问题属于过程控制。" },
+// 第927题  第27题
+{ Q: "影响健康教育评价的因素不包括", options: ["A.时间因素", "B.地点因素", "C.回归因素", "D.选择因素", "E.失访"], answer: "B", explain: "地点因素不影响健康教育评价。" },
+// 第928题  第28题
+{ Q: "调摄精神属于", options: ["A.治病求本", "B.未病先防", "C.既病防变", "D.因地制宜", "E.因时制宜"], answer: "B", explain: "调摄精神是未病先防的重要措施。" },
+// 第929题  第29题
+{ Q: "护理质量管理的自我监控中最关键的层次是", options: ["A.病区护士长层次", "B.总护士长层次", "C.护理部层次", "D.护士层次", "E.护士组长层次"], answer: "D", explain: "护士是质量管理的最终执行者，自我监控最关键。" },
+// 第930题  第30题
+{ Q: "赫茨伯格提出的双因素理论中所指的两类因素是", options: ["A.主观因素和客观因素", "B.保健因素和激励因素", "C.激励因素和客观因素", "D.积极因素和消极因素", "E.客观因素和保健因素"], answer: "B", explain: "双因素理论指保健因素和激励因素。" },
+// 第931题  第31题
+{ Q: "女，51岁。以“高血压性心脏病”收治入院，入院后责任护士对患者及其家属行入院教育，主要内容是", options: ["A.高血压性心脏病的病因", "B.医院的规章制度", "C.高血压性心脏病的治疗原则", "D.并发症的预防", "E.用药指导"], answer: "B", explain: "入院教育主要内容是医院规章制度。" },
+// 第932题  第32题
+{ Q: "“计划工作必须始终坚持以目标为导向”，强调的是计划的", options: ["A.系统性原则", "B.创新原则", "C.可考核性原则", "D.弹性原则", "E.重点原则"], answer: "C", explain: "目标导向体现可考核性原则。" },
+// 第933题  第33题
+{ Q: "属于根据控制内容的覆盖面不同采取的控制措施的是", options: ["A.质量控制", "B.过程控制", "C.专题控制", "D.直接控制", "E.预防控制"], answer: "C", explain: "根据覆盖面可分为专题控制和全面控制。" },
+// 第934题  第34题
+{ Q: "实现“肺主通调水道”功能的途径是", options: ["A.主呼吸之气", "B.主一身之气", "C.主治节", "D.朝百脉", "E.主宣发与肃降"], answer: "E", explain: "肺通过宣发肃降通调水道。" },
+// 第935题  第35题
+{ Q: "关于急救药品和各种抢救设备的“五定”内容，错误的是", options: ["A.定期消毒灭菌和检查维修", "B.定数量品种", "C.定放置地点", "D.定时使用", "E.定人保管"], answer: "D", explain: "五定不包括定时使用。" },
+// 第936题  第36题
+{ Q: "糖尿病患者在学习胰岛素注射技术过程中，多采用", options: ["A.无意模仿", "B.有意模仿", "C.强迫模仿", "D.正性强化", "E.负性强化"], answer: "B", explain: "技能学习多采用有意模仿。" },
+// 第937题  第37题
+{ Q: "阳虚之体，慎用寒凉之药，其体现的治疗原则是", options: ["A.因时制宜", "B.因地制宜", "C.因人制宜", "D.因病制宜", "E.因证制宜"], answer: "C", explain: "根据体质用药体现因人制宜。" },
+// 第938题  第38题
+{ Q: "为了解居民对吸烟的真实想法，社区护士可采取", options: ["A.封闭式提问", "B.开放式提问", "C.偏向式提问", "D.复合式提问", "E.诱导式提问"], answer: "B", explain: "开放式提问可了解真实想法。" },
+// 第939题  第39题
+{ Q: "某乳腺癌术后患者，因为担心形象不好及癌症转移，对未来生活失去信心，责任护士每天反复对其进行心理护理及健康宣教，使其终于恢复了对未来生活的信心。责任护士采用的有效沟通方法属于", options: ["A.创造良好的沟通环境", "B.学会有效的倾听", "C.增强语言文字的感染力", "D.韧性沟通", "E.重视沟通细节的处理"], answer: "D", explain: "反复沟通体现韧性沟通。" },
+// 第940题  第40题
+{ Q: "某医院护理部主任召集几名护士长谈话，了解护理新举措在病房的实施情况，不妥的是", options: ["A.做好谈话计划，确立谈话主题", "B.激发下级的谈话愿望", "C.真诚、及时地赞美下属", "D.掌握发问技巧，多提诱导性问题", "E.善于启发下属讲真情实话"], answer: "D", explain: "不应使用诱导性问题。" },
+// 第941题  第41题
+{ Q: "健康促进策略不包括", options: ["A.制订健康的公共政策", "B.创造支持性环境", "C.发展个人技能", "D.增加医药费用的投入", "E.加强社区行动"], answer: "D", explain: "健康促进五大策略不包括增加医药费用投入。" },
+// 第942题  第42题
+{ Q: "物品消毒灭菌效果合格的是", options: ["A.化学消毒剂的染菌量为150CFU/ml", "B.使用中紫外线灯管的照射强度为80μW/cm²", "C.消毒后的内镜菌落总数为30CFU/件", "D.透析器入口液的菌落总数为500CFU/ml", "E.透析器出口液的菌落总数为2500CFU/ml"], answer: "A", explain: "化学消毒剂染菌量应≤100CFU/ml，150CFU/ml不合格。" },
+// 第943题  第43题
+{ Q: "被铜绿假单胞菌污染的剪刀，其消毒灭菌步骤是", options: ["A.与其他器械先浸泡消毒后，再分别清洁灭菌", "B.清洁后用燃烧灭菌法灭菌", "C.彻底清洗后，用紫外线灯管消毒法消毒", "D.先用化学消毒剂浸泡消毒，再用压力蒸汽灭菌", "E.灭菌，清洁，再灭菌"], answer: "E", explain: "特殊感染应先灭菌，再清洁，再灭菌。" },
+// 第944题  第44题
+{ Q: "被流行性出血热发热期患者或疫鼠的排泄物污染的伤口，选用的消毒剂是", options: ["A.0.5%碘伏", "B.75%乙醇", "C.0.5%过氧乙酸", "D.2%碘酊", "E.0.5%碳酸氢钠"], answer: "C", explain: "出血热病毒对过氧乙酸敏感。" },
+// 第945题  第45题
+{ Q: "医院健康教育的意义不包括", options: ["A.提高患者依从性", "B.减轻病痛", "C.密切医患关系", "D.降低医疗成本", "E.消除患者及其家属对疾病的恐惧等情绪反应"], answer: "B", explain: "健康教育不能直接减轻病痛。" },
+// 第946题  第46题
+{ Q: "须用消毒剂搓洗手的情况不包括", options: ["A.接触污染物品后", "B.接触传染病患者后", "C.接触同一患者不同部位", "D.接触特殊感染的病原体后", "E.在微生物实验室操作后"], answer: "C", explain: "接触同一患者不同部位只需卫生洗手。" },
+// 第947题  第47题
+{ Q: "某人性情急躁、雄心勃勃、时间紧迫感强。他的行为模式属于", options: ["A.A型", "B.B型", "C.C型", "D.AB型", "E.O型"], answer: "A", explain: "A型行为表现为急躁、争强好胜、时间紧迫感。" },
+// 第948题  第48题
+{ Q: "控制时首先要解决的问题是", options: ["A.确立控制对象", "B.建立信息反馈系统", "C.衡量工作绩效", "D.选择控制的关键点", "E.分解目标确立控制标准"], answer: "A", explain: "控制首先要确立控制对象。" },
+// 第949题  第49题
+{ Q: "有关协调的叙述，不正确的是", options: ["A.协调是减少内耗、增加效益的重要手段", "B.协调的本质在于解决各种矛盾", "C.协调是调动员工积极性的重要方法", "D.协调措施可脱离既定的目标", "E.协调是增强组织凝聚力的有效途径"], answer: "D", explain: "协调不能脱离既定目标。" },
+// 第950题  第50题
+{ Q: "健康传播中，希望信息在生活、地域、认识等方面属于自己熟悉的领域，体现了受者的", options: ["A.求新心理", "B.求真心理", "C.求近心理", "D.求短心理", "E.求广心理"], answer: "C", explain: "求近心理指希望信息与自己接近。" },
+// 第951题  第51题
+{ Q: "水火既济的两脏是", options: ["A.心、肺", "B.肺、脾", "C.心、肾", "D.肝、肾", "E.心、肝"], answer: "C", explain: "心肾相交，水火既济。" },
+// 第952题  第52题
+{ Q: "有关ABC时间管理法的描述，错误的是", options: ["A.每天工作前列出“日工作清单”", "B.对“日工作清单”分类", "C.集中精力完成A类工作", "D.同时兼顾C类工作，不应减少", "E.工作结束时评价时间应用情况"], answer: "D", explain: "C类工作可减少或不做。" },
+// 第953题  第53题
+{ Q: "护理人员管理的基本原则不包括", options: ["A.公平竞争的原则", "B.系统管理的原则", "C.职务要求明确的原则", "D.一切服从管理人员决策的原则", "E.用人之长的原则"], answer: "D", explain: "人员管理不应一切服从决策。" },
+// 第954题  第54题
+{ Q: "“未病先防”不包括", options: ["A.调摄精神", "B.起居有节", "C.锻炼身体", "D.早期诊治", "E.药物预防"], answer: "D", explain: "早期诊治属于既病防变。" },
+// 第955题  第55题
+{ Q: "送检的痰标本不符合标准的是", options: ["A.清晨深咳出的痰", "B.支气管灌洗液", "C.支气管刷出物", "D.肺吸出物", "E.24小时痰的上层泡沫"], answer: "E", explain: "痰标本应取新鲜痰液，不能取24小时痰的上层泡沫。" },
+// 第956题  第56题
+{ Q: "组织文化的核心是", options: ["A.以人为本", "B.组织的价值观", "C.软性管理", "D.增强群体凝聚力", "E.组织的调适功能"], answer: "B", explain: "组织文化的核心是价值观。" },
+// 第957题  第57题
+{ Q: "根据“知-信-行模式”，健康行为形成的基础条件是", options: ["A.获取相关知识", "B.掌握相关技能", "C.树立相关信念", "D.建立相关动机", "E.制订相关目标"], answer: "A", explain: "知识是行为改变的基础。" },
+// 第958题  第58题
+{ Q: "针对教育对象存在的健康问题，说服其改变不正确的健康态度、信念和健康习惯的人际传播方式是", options: ["A.咨询", "B.劝服", "C.交谈", "D.指导", "E.反馈"], answer: "B", explain: "劝服是说服对方改变态度。" },
+// 第959题  第59题
+{ Q: "“大权集中，小权分散”遵循的授权原则是", options: ["A.量力授权", "B.带责授权", "C.权责对等", "D.监督控制", "E.合理合法"], answer: "A", explain: "大权集中小权分散体现量力授权。" },
+// 第960题  第60题
+{ Q: "有关组织设计的要求，不正确的是", options: ["A.实施“一元化管理”", "B.注意避免机构重叠", "C.组织内的权力应相对均衡", "D.避免头重脚轻，人浮于事", "E.各部门间应组合成高效的结构形式"], answer: "C", explain: "组织内权力不应均衡，应有明确的层级。" },
+// 第961题  第61题
+{ Q: "杀灭细菌芽孢的化学消毒剂不包括", options: ["A.环氧乙烷", "B.过氧乙酸", "C.戊二醛", "D.碘酊", "E.甲醛"], answer: "D", explain: "碘酊为中效消毒剂，不能杀灭芽孢。" },
+// 第962题  第62题
+{ Q: "易在新生儿室形成暴发流行的感染不包括", options: ["A.葡萄球菌", "B.克雷伯菌", "C.鼠伤寒杆菌", "D.铜绿假单胞菌", "E.柯萨奇病毒"], answer: "B", explain: "克雷伯菌不易在新生儿室暴发。" },
+// 第963题  第63题
+{ Q: "在医院感染中，属于内源性感染的是", options: ["A.病原体来源于护士污染的手", "B.病原体来源于消毒不合格的医疗用品", "C.病原体来源于自身口腔", "D.病原体来源于探视者", "E.病原体来源于其他患者"], answer: "C", explain: "内源性感染病原体来自自身。" },
+// 第964题  第64题
+{ Q: "对预期取得的收入和支出所进行的计划工作是", options: ["A.质量控制", "B.预算控制", "C.进度控制", "D.目标控制", "E.反馈控制"], answer: "B", explain: "预算控制是对收支的计划。" },
+// 第965题  第65题
+{ Q: "根据五脏与五液的对应关系，心之液是", options: ["A.唾", "B.涎", "C.涕", "D.泪", "E.汗"], answer: "E", explain: "心在液为汗。" },
+// 第966题  第66题
+{ Q: "按照《综合医院组织编制原则试行草案》要求符合编制规定的护理人员占卫生技术人员约编比例是", options: ["A.20%", "B.30%", "C.40%", "D.50%", "E.60%"], answer: "D", explain: "护理人员应占卫生技术人员的50%。" },
+// 第967题  第67题
+{ Q: "除呼吸道传播外，结核病常见的传播途径还有", options: ["A.泌尿道传播", "B.消化道传播", "C.皮肤接触传播", "D.性传播", "E.血液-体液传播"], answer: "B", explain: "结核病也可经消化道传播。" },
+// 第968题  第68题
+{ Q: "消毒塑料尼龙类的节育器应使用", options: ["A.75%乙醇浸泡30分钟", "B.含氯消毒剂浸泡30分钟", "C.无菌纱布擦拭", "D.煮沸消毒法", "E.压力蒸汽灭菌"], answer: "A", explain: "塑料尼龙类节育器可用75%乙醇浸泡。" },
+// 第969题  第69题
+{ Q: "防止手术部位感染最有效的对策是", options: ["A.更换敷料前洗手", "B.选用吸附力强的敷料", "C.缩短患者在监护室的滞留时间", "D.严格无菌操作", "E.保持室内空气清洁"], answer: "D", explain: "严格无菌操作是预防手术感染最有效措施。" },
+// 第970题  第70题
+{ Q: "某医院通过培训提高了该护士的职业素质，这体现了", options: ["A.人力资源的流动性", "B.人力资源的可塑性", "C.人力资源的组合性", "D.人力资源的消耗性", "E.人力资源的主观能动性"], answer: "B", explain: "培训提高素质体现人力资源的可塑性。" },
+// 第971题  第71题
+{ Q: "冲突双方以放弃部分利益为前提，在一定程度上满足对方的部分需要，达成彼此接受的协议，此解决方法是", options: ["A.合作", "B.回避", "C.妥协", "D.迁就", "E.退让"], answer: "C", explain: "妥协是双方各让一步。" },
+// 第972题  第72题
+{ Q: "关于化学消毒剂的使用，不正确的是", options: ["A.体温计可用75%乙醇浸泡30分钟消毒", "B.苯扎溴铵不能与肥皂合用", "C.环氧乙烷应置于无火源、阴凉处，最好存入冰箱中", "D.皮肤过敏者禁用碘酊", "E.过氧化氢溶液可去除陈旧血迹"], answer: "C", explain: "环氧乙烷不应存入冰箱，易爆炸。" },
+// 第973题  第73题
+{ Q: "最基本的、传统的管理方法是", options: ["A.行政方法", "B.经济方法", "C.法律方法", "D.思想教育方法", "E.社会心理学方法"], answer: "A", explain: "行政方法是最基本的管理方法。" },
+// 第974题  第74题
+{ Q: "大众传播特点不包括", options: ["A.信息是由把关人发出的", "B.信息的接收者众多", "C.信息量大", "D.覆盖面广", "E.传播速度快"], answer: "A", explain: "把关人是组织传播的特点。" },
+// 第975题  第75题
+{ Q: "人的躲避行为与人类行为适应形式密切相关，特别是", options: ["A.反射", "B.顺应", "C.调适", "D.应对", "E.自我控制"], answer: "A", explain: "躲避行为是先天性反射。" },
+// 第976题  第76题
+{ Q: "引起医院感染的病原微生物主要是", options: ["A.条件致病菌", "B.致病菌", "C.自然界的一切微生物", "D.空气中的微生物", "E.环境中的微生物"], answer: "A", explain: "医院感染多由条件致病菌引起。" },
+// 第977题  第77题
+{ Q: "躯体健康测量指标不包括", options: ["A.发病率", "B.体重", "C.腰围", "D.坐高", "E.日常生活活动能力"], answer: "A", explain: "发病率是群体健康指标，不是躯体健康测量指标。" },
+// 第978题  第78题
+{ Q: "选定方案即实质性决策，是制订计划的", options: ["A.第二个步骤", "B.第三个步骤", "C.第四个步骤", "D.第五个步骤", "E.第六个步骤"], answer: "D", explain: "选定方案是计划的第五个步骤。" },
+// 第979题  第79题
+{ Q: "按照《医院感染管理办法》规定，须向有关部门报告医院感染暴发的情况是", options: ["A.由于医院感染暴发导致患者人身损害后果", "B.由于医院感染暴发导致3人以上人身损害后果", "C.由于医院感染暴发导致3人以下人身损害后果", "D.由于医疗责任事故导致患者死亡", "E.由于医院感染暴发间接导致患者死亡"], answer: "B", explain: "感染暴发导致3人以上损害需报告。" },
+// 第980题  第80题
+{ Q: "须采取血液-体液隔离的是", options: ["A.艾滋病", "B.甲型肝炎", "C.伤寒", "D.麻疹", "E.大面积烧伤"], answer: "A", explain: "艾滋病需血液-体液隔离。" },
+// 第981题  第81题
+{ Q: "权力性影响力的特点不包括", options: ["A.靠奖惩等附加条件起作用", "B.对下属的影响具有强迫性", "C.不稳定，随地位的变化而改变", "D.下属被动地服从，激励作用有限", "E.影响力持久，可起潜移默化的作用"], answer: "E", explain: "权力性影响力不持久，不能潜移默化。" },
+// 第982题  第82题
+{ Q: "在组织设计中，“确定正式组织结构及组织运作程序”属于", options: ["A.决定人员配备", "B.确立组织目标", "C.形成组织结构", "D.划分业务工作", "E.确定职责和权限"], answer: "C", explain: "确定组织结构和运作程序是形成组织结构。" },
+// 第983题  第83题
+{ Q: "组织文化具有管理功能的前提条件为", options: ["A.文化性", "B.综合性", "C.整合性", "D.自觉性", "E.实践性"], answer: "D", explain: "组织文化的自觉性是管理功能的前提。" },
+// 第984题  第84题
+{ Q: "组织文化区别于组织其他内容的根本点为", options: ["A.文化性", "B.综合性", "C.整合性", "D.自觉性", "E.实践性"], answer: "A", explain: "文化性是组织文化的根本特征。" },
+// 第985题  第85题
+{ Q: "属于基础质量评价指标的是", options: ["A.仪器设备完好率", "B.运行病历合格率", "C.静脉输液操作合格率", "D.一人一针一管执行率", "E.出院患者满意度"], answer: "A", explain: "仪器设备完好率是基础质量评价指标。" },
+// 第986题  第86题
+{ Q: "属于终末质量评价指标的是", options: ["A.仪器设备完好率", "B.运行病历合格率", "C.静脉输液操作合格率", "D.一人一针一管执行率", "E.出院患者满意度"], answer: "E", explain: "出院患者满意度是终末质量评价指标。" },
+// 第987题  第87题
+{ Q: "在格林模式中，属于影响行为的促成因素是", options: ["A.知识", "B.信念", "C.保健设施", "D.亲属的劝告", "E.价值观"], answer: "C", explain: "促成因素包括资源、技能等，保健设施是促成因素。" },
+// 第988题  第88题
+{ Q: "在格林模式中，属于影响行为的强化因素是", options: ["A.知识", "B.信念", "C.保健设施", "D.亲属的劝告", "E.价值观"], answer: "D", explain: "强化因素包括家人、朋友的支持等。" },
+// 第989题  第89题
+{ Q: "层流洁净手术室的空气卫生标准应达到", options: ["A.细菌总数≤10CFU/m³，且不得检出致病菌", "B.细菌总数≤20CFU/m³，且不得检出致病菌", "C.细菌总数≤200CFU/m³，且不得检出致病菌", "D.细菌总数≤500CFU/m³，且不得检出致病菌", "E.细菌总数≤2000CFU/m³，且不得检出致病菌"], answer: "A", explain: "层流洁净手术室为Ⅰ类环境，细菌总数≤10CFU/m³。" },
+// 第990题  第90题
+{ Q: "普通病房的空气卫生标准应达到", options: ["A.细菌总数≤10CFU/m³，且不得检出致病菌", "B.细菌总数≤20CFU/m³，且不得检出致病菌", "C.细菌总数≤200CFU/m³，且不得检出致病菌", "D.细菌总数≤500CFU/m³，且不得检出致病菌", "E.细菌总数≤2000CFU/m³，且不得检出致病菌"], answer: "D", explain: "普通病房为Ⅲ类环境，细菌总数≤500CFU/m³。" },
+// 第991题  第91题
+{ Q: "新生儿病房的空气卫生标准应达到", options: ["A.细菌总数≤10CFU/m³，且不得检出致病菌", "B.细菌总数≤20CFU/m³，且不得检出致病菌", "C.细菌总数≤200CFU/m³，且不得检出致病菌", "D.细菌总数≤500CFU/m³，且不得检出致病菌", "E.细菌总数≤2000CFU/m³，且不得检出致病菌"], answer: "C", explain: "新生儿病房为Ⅱ类环境，细菌总数≤200CFU/m³。" },
+// 第992题  第92题
+{ Q: "甲型肝炎的隔离方式为", options: ["A.呼吸道隔离", "B.接触隔离", "C.严密隔离", "D.保护性隔离", "E.消化道隔离"], answer: "E", explain: "甲肝经消化道传播，应消化道隔离。" },
+// 第993题  第93题
+{ Q: "流行性腮腺炎的隔离方式为", options: ["A.呼吸道隔离", "B.接触隔离", "C.严密隔离", "D.保护性隔离", "E.消化道隔离"], answer: "A", explain: "流行性腮腺炎应呼吸道隔离。" },
+// 第994题  第94题
+{ Q: "浸泡支气管镜的消毒剂宜用", options: ["A.戊二醛", "B.过氧乙酸", "C.甲醛", "D.含氯消毒剂", "E.碘"], answer: "A", explain: "支气管镜用2%戊二醛浸泡消毒。" },
+// 第995题  第95题
+{ Q: "排泄物的消毒宜用", options: ["A.戊二醛", "B.过氧乙酸", "C.甲醛", "D.含氯消毒剂", "E.碘"], answer: "D", explain: "排泄物常用含氯消毒剂消毒。" },
+// 第996题  第96题
+{ Q: "经飞沫传播疾病的隔离预防，要求进入室内的工作人员至少应佩戴", options: ["A.棉布口罩", "B.单层口罩", "C.外科口罩", "D.医用防护口罩", "E.防护面罩"], answer: "C", explain: "飞沫传播应戴外科口罩。" },
+// 第997题  第97题
+{ Q: "经空气传播疾病的隔离预防，要求进入室内的工作人员至少应佩戴", options: ["A.棉布口罩", "B.单层口罩", "C.外科口罩", "D.医用防护口罩", "E.防护面罩"], answer: "D", explain: "空气传播应戴医用防护口罩。" },
+// 第998题  第98题
+{ Q: "患病后及时就医属于", options: ["A.日常健康行为", "B.避开有害环境行为", "C.戒除不良嗜好行为", "D.预警行为", "E.保健行为"], answer: "E", explain: "及时就医属于保健行为。" },
+// 第999题  第99题
+{ Q: "驾车时使用安全带属于", options: ["A.日常健康行为", "B.避开有害环境行为", "C.戒除不良嗜好行为", "D.预警行为", "E.保健行为"], answer: "D", explain: "使用安全带是预警行为。" },
+// 第1000题  第100题
+{ Q: "预防接种属于", options: ["A.日常健康行为", "B.避开有害环境行为", "C.戒除不良嗜好行为", "D.预警行为", "E.保健行为"], answer: "E", explain: "预防接种属于保健行为。" },
+
+// ==================== 模拟 (第1001-1100题) ====================
+// 第1001题  第1题
+{ Q: "关于营养对小儿生长发育的影响，不正确的是", options: ["A.年龄越小受营养的影响越大", "B.宫内营养不良只影响体格增长", "C.出生后营养不良导致体重不增甚至下降", "D.长期营养不良影响身高和体重等的增长", "E.长期营养不良影响智力和心理社会的发展"], answer: "B", explain: "宫内营养不良也影响神经系统发育。" },
+// 第1002题  第2题
+{ Q: "胸外按压的部位是", options: ["A.胸骨中下1/3", "B.胸骨中1/3", "C.胸骨下1/3", "D.胸骨中段", "E.胸骨左段"], answer: "A", explain: "胸外按压部位为胸骨中下1/3交界处。" },
+// 第1003题  第3题
+{ Q: "对氨基水杨酸的主要不良反应是", options: ["A.周围神经炎", "B.听神经损害", "C.视神经炎", "D.胃肠道反应", "E.肝损害"], answer: "D", explain: "对氨基水杨酸主要不良反应为胃肠道反应。" },
+// 第1004题  第4题
+{ Q: "有关等渗性脱水的叙述，不正确的是", options: ["A.以细胞外液减少为主", "B.常见原因有急性腹膜炎、大量呕吐等", "C.补液首选平衡盐溶液", "D.严重者可出现休克", "E.常伴代谢性碱中毒"], answer: "E", explain: "等渗性脱水常伴代谢性酸中毒。" },
+// 第1005题  第5题
+{ Q: "新生儿娩出后，首先应", options: ["A.清理呼吸道", "B.处理脐带", "C.刺激呼吸", "D.眼药水滴双眼", "E.吸吮母亲乳汁"], answer: "A", explain: "新生儿娩出后首先清理呼吸道。" },
+// 第1006题  第6题
+{ Q: "癫痫全面强直-阵挛发作频繁出现，间歇期仍意识不清，称为", options: ["A.失神发作", "B.阵挛性发作", "C.强直性发作", "D.全面强直-阵挛发作", "E.癫痫持续状态"], answer: "E", explain: "癫痫持续状态指发作频繁，间歇期意识不恢复。" },
+// 第1007题  第7题
+{ Q: "血栓闭塞性脉管炎的辅助检查是", options: ["A.波氏试验", "B.屈氏试验Ⅰ", "C.屈氏试验Ⅱ", "D.直腿抬高试验", "E.肢体抬高试验"], answer: "E", explain: "肢体抬高试验用于检查血栓闭塞性脉管炎。" },
+// 第1008题  第8题
+{ Q: "某孕妇，24岁。妊娠35周，突然发生腹部持续性疼痛，伴有少量阴道流血，恶心、呕吐、面色苍白、脉搏细弱，血压下降；腹部检查：有压痛、子宫硬。此患者最可能的诊断为", options: ["A.胎盘早剥", "B.前置胎盘", "C.先兆早产", "D.早产", "E.先兆临产"], answer: "A", explain: "持续性腹痛，子宫硬，为胎盘早剥。" },
+// 第1009题  第9题
+{ Q: "接受经腹腔镜输卵管绝育术的妇女，术中体位是", options: ["A.平卧位", "B.侧卧位", "C.俯卧位", "D.截石位", "E.头低仰卧位"], answer: "E", explain: "腹腔镜手术取头低仰卧位。" },
+// 第1010题  第10题
+{ Q: "男，45岁。慢性肾小球肾炎病史7年，血尿素氮增高2年，一直坚持低蛋白、低磷饮食治疗。此治疗的目的是", options: ["A.控制高血压", "B.预防高钠血症", "C.预防高钙血症", "D.减轻肾源性水肿", "E.减轻肾小球高灌注、高滤过状态"], answer: "E", explain: "低蛋白饮食可减轻肾小球高灌注、高滤过。" },
+// 第1011题  第11题
+{ Q: "急性白血病患者最常见的感染部位是", options: ["A.皮肤", "B.肺部", "C.口腔", "D.泌尿系统", "E.肛周"], answer: "B", explain: "急性白血病最常见感染部位是肺部。" },
+// 第1012题  第12题
+{ Q: "婴幼儿上呼吸道感染常见的并发症不包括", options: ["A.喉炎", "B.中耳炎", "C.风湿热", "D.支气管炎", "E.咽后壁脓肿"], answer: "C", explain: "风湿热是链球菌感染后远期并发症。" },
+// 第1013题  第13题
+{ Q: "男，3个月。因反复发作吸气性呼吸困难入院。查体：吸气性喉鸣，体温正常。血清钙1.5mmol/L。出生后人工喂养。应考虑", options: ["A.急性喉炎", "B.毛细支气管炎", "C.肺炎", "D.维生素D缺乏性手足搐搦症", "E.气管异物"], answer: "D", explain: "血清钙1.5mmol/L低于正常，出现喉痉挛，为维生素D缺乏性手足搐搦症。" },
+// 第1014题  第14题
+{ Q: "妊娠合并病毒性肝炎的正确处理是", options: ["A.产后常规用雌激素退乳", "B.增加休息，定期产前检查", "C.应用激素预防产后出血", "D.给予高脂、高蛋白、高碳水化合物饮食", "E.产褥期给予大量抗生素预防感染"], answer: "B", explain: "妊娠合并肝炎应增加休息，定期产检。" },
+// 第1015题  第15题
+{ Q: "抗甲状腺药物最危险的不良反应为", options: ["A.粒细胞缺乏症", "B.药疹", "C.药物热", "D.胃肠道反应", "E.中毒性肝病"], answer: "A", explain: "粒细胞缺乏症是抗甲状腺药最危险的不良反应。" },
+// 第1016题  第16题
+{ Q: "大咯血合并窒息时应采取的体位是", options: ["A.头低足高俯卧位", "B.头高足低位", "C.中凹卧位", "D.侧卧位", "E.半坐卧位"], answer: "A", explain: "咯血窒息应取头低足高俯卧位，利于引流。" },
+// 第1017题  第17题
+{ Q: "判断浅表脓肿的依据是", options: ["A.红", "B.肿", "C.热", "D.痛", "E.有波动感"], answer: "E", explain: "波动感是浅表脓肿的典型体征。" },
+// 第1018题  第18题
+{ Q: "对糖尿病患者进行强化胰岛素治疗时，常见的不良反应是", options: ["A.心血管疾病", "B.高血糖", "C.酮症", "D.低血糖", "E.糖尿病足"], answer: "D", explain: "强化胰岛素治疗最常见不良反应是低血糖。" },
+// 第1019题  第19题
+{ Q: "慢性支气管炎急性发作患者最主要的治疗药物是", options: ["A.抗生素", "B.β₂受体激动剂", "C.祛痰药和镇咳药", "D.卡介苗", "E.镇咳药"], answer: "A", explain: "慢支炎急性发作多由感染引起，应使用抗生素。" },
+// 第1020题  第20题
+{ Q: "2型糖尿病仅餐后高血糖患者首选的治疗方案为", options: ["A.饮食管理+运动疗法", "B.饮食管理+运动疗法+阿卡波糖", "C.饮食管理+运动疗法+双胍类降糖药", "D.饮食管理+运动疗法+磺酰脲类降糖药", "E.饮食管理+运动疗法+胰岛素"], answer: "B", explain: "阿卡波糖主要降低餐后血糖。" },
+// 第1021题  第21题
+{ Q: "手术室划为限制区的有", options: ["A.休息室", "B.护士办公室", "C.手术间及洗手间", "D.值班室", "E.敷料准备间"], answer: "C", explain: "手术间及洗手间为限制区。" },
+// 第1022题  第22题
+{ Q: "治疗军团菌肺炎的首选药物是", options: ["A.青霉素G", "B.磺胺类药物", "C.喹诺酮类药物", "D.大环内酯类药物", "E.头孢菌素类药物"], answer: "D", explain: "军团菌肺炎首选大环内酯类抗生素。" },
+// 第1023题  第23题
+{ Q: "宫颈癌的临床表现不包括", options: ["A.早期表现为接触性出血", "B.长期消耗可出现恶病质", "C.晚期可出现腰骶部疼痛", "D.肿瘤压迫可引起肾盂积水", "E.早期可出现大量的米泔样阴道排液"], answer: "E", explain: "大量米泔样白带是晚期表现。" },
+// 第1024题  第24题
+{ Q: "男，25岁。高处坠楼致腰部剧痛，双下肢感觉、运动障碍，大小便失禁。现场搬运的正确方法是", options: ["A.单人搂抱法", "B.双人搂抱法", "C.背驮法", "D.侧卧搬运法", "E.平托或滚动法"], answer: "E", explain: "脊柱损伤应平托或滚动搬运，保持脊柱平直。" },
+// 第1025题  第25题
+{ Q: "再生障碍性贫血的典型血象特点是", options: ["A.全血细胞减少", "B.淋巴细胞分类减少", "C.网织红细胞<0.015", "D.嗜多色性红细胞分类增多", "E.形态学上属大细胞性贫血"], answer: "A", explain: "再障典型血象为全血细胞减少。" },
+// 第1026题  第26题
+{ Q: "子宫内膜癌晚期肿瘤阻塞宫颈管时，下腹部会出现", options: ["A.痉挛性疼痛", "B.阵发性疼痛", "C.持续性疼痛", "D.绞窄性疼痛", "E.隐痛"], answer: "B", explain: "宫腔积脓时出现阵发性腹痛。" },
+// 第1027题  第27题
+{ Q: "成人无尿指每天尿量少于", options: ["A.2500ml", "B.500ml", "C.400ml", "D.100ml", "E.50ml"], answer: "D", explain: "无尿指尿量<100ml/24h。" },
+// 第1028题  第28题
+{ Q: "患者自控镇痛的优点不包括", options: ["A.用药量少，不易过量", "B.镇痛效果好", "C.有利于全身情况的恢复", "D.不会产生呼吸抑制", "E.患者有主动参与感"], answer: "D", explain: "PCA也可能产生呼吸抑制。" },
+// 第1029题  第29题
+{ Q: "肾结核血尿的特点是", options: ["A.腰部剧痛后血尿", "B.排尿困难伴血尿", "C.无痛性肉眼血尿", "D.膀胱刺激症状伴血尿", "E.排尿中断伴血尿"], answer: "D", explain: "肾结核血尿多为终末血尿，伴膀胱刺激征。" },
+// 第1030题  第30题
+{ Q: "易导致代谢性碱中毒的疾病是", options: ["A.胆瘘", "B.腹泻", "C.糖尿病", "D.幽门梗阻", "E.低位小肠梗阻"], answer: "D", explain: "幽门梗阻呕吐丢失胃酸，易致代谢性碱中毒。" },
+// 第1031题  第31题
+{ Q: "心房颤动患者药物治疗不能满意控制心室率，应选用的治疗方法是", options: ["A.直流同步电复律", "B.直流非同步电除颤", "C.临时起搏器安置术", "D.永久起搏器安置术", "E.射频消融术"], answer: "A", explain: "药物控制不佳的房颤可行同步电复律。" },
+// 第1032题  第32题
+{ Q: "原发免疫性血小板减少症的治疗措施不包括", options: ["A.应用维生素C", "B.预防感染", "C.应用糖皮质激素", "D.输凝血因子", "E.输新鲜血"], answer: "D", explain: "ITP是血小板减少，不需输凝血因子。" },
+// 第1033题  第33题
+{ Q: "正常分娩后第2天，护士鼓励产妇按需哺乳，最主要的目的是", options: ["A.增进母婴感情", "B.促进乳汁分泌", "C.减少婴儿哭闹", "D.预防新生儿低血糖发生", "E.预防乳房过度充盈"], answer: "B", explain: "按需哺乳可促进乳汁分泌。" },
+// 第1034题  第34题
+{ Q: "新生儿，出生后10天。因发热、近两天皮肤黄染加重而入院。患儿精神萎靡，嗜睡状，脐窝有少许脓性分泌物；血常规：白细胞15.0×10⁹/L，中性粒细胞分类0.72。考虑患儿可能是", options: ["A.新生儿肝炎", "B.新生儿败血症", "C.新生儿溶血病", "D.生理性黄疸", "E.先天性胆道闭锁"], answer: "B", explain: "发热、黄疸加重、脐部感染灶、白细胞增高，为新生儿败血症。" },
+// 第1035题  第35题
+{ Q: "胃十二指肠溃疡幽门梗阻的主要临床表现是", options: ["A.消瘦", "B.食欲减退", "C.阵发性腹痛", "D.腹胀", "E.呕吐大量隔夜的食物"], answer: "E", explain: "幽门梗阻典型表现为呕吐大量隔夜宿食。" },
+// 第1036题  第36题
+{ Q: "原发性肾病综合征水肿的最主要原因是", options: ["A.肾小管重吸收增加", "B.继发性醛固酮增多", "C.继发性心力衰竭", "D.肾小球滤过率降低", "E.大量白蛋白丢失"], answer: "E", explain: "大量蛋白丢失导致低蛋白血症，血浆胶体渗透压下降，引起水肿。" },
+// 第1037题  第37题
+{ Q: "属于右向左分流型的先天性心脏病是", options: ["A.房间隔缺损", "B.室间隔缺损", "C.法洛四联症", "D.肺动脉狭窄", "E.动脉导管未闭"], answer: "C", explain: "法洛四联症为右向左分流型先心病。" },
+// 第1038题  第38题
+{ Q: "关于休克的治疗，错误的是", options: ["A.尽早去除休克病因", "B.补充血容量", "C.尽早使用血管收缩药", "D.处理代谢紊乱", "E.使用糖皮质激素"], answer: "C", explain: "休克早期不应使用血管收缩药，以免加重组织缺血。" },
+// 第1039题  第39题
+{ Q: "男，4岁。发、面、颈及双上臂烧伤，其烧伤面积为", options: ["A.17%", "B.19%", "C.24%", "D.33%", "E.35%"], answer: "B", explain: "发3%+面3%+颈3%+双上臂8%=17%。" },
+// 第1040题  第40题
+{ Q: "二尖瓣狭窄的典型心脏杂音是", options: ["A.心尖区收缩期吹风样杂音", "B.胸骨左缘第2、3肋间舒张期叹气样杂音", "C.心尖区舒张期隆隆样杂音", "D.心底部收缩期杂音", "E.胸骨左缘第3、4肋间粗糙的收缩期吹风样杂音"], answer: "C", explain: "二尖瓣狭窄为心尖区舒张期隆隆样杂音。" },
+// 第1041题  第41题
+{ Q: "出生后存在，以后永不消失的反射是", options: ["A.吞咽反射", "B.握持反射", "C.吸吮反射", "D.提睾反射", "E.拥抱反射"], answer: "A", explain: "吞咽反射是终身存在的反射。" },
+// 第1042题  第42题
+{ Q: "有机磷农药中毒患者的主要死亡原因是", options: ["A.休克", "B.脑水肿", "C.呼吸衰竭", "D.心力衰竭", "E.电解质紊乱"], answer: "C", explain: "呼吸衰竭是有机磷中毒主要死因。" },
+// 第1043题  第43题
+{ Q: "局部麻醉药中毒的临床表现不包括", options: ["A.精神症状", "B.血压升高", "C.呼吸困难", "D.黄、绿视", "E.心律失常"], answer: "D", explain: "黄、绿视是洋地黄中毒表现。" },
+// 第1044题  第44题
+{ Q: "癫痫持续状态的首选用药是", options: ["A.50%苯妥英钠缓慢静脉注射", "B.异戊巴比妥钠缓慢静脉注射", "C.副醛缓慢静脉注射", "D.10%水合氯醛保留灌肠", "E.地西泮缓慢静脉注射"], answer: "E", explain: "癫痫持续状态首选地西泮静脉注射。" },
+// 第1045题  第45题
+{ Q: "猩红热皮疹的描述，正确的是", options: ["A.散在斑丘疹，退疹不脱屑", "B.皮疹一天出齐，次日消退", "C.针尖大小弥漫分布，疹间无正常皮肤", "D.红色斑丘疹，大小不等，疹间皮肤正常", "E.多种形态皮疹呈向心性分布，分批出现"], answer: "C", explain: "猩红热皮疹为针尖大小弥漫分布，疹间无正常皮肤。" },
+// 第1046题  第46题
+{ Q: "维生素D缺乏性佝偻病小儿出现方颅畸形的年龄是", options: ["A.7-8个月", "B.5-6个月", "C.3-4个月", "D.1-2个月", "E.1个月"], answer: "A", explain: "方颅多见于7-8个月患儿。" },
+// 第1047题  第47题
+{ Q: "伤寒患者的肠穿孔并发症常发生的时间为", options: ["A.病程的1-2周", "B.病程的2-3周", "C.病程的3-4周", "D.病程的4-5周", "E.病程的5-6周"], answer: "B", explain: "肠穿孔多发生于病程第2-3周。" },
+// 第1048题  第48题
+{ Q: "碘化钠治疗甲状腺危象的药理作用是", options: ["A.刺激胰岛素分泌", "B.促进外周组织对糖的摄取", "C.抑制甲状腺激素合成", "D.抑制小肠α-葡萄糖苷酶", "E.抑制甲状腺激素释放"], answer: "E", explain: "碘剂抑制甲状腺激素释放，迅速控制危象。" },
+// 第1049题  第49题
+{ Q: "女，27岁。身体健康，已育有一婴儿（10月龄）。最适合的避孕方法是", options: ["A.口服避孕药", "B.安全期避孕", "C.使用避孕套", "D.放置宫内节育器", "E.免疫避孕法"], answer: "D", explain: "产后42天可放置宫内节育器。" },
+// 第1050题  第50题
+{ Q: "与子宫脱垂关系最密切的韧带是", options: ["A.圆韧带", "B.阔韧带", "C.主韧带", "D.骨盆漏斗韧带", "E.卵巢固有韧带"], answer: "C", explain: "主韧带是固定宫颈的主要韧带，与子宫脱垂关系最密切。" },
+// 第1051题  第51题
+{ Q: "破伤风患者最早发生强直性收缩的肌群是", options: ["A.面部表情肌", "B.咀嚼肌", "C.颈肌", "D.背腹肌", "E.四肢肌"], answer: "B", explain: "破伤风最早累及咀嚼肌，出现张口困难。" },
+// 第1052题  第52题
+{ Q: "乳房自我检查最好在月经周期", options: ["A.第1-2天", "B.第3-4天", "C.第5-6天", "D.第7-10天", "E.第11-12天"], answer: "D", explain: "乳房自查应在月经干净后7-10天进行。" },
+// 第1053题  第53题
+{ Q: "Ⅱ型呼吸衰竭采用的氧疗方法是", options: ["A.低流量持续给氧", "B.低流量间歇给氧", "C.中流量间歇给氧", "D.较高浓度给氧", "E.面罩加压给氧"], answer: "A", explain: "Ⅱ型呼衰应低流量持续给氧。" },
+// 第1054题  第54题
+{ Q: "器官移植术后的排斥反应主要由于", options: ["A.术前没有服用抗排斥药物", "B.受体抵抗力下降", "C.供体与受体的抗体不同", "D.供体与受体细胞膜上HLA抗原不同", "E.术后没有及时服用抗排斥药物"], answer: "D", explain: "排斥反应因HLA抗原不同引起。" },
+// 第1055题  第55题
+{ Q: "胸部X线检查可见典型“哑铃状”双极阴影，最可能的诊断是", options: ["A.原发型肺结核", "B.支气管淋巴结结核", "C.粟粒型肺结核", "D.急性血行播散型肺结核", "E.结核性胸膜炎"], answer: "A", explain: "原发综合征表现为哑铃状双极阴影。" },
+// 第1056题  第56题
+{ Q: "急性化脓性腹膜炎采用手术治疗的目的主要是", options: ["A.探明病因", "B.去除病因", "C.腹腔冲洗", "D.充分引流", "E.预防休克"], answer: "B", explain: "手术治疗主要目的是去除病因。" },
+// 第1057题  第57题
+{ Q: "小儿心力衰竭的临床诊断指标不包括", options: ["A.心音亢进", "B.呼吸困难加重", "C.肝短时间内增大", "D.突然出现烦躁不安", "E.安静时心率增快，不能用发热解释"], answer: "A", explain: "心衰时心音低钝，不是亢进。" },
+// 第1058题  第58题
+{ Q: "符合肝性脑病前驱期临床表现的是", options: ["A.意识错乱", "B.定向力障碍", "C.幻觉躁狂", "D.欣快和淡漠少言", "E.腱反射亢进"], answer: "D", explain: "前驱期表现为轻度性格改变和行为异常。" },
+// 第1059题  第59题
+{ Q: "麻疹前驱期最有诊断价值的临床表现是", options: ["A.发热、流涕", "B.红色斑丘疹", "C.麻疹黏膜斑", "D.浅褐色素斑", "E.麦麸样脱屑"], answer: "C", explain: "麻疹黏膜斑是麻疹前驱期特征性体征。" },
+// 第1060题  第60题
+{ Q: "慢性盆腔炎可采取手术治疗的是", options: ["A.子宫内膜炎", "B.宫旁结缔组织炎", "C.宫骶韧带炎", "D.输卵管积水", "E.输卵管卵巢炎"], answer: "D", explain: "输卵管积水可行手术治疗。" },
+// 第1061题  第61题
+{ Q: "早产儿，女，2日龄，有窒息史。哭闹不止伴脆性尖叫、呕吐，全身抽搐。查体：双目凝视，瞳孔不等。患儿最可能的诊断是", options: ["A.新生儿缺氧缺血性脑病", "B.新生儿化脓性脑膜炎", "C.新生儿颅内出血", "D.新生儿窒息", "E.新生儿败血症"], answer: "C", explain: "窒息史、尖叫、抽搐、瞳孔不等，为颅内出血。" },
+// 第1062题  第62题
+{ Q: "早产儿，女，2日龄，有窒息史。哭闹不止伴脆性尖叫、呕吐，全身抽搐。查体：双目凝视，瞳孔不等。诊断为新生儿颅内出血。对于该疾病的叙述，错误的是", options: ["A.大脑表面动脉撕裂常伴脑实质出血", "B.缺氧缺血性颅内出血以早产儿多见", "C.血压波动过大可致颅内出血", "D.胎儿头部受挤压而导致小脑天幕撕裂，硬膜下出血", "E.操作时对头部按压过重可引起颅内出血"], answer: "A", explain: "大脑表面动脉撕裂常伴硬膜下出血。" },
+// 第1063题  第63题
+{ Q: "早产儿，女，2日龄，有窒息史。哭闹不止伴脆性尖叫、呕吐，全身抽搐。查体：双目凝视，瞳孔不等。诊断为新生儿颅内出血。护士应为该患儿采用的体位是", options: ["A.膝胸卧位", "B.半坐卧位", "C.头低足高位", "D.俯卧位", "E.头肩抬高15°-30°"], answer: "E", explain: "颅内出血应抬高头肩部，减少出血。" },
+// 第1064题  第64题
+{ Q: "早产儿，女，2日龄，有窒息史。哭闹不止伴脆性尖叫、呕吐，全身抽搐。查体：双目凝视，瞳孔不等。诊断为新生儿颅内出血。入院当天，病区护士为其采取的护理措施应除外", options: ["A.保持室内安静", "B.保持呼吸道通畅", "C.为患儿洗澡", "D.密切观察患儿生命体征、神志、瞳孔的变化", "E.必要时给予鼻饲"], answer: "C", explain: "颅内出血应减少搬动，不宜洗澡。" },
+// 第1065题  第65题
+{ Q: "患者诊断为子宫脱垂，临床分度是", options: ["A.I度轻型", "B.I度重型", "C.Ⅱ度轻型", "D.Ⅱ度重型", "E.Ⅲ度"], answer: "C", explain: "宫颈脱出阴道口为Ⅱ度轻型。" },
+// 第1066题  第66题
+{ Q: "导致子宫脱垂的主要因素是", options: ["A.阔韧带松弛", "B.圆韧带松弛", "C.宫骶韧带松弛", "D.盆底肌肉松弛", "E.主韧带松弛"], answer: "D", explain: "盆底肌肉松弛是子宫脱垂主要原因。" },
+// 第1067题  第67题
+{ Q: "女，60岁。午后低热、盗汗、乏力、干咳3个月。2天前开始出现反复咯血，今晨1次咯血量达到550ml。该患者的咯血程度是", options: ["A.超大量咯血", "B.大量咯血", "C.中等量咯血", "D.小量咯血", "E.痰中带血"], answer: "B", explain: "咯血500ml以上为大量咯血。" },
+// 第1068题  第68题
+{ Q: "女，60岁。午后低热、盗汗、乏力、干咳3个月。2天前开始出现反复咯血，今晨1次咯血量达到550ml。护士指导患者饮食，正确的是", options: ["A.普通饮食", "B.流质饮食", "C.少渣饮食", "D.高蛋白饮食", "E.禁食"], answer: "D", explain: "大量咯血后应高蛋白饮食补充营养。" },
+// 第1069题  第69题
+{ Q: "女，42岁。因黑便3天入院。3天来，每天排黑色稀便2次，有多年上腹部隐痛史，常有夜间痛、饥饿痛，进食可缓解。查体：贫血貌，皮肤无黄染，肝、脾肋下未触及。为明确诊断，首选的检查是", options: ["A.幽门螺杆菌（Hp）检测", "B.X线钡剂检查", "C.胃镜检查", "D.胃黏膜活检", "E.CT检查"], answer: "C", explain: "上消化道出血首选胃镜检查。" },
+// 第1070题  第70题
+{ Q: "女，42岁。因黑便3天入院。3天来，每天排黑色稀便2次，有多年上腹部隐痛史，常有夜间痛、饥饿痛，进食可缓解。查体：贫血貌，皮肤无黄染，肝、脾肋下未触及。诊断为消化性溃疡。有关饮食护理，错误的是", options: ["A.可食用生冷、油炸食物以促进食欲", "B.宜选用营养丰富、清淡、易消化饮食", "C.急性期应少食多餐", "D.急性期以牛奶、面条等偏碱性食物为宜", "E.忌食辛辣刺激性食物"], answer: "A", explain: "消化性溃疡应避免生冷油炸食物。" },
+// 第1071题  第71题
+{ Q: "女，42岁。因黑便3天入院。3天来，每天排黑色稀便2次，有多年上腹部隐痛史，常有夜间痛、饥饿痛，进食可缓解。查体：贫血貌，皮肤无黄染，肝、脾肋下未触及。诊断为消化性溃疡。降低复发的关键是", options: ["A.定期复查", "B.注意劳逸结合", "C.合理安排饮食", "D.避免精神紧张", "E.根除幽门螺杆菌"], answer: "E", explain: "根除Hp是降低溃疡复发的关键。" },
+// 第1072题  第72题
+{ Q: "女，30岁。左侧头部着地摔伤，曾出现意识丧失，无头痛、呕吐。查体：血压115/75mmHg，脉搏86次/分，呼吸18次/分，神志清楚，对答切题，左耳有血性液体流出。该患者最有可能发生了", options: ["A.脑震荡", "B.颅顶骨折", "C.颅前窝骨折", "D.颅中窝骨折", "E.颅内压降低"], answer: "D", explain: "耳漏提示颅中窝骨折。" },
+// 第1073题  第73题
+{ Q: "女，30岁。左侧头部着地摔伤，曾出现意识丧失，无头痛、呕吐。查体：血压115/75mmHg，脉搏86次/分，呼吸18次/分，神志清楚，对答切题，左耳有血性液体流出。诊断为颅中窝骨折。护士在对患者的护理中，可采取的护理措施不包括", options: ["A.禁忌腰椎穿刺", "B.抬高头部，促进漏口封闭", "C.可用棉球阻塞耳道", "D.严禁经耳部滴药、冲洗", "E.避免用力咳嗽、打喷嚏、擤鼻涕"], answer: "C", explain: "脑脊液漏不可堵塞，应任其流出。" },
+// 第1074题  第74题
+{ Q: "女，30岁。左侧头部着地摔伤，曾出现意识丧失，无头痛、呕吐。查体：血压115/75mmHg，脉搏86次/分，呼吸18次/分，神志清楚，对答切题，左耳有血性液体流出。诊断为颅中窝骨折。若患者再次出现头痛、呕吐，伴意识障碍，最可能出现了", options: ["A.脑内出血", "B.帽状腱膜下出血", "C.硬膜外血肿", "D.急性硬膜下血肿", "E.慢性硬膜下血肿"], answer: "C", explain: "中间清醒期后再次昏迷提示硬膜外血肿。" },
+// 第1075题  第75题
+{ Q: "女，11个月。因腹泻就诊，诊断为轮状病毒肠炎。若此婴儿确诊为轻度脱水，失水量为体重的", options: ["A.5%以下", "B.6%-10%", "C.11%-15%", "D.16%-20%", "E.21%-25%"], answer: "A", explain: "轻度脱水失水量<5%。" },
+// 第1076题  第76题
+{ Q: "女，11个月。因腹泻就诊，诊断为轮状病毒肠炎。婴儿腹泻轻型与重型的主要区别是", options: ["A.有无发热、呕吐", "B.体温在39℃以上", "C.每天大便的次数", "D.大便的性状", "E.有无水、电解质紊乱"], answer: "E", explain: "轻型无脱水、中毒症状，重型有。" },
+// 第1077题  第77题
+{ Q: "女，11个月。因腹泻就诊，诊断为轮状病毒肠炎。因腹泻数天，患儿臀部皮肤开始出现潮红，局部清洁后应涂抹", options: ["A.稀酸软膏", "B.碘伏", "C.1%甲紫", "D.莫匹罗星软膏", "E.爽身粉"], answer: "C", explain: "臀部潮红可涂1%甲紫保持干燥。" },
+// 第1078题  第78题
+{ Q: "男，60岁。原发性高血压7年，间断服降压药，血压一般维持在138/105mmHg，近1年头晕、头痛加重，血压常在170/100mmHg。诊断为高血压靶器官轻度受累。责任护士对患者行健康教育，不妥的是", options: ["A.定期门诊复查血压及靶器官损害情况", "B.坚持服用降压药，血压正常后停药", "C.保持情绪稳定", "D.注意休息，适量运动，保证充足睡眠", "E.低盐、低脂饮食，防止超重"], answer: "B", explain: "高血压需终身服药，不能停药。" },
+// 第1079题  第79题
+{ Q: "男，60岁。原发性高血压7年，间断服降压药，血压一般维持在138/105mmHg，近1年头晕、头痛加重，血压常在170/100mmHg。诊断为高血压靶器官轻度受累。长期高血压引起的典型心脏改变是", options: ["A.肺动脉高压", "B.左心室肥厚", "C.全心肥厚", "D.左心房肥厚", "E.右心室肥厚"], answer: "B", explain: "高血压导致左心室后负荷增加，引起左心室肥厚。" },
+// 第1080题  第80题
+{ Q: "男，5个月。人工喂养，未添加辅食。夜间多汗。现突发惊厥，实验室检查：血钙1.5mmol/L。该患儿最可能发生了", options: ["A.流行性脑脊髓膜炎", "B.新生儿破伤风", "C.维生素D缺乏性手足搐搦症", "D.低血糖", "E.癫痫发作"], answer: "C", explain: "血钙降低、惊厥，为维生素D缺乏性手足搐搦症。" },
+// 第1081题  第81题
+{ Q: "男，5个月。人工喂养，未添加辅食。夜间多汗。现突发惊厥，实验室检查：血钙1.5mmol/L。诊断为维生素D缺乏性手足搐搦症。首先采取的措施是", options: ["A.立即心肺复苏", "B.静脉注射50%葡萄糖", "C.静脉注射10%葡萄糖酸钙", "D.肌内注射解痉药", "E.肌内注射维生素D"], answer: "C", explain: "惊厥发作时先静脉补钙。" },
+// 第1082题  第82题
+{ Q: "男，59岁。冠心病7年，口服药物治疗，2小时前感到胸闷、气促，立即送往医院。查体：血压82/60mmHg，面色苍白，出冷汗。心电图：QRS波群0.14秒，38个室性期前收缩持续出现，心室率173次/分，可见室性融合波。该患者的心电图诊断是", options: ["A.室性心动过速", "B.心室颤动", "C.心房颤动", "D.窦性心动过速", "E.二度房室传导阻滞"], answer: "A", explain: "连续3个以上室性期前收缩为室速。" },
+// 第1083题  第83题
+{ Q: "男，59岁。冠心病7年，口服药物治疗，2小时前感到胸闷、气促，立即送往医院。查体：血压82/60mmHg，面色苍白，出冷汗。心电图：QRS波群0.14秒，38个室性期前收缩持续出现，心室率173次/分，可见室性融合波。诊断为室性心动过速。该心律失常的首选治疗方法", options: ["A.直流同步电复律", "B.胺碘酮静脉滴注", "C.导管消融治疗", "D.β受体阻滞剂", "E.ICD治疗"], answer: "A", explain: "血流动力学不稳定的室速首选同步电复律。" },
+// 第1084题  第84题
+{ Q: "男，56岁。突发急性广泛性心肌梗死，经治疗疼痛有所好转，继而出现呼吸困难、咳嗽、发绀、咳大量粉红色泡沫样痰。首先考虑的诊断是", options: ["A.肺不张", "B.气胸", "C.肺气肿", "D.肺囊肿", "E.急性肺水肿"], answer: "E", explain: "粉红色泡沫痰是急性肺水肿的典型表现。" },
+// 第1085题  第85题
+{ Q: "男，56岁。突发急性广泛性心肌梗死，经治疗疼痛有所好转，继而出现呼吸困难、咳嗽、发绀、咳大量粉红色泡沫样痰。诊断为急性肺水肿。患者应保持的体位是", options: ["A.头低足高俯卧位", "B.头高足低位", "C.中凹卧位", "D.侧卧位", "E.半坐卧位"], answer: "E", explain: "急性肺水肿应取半坐卧位，减少回心血量。" },
+// 第1086题  第86题
+{ Q: "男，56岁。突发急性广泛性心肌梗死，经治疗疼痛有所好转，继而出现呼吸困难、咳嗽、发绀、咳大量粉红色泡沫样痰。诊断为急性肺水肿。给予该患者乙醇湿化吸氧，乙醇浓度为", options: ["A.5%-10%", "B.10%-20%", "C.20%-30%", "D.30%-50%", "E.50%-55%"], answer: "D", explain: "急性肺水肿用30%-50%乙醇湿化吸氧。" },
+// 第1087题  第87题
+{ Q: "男，4岁。因发热，头痛，咽痛6天，皮疹2天来诊。查体：面部潮红，咽充血，扁桃体肿大，舌光滑，质红，舌乳头突出，全身皮肤潮红，布满细小色红的丘疹，压之褪色。最可能的诊断是", options: ["A.麻疹", "B.风疹", "C.幼儿急疹", "D.猩红热", "E.水痘早期"], answer: "D", explain: "杨梅舌、全身弥漫性红疹，为猩红热。" },
+// 第1088题  第88题
+{ Q: "男，4岁。因发热，头痛，咽痛6天，皮疹2天来诊。查体：面部潮红，咽充血，扁桃体肿大，舌光滑，质红，舌乳头突出，全身皮肤潮红，布满细小色红的丘疹，压之褪色。诊断为猩红热。患儿的护理措施正确的是", options: ["A.卧床休息至病愈", "B.可用冷敷或乙醇物理降温", "C.急性期给予高蛋白、富含维生素饮食", "D.每天用肥皂水等洗澡保持皮肤清洁", "E.剪短指甲，叮嘱患儿及家长勿撕脱皮"], answer: "E", explain: "猩红热脱屑期应避免撕扯皮肤。" },
+// 第1089题  第89题
+{ Q: "男，4岁。因发热，头痛，咽痛6天，皮疹2天来诊。查体：面部潮红，咽充血，扁桃体肿大，舌光滑，质红，舌乳头突出，全身皮肤潮红，布满细小色红的丘疹，压之褪色。诊断为猩红热。防止传播的措施不正确的是", options: ["A.呼吸道隔离至症状消失", "B.有化脓性并发症者隔离至治愈", "C.有接触史者医学观察7天", "D.鼻咽分泌物须以消毒剂处理后倒掉", "E.食具、衣物、玩具可采用煮沸或日光暴晒"], answer: "C", explain: "接触者医学观察7-12天。" },
+// 第1090题  第90题
+{ Q: "男，40岁。肛周持续性跳痛，排便明显；肛周局部红肿，有波动感。最可能的诊断是", options: ["A.肛门周围脓肿", "B.直肠壁内脓肿", "C.骨盆直肠间隙脓肿", "D.直肠后间隙脓肿", "E.坐骨肛管间隙脓肿"], answer: "A", explain: "肛周红肿、波动感为肛门周围脓肿。" },
+// 第1091题  第91题
+{ Q: "男，40岁。肛周持续性跳痛，排便明显；肛周局部红肿，有波动感。诊断为肛门周围脓肿。首选的治疗措施是", options: ["A.局部热敷", "B.高锰酸钾溶液坐浴", "C.手术切开引流", "D.口服缓泻药减轻排便疼痛", "E.抗生素控制感染"], answer: "C", explain: "脓肿形成应切开引流。" },
+// 第1092题  第92题
+{ Q: "男，28岁。右手挫伤3小时。挫伤的表现", options: ["A.表皮和部分真皮被不规则地刮伤", "B.局部肿胀、触痛或皮肤红、青紫", "C.伤口深浅、长度不一，可能有异物", "D.伤口不规则，浅表和深部组织撕脱", "E.致伤器具经皮肤穿过深层组织"], answer: "B", explain: "挫伤表现为局部肿胀、青紫。" },
+// 第1093题  第93题
+{ Q: "男，28岁。右手挫伤3小时。影响创伤愈合的因素不包括", options: ["A.性别", "B.年龄", "C.伤口特点", "D.感染和异物", "E.营养状况"], answer: "A", explain: "性别不影响创伤愈合。" },
+// 第1094题  第94题
+{ Q: "男，28岁。骑车时摔伤，诊断为右侧Colles骨折。患者可出现的典型畸形是", options: ["A.“猿手”畸形", "B.“垂腕”畸形", "C.“爪形手”畸形", "D.“枪刺样”畸形", "E.“肘内翻”畸形"], answer: "D", explain: "Colles骨折呈枪刺样畸形。" },
+// 第1095题  第95题
+{ Q: "男，28岁。骑车时摔伤，诊断为右侧Colles骨折。复位后石膏固定4周，拆除石膏时发现右手各手指屈曲功能受限，主要原因是", options: ["A.骨折时合并正中神经、尺神经损伤", "B.骨折时合并右手屈伸肌腱损伤", "C.石膏压迫引起右手缺血挛缩", "D.石膏固定造成右手关节僵硬", "E.骨折时合并右手多关节的损伤"], answer: "D", explain: "长期固定导致关节僵硬。" },
+// 第1096题  第96题
+{ Q: "男，12个月。采用羊奶喂养，未加辅食，因皮肤、黏膜苍白就诊。诊断为缺铁性贫血。口服铁剂正确的方法是", options: ["A.首剂加量以增加药物血浓度", "B.在两餐间服用铁剂", "C.一次足量口服铁剂", "D.不可与维生素C同服", "E.出现黑色大便应停药"], answer: "B", explain: "铁剂应两餐间服用，减少刺激。" },
+// 第1097题  第97题
+{ Q: "男，12个月。采用羊奶喂养，未加辅食，因皮肤、黏膜苍白就诊。诊断为缺铁性贫血。停用铁剂的时间是", options: ["A.血红蛋白量正常后半年停药", "B.症状消失后停药", "C.红细胞数恢复正常后停药", "D.血红蛋白量恢复正常后停药", "E.血红蛋白量正常后2个月停药"], answer: "E", explain: "铁剂治疗应在Hb正常后继续服用2个月。" },
+// 第1098题  第98题
+{ Q: "男，12个月。采用羊奶喂养，未加辅食，因皮肤、黏膜苍白就诊。诊断为缺铁性贫血。最重要的健康指导是", options: ["A.为患儿补充含铁辅食", "B.预防外伤", "C.预防患儿感染", "D.预防心力衰竭", "E.限制患儿活动"], answer: "A", explain: "指导添加含铁辅食是根本措施。" },
+// 第1099题  第99题
+{ Q: "某产妇，26岁。妊娠40周，自然分娩后10天。血性恶露持续不断，突然阴道流血，约200ml。妇科检查：宫底耻上3横指，轻度压痛，宫口容2指，有血块堵塞。该产妇最可能的诊断是", options: ["A.产后出血", "B.软产道裂伤", "C.凝血功能障碍", "D.晚期产后出血", "E.不全流产"], answer: "D", explain: "分娩24小时后产褥期内出血为晚期产后出血。" },
+// 第1100题  第100题
+{ Q: "某产妇，26岁。妊娠40周，自然分娩后10天。血性恶露持续不断，突然阴道流血，约200ml。妇科检查：宫底耻上3横指，轻度压痛，宫口容2指，有血块堵塞。诊断为晚期产后出血。处理错误的是", options: ["A.静脉滴注抗生素", "B.静脉滴注缩宫素", "C.B超检查", "D.刮宫术", "E.子宫切除术"], answer: "E", explain: "晚期产后出血一般不切除子宫。" },
+
+// ==================== 模拟 (第1101-1200题) ====================
+// 第1101题  第1题
+{ Q: "关于伤寒患者饮食护理的叙述，错误的是", options: ["A.给予易消化、少纤维、营养丰富饮食", "B.发热期间给予富含维生素的清淡流质饮食", "C.热退1周后可吃少渣半流质饮食或软饭", "D.发热期间尽量少吃易在肠腔内产气的食物", "E.疾病恢复期患者常有饥饿感，不宜限制饮食量"], answer: "E", explain: "恢复期应逐渐增加食量，避免暴饮暴食。" },
+// 第1102题  第2题
+{ Q: "当外阴引发炎症时，最易形成囊肿的部位是", options: ["A.阴阜", "B.小阴唇", "C.大阴唇", "D.前庭大腺", "E.阴道前庭"], answer: "D", explain: "前庭大腺易形成囊肿或脓肿。" },
+// 第1103题  第3题
+{ Q: "儿童外伤后，注射破伤风抗毒素的剂量是", options: ["A.成人剂量的1/3", "B.成人剂量的1/2", "C.与成人剂量相同", "D.根据年龄计算", "E.按千克体重计算"], answer: "C", explain: "破伤风抗毒素儿童与成人剂量相同。" },
+// 第1104题  第4题
+{ Q: "早产儿，出生后2天。拒乳，反应差，哭声弱，体温34.5℃，下肢出现硬肿，皮肤发凉，心音低钝，心率100次/分。最优先考虑的治疗和护理措施是", options: ["A.合理用药", "B.对症处理", "C.合理喂养", "D.预防感染", "E.复温"], answer: "E", explain: "复温是治疗新生儿硬肿症的关键。" },
+// 第1105题  第5题
+{ Q: "宫颈内口松弛的孕妇行宫颈环扎术的时间是妊娠", options: ["A.10-12周", "B.14-16周", "C.18-20周", "D.24-26周", "E.28-30周"], answer: "B", explain: "宫颈环扎术在妊娠14-16周进行。" },
+// 第1106题  第6题
+{ Q: "男，50岁。直肠癌Miles术后。关于其术后的饮食护理，正确的是", options: ["A.术后1周可开始进正常饮食", "B.选择牛奶、豆浆等营养丰富的流质饮食", "C.患者清醒后即可开始进流质饮食", "D.术后3天可开始进半流质饮食", "E.造口开放后若无不良反应，即可拔除胃管"], answer: "E", explain: "造口开放后排气排便，可拔胃管。" },
+// 第1107题  第7题
+{ Q: "与椎管内麻醉术后头痛的特点不相符的是", options: ["A.常出现在术后2-7天", "B.疼痛常位于额部", "C.女性发生率高于男性", "D.拍头时头痛加重", "E.平卧时头痛减轻"], answer: "B", explain: "头痛多位于枕部、顶部。" },
+// 第1108题  第8题
+{ Q: "关于手术患者术前呼吸道的准备，不正确的是", options: ["A.术前2周戒烟", "B.指导患者行深呼吸训练", "C.指导患者行有效咳嗽训练", "D.腹部手术者行胸式呼吸训练", "E.术前3天常规预防性应用抗生素"], answer: "E", explain: "不应常规预防性应用抗生素。" },
+// 第1109题  第9题
+{ Q: "女，50岁。风心病二尖瓣狭窄10余年，晨起后突然出现端坐呼吸、咳粉红色泡沫样痰。查体：心率110次/分，呼吸40次/分，听诊双肺满布湿啰音和哮鸣音。本病治疗药物中，应现用现配的是", options: ["A.硝普钠", "B.呋塞米", "C.吗啡", "D.毛花苷丙", "E.乌拉地尔"], answer: "A", explain: "硝普钠需现用现配，避光使用。" },
+// 第1110题  第10题
+{ Q: "某孕妇，28岁。妊娠29周，合并心脏病，近2天来自述轻微日常活动即感不适，心悸、呼吸困难。此时正确的处理方法是", options: ["A.定期产前检查", "B.定期家庭访视", "C.立即收住入院", "D.妊娠36-38周入院待产", "E.指导高热量、高维生素、低盐、低脂饮食"], answer: "C", explain: "心功能恶化应立即入院。" },
+// 第1111题  第11题
+{ Q: "男，28岁。运动后突发左肾区刀割样疼痛，放射到左下腹，不能忍受，镜下血尿(++)。下一步首先考虑的辅助检查是", options: ["A.红细胞计数", "B.尿生化检查", "C.尿培养", "D.尿培养", "E.尿培养"], answer: "C", explain: "怀疑结石应首选B超检查。" },
+// 第1112题  第12题
+{ Q: "男，25岁。右胫腓骨骨折，行石膏固定。10小时后右足趾明显肿胀、青紫、活动差、感觉麻痹，剧烈疼痛，去除石膏，见右小腿肿胀明显，皮温高，有水疱。此时应警惕患者出现了", options: ["A.腓总神经损伤", "B.胫动脉损伤", "C.骨折断端移位", "D.骨筋膜室综合征", "E.石膏综合征"], answer: "D", explain: "石膏固定后剧痛、肿胀、感觉异常，为骨筋膜室综合征。" },
+// 第1113题  第13题
+{ Q: "女，35岁。妊娠30周。血压152/115mmHg，尿蛋白(++)，水肿(+)，有头痛、视物模糊，最可能的疾病是", options: ["A.妊娠合并慢性高血压", "B.重度子痫前期", "C.妊娠期高血压", "D.慢性高血压并发子痫前期", "E.子痫"], answer: "B", explain: "血压≥160/110mmHg，尿蛋白(++)，为重度子痫前期。" },
+// 第1114题  第14题
+{ Q: "门静脉高压症患者最危急的病情变化是", options: ["A.脾大", "B.“三系”细胞减少", "C.呕血", "D.黑便", "E.黑便"], answer: "C", explain: "食管胃底静脉曲张破裂出血最危急。" },
+// 第1115题  第15题
+{ Q: "输卵管妊娠时应立即手术的情况是", options: ["A.腹痛", "B.妊娠试验阳性", "C.阴道持续流血", "D.一侧附件触及包块", "E.阴道后穹隆穿刺抽出不凝血"], answer: "E", explain: "内出血征象应紧急手术。" },
+// 第1116题  第16题
+{ Q: "乳腺癌改良根治术后患侧上肢功能锻炼的远期目标是", options: ["A.手越过头顶触摸到对侧耳廓", "B.手触及头顶", "C.手触前摸到对侧肩膀", "D.手触及同侧耳廓", "E.肘能屈伸"], answer: "A", explain: "远期目标为手越过头顶摸对侧耳廓。" },
+// 第1117题  第17题
+{ Q: "行下肢骨牵引时，抬高床尾15-30cm的主要目的是", options: ["A.减轻疼痛", "B.对抗牵引力", "C.增强牵引效果", "D.减轻牵引重量", "E.防止牵引过度"], answer: "B", explain: "抬高床尾利用体重对抗牵引。" },
+// 第1118题  第18题
+{ Q: "急性一氧化碳中毒患者首选的吸氧方式是", options: ["A.间断吸氧", "B.高压氧舱", "C.低流量吸氧", "D.高浓度吸氧", "E.持续低流量吸氧"], answer: "B", explain: "高压氧是CO中毒首选。" },
+// 第1119题  第19题
+{ Q: "多见于儿童和青少年，属高度恶性，平均生存时间仅12-18个月，多为单侧，生长迅速的卵巢肿瘤是", options: ["A.无性细胞瘤", "B.不成熟型畸胎瘤", "C.黏液性囊腺瘤", "D.卵黄囊瘤", "E.卵巢颗粒细胞瘤"], answer: "D", explain: "卵黄囊瘤恶性度高，生长迅速。" },
+// 第1120题  第20题
+{ Q: "泡沫样白带常见于", options: ["A.外阴阴道假丝酵母菌病", "B.滴虫阴道炎", "C.细菌性阴道病", "D.萎缩性阴道炎", "E.婴幼儿外阴阴道炎"], answer: "B", explain: "滴虫阴道炎白带呈泡沫样。" },
+// 第1121题  第21题
+{ Q: "可以准确诊断早期妊娠的是", options: ["A.子宫增大", "B.宫颈充血呈紫蓝色", "C.停经伴晨起恶心", "D.尿妊娠试验阳性", "E.B超探及子宫内有妊娠囊回声"], answer: "E", explain: "B超见妊娠囊是确诊早孕的依据。" },
+// 第1122题  第22题
+{ Q: "左心衰竭的症状不包括", options: ["A.心悸", "B.劳力性呼吸困难", "C.夜间阵发性呼吸困难", "D.端坐呼吸", "E.心前区疼痛"], answer: "E", explain: "心前区疼痛不是左心衰典型症状。" },
+// 第1123题  第23题
+{ Q: "类风湿关节炎护理问题“悲伤”的相关因素主要是", options: ["A.与疼痛有关", "B.与关节炎性反应有关", "C.与晨僵有关", "D.与关节致残有关", "E.与知识缺乏有关"], answer: "D", explain: "关节致残导致悲伤情绪。" },
+// 第1124题  第24题
+{ Q: "妇科手术需要在宫颈及阴道穹隆部涂甲紫做标记的是", options: ["A.腹式卵巢囊肿切除术", "B.腹式附件切除术", "C.腹式次全子宫切除术", "D.腹式全子宫切除术", "E.腹式子宫肌瘤切除术"], answer: "D", explain: "全子宫切除术前需标记宫颈。" },
+// 第1125题  第25题
+{ Q: "新生儿期应接种的疫苗是", options: ["A.脊髓灰质炎糖丸", "B.百日咳类毒素", "C.麻疹减毒活疫苗", "D.白喉类毒素", "E.乙肝疫苗"], answer: "E", explain: "新生儿期接种乙肝疫苗和卡介苗。" },
+// 第1126题  第26题
+{ Q: "缺铁性贫血患儿服用铁剂不正确的是", options: ["A.服用液体铁剂时用吸管，以防牙齿受损", "B.从小剂量开始逐渐增加用量", "C.忌与牛奶、钙片同时服用", "D.血红蛋白恢复正常后2个月停服", "E.血红蛋白恢复正常后1个月停服"], answer: "E", explain: "铁剂应服至Hb正常后2个月。" },
+// 第1127题  第27题
+{ Q: "毕Ⅱ式胃大部切除术后最严重的早期并发症是", options: ["A.胃出血", "B.十二指肠残端破裂", "C.输入袢梗阻", "D.吻合口梗阻", "E.倾倒综合征"], answer: "B", explain: "十二指肠残端破裂死亡率高。" },
+// 第1128题  第28题
+{ Q: "口服避孕药物后，类早孕反应持续时间一般为", options: ["A.1周以内", "B.1-3周", "C.3-6周", "D.6-8周", "E.8周以上"], answer: "B", explain: "类早孕反应多出现在服药后1-3周。" },
+// 第1129题  第29题
+{ Q: "女，23岁。2个月前因感冒、咽喉疼痛使用青霉素，治疗后症状好转，不久患者又出现咽痛且伴全身肌肉酸痛，鼻梁两侧出现红斑，双膝关节疼痛，行走困难，口腔内有一溃疡，入院后诊断为系统性红斑狼疮。首选的治疗药物是", options: ["A.青霉素", "B.雷公藤", "C.吲哚美辛", "D.环磷酰胺", "E.糖皮质激素"], answer: "E", explain: "SLE活动期首选糖皮质激素。" },
+// 第1130题  第30题
+{ Q: "某小儿，身长84cm，体重12kg，前囟门已闭合，头围47cm，胸围48cm，乳牙19个。按正常的生长发育，最可能的年龄是", options: ["A.1岁", "B.2岁", "C.3岁", "D.4岁", "E.5岁"], answer: "B", explain: "2岁小儿身长约85cm，体重12kg，乳牙20个。" },
+// 第1131题  第31题
+{ Q: "口服铁剂治疗缺铁性贫血可饮用", options: ["A.橙汁", "B.咖啡", "C.纯牛奶", "D.茶", "E.液体钙"], answer: "A", explain: "维生素C可促进铁吸收。" },
+// 第1132题  第32题
+{ Q: "婴儿喂养中添加辅食正确的是", options: ["A.应在小儿出牙后开始", "B.配方奶喂养时可延至1岁开始", "C.母乳喂养时可延至1岁开始", "D.母乳量不足时应尽快添加辅食", "E.应从4-6个月开始逐渐添加辅食"], answer: "E", explain: "4-6个月开始添加辅食。" },
+// 第1133题  第33题
+{ Q: "临床上采用超声测量判断胎儿大小的径线是", options: ["A.枕额径", "B.双顶径", "C.枕下前囟径", "D.枕颏径", "E.大斜径"], answer: "B", explain: "B超测双顶径判断胎儿大小。" },
+// 第1134题  第34题
+{ Q: "肾病综合征患者的饮食要求不包括", options: ["A.无氮质血症者给予正常量优质蛋白饮食", "B.明显水肿、高血压者限制水、钠摄入", "C.多食富含饱和脂肪酸的食物", "D.多食富含可溶性纤维的食物", "E.补充各种维生素和微量元素"], answer: "C", explain: "应低脂饮食，避免饱和脂肪酸。" },
+// 第1135题  第35题
+{ Q: "子宫肌瘤最常见的症状是", options: ["A.腹部肿块", "B.月经改变", "C.白带增多", "D.腹痛、腰酸", "E.压迫症状"], answer: "B", explain: "月经改变是子宫肌瘤最常见症状。" },
+// 第1136题  第36题
+{ Q: "慢性肾衰竭最突出的表现是", options: ["A.畏食、恶心、呕吐", "B.高血压", "C.水肿、血尿", "D.尿频、尿急、尿痛", "E.贫血、出血倾向"], answer: "A", explain: "消化系统症状出现最早、最突出。" },
+// 第1137题  第37题
+{ Q: "女，45岁。肠梗阻术后第7天，出现右下肢胀痛，沿大隐静脉走行皮肤发红，有压痛，触及条索状静脉。护理措施不包括", options: ["A.理疗", "B.局部按摩", "C.患肢抬高", "D.患肢制动", "E.局部硫酸镁湿敷"], answer: "B", explain: "血栓性静脉炎禁忌按摩，防血栓脱落。" },
+// 第1138题  第38题
+{ Q: "放疗患者口腔出现假膜时，应选用的漱口水是", options: ["A.呋喃西林溶液", "B.生理盐水", "C.过氧化氢溶液", "D.纯净水", "E.温开水"], answer: "C", explain: "过氧化氢溶液可去除假膜。" },
+// 第1139题  第39题
+{ Q: "晚期产后出血是指", options: ["A.胎儿娩出后至产褥期内发生的子宫大量出血", "B.胎盘娩出后至产褥期内发生的子宫大量出血", "C.分娩后在产褥期内发生的子宫大量出血", "D.分娩2小时后在产褥期内发生的子宫大量出血", "E.分娩24小时后在产褥期内发生的子宫大量出血"], answer: "E", explain: "分娩24小时后产褥期内出血为晚期产后出血。" },
+// 第1140题  第40题
+{ Q: "男，42岁。左侧胸部闭合性损伤入院，神志清楚，呼吸困难，行胸膜腔闭式引流术。3天后，发现长玻璃管中的水柱波动>6cm，可能发生了", options: ["A.肺不张", "B.肺已完全复张", "C.气管向患侧偏移", "D.引流管不通畅", "E.气管向健侧偏移"], answer: "A", explain: "水柱波动过大提示肺不张。" },
+// 第1141题  第41题
+{ Q: "成人心脏骤停，行单人心肺复苏时胸外按压与人工呼吸之比为", options: ["A.7:1", "B.10:1", "C.30:2", "D.15:2", "E.5:1"], answer: "C", explain: "成人单人复苏按压呼吸比30:2。" },
+// 第1142题  第42题
+{ Q: "女，40岁。诊断为十二指肠溃疡。对该患者的治疗原则不包括", options: ["A.消除病因", "B.控制症状", "C.促进愈合", "D.预防复发", "E.尽早手术根治"], answer: "E", explain: "内科治疗为主，无并发症不手术。" },
+// 第1143题  第43题
+{ Q: "可行经腹输卵管绝育术的是", options: ["A.腹部皮肤感染", "B.子宫内膜炎", "C.产后出血", "D.心力衰竭", "E.慢性肝炎"], answer: "E", explain: "慢性肝炎可耐受手术。" },
+// 第1144题  第44题
+{ Q: "女，30岁。十二指肠球部溃疡病史5年，突感上腹部剧痛2小时，继之全腹疼痛、大汗淋漓、出冷汗、四肢冰冷。查体：血压75/45mmHg，脉搏120次/分，全腹压痛及反跳痛，疑有溃疡穿孔可能，此时护士应首先采取的措施为", options: ["A.开放静脉通道，补充血容量", "B.抗生素静脉滴注", "C.抑酸药静脉滴注", "D.继续非手术治疗", "E.尽快手术治疗"], answer: "A", explain: "休克先抗休克治疗。" },
+// 第1145题  第45题
+{ Q: "肺炎患儿病室内温度和相对湿度适宜的是", options: ["A.温度是16-18℃，相对湿度是50%", "B.温度是18-22℃，相对湿度是60%", "C.温度是22-23℃，相对湿度是70%", "D.温度是23-24℃，相对湿度是50%", "E.温度是24-26℃，相对湿度是40%"], answer: "B", explain: "肺炎室温18-22℃，湿度60%。" },
+// 第1146题  第46题
+{ Q: "某产妇，妊娠38周。已临产，宫口开大2cm入院。在待产室活动时突然胎膜破裂，此时最佳的处理方法是", options: ["A.应用抗生素预防感染", "B.立即卧床听胎心", "C.应用缩宫素加强宫缩", "D.给予灌肠刺激宫缩", "E.继续室内活动，以加速产程进展"], answer: "B", explain: "破膜后立即听胎心，防脐带脱垂。" },
+// 第1147题  第47题
+{ Q: "法洛四联症X线检查可见", options: ["A.肺动脉段突出", "B.心影呈靴形", "C.肺门血管影增粗", "D.肺纹理增多", "E.双肺透亮度减弱"], answer: "B", explain: "法洛四联症心影呈靴形。" },
+// 第1148题  第48题
+{ Q: "脑出血后最早显示的典型CT图像和时间是", options: ["A.起病后即可见脑室扩大", "B.起病后即可见低密度影", "C.起病后即可见高密度影", "D.起病24-48小时后见低密度影", "E.起病24-48小时后见高密度影"], answer: "C", explain: "脑出血CT立即显示高密度影。" },
+// 第1149题  第49题
+{ Q: "在高血压治疗中，一般每天摄入食盐量应小于", options: ["A.2g", "B.4g", "C.6g", "D.8g", "E.10g"], answer: "C", explain: "高血压限盐<6g/d。" },
+// 第1150题  第50题
+{ Q: "男，3岁。既往有3次热性惊厥史，2小时前出现发热，在家中突然惊厥发作。发作时，家长应采取的措施是", options: ["A.保暖", "B.口服退热药", "C.冰袋物理降温", "D.口服苯巴比妥", "E.松解衣领，头偏向一侧"], answer: "E", explain: "惊厥发作时保持呼吸道通畅。" },
+// 第1151题  第51题
+{ Q: "咯血窒息患者宜采取的卧位是", options: ["A.头低足高位，头偏向一侧", "B.平卧位，头偏向一侧", "C.去枕平卧位", "D.端坐位", "E.患侧卧位"], answer: "A", explain: "咯血窒息取头低足高位，利于引流。" },
+// 第1152题  第52题
+{ Q: "肝动脉栓塞化疗术后出现栓塞后综合征的护理措施不包括", options: ["A.腹痛时可遵医嘱注射哌替啶缓解疼痛", "B.出现低、中度发热时不需要特殊处理", "C.持续高热时应采取对症处理", "D.应遵医嘱静脉注射白蛋白", "E.为维持水、电解质平衡应限制葡萄糖溶液的使用"], answer: "E", explain: "应保证能量供给，不限制葡萄糖。" },
+// 第1153题  第53题
+{ Q: "对中央型肺癌有较高确诊意义的检查为", options: ["A.胸部CT检查", "B.X线检查", "C.B超检查", "D.支气管镜检查", "E.痰脱落细胞学检查"], answer: "D", explain: "支气管镜可直接取活检确诊。" },
+// 第1154题  第54题
+{ Q: "护理急性心肌梗死患者日常生活非常重要的内容是", options: ["A.注意休息", "B.调配饮食", "C.预防便秘", "D.间歇吸氧", "E.环境安静"], answer: "C", explain: "预防便秘防止用力加重心脏负担。" },
+// 第1155题  第55题
+{ Q: "麻疹患儿皮疹出现的时间是发热后", options: ["A.1-2天", "B.3-4天", "C.5-6天", "D.7-8天", "E.9-10天"], answer: "B", explain: "麻疹发热后3-4天出疹。" },
+// 第1156题  第56题
+{ Q: "高渗性脱水患者补液时宜选用的药物是", options: ["A.5%葡萄糖溶液", "B.3%-5%氯化钠溶液", "C.等渗盐水", "D.10%氯化钾溶液", "E.10%碳酸氢钠溶液"], answer: "A", explain: "高渗性脱水补5%葡萄糖溶液。" },
+// 第1157题  第57题
+{ Q: "产后乳汁分泌量主要取决于", options: ["A.乳房发育情况", "B.产妇健康情况", "C.产后营养状况", "D.新生儿吸吮刺激", "E.子宫复旧状况"], answer: "D", explain: "吸吮刺激是乳汁分泌的关键。" },
+// 第1158题  第58题
+{ Q: "男，65岁。咳嗽、咳痰15年，活动后气促3年，加重1周。查体：神志清楚，心率120次/分，心律齐，球结膜水肿，肝肋下3cm，双下肢水肿，腹部移动性浊音(+)。血常规：白细胞14×10⁹/L，中性粒细胞分类0.88，血小板256×10⁹/L。超声心动图：右心室肥厚。目前最重要的治疗措施是", options: ["A.强心", "B.抗心律失常药", "C.镇静", "D.抗生素治疗", "E.镇咳"], answer: "D", explain: "感染是COPD急性加重的主要原因。" },
+// 第1159题  第59题
+{ Q: "引起侵袭性肠炎的致病菌不包括", options: ["A.痢疾志贺菌", "B.空肠弯曲菌", "C.鼠伤寒沙门菌肠炎", "D.侵袭性大肠埃希菌", "E.产毒性大肠埃希菌"], answer: "E", explain: "产毒性大肠埃希菌引起分泌性腹泻。" },
+// 第1160题  第60题
+{ Q: "足月新生儿，出生后16小时。出生时窒息3分钟，复苏后烦躁不安，呕吐。查体：体温36.2℃，躁动，口鼻周微青，呼吸31次/分，节律不整，有头颅血肿，心率107次/分，双肺呼吸音粗，四肢肌张力略高。最可能的诊断是", options: ["A.新生儿窒息", "B.新生儿颅内出血", "C.癫痫", "D.新生儿低血糖", "E.新生儿破伤风"], answer: "B", explain: "窒息史、烦躁、呕吐、肌张力高，为颅内出血。" },
+// 第1161题  第61题
+{ Q: "足月新生儿，出生后16小时。出生时窒息3分钟，复苏后烦躁不安，呕吐。查体：体温36.2℃，躁动，口鼻周微青，呼吸31次/分，节律不整，有头颅血肿，心率107次/分，双肺呼吸音粗，四肢肌张力略高。诊断为新生儿颅内出血。首要的护理措施为", options: ["A.保暖", "B.积极复温", "C.维持呼吸", "D.做好皮肤护理", "E.绝对静卧，减少刺激"], answer: "E", explain: "颅内出血应绝对静卧减少刺激。" },
+// 第1162题  第62题
+{ Q: "女，49岁。因子宫肌瘤入院行手术治疗。妇科腹部手术患者的备皮范围是", options: ["A.上自剑突下，两侧至腋中线，下达外阴和大腿上1/3处", "B.上自剑突下，两侧至腋前线，下达阴阜和大腿上1/3处", "C.上自剑突下，两侧至腋中线，下达大腿上1/3处", "D.上自肋缘，两侧至腋中线，下达阴阜和大腿上1/3处", "E.上自肋缘，两侧至腋前线，下达大腿上1/3处"], answer: "A", explain: "妇科腹部手术备皮范围上自剑突下，下至大腿上1/3及外阴。" },
+// 第1163题  第63题
+{ Q: "女，49岁。因子宫肌瘤入院行手术治疗。患者在蛛网膜下腔阻滞下行子宫肌瘤切除术后，取去枕平卧位的时间是", options: ["A.8-10小时", "B.10-12小时", "C.12-24小时", "D.6-8小时", "E.4-6小时"], answer: "D", explain: "腰麻后去枕平卧6-8小时防头痛。" },
+// 第1164题  第64题
+{ Q: "女，45岁。多年来与苯密切接触，1年来全身乏力，近3个月加重。血常规示全血细胞减少，血小板18×10⁹/L，网织红细胞低于正常值，无肝、脾、淋巴结肿大。诊断首先考虑", options: ["A.巨幼细胞贫血", "B.再生障碍性贫血", "C.缺铁性贫血", "D.溶血性贫血", "E.血管内溶血"], answer: "B", explain: "全血细胞减少，网织红细胞低，为再障。" },
+// 第1165题  第65题
+{ Q: "女，45岁。多年来与苯密切接触，1年来全身乏力，近3个月加重。血常规示全血细胞减少，血小板18×10⁹/L，网织红细胞低于正常值，无肝、脾、淋巴结肿大。诊断为再生障碍性贫血。首选的治疗药物是", options: ["A.长春新碱", "B.阿糖胞苷", "C.叶酸", "D.雄激素", "E.环磷酰胺"], answer: "D", explain: "再障首选雄激素刺激造血。" },
+// 第1166题  第66题
+{ Q: "女，45岁。多年来与苯密切接触，1年来全身乏力，近3个月加重。血常规示全血细胞减少，血小板18×10⁹/L，网织红细胞低于正常值，无肝、脾、淋巴结肿大。诊断为再生障碍性贫血。此患者护理诊断不妥的是", options: ["A.知识缺乏 缺乏再障相关防治知识", "B.活动无耐力 与贫血有关", "C.疼痛：腰背四肢酸痛 与急性溶血有关", "D.焦虑 与持续乏力不愈有关", "E.有损伤的风险 与血小板减少有关"], answer: "C", explain: "再障无溶血，不会出现腰背酸痛。" },
+// 第1167题  第67题
+{ Q: "女，45岁。多年来与苯密切接触，1年来全身乏力，近3个月加重。血常规示全血细胞减少，血小板18×10⁹/L，网织红细胞低于正常值，无肝、脾、淋巴结肿大。诊断为再生障碍性贫血。为警惕颅内出血并发症，护理措施不妥的是", options: ["A.便秘者需用泻药或开塞露", "B.剧咳者立即用抗生素、镇咳药", "C.患者出现剧烈头痛、恶心、呕吐应及时报告医生", "D.卧床与下地活动交替进行", "E.保持情绪稳定"], answer: "D", explain: "血小板极低时应卧床，减少活动。" },
+// 第1168题  第68题
+{ Q: "女，43岁。胃癌根治术后化疗期间。患者情绪稳定、平静、配合治疗。此患者处于", options: ["A.否认期", "B.愤怒期", "C.协议期", "D.抑郁期", "E.接受期"], answer: "E", explain: "平静配合治疗为接受期。" },
+// 第1169题  第69题
+{ Q: "女，43岁。胃癌根治术后化疗期间。患者化疗期间，最主要的观察项目是", options: ["A.脱发程度", "B.进食情况", "C.肠道功能", "D.皮肤损害", "E.血常规"], answer: "E", explain: "化疗主要观察骨髓抑制情况。" },
+// 第1170题  第70题
+{ Q: "女，43岁。胃癌根治术后化疗期间。静脉注射化疗药时，若药液不慎溢出血管外首先应", options: ["A.立即拔出针头", "B.局部涂氢化可的松", "C.局部冰敷", "D.局部注射解毒药", "E.暂停注药，保留针头接注射器回抽漏出药液"], answer: "E", explain: "外渗后先回抽再拔针处理。" },
+// 第1171题  第71题
+{ Q: "女，38岁。头痛，视物模糊半年，癫痫发作2次。经检查诊断为颅内肿瘤，颅内压增高，拟行手术治疗。颅内压增高的主要表现为", options: ["A.头痛、恶心、食欲减退", "B.头痛、呕吐、感觉障碍", "C.头痛、抽搐、偏瘫", "D.头痛、呕吐、视神经乳头水肿", "E.头痛、抽搐、血压升高"], answer: "D", explain: "颅内压增高三主征：头痛、呕吐、视乳头水肿。" },
+// 第1172题  第72题
+{ Q: "女，38岁。头痛，视物模糊半年，癫痫发作2次。经检查诊断为颅内肿瘤，颅内压增高，拟行手术治疗。术前患者出现便秘时，正确的处理方法不包括", options: ["A.使用开塞露", "B.腹部按摩", "C.使用缓泻药", "D.用肥皂水灌肠", "E.鼓励患者多食蔬菜、水果"], answer: "D", explain: "颅内压增高患者禁用大量不保留灌肠。" },
+// 第1173题  第73题
+{ Q: "女，38岁。头痛，视物模糊半年，癫痫发作2次。经检查诊断为颅内肿瘤，颅内压增高，拟行手术治疗。此患者开颅术后当天最危险的并发症是", options: ["A.出血", "B.感染", "C.中枢性高热", "D.癫痫发作", "E.尿崩症"], answer: "A", explain: "术后最危险并发症是颅内出血。" },
+// 第1174题  第74题
+{ Q: "女，38岁。头痛，视物模糊半年，癫痫发作2次。经检查诊断为颅内肿瘤，颅内压增高，拟行手术治疗。若患者出现脑脊液鼻漏，正确的护理方法是", options: ["A.取头低位", "B.用无菌棉球阻塞鼻孔", "C.用无菌生理盐水冲洗", "D.避免用力咳嗽、打喷嚏", "E.用氯霉素眼药水滴鼻"], answer: "D", explain: "脑脊液漏应避免增加颅内压的动作。" },
+// 第1175题  第75题
+{ Q: "女，38岁。近1个月自觉疲乏，无力，头晕。实验室检查：血象呈小细胞低色素性贫血，血红蛋白90g/L。该患者首优的护理问题是", options: ["A.自我形象紊乱与疾病导致皮肤干燥、毛发干枯有关", "B.活动无耐力与贫血引起全身组织缺氧有关", "C.营养失调：低于机体需要量与铁需求量增加有关", "D.焦虑与头晕影响学习和生活有关", "E.知识缺乏缺乏有关疾病的知识"], answer: "B", explain: "贫血患者首要问题是活动无耐力。" },
+// 第1176题  第76题
+{ Q: "女，38岁。近1个月自觉疲乏，无力，头晕。实验室检查：血象呈小细胞低色素性贫血，血红蛋白90g/L。遵医嘱给予硫酸亚铁口服。针对该患者的用药指导不包括", options: ["A.小剂量开始逐渐增加用量", "B.餐后服用", "C.不可与茶、咖啡同服，以免影响铁剂吸收", "D.与牛奶同服可减少胃肠道反应", "E.服用液体铁剂时用吸管，以防牙齿染黑"], answer: "D", explain: "牛奶影响铁吸收，不可同服。" },
+// 第1177题  第77题
+{ Q: "女，29岁。与人争吵后突然出现剧烈头痛、呕吐，意识不清，醒后颈枕部疼痛。查体：脑膜刺激征阳性。最可能的诊断是", options: ["A.高血压急症", "B.脑血栓形成", "C.短暂性脑缺血发作", "D.脑出血", "E.蛛网膜下腔出血"], answer: "E", explain: "剧烈头痛、脑膜刺激征，为蛛网膜下腔出血。" },
+// 第1178题  第78题
+{ Q: "女，29岁。与人争吵后突然出现剧烈头痛、呕吐，意识不清，醒后颈枕部疼痛。查体：脑膜刺激征阳性。诊断为蛛网膜下腔出血。应绝对卧床休息", options: ["A.3-5天", "B.5-7天", "C.1-2周", "D.3-4周", "E.4-6周"], answer: "E", explain: "蛛网膜下腔出血应绝对卧床4-6周。" },
+// 第1179题  第79题
+{ Q: "女，28岁。人工流产术后3年，继发不孕。基础体温双相型，月经规律，经期伴有下腹痛，妇科检查：子宫中位，右附件区增厚有压痛，与周围有粘连。影响受孕的可能因素是", options: ["A.排卵障碍", "B.输卵管因素", "C.子宫因素", "D.宫颈因素", "E.阴道因素"], answer: "B", explain: "附件区增厚、压痛、粘连，提示输卵管炎。" },
+// 第1180题  第80题
+{ Q: "女，28岁。人工流产术后3年，继发不孕。基础体温双相型，月经规律，经期伴有下腹痛，妇科检查：子宫中位，右附件区增厚有压痛，与周围有粘连。有助于预测排卵最简便的检查是", options: ["A.B超检查", "B.激素测定", "C.宫颈黏液检查", "D.基础体温测定", "E.阴道脱落细胞学检查"], answer: "D", explain: "基础体温测定最简便。" },
+// 第1181题  第81题
+{ Q: "男，8岁。发热、头痛、右耳下疼痛2天，体温39.2℃，右腮腺肿胀，有明显触痛，血白细胞8×10⁹/L，中性粒细胞0.65，淋巴细胞0.35。上腹轻度压痛，无反跳痛。最可能的诊断是", options: ["A.流行性腮腺炎并发睾丸炎", "B.流行性腮腺炎并发胃肠炎", "C.流行性腮腺炎并发胰腺炎", "D.流行性腮腺炎并发脑膜脑炎", "E.化脓性腮腺炎"], answer: "C", explain: "腮腺炎伴上腹痛，为并发胰腺炎。" },
+// 第1182题  第82题
+{ Q: "男，8岁。发热、头痛、右耳下疼痛2天，体温39.2℃，右腮腺肿胀，有明显触痛，血白细胞8×10⁹/L，中性粒细胞0.65，淋巴细胞0.35。上腹轻度压痛，无反跳痛。诊断为流行性腮腺炎并发胰腺炎。为进一步确诊，应做的检查是", options: ["A.血、尿和大便常规", "B.氨基转移酶测定", "C.血脂肪酶测定", "D.腮腺B超检查", "E.脑脊液检查"], answer: "C", explain: "血脂肪酶升高确诊胰腺炎。" },
+// 第1183题  第83题
+{ Q: "男，8岁。发热、头痛、右耳下疼痛2天，体温39.2℃，右腮腺肿胀，有明显触痛，血白细胞8×10⁹/L，中性粒细胞0.65，淋巴细胞0.35。上腹轻度压痛，无反跳痛。诊断为流行性腮腺炎并发胰腺炎。护理措施不妥的是", options: ["A.物理降温", "B.暂禁食", "C.注射阿托品", "D.应用抗病毒药", "E.热敷肿胀的腮腺以减轻疼痛"], answer: "E", explain: "腮腺肿胀可冷敷，热敷加重疼痛。" },
+// 第1184题  第84题
+{ Q: "男，8个月。人工喂养，未加辅食，体重8kg。因夜间睡眠不安，多汗，易激惹就诊。查体：患儿反应稍差，心肺未见异常。诊断为维生素D缺乏性佝偻病。按临床分期该患儿为", options: ["A.前驱期", "B.初期", "C.激期", "D.恢复期", "E.后遗症期"], answer: "C", explain: "夜惊、多汗、易激惹为激期表现。" },
+// 第1185题  第85题
+{ Q: "男，8个月。人工喂养，未加辅食，体重8kg。因夜间睡眠不安，多汗，易激惹就诊。查体：患儿反应稍差，心肺未见异常。诊断为维生素D缺乏性佝偻病。若患儿突然发生四肢抽动，两眼上翻，并出现呼吸困难。应考虑的首优护理问题是", options: ["A.体液过多", "B.有窒息的危险", "C.有感染的危险", "D.清理呼吸道无效", "E.营养失调：低于机体需要量"], answer: "B", explain: "喉痉挛可致窒息，为首优问题。" },
+// 第1186题  第86题
+{ Q: "男，66岁。突然不能说话，右侧肢体无力，约10分钟后完全恢复，反复发作，发作后无神经系统体征。首先考虑的诊断是", options: ["A.脑血栓形成", "B.脑血管痉挛", "C.脑梗死", "D.癫痫小发作", "E.短暂性脑缺血发作"], answer: "E", explain: "症状短暂完全恢复为TIA。" },
+// 第1187题  第87题
+{ Q: "男，66岁。突然不能说话，右侧肢体无力，约10分钟后完全恢复，反复发作，发作后无神经系统体征。诊断为短暂性脑缺血发作。护士对其做健康教育，错误的是", options: ["A.头部转动时不能太快、太猛", "B.进食低脂、高钠、高蛋白饮食", "C.多吃水果、蔬菜", "D.即使没有症状也不能独自开车", "E.积极控制糖尿病、高血压"], answer: "B", explain: "应低盐饮食，不是高钠。" },
+// 第1188题  第88题
+{ Q: "男，62岁。进行性排尿困难，夜尿次数增多，直肠指诊发现前列腺明显肿大。良性前列腺增生最早出现的临床表现为", options: ["A.排尿疼痛", "B.尿频", "C.排尿困难", "D.尿急", "E.尿潴留"], answer: "B", explain: "前列腺增生最早症状为尿频。" },
+// 第1189题  第89题
+{ Q: "男，62岁。进行性排尿困难，夜尿次数增多，直肠指诊发现前列腺明显肿大。诊断为良性前列腺增生。该患者行经尿道前列腺切除术，术后护理措施错误的是", options: ["A.生理盐水持续膀胱冲洗", "B.根据引流液的颜色调节冲洗速度", "C.膀胱引流不畅时应及时处理", "D.停止膀胱冲洗后嘱患者多饮水", "E.术后绝对卧床1周"], answer: "E", explain: "术后应早期活动，防血栓。" },
+// 第1190题  第90题
+{ Q: "男，40岁。因肺癌在全麻下行肺叶切除术。麻醉前禁食、禁饮的时间为", options: ["A.禁食、禁饮12小时", "B.禁食、禁饮8小时", "C.禁食12小时、禁饮8小时", "D.禁食12小时、禁饮4小时", "E.禁食4小时、禁饮4小时"], answer: "D", explain: "术前禁食12小时，禁饮4小时。" },
+// 第1191题  第91题
+{ Q: "男，40岁。因肺癌在全麻下行肺叶切除术。麻醉前肌内注射阿托品的目的是", options: ["A.镇静", "B.催眠", "C.减少呼吸道分泌物", "D.镇痛", "E.强心"], answer: "C", explain: "阿托品减少腺体分泌。" },
+// 第1192题  第92题
+{ Q: "男，23岁。右小腿中下段骨折，肿胀，剧痛。足趾呈屈曲状，活动受限，局部发绀。该患者最可能出现的并发症是", options: ["A.血管损伤", "B.神经损伤", "C.骨-筋膜室综合征", "D.脂肪栓塞", "E.感染"], answer: "C", explain: "剧痛、肿胀、活动受限为骨筋膜室综合征。" },
+// 第1193题  第93题
+{ Q: "男，23岁。右小腿中下段骨折，肿胀，剧痛。足趾呈屈曲状，活动受限，局部发绀。诊断为骨筋膜室综合征。此时最佳的处理方式是", options: ["A.石膏外固定", "B.跟骨牵引", "C.即刻行血管探查术", "D.即刻行减压术", "E.即刻行切开复位内固定术"], answer: "D", explain: "骨筋膜室综合征应急诊切开减压。" },
+// 第1194题  第94题
+{ Q: "某孕妇，29岁。妊娠31周，不规律下腹痛4小时入院。查体：宫缩20-25秒/7-8分钟，少量阴道流血、流液，胎心156次/分。对该孕妇采取的措施中正确的是", options: ["A.使用硫酸镁保胎", "B.使用缩宫素引产", "C.不需要处理", "D.立即剖宫产", "E.使用止血药止血"], answer: "A", explain: "先兆早产应抑制宫缩保胎。" },
+// 第1195题  第95题
+{ Q: "某孕妇，29岁。妊娠31周，不规律下腹痛4小时入院。查体：宫缩20-25秒/7-8分钟，少量阴道流血、流液，胎心156次/分。经上述处理24小时后检查发现宫口开大4cm，可诊断为", options: ["A.前置胎盘", "B.早产临产", "C.先兆流产", "D.胎盘早剥", "E.羊水过多"], answer: "B", explain: "宫口开大4cm为早产临产。" },
+// 第1196题  第96题
+{ Q: "某孕妇，29岁。妊娠31周，不规律下腹痛4小时入院。查体：宫缩20-25秒/7-8分钟，少量阴道流血、流液，胎心156次/分。经处理24小时后宫口开大4cm，诊断为早产临产。此时胎心140次/分，胎位LOA，应该对该孕妇采取的措施是", options: ["A.人工破膜", "B.继续保胎", "C.立即剖宫产", "D.阴道试产", "E.缩宫素引产"], answer: "D", explain: "早产临产后可阴道试产。" },
+// 第1197题  第97题
+{ Q: "某产妇，21岁。宫口已开全。护士在指导产妇用力时，应告知产妇现在的主要产力为", options: ["A.腹肌收缩力", "B.膈肌收缩力", "C.肛提肌收缩力", "D.子宫收缩力", "E.腹肌收缩力+肛提肌收缩力"], answer: "D", explain: "第二产程主要产力是子宫收缩力。" },
+// 第1198题  第98题
+{ Q: "某产妇，21岁。宫口已开全。为头先露的产妇做阴道检查时，确定胎位的重要标记是囟门和", options: ["A.额缝", "B.颞缝", "C.冠状缝", "D.人字缝", "E.矢状缝"], answer: "E", explain: "矢状缝和囟门是确定胎位的重要标志。" },
+// 第1199题  第99题
+{ Q: "某产妇，21岁。宫口已开全。判断产程进展的重要标志是", options: ["A.见红", "B.胎膜破裂", "C.宫颈管消失", "D.胎头下降的程度", "E.有规律性的子宫收缩"], answer: "D", explain: "胎头下降程度是产程进展的重要标志。" },
+// 第1200题  第100题
+{ Q: "某产妇，21岁。宫口已开全。在第二产程中，护士应重点观察", options: ["A.宫缩频率", "B.胎心变化", "C.产妇血压", "D.胎头下降速度", "E.羊水性状"], answer: "D", explain: "第二产程重点观察胎头下降情况。" },
+// ==================== 模拟 (第1201-1300题) ====================
+// 第1201题  第1题
+{ Q: "镜下血尿是指尿沉渣镜检，每高倍镜视野红细胞数多于", options: ["A.2个", "B.3个", "C.4个", "D.5个", "E.6个"], answer: "B", explain: "镜下血尿指尿沉渣镜检每高倍视野红细胞>3个。" },
+// 第1202题  第2题
+{ Q: "男，35岁。消化性溃疡。经常胃出血，经医院检验血红蛋白90g/L，红细胞3.8×10¹²/L，确诊为缺铁性贫血。此病的病因是", options: ["A.慢性失血", "B.蛋白丢失", "C.缺维生素B₁₂", "D.缺胃蛋白酶", "E.缺叶酸"], answer: "A", explain: "消化性溃疡慢性失血是缺铁性贫血最常见原因。" },
+// 第1203题  第3题
+{ Q: "因吸入污染的羊水而致新生儿肺炎，其病原菌最多见为", options: ["A.肺炎链球菌", "B.链球菌", "C.金黄色葡萄球菌", "D.大肠埃希菌", "E.铜绿假单胞菌"], answer: "D", explain: "吸入污染的羊水所致新生儿肺炎以大肠埃希菌最常见。" },
+// 第1204题  第4题
+{ Q: "男，66岁。因短期内体重下降5kg就诊。实验室检查：尿蛋白(++)，尿糖(++)，尿白细胞10个/HPF，餐后2小时血糖13mmol/L，查体：全身有搔痕。初步诊断为", options: ["A.糖尿病合并肾盂肾炎", "B.皮肤瘙痒症", "C.肾结核", "D.甲状腺功能亢进症", "E.神经性厌食"], answer: "A", explain: "尿糖、血糖高提示糖尿病，尿蛋白、白细胞提示肾盂肾炎。" },
+// 第1205题  第5题
+{ Q: "慢性心力衰竭最重要的诱发因素是", options: ["A.过度劳累", "B.感染", "C.血容量增加", "D.情绪激动", "E.心律失常"], answer: "B", explain: "感染是慢性心衰最常见的诱因。" },
+// 第1206题  第6题
+{ Q: "属甲类传染病的", options: ["A.鼠疫、狂犬病", "B.鼠疫、黑热病", "C.霍乱、狂犬病", "D.鼠疫、霍乱", "E.炭疽、狂犬病"], answer: "D", explain: "甲类传染病包括鼠疫和霍乱。" },
+// 第1207题  第7题
+{ Q: "有关急性骨髓炎的辅助检查，描述错误的是", options: ["A.X线检查2周内无异常表现", "B.MRI检查可发现骨内炎性病灶及范围", "C.局部脓肿分层穿刺可定性", "D.放射性核素骨显像可见局部血管扩张", "E.放射性核素骨显像48小时以后可定性"], answer: "E", explain: "放射性核素骨显像发病48小时即可出现异常。" },
+// 第1208题  第8题
+{ Q: "男，34岁。因右肾癌行右肾部分切除术。关于患者卧床时间的健康宣教，正确的是", options: ["A.1-3天", "B.3-5天", "C.5-7天", "D.7-14天", "E.14-21天"], answer: "B", explain: "肾部分切除术后应卧床3-5天。" },
+// 第1209题  第9题
+{ Q: "病毒性脑炎血清特异性抗体滴度在恢复期高于急性期的倍数是", options: ["A.1倍", "B.2倍", "C.3倍", "D.4倍", "E.5倍"], answer: "D", explain: "恢复期抗体滴度较急性期升高4倍有诊断意义。" },
+// 第1210题  第10题
+{ Q: "急性胰腺炎时，淀粉酶的改变正确的是", options: ["A.尿淀粉酶增高早于血淀粉酶", "B.尿淀粉酶下降较血淀粉酶晚", "C.尿淀粉酶测定值>128U/L（温氏法）有诊断意义", "D.坏死型胰腺炎，尿淀粉酶一定增高", "E.尿淀粉酶的高低与病变轻重成正比"], answer: "B", explain: "尿淀粉酶升高较晚，下降也较晚。" },
+// 第1211题  第11题
+{ Q: "非特异性外阴炎的病因不包括", options: ["A.炎性分泌物刺激", "B.大、小便污染", "C.外阴不洁", "D.外阴局部透气性差", "E.大量使用抗生素"], answer: "E", explain: "抗生素使用与非特异性外阴炎无关。" },
+// 第1212题  第12题
+{ Q: "心脏瓣膜病最常见的病因是", options: ["A.先天性畸形", "B.退行性改变", "C.缺血性坏死", "D.风湿热", "E.感染性心内膜炎"], answer: "D", explain: "风湿热是心脏瓣膜病最常见病因。" },
+// 第1213题  第13题
+{ Q: "男，36岁。右前胸被刀刺伤，出现烦躁不安，呼吸困难，口唇发绀，呼吸时胸壁伤口有“嘶嘶”声，气管向左侧移位，右侧胸部叩诊呈鼓音。该患者的病理生理变化不包括", options: ["A.右肺完全萎陷", "B.左肺受压", "C.胸膜腔压力高于大气压", "D.纵隔扑动", "E.回心血量减少"], answer: "C", explain: "开放性气胸腔腔压力等于大气压，不会高于大气压。" },
+// 第1214题  第14题
+{ Q: "诊断苯丙酮尿症的主要依据是", options: ["A.智力偏低", "B.血苯丙氨酸明显升高", "C.阴性家族史", "D.尿有鼠臭味", "E.尿三氯化铁试验阳性"], answer: "B", explain: "血苯丙氨酸升高是诊断苯丙酮尿症的主要依据。" },
+// 第1215题  第15题
+{ Q: "肾结核的主要感染途径是", options: ["A.呼吸道", "B.消化道", "C.直接蔓延", "D.血液循环（血行播散）", "E.淋巴管"], answer: "D", explain: "肾结核多由肺结核经血行播散引起。" },
+// 第1216题  第16题
+{ Q: "产褥感染的原因不包括", options: ["A.胎膜残留", "B.产程延长", "C.注射缩宫素", "D.产道损伤", "E.妊娠晚期性交"], answer: "C", explain: "注射缩宫素不是产褥感染的直接原因。" },
+// 第1217题  第17题
+{ Q: "引起消化性溃疡最常见的致病菌是", options: ["A.幽门螺杆菌", "B.大肠埃希菌", "C.痢疾杆菌", "D.沙门菌", "E.嗜盐杆菌"], answer: "A", explain: "幽门螺杆菌是消化性溃疡的主要病因。" },
+// 第1218题  第18题
+{ Q: "与系统性红斑狼疮病因无关的因素是", options: ["A.遗传因素", "B.雌激素", "C.病毒感染", "D.理化因素", "E.关节活动"], answer: "E", explain: "关节活动与SLE病因无关。" },
+// 第1219题  第19题
+{ Q: "引起丹毒最常见的致病菌是", options: ["A.金黄色葡萄球菌", "B.A组β溶血性链球菌", "C.变形杆菌", "D.大肠埃希菌", "E.脆弱拟杆菌"], answer: "B", explain: "丹毒由A组β溶血性链球菌引起。" },
+// 第1220题  第20题
+{ Q: "女，45岁。已有数年怕热、多汗，心率110次/分，食量大，逐渐消瘦。检查发现FT₃及FT₄增高。昨天突然体温达40℃，心率150次/分，恶心、呕吐、腹泻，大汗持续而昏睡，确诊为甲状腺功能亢进症伴甲状腺危象。其原因是", options: ["A.甲状腺激素大量破坏", "B.机体消耗大量甲状腺激素", "C.垂体前叶功能亢进", "D.大量甲状腺激素释放入血", "E.下丘脑功能亢进"], answer: "D", explain: "甲状腺危象是因大量甲状腺激素释放入血所致。" },
+// 第1221题  第21题
+{ Q: "关于休克造成肺损伤的描述，错误的是", options: ["A.毛细血管内皮损伤", "B.肺毛细血管通透性增加", "C.肺泡过度膨胀", "D.氧弥散障碍", "E.通气/血流失调"], answer: "C", explain: "休克肺表现为肺泡萎缩，不是过度膨胀。" },
+// 第1222题  第22题
+{ Q: "丹毒是指", options: ["A.急性管状淋巴管炎", "B.急性网状淋巴管炎", "C.急性蜂窝织炎", "D.急性淋巴结炎", "E.多发性毛囊炎"], answer: "B", explain: "丹毒是皮肤网状淋巴管的急性炎症。" },
+// 第1223题  第23题
+{ Q: "支气管扩张症的病因不包括", options: ["A.慢性支气管炎", "B.肺炎", "C.肺结核", "D.α₁-抗胰蛋白酶增多", "E.麻疹"], answer: "D", explain: "α₁-抗胰蛋白酶缺乏与支扩有关，增多不是病因。" },
+// 第1224题  第24题
+{ Q: "在中国，肥胖是指成人的BMI至少达到或超过", options: ["A.21", "B.23", "C.25", "D.28", "E.31"], answer: "D", explain: "中国标准BMI≥28为肥胖。" },
+// 第1225题  第25题
+{ Q: "吸入性肺脓肿的致病菌多属于", options: ["A.厌氧菌", "B.支原体", "C.肺炎链球菌", "D.链球菌", "E.金黄色葡萄球菌"], answer: "A", explain: "吸入性肺脓肿多为厌氧菌感染。" },
+// 第1226题  第26题
+{ Q: "女，30岁。右颞部受撞击，昏迷20分钟后清醒，醒后感头痛，呕吐数次，次日感头痛加重，伴嗜睡而入院就诊。首选的检查项目是", options: ["A.经颅多普勒超声检查", "B.数字减影血管造影检查", "C.腰椎穿刺检查", "D.头颅CT检查", "E.脑血管造影检查"], answer: "D", explain: "头部外伤首选CT检查。" },
+// 第1227题  第27题
+{ Q: "生理性腹泻多见于", options: ["A.6个月以内婴儿", "B.1岁以内婴儿", "C.2-3岁幼儿", "D.5-6岁儿童", "E.7-10岁儿童"], answer: "A", explain: "生理性腹泻多见于6个月以内婴儿。" },
+// 第1228题  第28题
+{ Q: "消化性溃疡患者大便隐血试验(+)提示", options: ["A.溃疡出血", "B.溃疡穿孔", "C.幽门梗阻", "D.溃疡瘢痕形成", "E.伴慢性胃炎"], answer: "A", explain: "隐血试验阳性提示溃疡活动性出血。" },
+// 第1229题  第29题
+{ Q: "自然流产最常见的病因是", options: ["A.受精卵发育异常", "B.染色体异常", "C.母体生殖器官发育异常", "D.黄体功能不足", "E.甲状腺功能减退"], answer: "B", explain: "染色体异常是自然流产最常见原因。" },
+// 第1230题  第30题
+{ Q: "原始心脏开始起循环作用的时间是", options: ["A.第2周", "B.第3周", "C.第4周", "D.第5周", "E.第6周"], answer: "B", explain: "胚胎第3周原始心脏开始循环。" },
+// 第1231题  第31题
+{ Q: "血常规显示杆状核粒细胞增多，可能的疾病是", options: ["A.细菌性肺炎", "B.原发免疫性血小板减少症", "C.急性白血病", "D.缺铁性贫血", "E.伤寒"], answer: "A", explain: "杆状核粒细胞增多提示急性细菌感染。" },
+// 第1232题  第32题
+{ Q: "有机磷烟碱样中毒的特效解毒药是", options: ["A.乙酰胺注射液", "B.纳洛酮", "C.维生素K₁", "D.胆碱酯酶复能药", "E.巯基螯合剂"], answer: "D", explain: "烟碱样症状用胆碱酯酶复能药如解磷定。" },
+// 第1233题  第33题
+{ Q: "胃十二指肠溃疡急性穿孔时腹部触诊的特点是", options: ["A.腹软", "B.腹肌轻度紧张", "C.腹肌紧张、无压痛", "D.腹肌极度紧张、无反跳痛", "E.板状腹、压痛、反跳痛"], answer: "E", explain: "溃疡穿孔表现为板状腹、压痛、反跳痛。" },
+// 第1234题  第34题
+{ Q: "诊断脊柱结核最可靠的依据是", options: ["A.有低热、盗汗史", "B.血沉增快", "C.结核菌素试验(+)", "D.X线检查示椎间隙狭窄，相邻椎体边缘模糊", "E.全身虚弱、贫血"], answer: "D", explain: "X线表现椎间隙狭窄、椎体破坏是诊断依据。" },
+// 第1235题  第35题
+{ Q: "确诊肿瘤的可靠方法是", options: ["A.CT检查", "B.MRI检查", "C.B超检查", "D.X线检查", "E.病理学检查"], answer: "E", explain: "病理学检查是确诊肿瘤的金标准。" },
+// 第1236题  第36题
+{ Q: "鉴别右心衰竭与肝硬化水肿的依据是", options: ["A.下肢水肿", "B.腹水形成", "C.腹围增大", "D.恶心、呕吐", "E.颈静脉怒张"], answer: "E", explain: "右心衰有颈静脉怒张，肝硬化无。" },
+// 第1237题  第37题
+{ Q: "对癫痫发作患者的首要处置是", options: ["A.迅速给药控制发作", "B.按压人中", "C.急诊CT检查", "D.保持呼吸道通畅，防止窒息", "E.详细询问病史"], answer: "D", explain: "癫痫发作首要保持呼吸道通畅。" },
+// 第1238题  第38题
+{ Q: "女，20岁。低热、腹痛2个月，偶有便秘。胃肠X线钡剂检查：盲肠和升结肠增生性狭窄、缩短变形。拟诊为肠结核。护理查体中最可能出现的体征是", options: ["A.肠鸣音亢进", "B.右下腹肿块", "C.肠型", "D.腹肌紧张", "E.蠕动波"], answer: "B", explain: "增生型肠结核可在右下腹触及肿块。" },
+// 第1239题  第39题
+{ Q: "关于肺和支气管的解剖与生理特点，错误的是", options: ["A.左右肺均分上、下两叶", "B.气管约在平胸骨角部位分左、右支气管", "C.右支气管较左支气管垂直", "D.右支气管管腔较左支气管管腔大", "E.肺的主要生理功能是通气和换气"], answer: "A", explain: "右肺分上、中、下三叶，左肺分上、下两叶。" },
+// 第1240题  第40题
+{ Q: "初产妇第三产程的时间一般不超过", options: ["A.30分钟", "B.50分钟", "C.1小时", "D.1.5小时", "E.2小时"], answer: "A", explain: "第三产程一般不超过30分钟。" },
+// 第1241题  第41题
+{ Q: "为避免大脑遭受不可逆损害，心肺复苏最佳开始的时间最好不要超过", options: ["A.4-6分钟", "B.8-10分钟", "C.12分钟", "D.15分钟", "E.20分钟"], answer: "A", explain: "心脏骤停后4-6分钟大脑开始发生不可逆损害。" },
+// 第1242题  第42题
+{ Q: "女，50岁。右上腹痛4天，体温39℃，胆囊肿大伴有触痛。实验室检查：血清胆红素360μmol/L，白细胞13×10⁹/L。最可能的诊断是", options: ["A.急性胆囊炎", "B.胆总管结石合并化脓性胆管炎", "C.急性胰腺炎", "D.胆道蛔虫病", "E.肝脓肿"], answer: "B", explain: "腹痛、高热、黄疸为Charcot三联征，提示急性胆管炎。" },
+// 第1243题  第43题
+{ Q: "食管癌的好发部位是", options: ["A.颈段食管", "B.胸上段食管", "C.胸中段食管", "D.胸下段食管", "E.腹段食管"], answer: "C", explain: "食管癌好发于胸中段。" },
+// 第1244题  第44题
+{ Q: "在突发公共卫生事件中，与护理伦理规范不符的是", options: ["A.奉献精神", "B.自身安全为重", "C.协作精神", "D.敬业精神", "E.科学精神"], answer: "B", explain: "公共卫生事件中应以患者和社会利益为重。" },
+// 第1245题  第45题
+{ Q: "子宫脱垂最主要的病因是", options: ["A.营养不良", "B.分娩损伤", "C.雌激素不足", "D.长期腹压增加", "E.盆底组织发育不良"], answer: "B", explain: "分娩损伤是子宫脱垂最主要病因。" },
+// 第1246题  第46题
+{ Q: "引起人类结核病的结核分枝杆菌主要是", options: ["A.人型", "B.猪型", "C.牛型", "D.鼠型", "E.猫型"], answer: "A", explain: "人型结核分枝杆菌是主要致病菌。" },
+// 第1247题  第47题
+{ Q: "基础体温测定不用于判断", options: ["A.早期妊娠", "B.排卵日期", "C.黄体功能", "D.有无排卵", "E.子宫内膜结核"], answer: "E", explain: "基础体温不能诊断子宫内膜结核。" },
+// 第1248题  第48题
+{ Q: "女，38岁。慢性肾小球肾炎5年。实验室检查：内生肌酐清除率28ml/min，血肌酐425μmol/L，血尿素氮18mmol/L。此患者目前的肾功能状况属", options: ["A.肾功能正常", "B.氮质血症期", "C.肾功能不全代偿期", "D.肾衰竭期", "E.尿毒症期"], answer: "D", explain: "Ccr25-50ml/min为肾衰竭期。" },
+// 第1249题  第49题
+{ Q: "容易引起颅内感染的骨折是", options: ["A.颅盖骨折", "B.颅底骨折", "C.线形骨折", "D.闭合性骨折", "E.颅顶骨折"], answer: "B", explain: "颅底骨折易致脑脊液漏，引发颅内感染。" },
+// 第1250题  第50题
+{ Q: "人体中能促进能量储存的激素是", options: ["A.胰岛素", "B.肾上腺素", "C.生长激素", "D.胰高血糖素", "E.去甲肾上腺素"], answer: "A", explain: "胰岛素促进糖原、脂肪、蛋白质合成，储存能量。" },
+// 第1251题  第51题
+{ Q: "掌握各种传染病的潜伏期，其最主要的意义是", options: ["A.有助于前驱期判断", "B.有助于疾病诊断", "C.评估病情轻重", "D.确定传染病检疫期", "E.可对疫情进行预测"], answer: "D", explain: "潜伏期用于确定检疫期和隔离期。" },
+// 第1252题  第52题
+{ Q: "快痛的传入神经纤维是", options: ["A.α纤维", "B.β纤维", "C.C类纤维", "D.Aγ纤维", "E.Aδ纤维"], answer: "E", explain: "快痛由Aδ纤维传导。" },
+// 第1253题  第53题
+{ Q: "正常小儿能够听懂自己名字的月龄是", options: ["A.5个月", "B.6个月", "C.8个月", "D.9个月", "E.12个月"], answer: "B", explain: "6个月小儿能听懂自己名字。" },
+// 第1254题  第54题
+{ Q: "门静脉压力增高，血流淤滞，首先出现的是", options: ["A.交通支扩张", "B.充血性脾大", "C.肝功能损害", "D.急性上消化道出血", "E.腹水"], answer: "B", explain: "门静脉高压最早出现脾大。" },
+// 第1255题  第55题
+{ Q: "尿脱落细胞学检查阳性结果提示有", options: ["A.泌尿系统移行细胞肿瘤", "B.慢性尿路感染", "C.尿路结石", "D.泌尿系统结核", "E.急性前列腺炎"], answer: "A", explain: "尿脱落细胞阳性提示泌尿系统肿瘤。" },
+// 第1256题  第56题
+{ Q: "男，53岁。体重93kg，因工作压力大和应酬较多，近来经常出现恶心、呕吐、视物模糊、头晕等症状。查体：血压180/95mmHg。护士向其解释最主要的发病机制是", options: ["A.高级神经中枢功能紊乱", "B.肥胖", "C.饮酒", "D.年龄偏大", "E.高血压急症"], answer: "A", explain: "长期精神紧张导致高级神经中枢功能紊乱是高血压主要机制。" },
+// 第1257题  第57题
+{ Q: "上消化道出血常见的原因不包括", options: ["A.胃癌", "B.消化性溃疡", "C.急性胃黏膜病变", "D.食管胃黏膜脱垂", "E.食管胃底静脉曲张"], answer: "D", explain: "食管胃黏膜脱垂不是常见原因。" },
+// 第1258题  第58题
+{ Q: "易感者接种特异性抗原所产生的免疫力为", options: ["A.被动免疫", "B.主动免疫", "C.免疫规划", "D.自身免疫", "E.生物免疫"], answer: "B", explain: "接种抗原产生主动免疫。" },
+// 第1259题  第59题
+{ Q: "最容易引起股骨头缺血性坏死的股骨颈骨折是", options: ["A.头下骨折", "B.基底骨折", "C.转子间骨折", "D.股骨上1/3骨折", "E.股骨中1/3骨折"], answer: "A", explain: "头下骨折易损伤股骨头血供，导致缺血坏死。" },
+// 第1260题  第60题
+{ Q: "发生低血容量性休克的时间是烧伤后", options: ["A.8小时内", "B.12小时内", "C.24小时内", "D.36小时内", "E.48小时内"], answer: "E", explain: "烧伤后48小时内易发生低血容量性休克。" },
+// 第1261题  第61题
+{ Q: "迷走神经兴奋可引起", options: ["A.心率减慢", "B.心肌耗氧量增加", "C.心肌收缩力增强", "D.心率加快", "E.外周血管收缩"], answer: "A", explain: "迷走神经兴奋使心率减慢。" },
+// 第1262题  第62题
+{ Q: "女，45岁。因严重感染入院。查体：体温39.5℃，脉搏90次/分，呼吸25次/分，血压116/80mmHg。血气分析：PaO₂55mmHg，PaCO₂30mmHg。首先考虑的是", options: ["A.ARF", "B.ARDS", "C.DIC", "D.AHF", "E.MODS"], answer: "B", explain: "严重感染后出现低氧血症，考虑ARDS。" },
+// 第1263题  第63题
+{ Q: "排卵后开始增多的激素是", options: ["A.孕激素", "B.雌激素", "C.雄激素", "D.前列腺素", "E.卵泡刺激素"], answer: "A", explain: "排卵后黄体形成，分泌孕激素。" },
+// 第1264题  第64题
+{ Q: "小儿发生惊厥时应首先采取的护理措施是", options: ["A.送入抢救室", "B.解松衣扣，平卧，头偏向一侧", "C.给予物理降温", "D.准备急救用物", "E.将纱布放在患儿手心或腋下"], answer: "B", explain: "惊厥发作首先保持呼吸道通畅。" },
+// 第1265题  第65题
+{ Q: "胸部X线检查可出现双肺透亮度增加的疾病是", options: ["A.肺气肿", "B.肺水肿", "C.肺脓肿", "D.肺结核", "E.肺癌"], answer: "A", explain: "肺气肿时双肺透亮度增加。" },
+// 第1266题  第66题
+{ Q: "急性肾小球肾炎引起水肿的最主要机制是", options: ["A.急性高血压引起的急性心力衰竭", "B.大量蛋白尿引起的低白蛋白血症", "C.醛固酮增多症引起的水、钠潴留", "D.肾小球滤过率下降引起的水、钠潴留", "E.肾小球基底膜通透性增加"], answer: "D", explain: "急性肾炎水肿主要因肾小球滤过率下降，水钠潴留。" },
+// 第1267题  第67题
+{ Q: "高钾血症的常见原因不包括", options: ["A.静脉补钾过量、过快", "B.持续胃肠减压", "C.输入大量库存血", "D.代谢性酸中毒", "E.急性肾损伤"], answer: "B", explain: "胃肠减压丢失胃液，导致低钾，不是高钾。" },
+// 第1268题  第68题
+{ Q: "肝脏最基本的结构单位是", options: ["A.肝细胞素", "B.肝叶", "C.肝小叶", "D.肝窦", "E.肝段"], answer: "C", explain: "肝小叶是肝脏的基本结构和功能单位。" },
+// 第1269题  第69题
+{ Q: "乳头皲裂的主要原因是", options: ["A.婴儿含接姿势不良", "B.婴儿吸吮时间过长", "C.乳房肿胀", "D.婴儿舌系带短", "E.未做到按需哺乳"], answer: "A", explain: "含接姿势不正确是乳头皲裂的主要原因。" },
+// 第1270题  第70题
+{ Q: "胎儿急性缺氧早期胎心率的变化是", options: ["A.减慢", "B.增快", "C.消失", "D.正常", "E.减弱"], answer: "B", explain: "缺氧早期胎心率增快，晚期减慢。" },
+// 第1271题  第71题
+{ Q: "新生儿期是指", options: ["A.出生后7天", "B.出生后14天", "C.出生后30天", "D.出生后脐带结扎至满28天", "E.出生后脐带结扎至满30天"], answer: "D", explain: "新生儿期指脐带结扎至出生后28天。" },
+// 第1272题  第72题
+{ Q: "支持骨盆底部最主要、最坚韧的组织是", options: ["A.球海绵体肌及筋膜组织", "B.会阴浅横肌及筋膜组织", "C.肛门外括约肌及筋膜组织", "D.尿道括约肌及筋膜组织", "E.肛提肌及筋膜组织"], answer: "E", explain: "肛提肌及筋膜是盆底最主要支持组织。" },
+// 第1273题  第73题
+{ Q: "成年男性细胞外液占体重的", options: ["A.5%", "B.15%", "C.20%", "D.40%", "E.60%"], answer: "C", explain: "成年男性细胞外液占体重的20%。" },
+// 第1274题  第74题
+{ Q: "导致尿路感染最常见的致病菌为", options: ["A.真菌", "B.变形杆菌", "C.铜绿假单胞菌", "D.大肠埃希菌", "E.副大肠埃希菌"], answer: "D", explain: "大肠埃希菌是尿路感染最常见致病菌。" },
+// 第1275题  第75题
+{ Q: "胎儿各脏器已发育，开始出现眉毛及睫毛，此时妊娠已到", options: ["A.12周", "B.16周", "C.20周", "D.24周", "E.28周"], answer: "C", explain: "妊娠20周胎儿出现眉毛、睫毛。" },
+// 第1276题  第76题
+{ Q: "胃破裂患者的腹腔穿刺抽出液是", options: ["A.黄色，浑浊，无臭味，可有食物残渣", "B.不凝固的暗红色血液", "C.含黄色稀便，臭味明显", "D.棕黄色浑浊炎性液体", "E.血性，胰淀粉酶含量增高"], answer: "A", explain: "胃破裂抽出液含胃内容物，黄色浑浊有食物残渣。" },
+// 第1277题  第77题
+{ Q: "急性胰腺炎最常见的诱因是", options: ["A.免疫抑制药", "B.胰腺外伤", "C.暴饮暴食", "D.长期酗酒", "E.胰周手术"], answer: "C", explain: "暴饮暴食是急性胰腺炎最常见诱因。" },
+// 第1278题  第78题
+{ Q: "儿童糖尿病最常见的类型是", options: ["A.非糖尿病性葡萄糖尿症", "B.继发性糖尿病", "C.1型糖尿病", "D.2型糖尿病", "E.婴儿暂时性糖尿病"], answer: "C", explain: "儿童糖尿病以1型为主。" },
+// 第1279题  第79题
+{ Q: "与胃癌发病无关的是", options: ["A.饮食因素", "B.环境因素", "C.应激性因素", "D.疾病因素（胃溃疡）", "E.遗传因素"], answer: "C", explain: "应激性因素与胃癌发病无关。" },
+// 第1280题  第80题
+{ Q: "系统性红斑狼疮患者血液中的标志性抗体是", options: ["A.核抗体", "B.抗Sm抗体", "C.抗双链DNA抗体", "D.抗核抗体（ANA）", "E.类风湿因子（RF）"], answer: "D", explain: "抗核抗体是SLE的筛选标志。" },
+// 第1281题  第81题
+{ Q: "脑血管疾病首选的检查是", options: ["A.MRI检查", "B.CT检查", "C.B超检查", "D.X线检查", "E.血清学检查"], answer: "B", explain: "CT是脑血管疾病首选检查。" },
+// 第1282题  第82题
+{ Q: "女，33岁。因胸闷、气短就诊。查体：患者面颊与口唇轻度发绀；心前区可触及收缩期抬举性搏动；心尖区可触及舒张期震颤，听诊第一心音亢进，可闻及舒张中晚期隆隆样杂音。该患者最可能的诊断是", options: ["A.二尖瓣关闭不全", "B.二尖瓣狭窄伴肺动脉高压", "C.二尖瓣狭窄", "D.三尖瓣狭窄", "E.二尖瓣狭窄伴右心室扩大"], answer: "C", explain: "心尖区舒张期隆隆样杂音是二尖瓣狭窄特征。" },
+// 第1283题  第83题
+{ Q: "男，71岁。患慢性阻塞性肺疾病15年，高血压病史10年，血压控制良好。因1天前剧烈咳嗽后突感右侧胸痛，呼气困难加重，不能平卧就诊。查体：右侧胸廓饱满，叩诊呈鼓音，呼吸音减弱。其出现呼吸困难最可能的原因是", options: ["A.自发性气胸", "B.急性心肌梗死", "C.急性左心衰", "D.肺栓塞", "E.肺部感染导致呼吸衰竭"], answer: "A", explain: "COPD患者咳嗽后突发胸痛、呼吸困难，叩诊鼓音，为自发性气胸。" },
+// 第1284题  第84题
+{ Q: "属于闭合性损伤的是", options: ["A.擦伤", "B.切割伤", "C.刺伤", "D.裂伤", "E.扭伤"], answer: "E", explain: "扭伤皮肤完整，属闭合性损伤。" },
+// 第1285题  第85题
+{ Q: "精子和卵子相遇，发生受精的部位是", options: ["A.阴道", "B.阴蒂", "C.卵巢", "D.子宫", "E.输卵管"], answer: "E", explain: "受精发生在输卵管壶腹部。" },
+// 第1286题  第86题
+{ Q: "胎儿生长发育的场所是", options: ["A.阴道", "B.阴蒂", "C.卵巢", "D.子宫", "E.输卵管"], answer: "D", explain: "子宫是胎儿生长发育的场所。" },
+// 第1287题  第87题
+{ Q: "脑出血最常见的原因是", options: ["A.脑动脉粥样硬化", "B.脑血管痉挛", "C.高血压", "D.心源性栓子", "E.非心源性栓子"], answer: "C", explain: "高血压是脑出血最常见原因。" },
+// 第1288题  第88题
+{ Q: "脑梗死最常见的原因是", options: ["A.脑动脉粥样硬化", "B.脑血管痉挛", "C.高血压", "D.心源性栓子", "E.非心源性栓子"], answer: "A", explain: "脑动脉粥样硬化是脑梗死最常见原因。" },
+// 第1289题  第89题
+{ Q: "可以帮助判断肝性脑病分期的检查是", options: ["A.B超检查", "B.脑脊液检查", "C.脑电图", "D.免疫学检查", "E.CT和MRI检查"], answer: "C", explain: "脑电图可判断肝性脑病分期。" },
+// 第1290题  第90题
+{ Q: "可显示椎间盘突出程度的检查是", options: ["A.B超检查", "B.脑脊液检查", "C.脑电图", "D.免疫学检查", "E.CT和MRI检查"], answer: "E", explain: "CT和MRI可显示椎间盘突出程度。" },
+// 第1291题  第91题
+{ Q: "当腹内压力骤然增高时，疝块突然增大，伴有明显疼痛，平卧或用手推送不能使之还纳，肿块紧张且硬，有明显触痛，此疝属于", options: ["A.易复性疝", "B.难复性疝", "C.嵌顿性疝", "D.绞窄性疝", "E.滑动性疝"], answer: "C", explain: "疝块不能还纳，有触痛，为嵌顿性疝。" },
+// 第1292题  第92题
+{ Q: "腹股沟有肿块，在站立、行走或咳嗽时出现，若平卧休息或用手将肿块向腹腔推送，肿块可向腹腔回纳而消失，此疝属于", options: ["A.易复性疝", "B.难复性疝", "C.嵌顿性疝", "D.绞窄性疝", "E.滑动性疝"], answer: "A", explain: "可回纳的疝为易复性疝。" },
+// 第1293题  第93题
+{ Q: "甲状腺癌中恶性程度相对低的是", options: ["A.乳头状癌", "B.滤泡状癌", "C.未分化癌", "D.腺癌", "E.髓样癌"], answer: "A", explain: "乳头状癌恶性程度最低，预后最好。" },
+// 第1294题  第94题
+{ Q: "甲状腺癌中恶性程度最高的是", options: ["A.乳头状癌", "B.滤泡状癌", "C.未分化癌", "D.腺癌", "E.髓样癌"], answer: "C", explain: "未分化癌恶性程度最高。" },
+// 第1295题  第95题
+{ Q: "CO中毒的机制是", options: ["A.缺氧", "B.局部刺激", "C.受体的竞争", "D.抑制胆碱酯酶", "E.麻醉作用"], answer: "A", explain: "CO与Hb结合，导致组织缺氧。" },
+// 第1296题  第96题
+{ Q: "急性有机磷农药中毒的机制是", options: ["A.缺氧", "B.局部刺激", "C.受体的竞争", "D.抑制胆碱酯酶", "E.麻醉作用"], answer: "D", explain: "有机磷抑制胆碱酯酶活性。" },
+// 第1297题  第97题
+{ Q: "营养性巨幼细胞贫血属", options: ["A.小细胞低色素性贫血", "B.大细胞性贫血", "C.正细胞低色素性贫血", "D.正细胞高色素性贫血", "E.小细胞高色素性贫血"], answer: "B", explain: "巨幼细胞贫血为大细胞性贫血。" },
+// 第1298题  第98题
+{ Q: "营养性缺铁性贫血属", options: ["A.小细胞低色素性贫血", "B.大细胞性贫血", "C.正细胞低色素性贫血", "D.正细胞高色素性贫血", "E.小细胞高色素性贫血"], answer: "A", explain: "缺铁性贫血为小细胞低色素性贫血。" },
+// 第1299题  第99题
+{ Q: "对膀胱癌确诊最重要的检查是", options: ["A.膀胱镜检查", "B.CT检查", "C.MRI检查", "D.尿流率检查", "E.B超检查"], answer: "A", explain: "膀胱镜加活检是确诊膀胱癌的方法。" },
+// 第1300题  第100题
+{ Q: "良性前列腺增生判断梗阻程度的检查是", options: ["A.膀胱镜检查", "B.CT检查", "C.MRI检查", "D.尿流率检查", "E.B超检查"], answer: "D", explain: "尿流率检查可判断梗阻程度。" },
+
+// ==================== 模拟 (第1301-1400题) ====================
+// 第1301题  第1题
+{ Q: "健康促进对行为可提供的环境支持主要指", options: ["A.人际环境", "B.事物环境", "C.政策开发", "D.心理环境", "E.卫生服务"], answer: "C", explain: "健康促进通过政策开发提供环境支持。" },
+// 第1302题  第2题
+{ Q: "根据阴阳学说，事物的质变过程称为", options: ["A.阴阳消长", "B.阴阳对立", "C.阴平阳秘", "D.阴阳互根", "E.阴阳转化"], answer: "E", explain: "阴阳转化是事物的质变过程。" },
+// 第1303题  第3题
+{ Q: "静脉留置针留置时间过长易发生感染，一般留置时间不超过", options: ["A.1天", "B.3天", "C.2天", "D.7天", "E.14天"], answer: "D", explain: "静脉留置针一般留置3-5天，不超过7天。" },
+// 第1304题  第4题
+{ Q: "在诊疗过程中，医生以医嘱形式对患者给予健康生活方式指导，属于", options: ["A.住院教育", "B.候诊教育", "C.咨询教育", "D.随诊教育", "E.健康教育处方"], answer: "E", explain: "以医嘱形式给予健康指导为健康教育处方。" },
+// 第1305题  第5题
+{ Q: "有效沟通的策略不包括", options: ["A.考虑接收者的观点和立场", "B.使用恰当的沟通方式", "C.充分利用反馈机制", "D.以语言强化行动", "E.避免一味说教"], answer: "D", explain: "以语言强化行动不是沟通策略。" },
+// 第1306题  第6题
+{ Q: "属于社会状况评估的是", options: ["A.青霉素过敏史", "B.姓名、性别、年龄", "C.民族、职业、入院方式", "D.入院前性格外向，善于交流", "E.经济状况良好，家庭关系和睦"], answer: "E", explain: "经济状况、家庭关系属社会状况评估。" },
+// 第1307题  第7题
+{ Q: "预防ICU患者医院感染最切实的措施是", options: ["A.提高从业人员素质", "B.尽量减少使用介入性监护方法", "C.关注医疗设备的使用情况", "D.严格执行无菌操作", "E.加强病室通风消毒"], answer: "D", explain: "严格执行无菌操作是预防感染最切实措施。" },
+// 第1308题  第8题
+{ Q: "为避免冲突激化，采取求同存异的处理方法称为", options: ["A.压制冲突", "B.和平共处", "C.转移目标", "D.第三方仲裁", "E.妥协"], answer: "B", explain: "求同存异、和平共处是处理冲突的方法。" },
+// 第1309题  第9题
+{ Q: "为避免溶液pH对抗生素的破坏，静脉滴注抗生素的溶液原则上应选择", options: ["A.5%葡萄糖溶液", "B.5%葡萄糖氯化钠溶液", "C.0.9%氯化钠溶液", "D.5%碳酸氢钠溶液", "E.复方氯化钠溶液"], answer: "C", explain: "生理盐水pH中性，不易破坏抗生素。" },
+// 第1310题  第10题
+{ Q: "健康教育的基础活动是", options: ["A.知识传播", "B.信念转变", "C.技能训练", "D.行为干预", "E.效果评价"], answer: "A", explain: "知识传播是健康教育的基础。" },
+// 第1311题  第11题
+{ Q: "有人向你进行保健品咨询时，你按照自己了解的情况如实介绍，并针对他的身体情况做了分析，最后你应", options: ["A.强调不要吃保健品", "B.建议他根据介绍自己选择", "C.告诉他自己从不吃保健品", "D.告诉他花钱买保健品不值得", "E.建议他买某一种保健品"], answer: "B", explain: "健康教育应帮助教育对象自己决策。" },
+// 第1312题  第12题
+{ Q: "水谷精微中，其精纯柔和部分所生成的气是", options: ["A.元气", "B.宗气", "C.营气", "D.卫气", "E.中气"], answer: "C", explain: "营气由水谷精微中的精纯柔和部分生成。" },
+// 第1313题  第13题
+{ Q: "标准是衡量事物的准则，将物质技术质量定型化和定量化称为", options: ["A.统一化", "B.系列化", "C.规格化", "D.整体化", "E.系统化"], answer: "C", explain: "规格化指将物质技术质量定型化和定量化。" },
+// 第1314题  第14题
+{ Q: "炭疽芽孢杆菌芽孢在泥土中能生存的时间为", options: ["A.2周", "B.2个月", "C.2年", "D.5年", "E.10年以上"], answer: "E", explain: "炭疽芽孢在泥土中可存活10年以上。" },
+// 第1315题  第15题
+{ Q: "医用物品对人类的危害性分类中，穿过皮肤或黏膜而进入无菌组织的器材属于", options: ["A.极度危险性物品", "B.无危险性物品", "C.高度危险性物品", "D.低度危险性物品", "E.中度危险性物品"], answer: "C", explain: "进入无菌组织的器材为高度危险性物品。" },
+// 第1316题  第16题
+{ Q: "健康教育的最终目标是使患者", options: ["A.有健康知识", "B.有健康行为", "C.有自我保健能力", "D.有预防疾病能力", "E.既有健康知识，又有健康行为"], answer: "E", explain: "健康教育的最终目标是知-信-行的统一。" },
+// 第1317题  第17题
+{ Q: "护士在护理感染患者后，其洗手操作正确的是", options: ["A.洗手前取下手上饰物及手表，卷袖过腕", "B.湿润双手后取洗手液或肥皂涂抹双手", "C.揉搓双手各面包括手腕及肘上10cm", "D.揉搓时间持续10秒，注意指甲、指缝等处", "E.洗手完毕后可用手直接关闭水龙头"], answer: "A", explain: "洗手前应取下饰物，卷袖过腕。" },
+// 第1318题  第18题
+{ Q: "护士长作为医院质量控制检查组成员，在检查自己科室时，未按标准而直接给自己科室打分，其违背的控制原则是", options: ["A.目的性", "B.客观性", "C.重点性", "D.灵活性", "E.及时性"], answer: "B", explain: "违背客观性原则，应客观公正。" },
+// 第1319题  第19题
+{ Q: "男，35岁。行疝修补术后1周，手术切口处红、肿、热、痛，伴少量脓性分泌物渗出。脓液细菌培养为阳性。应诊断为", options: ["A.表浅切口感染，属于医院感染", "B.表浅切口感染，不属于医院感染", "C.深部组织感染，属于医院感染", "D.深部组织感染，不属于医院感染", "E.交叉感染"], answer: "A", explain: "术后1周切口感染为医院感染。" },
+// 第1320题  第20题
+{ Q: "根据健康信念模式，要采取戒烟行为必须具备的基本条件不包括", options: ["A.认识到吸烟危害健康的严重性", "B.认识到戒烟对促进健康的有效性", "C.认识到戒烟过程可能带来的不适", "D.掌握戒烟失败的弥补方法", "E.对自己能成功戒烟充满自信"], answer: "D", explain: "戒烟失败弥补方法不是必备条件。" },
+// 第1321题  第21题
+{ Q: "对无明确潜伏期的感染，属于医院感染的时间是入院", options: ["A.24小时后", "B.36小时后", "C.48小时后", "D.72小时后", "E.96小时后"], answer: "C", explain: "入院48小时后发生的感染为医院感染。" },
+// 第1322题  第22题
+{ Q: "环境、病床、床头柜的消毒处理原则为", options: ["A.湿式清扫，一床一套（巾），一桌一抹布，用后清洗", "B.湿式清扫，一床一套（巾），一桌一抹布，用后消毒", "C.干式清扫，一床一套（巾），一桌一抹布，用后消毒", "D.干式清扫，一床一套（巾），一桌一抹布，用后清洗", "E.湿式清扫，同一患者用同一毛巾，先床后桌，用后清洗"], answer: "B", explain: "应湿式清扫，一床一巾一桌一布，用后消毒。" },
+// 第1323题  第23题
+{ Q: "压力蒸汽灭菌的生物监测指标菌为", options: ["A.耐热的嗜热脂肪杆菌芽孢", "B.耐热的嗜热脂肪芽孢杆菌", "C.耐热的嗜热脂肪杆菌", "D.枯草杆菌芽孢", "E.短小杆菌芽孢"], answer: "A", explain: "嗜热脂肪杆菌芽孢是压力蒸汽灭菌的生物指示剂。" },
+// 第1324题  第24题
+{ Q: "某医院为适应激烈的医疗市场竞争，积极创造品牌效应，护理部管理者为此对全院护理人员基本情况和工作状态调查分析，对曾经发生的护理纠纷进行总结，提出以患者为中心、安全服务为重点的零缺陷护理模式，同时采取严格执行各种规章制度、规范细化护理操作标准、责任落实到个人等具体措施，经过一年工作实施，护理服务质量有了很大的提高，患者对护理服务满意率100%，创立护理服务品牌。该案例中的决策类型属于", options: ["A.程序化决策与非程序化决策", "B.确定性决策与风险性决策", "C.头脑风暴法决策", "D.战略决策与战术决策", "E.组织决策与个体决策"], answer: "D", explain: "提出零缺陷模式为战略决策，具体措施为战术决策。" },
+// 第1325题  第25题
+{ Q: "组织小组讨论时，错误的是", options: ["A.小组人数控制在最小范围内", "B.讨论时间一般控制在1小时左右", "C.采用圆圈式或马蹄形座位", "D.开始讨论前成员彼此先自我介绍", "E.出现“一言堂”现象时应及时礼貌控制局面"], answer: "A", explain: "小组讨论人数以6-10人为宜，不是越小越好。" },
+// 第1326题  第26题
+{ Q: "“华盖”是指", options: ["A.肺", "B.心", "C.脾", "D.肾", "E.肝"], answer: "A", explain: "肺为华盖，位于五脏最高。" },
+// 第1327题  第27题
+{ Q: "将自己的某些责任分派给另一个人，并给予相应的权力称为", options: ["A.控制", "B.协调", "C.计划", "D.激励", "E.授权"], answer: "E", explain: "授权是将责任和权力分派给他人。" },
+// 第1328题  第28题
+{ Q: "某社区55岁以上的老年人高血压的控制率在3年内提高30%，此描述属于健康教育计划的", options: ["A.目的", "B.目标", "C.原则", "D.结果", "E.体现"], answer: "B", explain: "具体、可测量的为计划目标。" },
+// 第1329题  第29题
+{ Q: "初产妇，32岁。在硬膜外阻滞下行剖宫产，因病情需要预防性应用抗生素。护士执行该医嘱的最佳时间是", options: ["A.胎儿娩出后", "B.脐带钳夹后", "C.胎盘娩出后", "D.手术开始前", "E.注射常规疫苗后"], answer: "B", explain: "剖宫产预防用药应在脐带钳夹后，避免药物影响胎儿。" },
+// 第1330题  第30题
+{ Q: "隔离衣的使用方法，正确的是", options: ["A.隔天更换1次", "B.要保持袖口内外面清洁", "C.必须完全盖住工作服", "D.隔离衣潮湿，晾干后再使用", "E.隔离衣挂在病室应清洁面向外"], answer: "C", explain: "隔离衣应完全盖住工作服。" },
+// 第1331题  第31题
+{ Q: "属于“阳中之阳”的是", options: ["A.心", "B.肺", "C.脾", "D.肝", "E.肾"], answer: "A", explain: "心属火，为阳中之阳。" },
+// 第1332题  第32题
+{ Q: "“条条大道通罗马”，说明达成目标有多种途径，而这句话对于沟通的启示是", options: ["A.创造良好的沟通环境", "B.充分利用反馈机制", "C.使用恰当的沟通方式", "D.强化沟通能力", "E.学会有效聆听"], answer: "C", explain: "多种途径启示要使用恰当的沟通方式。" },
+// 第1333题  第33题
+{ Q: "男，60岁。刚被确诊为冠心病，护士请同样患有冠心病的患者乙为其讲述自我管理心得。此行为利用受者的心理特点是", options: ["A.求真", "B.求新", "C.求短", "D.求快", "E.求近"], answer: "E", explain: "同类患者分享体现求近心理。" },
+// 第1334题  第34题
+{ Q: "医院健康教育的最终目的是", options: ["A.改善患者生活方式", "B.指导患者家属正确的护理", "C.促进患者身心康复", "D.引导患者准确服药", "E.增强患者战胜疾病的信心"], answer: "C", explain: "最终目的是促进患者身心康复。" },
+// 第1335题  第35题
+{ Q: "男，70岁。因脑卒中留置胃管和导尿管，检查结果提示有多重耐药鲍曼不动杆菌感染，当护士为患者行会阴护理时，最需要注意的是", options: ["A.消毒顺序", "B.严格无菌操作", "C.保持导尿管通畅", "D.实施接触隔离", "E.观察记录"], answer: "D", explain: "多重耐药菌感染应实施接触隔离。" },
+// 第1336题  第36题
+{ Q: "男，3岁。因腹泻入院治疗。护士为其静脉输液后忘记松止血带，造成患儿手臂发黑，并有截肢的可能。患儿家长向医院投诉该护士，医院处理方法错误的是", options: ["A.将调查处理情况告知患儿家长", "B.公开调查结果和处理情况", "C.对调查结果和处理情况进行保密", "D.若调查结果属实则对该护士进行处理", "E.进行事件调查"], answer: "C", explain: "调查结果应公开透明，不应保密。" },
+// 第1337题  第37题
+{ Q: "建立传播关系需要的3个基本条件是", options: ["A.传播者、传播渠道和受传者", "B.传播者、受传者和反馈", "C.传播者、受传者和共同经验范围", "D.契约关系、反馈和渠道", "E.共同经验范围、反馈和契约关系"], answer: "C", explain: "共同经验范围是传播关系建立的基础。" },
+// 第1338题  第38题
+{ Q: "病房健康教育内容不包括", options: ["A.探视及陪伴制度", "B.病因、发病机制", "C.症状、并发症", "D.治疗原则", "E.生活起居、饮食知识"], answer: "A", explain: "探视陪伴制度是入院教育内容，不是病房健康教育。" },
+// 第1339题  第39题
+{ Q: "津液与血共同的功能是", options: ["A.推动", "B.温煦", "C.滋养", "D.防御", "E.固摄"], answer: "C", explain: "津液和血都有滋养作用。" },
+// 第1340题  第40题
+{ Q: "在协调的基本要求中，协调成功与否的一个检验标准是能否", options: ["A.及时协调与连续协调相结合", "B.调动当事者的积极性", "C.从根本上解决问题", "D.公平合理", "E.相互尊重"], answer: "B", explain: "调动积极性是协调成功的检验标准。" },
+// 第1341题  第41题
+{ Q: "有关人际沟通特点的描述，正确的是", options: ["A.人际沟通的发生通常是随人的意志而转移的", "B.沟通过程中沟通者需要保持内容与关系的统一", "C.人际沟通就是使信息完整、顺利地传输", "D.人际沟通一般不能实现整体信息的交流", "E.仅在治疗性护理沟通中患者是沟通的客体"], answer: "B", explain: "沟通应保持内容与关系的统一。" },
+// 第1342题  第42题
+{ Q: "医院感染暴发流行时，不正确的措施是", options: ["A.先将发病患者转移到安全区", "B.先将健康患者转移到安全区", "C.分组护理", "D.单元隔离", "E.开展流行病学调查"], answer: "B", explain: "应先隔离传染源，不是转移健康患者。" },
+// 第1343题  第43题
+{ Q: "主持会议应把握的要点不包括", options: ["A.紧扣议题", "B.激发思维", "C.引导合作", "D.维持秩序", "E.恪守时间"], answer: "D", explain: "维持秩序不是主持会议的要点。" },
+// 第1344题  第44题
+{ Q: "属于灭菌剂的化学消毒剂是", options: ["A.氯己定", "B.碘伏", "C.乙醇", "D.甲醛", "E.苯扎溴铵"], answer: "D", explain: "甲醛为灭菌剂，可杀灭芽孢。" },
+// 第1345题  第45题
+{ Q: "根据八纲辨证，辨别疾病邪正盛衰的纲领是", options: ["A.气血", "B.阴阳", "C.表里", "D.寒热", "E.虚实"], answer: "E", explain: "虚实辨别邪正盛衰。" },
+// 第1346题  第46题
+{ Q: "属于健康教育功能的是", options: ["A.促进制订有利于健康的政策", "B.促进调整卫生服务方向", "C.帮助人们建立健康的生活方式", "D.促进发展社区功能", "E.促进建设和保护物质环境与自然环境"], answer: "C", explain: "建立健康生活方式是健康教育功能。" },
+// 第1347题  第47题
+{ Q: "高可变性行为的特点是", options: ["A.形成时间较长", "B.与文化传统密切相关", "C.属于传统生活方式", "D.正处于发展时期", "E.尚无成功改变实例"], answer: "D", explain: "正处于发展时期的行为易改变。" },
+// 第1348题  第48题
+{ Q: "造成原位菌群三度失调最常见的原因是", options: ["A.气管插管", "B.中心静脉置管", "C.留置导尿管", "D.环境污染", "E.大量使用广谱抗生素"], answer: "E", explain: "大量使用广谱抗生素是菌群失调最常见原因。" },
+// 第1349题  第49题
+{ Q: "促成因素指改变行为所需要的", options: ["A.技术和能力", "B.同伴支持", "C.外部条件", "D.态度和信念", "E.家庭支持"], answer: "A", explain: "促成因素包括技术和能力。" },
+// 第1350题  第50题
+{ Q: "健康传播具有明确的目的性，表现为", options: ["A.以疾病为中心", "B.以患者为中心", "C.以社区为中心", "D.以生活方式为中心", "E.以健康为中心"], answer: "E", explain: "健康传播以健康为中心。" },
+// 第1351题  第51题
+{ Q: "体现动态原理的管理思想的描述是", options: ["A.管理活动要注意环境变化", "B.管理要有统一的整体目标", "C.管理的各要素间相互联系", "D.管理中有系统分析的方法", "E.管理活动要注重经济效益"], answer: "A", explain: "动态原理强调适应环境变化。" },
+// 第1352题  第52题
+{ Q: "属顺从疾病假象而进行护理的方法是", options: ["A.正护法", "B.反护法", "C.扶正法", "D.祛邪法", "E.护标法"], answer: "B", explain: "反护法顺从疾病假象，如热因热用。" },
+// 第1353题  第53题
+{ Q: "对门诊患者进行健康教育的侧重点是", options: ["A.心理问题指导", "B.常见病的防治教育", "C.家庭保健指导", "D.医院规章制度的介绍", "E.康复指导"], answer: "B", explain: "门诊健康教育侧重常见病防治。" },
+// 第1354题  第54题
+{ Q: "影响人类行为的因素不包括", options: ["A.生态环境", "B.意外事件", "C.模仿学习", "D.医疗卫生", "E.健康问题"], answer: "B", explain: "意外事件不是影响行为的因素。" },
+// 第1355题  第55题
+{ Q: "既属“六腑”，又属“奇恒之腑”的是", options: ["A.胆", "B.胃", "C.大肠", "D.小肠", "E.膀胱"], answer: "A", explain: "胆既属六腑，又属奇恒之腑。" },
+// 第1356题  第56题
+{ Q: "健康传播者在制订传播信息、选择传播途径时，应重点考虑受者的", options: ["A.生理特点和状况", "B.心理特点和动机", "C.文化程度", "D.经济状况", "E.兴趣爱好"], answer: "C", explain: "文化程度决定信息理解能力，应重点考虑。" },
+// 第1357题  第57题
+{ Q: "汗孔的别称是", options: ["A.孤府", "B.玄府", "C.精明之府", "D.髓之府", "E.血之府"], answer: "B", explain: "汗孔又称玄府。" },
+// 第1358题  第58题
+{ Q: "根据致病性行为模式，与冠心病发生密切相关的是", options: ["A.A型行为模式", "B.B型行为模式", "C.C型行为模式", "D.D型行为模式", "E.E型行为模式"], answer: "A", explain: "A型行为与冠心病密切相关。" },
+// 第1359题  第59题
+{ Q: "须接触隔离的疾病不包括", options: ["A.破伤风", "B.皮肤白喉", "C.大面积烧伤", "D.伤寒", "E.多重耐药金黄色葡萄球菌感染"], answer: "D", explain: "伤寒需消化道隔离。" },
+// 第1360题  第60题
+{ Q: "人类的本能行为不包括", options: ["A.摄食行为", "B.性行为", "C.劳动行为", "D.躲避行为", "E.睡眠"], answer: "C", explain: "劳动行为是社会行为，不是本能。" },
+// 第1361题  第61题
+{ Q: "使用臭氧消毒室内空气后，进入室内须间隔", options: ["A.10-15分钟", "B.20-30分钟", "C.35-45分钟", "D.50-60分钟", "E.70-90分钟"], answer: "B", explain: "臭氧消毒后需通风20-30分钟方可进入。" },
+// 第1362题  第62题
+{ Q: "属于三级医疗事故的是", options: ["A.造成患者明显人身损害的其他后果", "B.造成患者中度残疾", "C.造成患者轻度残疾、器官组织损伤导致一般功能障碍", "D.造成患者死亡、重度残疾", "E.造成患者中度残疾、器官组织损伤导致严重功能障碍"], answer: "C", explain: "三级医疗事故为轻度残疾、一般功能障碍。" },
+// 第1363题  第63题
+{ Q: "可以达到灭菌水平的化学消毒剂是", options: ["A.含氯消毒剂", "B.环氧乙烷", "C.复方氯己定", "D.碘酊", "E.碘伏"], answer: "B", explain: "环氧乙烷为灭菌剂。" },
+// 第1364题  第64题
+{ Q: "医院感染监测中，查阅病历的重点对象不包括", options: ["A.细菌及真菌培养阳性的患者", "B.长期使用免疫抑制药的患者", "C.接受过手术或侵入性操作的患者", "D.恶性肿瘤和长期卧床的患者", "E.高血压和高脂血症患者"], answer: "E", explain: "高血压、高脂血症不是医院感染监测重点。" },
+// 第1365题  第65题
+{ Q: "影响健康教育评价效果内在真实性的因素中，干预组与对照组在社会经济、文化、行为、信念等方面缺乏相似性应属于", options: ["A.测试因素", "B.回归因素", "C.历史因素", "D.选择因素", "E.失访"], answer: "D", explain: "两组缺乏可比性为选择因素偏倚。" },
+// 第1366题  第66题
+{ Q: "男，25岁。甲型肝炎住院20天治愈出院，护士为其行终末期消毒处理。错误的做法是", options: ["A.患者洗澡、换清洁衣裤", "B.个人用物经消毒后带出病区", "C.被服及时送洗衣房清洗", "D.室内空气可用喷雾消毒", "E.病床、桌椅用消毒剂擦拭"], answer: "C", explain: "被服应先消毒再送洗。" },
+// 第1367题  第67题
+{ Q: "组织沟通的作用不包括", options: ["A.联系", "B.激励", "C.创新", "D.控制", "E.反馈"], answer: "C", explain: "创新不是组织沟通的作用。" },
+// 第1368题  第68题
+{ Q: "护士告诉某新入院患者到放射科去做检查，但是忘了给申请单，也未告诉患者在哪里做检查，导致患者在门诊耽误了很长时间。该护士行为属于沟通障碍中的", options: ["A.目的不明，导致信息内容不准确", "B.表达模糊，导致信息传递错误", "C.选择失误，导致信息误解的可能性增大", "D.言行不当，导致信息的理解错误", "E.过度加工，导致信息的模糊或失真"], answer: "B", explain: "信息不完整，表达模糊导致沟通障碍。" },
+// 第1369题  第69题
+{ Q: "梅毒病原体易灭活的环境是", options: ["A.干燥环境", "B.37℃环境", "C.缺氧环境", "D.寒冷环境", "E.潮湿环境"], answer: "A", explain: "梅毒螺旋体在干燥环境中易死亡。" },
+// 第1370题  第70题
+{ Q: "医院感染的主要对象是", options: ["A.住院患者", "B.医生", "C.护士", "D.探视者", "E.陪伴者"], answer: "A", explain: "住院患者是医院感染的主要对象。" },
+// 第1371题  第71题
+{ Q: "某医院护理部质控组使用PDCA循环的管理方法，实行护理质控管制，依据既定的质量标准定期到临床查找问题，分析原因，针对原因制订改进措施，实施并反馈，不断改进提高。该医院实行护理质量控制过程中的依据是", options: ["A.统计数据", "B.质量标准", "C.个人观察", "D.问卷调查", "E.书面报告"], answer: "B", explain: "质量控制以质量标准为依据。" },
+// 第1372题  第72题
+{ Q: "脾的生理特性是", options: ["A.喜润恶燥，宜升", "B.喜润恶燥，宜降", "C.喜燥恶湿，宜升", "D.喜燥恶湿，宜降", "E.喜条达，恶抑郁"], answer: "C", explain: "脾喜燥恶湿，主升。" },
+// 第1373题  第73题
+{ Q: "有效训导的方法不包括", options: ["A.以平等态度对待下属", "B.具体指明问题所在", "C.批评对事不对人", "D.以行动强化语言", "E.提出防范错误的建议"], answer: "D", explain: "以行动强化语言不是训导方法。" },
+// 第1374题  第74题
+{ Q: "男，43岁。右下腹疼痛难忍2小时。经检查诊断为急性阑尾炎，急诊行阑尾切除术，手术顺利，术后第7天，发现伤口有淡黄色液体渗出。手术医师告知是由缝合切口的羊肠线不吸收所致，在临床中较为少见。经过近一个月的继续治疗，患者痊愈出院。根据《医疗事故处理条例》规定，该患者“近一个月才得以痊愈”这一客观后果，应当属于", options: ["A.二级医疗事故", "B.三级医疗事故", "C.四级医疗事故", "D.因不可抗力而造成的不良后果", "E.因患者体质特殊而发生的医疗意外"], answer: "E", explain: "羊肠线不吸收是患者体质特殊导致的医疗意外。" },
+// 第1375题  第75题
+{ Q: "护士与昏迷患者间适用的关系模式是", options: ["A.主动-被动型模式", "B.指导-合作型模式", "C.指导-被动型模式", "D.共享参与型模式", "E.被动参与型模式"], answer: "A", explain: "昏迷患者适用主动-被动模式。" },
+// 第1376题  第76题
+{ Q: "结核病中传染性最强的是", options: ["A.骨结核", "B.肾结核", "C.肠结核", "D.结核性脑膜炎", "E.开放性肺结核"], answer: "E", explain: "开放性肺结核排菌，传染性最强。" },
+// 第1377题  第77题
+{ Q: "可用于分析护理意外事件发生的定性分析法是", options: ["A.分层法", "B.排列图法", "C.调查表法", "D.因果分析图法", "E.控制图法"], answer: "D", explain: "因果分析图用于分析原因。" },
+// 第1378题  第78题
+{ Q: "关于控制的叙述，错误的是", options: ["A.监视各项活动", "B.纠正各种偏差", "C.按既定计划运行", "D.提高经济效益", "E.保证目标的实现"], answer: "D", explain: "控制不一定直接提高经济效益。" },
+// 第1379题  第79题
+{ Q: "在质量管理中，CQI是指", options: ["A.全面质量控制", "B.持续质量改进", "C.全面质量管理", "D.持续质量控制", "E.持续质量管理"], answer: "B", explain: "CQI是持续质量改进。" },
+// 第1380题  第80题
+{ Q: "授权对于领导的意义在于", options: ["A.拥有完成工作的自主权、决策权", "B.有利于寻求一个合适的管理幅度，提高管理效率", "C.减轻工作负担，使其能集中精力解决组织的重大问题", "D.发挥自身才干，增强责任感、义务感和成就感", "E.使沟通渠道缩短且通畅，提高工作效率"], answer: "C", explain: "授权使领导减轻负担，专注重大问题。" },
+// 第1381题  第81题
+{ Q: "空气消毒采用的方法中不包括", options: ["A.紫外线灯照射消毒", "B.臭氧消毒", "C.甲醛熏蒸消毒", "D.过氧乙酸熏蒸消毒", "E.过氧化氢喷雾消毒"], answer: "C", explain: "甲醛致癌，不用于空气消毒。" },
+// 第1382题  第82题
+{ Q: "根据双因素理论，管理者为了提高护士对护理工作的满意度，激发正性情绪。最适宜采取的措施是", options: ["A.改善工作环境", "B.改善人际关系", "C.提高福利待遇", "D.改善工作条件", "E.设立岗位明星"], answer: "E", explain: "激励因素可提高满意度，如认可、成就。" },
+// 第1383题  第83题
+{ Q: "基础质量评价指标包括", options: ["A.仪器设备完好率", "B.运行病历合格率", "C.静脉输液操作合格率", "D.一人一针一管执行率", "E.出院患者满意度"], answer: "A", explain: "仪器设备完好率是基础质量评价指标。" },
+// 第1384题  第84题
+{ Q: "终末质量评价指标包括", options: ["A.仪器设备完好率", "B.运行病历合格率", "C.静脉输液操作合格率", "D.一人一针一管执行率", "E.出院患者满意度"], answer: "E", explain: "出院患者满意度是终末质量评价指标。" },
+// 第1385题  第85题
+{ Q: "组织设计的原则中，“管理者必须在稳定与动态变化之间寻求一种平衡”是指", options: ["A.责权一致的原则", "B.有效管理幅度的原则", "C.集权与分权相结合的原则", "D.稳定性与适应性相结合的原则", "E.目标统一的原则"], answer: "D", explain: "稳定性与适应性相结合原则。" },
+// 第1386题  第86题
+{ Q: "组织设计的原则中，“主管人员直接管理下属的人数应是适当的”是指", options: ["A.责权一致的原则", "B.有效管理幅度的原则", "C.集权与分权相结合的原则", "D.稳定性与适应性相结合的原则", "E.目标统一的原则"], answer: "B", explain: "有效管理幅度原则。" },
+// 第1387题  第87题
+{ Q: "组织设计的原则中，“职位的职权和职责要对等一致”是指", options: ["A.责权一致的原则", "B.有效管理幅度的原则", "C.集权与分权相结合的原则", "D.稳定性与适应性相结合的原则", "E.目标统一的原则"], answer: "A", explain: "责权一致原则。" },
+// 第1388题  第88题
+{ Q: "共享信息的最基本传播形式是", options: ["A.人际传播", "B.群体传播", "C.大众传播", "D.社区传播", "E.自我传播"], answer: "A", explain: "人际传播是最基本的传播形式。" },
+// 第1389题  第89题
+{ Q: "通过电视、报刊、宣传册等手段传播健康信息属于", options: ["A.人际传播", "B.群体传播", "C.大众传播", "D.社区传播", "E.自我传播"], answer: "C", explain: "电视、报刊是大众传播媒介。" },
+// 第1390题  第90题
+{ Q: "医院内属于高度危险性物品的是", options: ["A.衣服", "B.口罩", "C.体温表", "D.枕头条", "E.注射器"], answer: "E", explain: "注射器进入无菌组织，为高度危险性物品。" },
+// 第1391题  第91题
+{ Q: "医院内属于中度危险性物品的是", options: ["A.衣服", "B.口罩", "C.体温表", "D.枕头条", "E.注射器"], answer: "C", explain: "体温表接触黏膜，为中度危险性物品。" },
+// 第1392题  第92题
+{ Q: "肺结核患者须采取的隔离措施是", options: ["A.血液-体液隔离", "B.呼吸道隔离", "C.消化道隔离", "D.接触隔离", "E.昆虫隔离"], answer: "B", explain: "肺结核为呼吸道隔离。" },
+// 第1393题  第93题
+{ Q: "甲型肝炎患者须采取的隔离措施是", options: ["A.血液-体液隔离", "B.呼吸道隔离", "C.消化道隔离", "D.接触隔离", "E.昆虫隔离"], answer: "C", explain: "甲肝为消化道隔离。" },
+// 第1394题  第94题
+{ Q: "乙型肝炎患者须采取的隔离措施是", options: ["A.血液-体液隔离", "B.呼吸道隔离", "C.消化道隔离", "D.接触隔离", "E.昆虫隔离"], answer: "A", explain: "乙肝为血液-体液隔离。" },
+// 第1395题  第95题
+{ Q: "脓毒症患者抗菌药物一般用至体温正常、病情好转后", options: ["A.3天", "B.5天", "C.7-10天", "D.14天", "E.4-8周"], answer: "C", explain: "脓毒症用药至体温正常后7-10天。" },
+// 第1396题  第96题
+{ Q: "心内膜炎患者抗菌药物一般用至体温正常、病情好转后", options: ["A.3天", "B.5天", "C.7-10天", "D.14天", "E.4-8周"], answer: "E", explain: "心内膜炎疗程需4-8周。" },
+// 第1397题  第97题
+{ Q: "涂擦消毒法消毒手时，涂擦的时间不少于", options: ["A.15秒", "B.30秒", "C.1分钟", "D.2分钟", "E.3分钟"], answer: "B", explain: "涂擦手消毒不少于30秒。" },
+// 第1398题  第98题
+{ Q: "洗手时揉搓的时间不少于", options: ["A.15秒", "B.30秒", "C.1分钟", "D.2分钟", "E.3分钟"], answer: "A", explain: "洗手揉搓时间不少于15秒。" },
+// 第1399题  第99题
+{ Q: "常用于被血渍污染环境初步处理的是", options: ["A.2%戊二醛", "B.0.5%含氯消毒剂", "C.2%碘酊", "D.70%乙醇", "E.0.5%氯己定-乙醇溶液"], answer: "B", explain: "含氯消毒剂用于血渍污染处理。" },
+// 第1400题  第100题
+{ Q: "常用于内镜消毒灭菌的是", options: ["A.2%戊二醛", "B.0.5%含氯消毒剂", "C.2%碘酊", "D.70%乙醇", "E.0.5%氯己定-乙醇溶液"], answer: "A", explain: "2%戊二醛是内镜常用消毒剂。" },
+
+// ==================== 模拟 (第1401-1500题) ====================
+// 第1401题  第1题
+{ Q: "妊娠合并心脏病孕妇死亡的主要原因是", options: ["A.心功能Ⅲ级者在妊娠期手术治疗心脏病", "B.心力衰竭与感染", "C.剖宫产分娩", "D.羊水栓塞", "E.产后出血"], answer: "B", explain: "心衰和感染是妊娠合并心脏病主要死因。" },
+// 第1402题  第2题
+{ Q: "过敏性紫癜使用糖皮质激素治疗时，效果较好的临床类型是", options: ["A.紫癜型", "B.腹型与肾型混合", "C.关节型", "D.腹型和关节型", "E.肾型"], answer: "D", explain: "激素对腹型和关节型效果较好。" },
+// 第1403题  第3题
+{ Q: "肺炎支原体肺炎抗感染治疗的首选药物是", options: ["A.青霉素", "B.阿奇霉素", "C.头孢噻肟钠", "D.利巴韦林", "E.糖皮质激素"], answer: "B", explain: "支原体肺炎首选大环内酯类如阿奇霉素。" },
+// 第1404题  第4题
+{ Q: "某孕妇，30岁。妊娠12周。阵发性腹痛1小时，阴道流血较月经量多。入院后妇科检查提示宫口可容1指，胎囊堵塞于宫口。该患者2年前曾有“稽留流产”史，该患者最可能出现了", options: ["A.先兆流产", "B.难免流产", "C.不全流产", "D.稽留流产", "E.复发性流产"], answer: "B", explain: "宫口已开，胎囊堵塞，为难免流产。" },
+// 第1405题  第5题
+{ Q: "系统性红斑狼疮最常见的心血管损害是", options: ["A.心肌炎", "B.心包炎", "C.心内膜炎", "D.雷诺现象", "E.血栓闭塞性脉管炎"], answer: "B", explain: "SLE最常见心血管损害为心包炎。" },
+// 第1406题  第6题
+{ Q: "胺碘酮的严重不良反应是", options: ["A.中枢神经系统毒性反应", "B.肺纤维化", "C.低血压、低血糖", "D.心动过缓", "E.呼吸困难"], answer: "B", explain: "胺碘酮最严重不良反应是肺纤维化。" },
+// 第1407题  第7题
+{ Q: "急性病毒性肝炎的临床表现不包括", options: ["A.疲乏", "B.腹胀", "C.黄疸", "D.肝、脾大", "E.腹水"], answer: "E", explain: "腹水多见于肝硬化，急性肝炎少见。" },
+// 第1408题  第8题
+{ Q: "活性宫内节育器所含物质不包括", options: ["A.金属铜", "B.孕激素", "C.吲哚美辛", "D.磁性物质", "E.塑料"], answer: "D", explain: "活性IUD可含铜、孕激素、吲哚美辛，不含磁性物质。" },
+// 第1409题  第9题
+{ Q: "宫颈癌根治术后无并发症，拔除导尿管最适宜的时间是术后", options: ["A.1-3天", "B.3-7天", "C.7-14天", "D.14-18天", "E.18-25天"], answer: "C", explain: "宫颈癌术后尿管留置7-14天。" },
+// 第1410题  第10题
+{ Q: "非特异性外阴炎患者局部治疗使用高锰酸钾溶液坐浴时，适宜的水温为", options: ["A.20℃左右", "B.30℃左右", "C.40℃左右", "D.50℃左右", "E.60℃左右"], answer: "C", explain: "坐浴水温40℃左右为宜。" },
+// 第1411题  第11题
+{ Q: "唐氏综合征又称为", options: ["A.白化病", "B.血友病", "C.糖原贮积症", "D.肝豆状核变性", "E.21-三体综合征"], answer: "E", explain: "唐氏综合征即21-三体综合征。" },
+// 第1412题  第12题
+{ Q: "糖尿病“Somogyi效应”是指", options: ["A.夜间低血糖未发现，导致胰岛素拮抗激素分泌减少，发生低血糖后反跳性高血糖", "B.夜间血糖控制良好，由于清晨胰岛素拮抗激素增多，导致黎明短时间内出现高血糖", "C.日间血糖控制良好，由于夜间胰岛素拮抗激素增多，导致午夜反跳性高血糖", "D.夜间低血糖未发现，导致胰岛素拮抗激素分泌增多，发生低血糖后反跳性高血糖", "E.夜间血糖控制良好，由于清晨胰岛素拮抗激素减少，导致黎明短时间内出现高血糖"], answer: "D", explain: "Somogyi效应是低血糖后反跳性高血糖。" },
+// 第1413题  第13题
+{ Q: "女，60岁。原发性高血压10年，间断服用降压药，血压一般维持在140/100mmHg，近1年头晕、头痛加重，血压常在170/100mmHg。胸部X线检查：左心室增大。诊断为高血压靶器官轻度受累。责任护士对患者行健康教育，不妥的是", options: ["A.注意休息，适量运动，保证充足睡眠", "B.保持情绪稳定", "C.低盐、低脂饮食，防止超重", "D.坚持服用降压药，血压正常后停药", "E.定期门诊复查血压及靶器官损害情况"], answer: "D", explain: "高血压需终身服药，不能停药。" },
+// 第1414题  第14题
+{ Q: "提示脉压增大的脉搏是", options: ["A.奇脉", "B.交替脉", "C.脉搏短绌", "D.迟脉", "E.水冲脉"], answer: "E", explain: "水冲脉见于脉压增大疾病，如甲亢、主动脉瓣关闭不全。" },
+// 第1415题  第15题
+{ Q: "说明产妇进入第二产程的征象是", options: ["A.宫口开全", "B.产妇排尿困难", "C.产妇屏气向下用力", "D.胎头部分露于阴道", "E.脐带脱出于阴道口外"], answer: "A", explain: "宫口开全是第二产程开始标志。" },
+// 第1416题  第16题
+{ Q: "深Ⅱ度烧伤局部损伤的深度为", options: ["A.表皮层、生发层健在", "B.真皮浅层、部分生发层健在", "C.真皮深层，有皮肤附件残留", "D.皮下脂肪层", "E.脂肪下层"], answer: "C", explain: "深Ⅱ度伤及真皮深层，有附件残留。" },
+// 第1417题  第17题
+{ Q: "月经频发是指月经周期小于", options: ["A.30天", "B.28天", "C.25天", "D.21天", "E.18天"], answer: "D", explain: "月经频发指周期<21天。" },
+// 第1418题  第18题
+{ Q: "1型糖尿病最常见的急性并发症是", options: ["A.高渗高血糖综合征", "B.糖尿病酮症酸中毒", "C.感染性休克", "D.低血糖昏迷", "E.肾衰竭"], answer: "B", explain: "酮症酸中毒是1型糖尿病最常见急性并发症。" },
+// 第1419题  第19题
+{ Q: "急性肾小球肾炎的典型表现是", options: ["A.少尿、水肿、血尿、高血压", "B.多尿、水肿、血尿、高血压", "C.水肿、脓尿、血尿、低血压", "D.水肿、蛋白尿、低白蛋白血症、高脂血症", "E.水肿、蛋白尿、高白蛋白血症、低脂血症"], answer: "A", explain: "急性肾炎典型表现为水肿、血尿、高血压、少尿。" },
+// 第1420题  第20题
+{ Q: "急性肾小球肾炎常见于上呼吸道感染后", options: ["A.1-3周", "B.6-7周", "C.3-4周", "D.4-5周", "E.5-6周"], answer: "A", explain: "急性肾炎多于链球菌感染后1-3周发病。" },
+// 第1421题  第21题
+{ Q: "小儿生长发育规律的描述错误的是", options: ["A.生长发育是一个连续的过程", "B.出生后前半年生长发育最快", "C.生长发育受个体差异影响", "D.神经系统发育较早，淋巴系统发育先慢后快", "E.具有一定的顺序性"], answer: "D", explain: "淋巴系统发育先快后慢。" },
+// 第1422题  第22题
+{ Q: "有机磷农药中毒患者皮肤、黏膜表现为", options: ["A.樱桃红", "B.潮红", "C.发绀", "D.无汗", "E.多汗"], answer: "E", explain: "有机磷中毒腺体分泌增多，表现为多汗。" },
+// 第1423题  第23题
+{ Q: "颅内压增高“三主征”是指", options: ["A.头痛、头晕、呕吐", "B.头痛、呕吐、颈强直", "C.血压升高、脉搏缓慢而有力、呼吸深慢", "D.头痛、呕吐、视神经乳头水肿", "E.昏迷、一侧瞳孔散大、对侧肢体瘫痪"], answer: "D", explain: "颅内压增高三主征为头痛、呕吐、视乳头水肿。" },
+// 第1424题  第24题
+{ Q: "妊娠合并糖尿病孕妇，分娩后24小时内胰岛素用量应", options: ["A.维持原用量不变", "B.增加原用量的1/2", "C.增加原用量的1/3", "D.减至原用量的1/2", "E.减至原用量的1/3"], answer: "D", explain: "分娩后胰岛素用量减至原用量的1/2。" },
+// 第1425题  第25题
+{ Q: "腹部手术后拔除胃管的指征是", options: ["A.术后3天", "B.肠蠕动恢复，肛门排气", "C.可下床活动", "D.肠鸣音亢进", "E.无胃液抽出"], answer: "B", explain: "肛门排气后胃肠功能恢复，可拔胃管。" },
+// 第1426题  第26题
+{ Q: "人工流产负压吸引术适用于", options: ["A.妊娠10周内", "B.妊娠11周内", "C.妊娠13周内", "D.妊娠14周内", "E.妊娠7周内"], answer: "A", explain: "负压吸引术适用于妊娠10周内。" },
+// 第1427题  第27题
+{ Q: "早产儿，男。出生后3天皮肤硬肿，诊断为新生儿寒冷损伤综合征。护士查体发现该患儿双下肢出现硬肿，评估硬肿程度为", options: ["A.轻微", "B.轻度", "C.中度", "D.重度", "E.极重度"], answer: "C", explain: "双下肢硬肿面积26%-50%，为中度硬肿。" },
+// 第1428题  第28题
+{ Q: "全身性外科感染应用抗菌药物的原则是", options: ["A.真菌性脓毒症治疗以局部用药为主", "B.必须等待细菌培养及药物敏感试验结果后再选择药物", "C.可先根据原发感染灶的性质，尽早、足量、联合应用2种以上抗生素", "D.尽早使用大剂量三线广谱抗生素，疗程2周以上", "E.对真菌性脓毒症，应改用广谱抗生素"], answer: "C", explain: "全身感染应尽早、足量、联合应用抗生素。" },
+// 第1429题  第29题
+{ Q: "关节脱位复位后的固定时间一般是", options: ["A.1周", "B.2-3周", "C.3-4周", "D.4-5周", "E.6周"], answer: "B", explain: "关节脱位固定2-3周。" },
+// 第1430题  第30题
+{ Q: "慢性原发免疫性血小板减少症的典型临床表现是", options: ["A.双下肢对称性紫癜伴有关节痛", "B.贫血、出血与感染", "C.鼻出血、牙龈出血与月经过多", "D.出血、栓塞与休克", "E.深部肌肉血肿与骨化关节炎"], answer: "C", explain: "慢性ITP表现为皮肤黏膜出血。" },
+// 第1431题  第31题
+{ Q: "常用于治疗肝硬化腹水的利尿药是", options: ["A.呋塞米", "B.氢氯噻嗪", "C.依他尼酸", "D.甘露醇", "E.螺内酯"], answer: "E", explain: "螺内酯为保钾利尿药，常用于肝硬化腹水。" },
+// 第1432题  第32题
+{ Q: "婴儿腹泻轻型与重型的主要区别是", options: ["A.有无发热、呕吐", "B.体温是在39℃以上", "C.每天大便的次数", "D.大便的性状", "E.有无水、电解质紊乱"], answer: "E", explain: "重型腹泻有明显脱水及电解质紊乱。" },
+// 第1433题  第33题
+{ Q: "男，7岁。发热，眼睑水肿3天伴尿少，尿色深。尿液检查：蛋白(+)，红细胞(++)，白细胞少许。2小时前诉头痛，呕吐2次，视物模糊。查体：体温37.2℃，血压160/110mmHg，神志不清，四肢小抽动，瞳孔等大，全身有轻度非凹陷性水肿，心率80次/分，双肺无啰音，病理反射阴性，首先考虑的诊断是", options: ["A.尿毒症", "B.中毒性脑病", "C.蛛网膜下腔出血", "D.低钠性脑水肿", "E.急性肾小球肾炎合并高血压脑病"], answer: "E", explain: "急性肾炎基础上出现高血压脑病表现。" },
+// 第1434题  第34题
+{ Q: "流行性腮腺炎主要的传染源是", options: ["A.受感染的动物", "B.患者和隐性感染者", "C.慢性带毒者", "D.慢性患者", "E.恢复期患者"], answer: "B", explain: "患者和隐性感染者是主要传染源。" },
+// 第1435题  第35题
+{ Q: "肺结核全程督导治疗最重要的目的是", options: ["A.减少药物用量", "B.及时发现药物的不良反应", "C.减少对家人的传染性", "D.提高规则治疗及完成全程用药率", "E.及时调整治疗方案"], answer: "D", explain: "DOTS提高治疗依从性和治愈率。" },
+// 第1436题  第36题
+{ Q: "呼吸性酸中毒首要的治疗措施是", options: ["A.解除肺不张", "B.控制肺部感染", "C.改善通气功能", "D.静脉注射碱性药物", "E.提高吸入氧浓度"], answer: "C", explain: "改善通气是治疗呼吸性酸中毒的根本措施。" },
+// 第1437题  第37题
+{ Q: "革兰阴性杆菌感染的临床特点不包括", options: ["A.寒战、间歇发热", "B.四肢厥冷", "C.低体温、低血压", "D.低白细胞", "E.体内形成转移性脓肿"], answer: "E", explain: "转移性脓肿多见于革兰阳性球菌感染。" },
+// 第1438题  第38题
+{ Q: "全身炎症反应综合征的主要临床表现不包括", options: ["A.体温>38℃或<36℃", "B.心率>90次/分", "C.呼吸急促", "D.血白细胞计数>12×10⁹/L或<4×10⁹/L", "E.血压下降明显"], answer: "E", explain: "血压下降不是SIRS诊断标准。" },
+// 第1439题  第39题
+{ Q: "酸性溶液阴道冲洗不宜用于", options: ["A.滴虫阴道炎", "B.外阴阴道假丝酵母菌病", "C.萎缩性阴道炎", "D.慢性盆腔炎", "E.细菌性阴道病"], answer: "B", explain: "假丝酵母菌病用碱性液冲洗。" },
+// 第1440题  第40题
+{ Q: "女，30岁。局麻下行乳房肿块切除，注射局麻药后不久患者出现面色苍白、心悸气短、多语和烦躁不安等表现。首先应考虑其出现了", options: ["A.低血糖", "B.疼痛阈值低", "C.精神过度紧张", "D.局麻药毒性反应", "E.原有疾病病情变化"], answer: "D", explain: "局麻药中毒早期表现为兴奋、多语、心悸。" },
+// 第1441题  第41题
+{ Q: "Graves病时甲状腺的特征性表现是", options: ["A.对称性肿大", "B.有多发的结节", "C.能随吞咽上下活动", "D.甲状腺有血管杂音", "E.有触痛"], answer: "D", explain: "血管杂音是甲亢特征性表现。" },
+// 第1442题  第42题
+{ Q: "洋地黄的药理作用不包括", options: ["A.增强心肌收缩力", "B.减慢心率", "C.增加心肌供血，扩张冠状动脉", "D.减慢房室传导", "E.加重房室传导阻滞"], answer: "C", explain: "洋地黄不扩张冠状动脉。" },
+// 第1443题  第43题
+{ Q: "晚期产后出血最常见于产后", options: ["A.24小时", "B.1-2周", "C.2-3周", "D.3-4周", "E.5-6周"], answer: "B", explain: "晚期产后出血多见于产后1-2周。" },
+// 第1444题  第44题
+{ Q: "判断脑震荡的重要依据是", options: ["A.颅内压增高", "B.颅底骨折", "C.生命体征改变", "D.各种生理反射消失", "E.短暂昏迷和逆行性遗忘"], answer: "E", explain: "短暂昏迷和逆行性遗忘是脑震荡特点。" },
+// 第1445题  第45题
+{ Q: "关于水痘的叙述，不正确的是", options: ["A.以夏、秋季多见", "B.患者是唯一的传染源", "C.疱疹是其主要病变", "D.由水痘-带状疱疹病毒所致", "E.可通过呼吸道传播和接触传播"], answer: "A", explain: "水痘冬春季多见。" },
+// 第1446题  第46题
+{ Q: "高渗性脱水的治疗原则是", options: ["A.尽早静脉滴注生理盐水", "B.尽早使用高渗盐水", "C.能饮水的患者尽量饮水，不能饮水的患者静脉滴注生理盐水", "D.能饮水的患者尽量饮水，不能饮水的患者静脉滴注5%葡萄糖溶液", "E.给予脱水利尿治疗"], answer: "D", explain: "高渗性脱水补5%葡萄糖溶液。" },
+// 第1447题  第47题
+{ Q: "法洛四联症患儿突然出现呼吸急促，甚至晕厥等缺氧发作的表现，主要原因是", options: ["A.肺动脉漏斗部痉挛", "B.主动脉骑跨", "C.室间隔缺损", "D.右心室肥厚", "E.脑栓塞"], answer: "A", explain: "缺氧发作因肺动脉漏斗部痉挛，肺血流减少。" },
+// 第1448题  第48题
+{ Q: "急性胆囊炎的临床表现一般不包括", options: ["A.右上腹压痛", "B.右上腹腹肌紧张", "C.墨菲征阳性", "D.麦氏点压痛", "E.畏寒、发热"], answer: "D", explain: "麦氏点压痛是阑尾炎体征。" },
+// 第1449题  第49题
+{ Q: "抑制性意识障碍的程度不包括", options: ["A.谵妄", "B.嗜睡", "C.昏睡", "D.浅昏迷", "E.深昏迷"], answer: "A", explain: "谵妄是兴奋性意识障碍。" },
+// 第1450题  第50题
+{ Q: "排便时及排便后有两次肛门部疼痛的直肠肛管疾病是", options: ["A.肛裂", "B.肛瘘", "C.内痔", "D.血栓性外痔", "E.骨盆直肠间隙脓肿"], answer: "A", explain: "肛裂有排便痛和便后疼痛。" },
+// 第1451题  第51题
+{ Q: "确诊结核性脑膜炎最可靠的依据是", options: ["A.脑脊液中糖和氯化物升高", "B.结核接触史 + 脑膜刺激征阳性", "C.结核菌素试验阳性 + 脑膜刺激征阳性", "D.脑脊液中查到结核分枝杆菌", "E.脑脊液IgG、IgA增高"], answer: "D", explain: "找到结核菌是确诊依据。" },
+// 第1452题  第52题
+{ Q: "男，8个月。多汗，睡眠不安，夜惊，食欲减退，精神萎靡，方颅，前囟3cm×3cm，未出牙，肋骨串珠，此患儿的诊断是", options: ["A.维生素D缺乏性佝偻病初期", "B.维生素D缺乏性佝偻病激期", "C.维生素D缺乏性手足搐搦症", "D.维生素D缺乏性佝偻病恢复期", "E.维生素D缺乏性佝偻病后遗症期"], answer: "B", explain: "骨骼改变明显为激期。" },
+// 第1453题  第53题
+{ Q: "短暂性脑缺血发作的持续时间一般为", options: ["A.5分钟", "B.10分钟", "C.10-15分钟", "D.2小时", "E.24小时"], answer: "C", explain: "TIA持续数分钟至1小时，一般不超过2小时。" },
+// 第1454题  第54题
+{ Q: "引起骨折移位最根本而又持续存在的因素是", options: ["A.骨折的暴力", "B.骨折肢体近侧段或远侧段的重量", "C.检查和治疗的方法不当", "D.肌肉收缩牵拉力的作用", "E.搬动和运送时伤肢被牵拉或推动"], answer: "D", explain: "肌肉收缩是持续存在的移位因素。" },
+// 第1455题  第55题
+{ Q: "肺炎严重程度的判断标准是", options: ["A.咳嗽程度", "B.缺氧程度", "C.体温高低", "D.肺部体征", "E.年龄大小"], answer: "B", explain: "缺氧程度反映肺炎严重程度。" },
+// 第1456题  第56题
+{ Q: "典型心绞痛发作的患者，其疼痛部位是", options: ["A.心尖部且向上肢放射", "B.胸骨后且向左上肢前内侧放射", "C.剑突附近向左上肢前内侧放射", "D.心前区且向左肩部放射", "E.胸腹上段且向左肩背部放射"], answer: "B", explain: "心绞痛位于胸骨后，向左上肢前内侧放射。" },
+// 第1457题  第57题
+{ Q: "可解除迷走神经对心脏的抑制作用，促进房室传导，对心动过缓有较好疗效的药物是", options: ["A.肾上腺素", "B.阿托品", "C.胺碘酮", "D.去甲肾上腺素", "E.异丙肾上腺素"], answer: "B", explain: "阿托品解除迷走神经抑制，提高心率。" },
+// 第1458题  第58题
+{ Q: "慢性肺源性心脏病心力衰竭的临床表现不包括", options: ["A.少尿", "B.水肿", "C.颈静脉充盈", "D.肝大及压痛", "E.咳粉红色泡沫样痰"], answer: "E", explain: "粉红色泡沫痰为左心衰表现。" },
+// 第1459题  第59题
+{ Q: "急性肾损伤少尿期的临床表现不包括", options: ["A.低钾血症", "B.水中毒", "C.低钙血症、高磷血症", "D.代谢性酸中毒", "E.出血倾向"], answer: "A", explain: "少尿期出现高钾血症，不是低钾。" },
+// 第1460题  第60题
+{ Q: "多器官功能障碍综合征最常累及的器官是", options: ["A.肺", "B.肝脏", "C.心脏", "D.肾脏", "E.脑"], answer: "A", explain: "肺是MODS最常累及的器官。" },
+// 第1461题  第61题
+{ Q: "女，出生后4天出现黄疸。查体：一般情况好，母乳喂养，全身皮肤及黏膜中度黄染，心肺无异常。出现黄疸的原因是", options: ["A.新生儿红细胞寿命较长", "B.新生儿结合胆红素较多", "C.新生儿旁路胆红素来源多", "D.新生儿肠道正常菌群丰富", "E.新生儿肝脏产生结合胆红素的能力较强"], answer: "A", explain: "新生儿红细胞寿命短，破坏多，胆红素生成多。" },
+// 第1462题  第62题
+{ Q: "女，出生后4天出现黄疸。查体：一般情况好，母乳喂养，全身皮肤及黏膜中度黄染，心肺无异常。关于该患儿黄疸的特点，正确的是", options: ["A.出生后24小时内出现", "B.出生后2-3天最明显", "C.足月儿血清胆红素>12mg/dl", "D.患儿一般情况良好", "E.足月儿黄疸持续时间不超过1周"], answer: "D", explain: "生理性黄疸一般情况良好。" },
+// 第1463题  第63题
+{ Q: "女，58岁。腹痛伴呕吐2天，怀疑为急性胰腺炎。对病情判断最有价值的实验室检查是", options: ["A.血、尿淀粉酶测定", "B.白细胞计数", "C.胆红素测定", "D.胰岛素测定", "E.血红蛋白测定"], answer: "A", explain: "淀粉酶是诊断胰腺炎的重要指标。" },
+// 第1464题  第64题
+{ Q: "女，58岁。腹痛伴呕吐2天，怀疑为急性胰腺炎。该患者的治疗应禁用", options: ["A.钙剂", "B.吗啡", "C.胃肠减压", "D.生长抑素", "E.抗胆碱药"], answer: "B", explain: "吗啡可致Oddi括约肌痉挛，加重病情。" },
+// 第1465题  第65题
+{ Q: "女，58岁。腹痛伴呕吐2天，怀疑为急性胰腺炎。患者入院查体，血压80/50mmHg，脉搏120次/分。患者所发生的休克属于", options: ["A.感染性休克", "B.过敏性休克", "C.低血容量性休克", "D.心源性休克", "E.神经源性休克"], answer: "C", explain: "急性胰腺炎可因渗出导致低血容量性休克。" },
+// 第1466题  第66题
+{ Q: "女，55岁。身高160cm，体重80kg，诊断为2型糖尿病，“三多一少”症状不明显，空腹血糖9.8mmol/L。首选的口服降糖药物是", options: ["A.达美康", "B.甲苯磺丁脲", "C.美吡达", "D.二甲双胍", "E.格列本脲"], answer: "D", explain: "肥胖2型糖尿病首选二甲双胍。" },
+// 第1467题  第67题
+{ Q: "女，55岁。身高160cm，体重80kg，诊断为2型糖尿病，“三多一少”症状不明显，空腹血糖9.8mmol/L。现患者突然失明，最可能的原因是", options: ["A.白内障", "B.角膜病变", "C.急性视神经炎", "D.视网膜脱落", "E.青光眼"], answer: "D", explain: "糖尿病视网膜病变可致视网膜脱落。" },
+// 第1468题  第68题
+{ Q: "女，54岁。因右上腹痛伴发热3天入院，体温39℃。查体：右上腹压痛，肌紧张，墨菲征(+)，可触及肿大的胆囊。最可能的诊断是", options: ["A.急性胰腺炎", "B.急性胆管炎", "C.急性胃炎", "D.急性胆囊炎", "E.急性肝炎"], answer: "D", explain: "Murphy征阳性是急性胆囊炎特征。" },
+// 第1469题  第69题
+{ Q: "女，54岁。因右上腹痛伴发热3天入院，体温39℃。查体：右上腹压痛，肌紧张，墨菲征(+)，可触及肿大的胆囊。诊断为急性胆囊炎。墨菲征阳性是指按压墨菲点时，患者表现为", options: ["A.因疼痛而出现呼吸抑制的现象", "B.深呼吸时因疼痛而屏气的现象", "C.因疼痛而出现休克的现象", "D.深呼吸时疼痛致血压升高的现象", "E.因疼痛而出现战栗的现象"], answer: "B", explain: "Murphy征指深吸气时疼痛屏气。" },
+// 第1470题  第70题
+{ Q: "女，54岁。因右上腹痛伴发热3天入院，体温39℃。查体：右上腹压痛，肌紧张，墨菲征(+)，可触及肿大的胆囊。诊断为急性胆囊炎。急诊行胆囊切除、胆总管探查、T管引流术，术后观察患者排便情况的最主要目的是", options: ["A.判断患者脂肪消化和吸收的能力", "B.判断患者肠道功能恢复情况", "C.判断患者胆总管通畅情况", "D.判断患者术后饮食是否合适", "E.及时发现患者有无胃肠道出血"], answer: "C", explain: "大便颜色可判断胆道通畅情况。" },
+// 第1471题  第71题
+{ Q: "女，46岁。间歇性上腹痛2年，加重伴呕吐1天，呕吐大量腐败酸臭味宿食。查体：上腹部可见胃型，闻及振水音。患者最可能的诊断是", options: ["A.消化性溃疡出血", "B.消化性溃疡合并幽门梗阻", "C.肠梗阻", "D.胃癌", "E.消化性溃疡穿孔"], answer: "B", explain: "呕吐宿食、胃型、振水音为幽门梗阻。" },
+// 第1472题  第72题
+{ Q: "女，46岁。间歇性上腹痛2年，加重伴呕吐1天，呕吐大量腐败酸臭味宿食。查体：上腹部可见胃型，闻及振水音。诊断为消化性溃疡合并幽门梗阻。患者持续呕吐可造成", options: ["A.低氯、高钾性碱中毒", "B.低钾性酸中毒", "C.低氯、高钠性碱中毒", "D.低氯、低钾性碱中毒", "E.低氯、低钾性酸中毒"], answer: "D", explain: "呕吐胃酸丢失，致低氯低钾碱中毒。" },
+// 第1473题  第73题
+{ Q: "女，41岁。因接触性出血来院就诊，经检查确诊为宫颈癌，现癌组织累及阴道下1/3，宫旁浸润已达盆壁。该患者的分期为", options: ["A.I期", "B.II期", "C.IIA期", "D.IIIA期", "E.IIIB期"], answer: "E", explain: "癌累及阴道下1/3，宫旁浸润达盆壁，为IIIB期。" },
+// 第1474题  第74题
+{ Q: "女，41岁。因接触性出血来院就诊，经检查确诊为宫颈癌，现癌组织累及阴道下1/3，宫旁浸润已达盆壁。该患者的分期为IIIB期。关于宫颈癌的叙述，正确的是", options: ["A.好发于晚婚晚育者", "B.发病年龄高峰分布在40-45岁", "C.与细菌感染有关，与病毒感染无关", "D.目前发病占女性癌症的第1位", "E.配偶患阴茎癌时，发病率相对高"], answer: "E", explain: "宫颈癌与HPV感染有关，配偶有阴茎癌时发病率增高。" },
+// 第1475题  第75题
+{ Q: "女，25岁。停经12周，腹痛，阴道流血较经量多，子宫增大如妊娠3个月大小，诊断为难免流产。该患者行人工流产术后3天出现高热、腹痛、下腹部压痛，最可能发生了", options: ["A.宫颈粘连", "B.羊水栓塞", "C.人工流产综合征", "D.感染", "E.子宫穿孔"], answer: "D", explain: "术后高热、腹痛提示感染。" },
+// 第1476题  第76题
+{ Q: "女，25岁。停经12周，腹痛，阴道流血较经量多，子宫增大如妊娠3个月大小，诊断为难免流产。该患者准备下个周期月经后放置宫内节育器，最适宜的时间是", options: ["A.月经干净后10-14天", "B.月经第1天", "C.月经干净后3-7天", "D.月经干净后7-10天", "E.月经干净后1-3天"], answer: "C", explain: "放置IUD在月经干净后3-7天。" },
+// 第1477题  第77题
+{ Q: "女，24岁。双侧甲状腺肿大，清晨测得血压142/72mmHg，脉率105次/分。该患者的甲状腺功能应属于", options: ["A.功能低下", "B.功能正常", "C.轻度甲亢", "D.中度甲亢", "E.重度甲亢"], answer: "C", explain: "脉率>100次/分，血压正常，为轻度甲亢。" },
+// 第1478题  第78题
+{ Q: "女，24岁。双侧甲状腺肿大，清晨测得血压142/72mmHg，脉率105次/分。诊断为轻度甲亢。拟行手术治疗，患者术前应练习的体位是", options: ["A.侧俯卧位", "B.侧卧位", "C.头颈过伸位", "D.截石位", "E.仰卧位"], answer: "C", explain: "甲状腺手术需练习头颈过伸位。" },
+// 第1479题  第79题
+{ Q: "男，62岁。胃溃疡病史8年，因黑便3天入院治疗。入院规律治疗5周后，症状无好转，X线钡剂检查：胃壁僵直，失去蠕动。该患者最可能发生了", options: ["A.癌变", "B.出血", "C.肠梗阻", "D.幽门梗阻", "E.穿孔"], answer: "A", explain: "胃溃疡治疗无效，胃壁僵直，提示癌变。" },
+// 第1480题  第80题
+{ Q: "男，62岁。胃溃疡病史8年，因黑便3天入院治疗。入院规律治疗5周后，症状无好转，X线钡剂检查：胃壁僵直，失去蠕动。该患者最可能发生了癌变。为进一步明确病情，遵医嘱拟行胃镜检查，护士对其指导正确的是", options: ["A.术前禁食4小时", "B.检查当天应温热饮食", "C.胃镜插至咽喉部应快速呼吸", "D.术中取左侧卧位", "E.术前2小时用2%利多卡因喷雾"], answer: "D", explain: "胃镜取左侧卧位。" },
+// 第1481题  第81题
+{ Q: "男，57岁。进食食物哽噎感，胸骨后异物感和烧灼样痛3个月，经食管镜检查确诊为食管癌，拟入院手术治疗。食管癌最典型的临床表现是", options: ["A.呛咳", "B.胸骨后异物感", "C.胸骨后针刺样疼痛", "D.进食滞留感", "E.进行性吞咽困难"], answer: "E", explain: "进行性吞咽困难是食管癌典型症状。" },
+// 第1482题  第82题
+{ Q: "男，57岁。进食食物哽噎感，胸骨后异物感和烧灼样痛3个月，经食管镜检查确诊为食管癌，拟入院手术治疗。术后3天最重要的护理措施是", options: ["A.胃肠减压的护理", "B.切口护理", "C.严格控制饮食", "D.胸膜腔闭式引流的护理", "E.早期下床活动"], answer: "D", explain: "胸腔闭式引流是术后3天护理重点。" },
+// 第1483题  第83题
+{ Q: "男，57岁。进食食物哽噎感，胸骨后异物感和烧灼样痛3个月，经食管镜检查确诊为食管癌，拟入院手术治疗。术后最常见和最严重的并发症是", options: ["A.深静脉血栓形成", "B.肺不张", "C.吻合口瘘", "D.切口渗血", "E.反流性食管炎"], answer: "C", explain: "吻合口瘘是食管癌术后最严重的并发症。" },
+// 第1484题  第84题
+{ Q: "男，57岁。进食食物哽噎感，胸骨后异物感和烧灼样痛3个月，经食管镜检查确诊为食管癌，拟入院手术治疗。患者术后1个月又出现吞咽不畅，可能的原因是", options: ["A.喉头水肿", "B.肿瘤复发", "C.肠套叠", "D.吻合口狭窄", "E.吻合口溃疡"], answer: "D", explain: "术后1个月吞咽困难多为吻合口狭窄。" },
+// 第1485题  第85题
+{ Q: "男，35岁。胸部锐器伤后半小时出现呼吸困难，伴烦躁、出冷汗入急诊。查体：脉搏110次/分，血压80/50mmHg，口唇发绀，气管右移。左侧胸部的中部有一伤口，随呼吸有“嘶嘶”声，左胸叩诊鼓音，呼吸音消失。拟行清创术及胸膜腔闭式引流。护士检查胸膜腔闭式引流装置，错误的是", options: ["A.水封瓶内放入定量的无菌生理盐水", "B.长玻璃管插入液面下4cm", "C.水封瓶瓶口要密封好", "D.胸膜腔引流管与短玻璃管上端相接", "E.水封瓶低于胸膜腔出口60cm"], answer: "D", explain: "引流管应与长玻璃管相接。" },
+// 第1486题  第86题
+{ Q: "男，35岁。胸部锐器伤后半小时出现呼吸困难，伴烦躁、出冷汗入急诊。查体：脉搏110次/分，血压80/50mmHg，口唇发绀，气管右移。左侧胸部的中部有一伤口，随呼吸有“嘶嘶”声，左胸叩诊鼓音，呼吸音消失。拟行清创术及胸膜腔闭式引流。行胸膜腔闭式引流期间，水封瓶不慎被打破，护士首先应", options: ["A.嘱患者平卧", "B.重新更换水封瓶", "C.将胸膜腔导管反折捏紧", "D.立即用无菌纱布覆盖引流管", "E.拔除引流管"], answer: "C", explain: "水封瓶打破应立即反折引流管，防止气体进入。" },
+// 第1487题  第87题
+{ Q: "男，25岁。拟在局部麻醉下行背部皮下脓肿切开引流术。局部麻醉药中毒的临床表现不包括", options: ["A.精神症状", "B.血压升高", "C.呼吸困难", "D.黄视、绿视", "E.心律失常"], answer: "D", explain: "黄视绿视为洋地黄中毒表现。" },
+// 第1488题  第88题
+{ Q: "男，25岁。拟在局部麻醉下行背部皮下脓肿切开引流术。局部麻醉药中加入肾上腺素的浓度是", options: ["A.1:100", "B.1:500", "C.1:1000", "D.1:10000", "E.1:200000"], answer: "E", explain: "局麻药加肾上腺素浓度为1:200000。" },
+// 第1489题  第89题
+{ Q: "男，16岁。全身高度水肿3周。实验室检查：血白蛋白降低，血脂增高；尿蛋白(+++)，尿红细胞(+)。患者水肿最主要的原因是", options: ["A.血浆胶体渗透压降低", "B.继发醛固酮增多", "C.血管升压素增多", "D.全身毛细血管扩张", "E.肾小球滤过率下降"], answer: "A", explain: "低蛋白血症致胶体渗透压下降，引起水肿。" },
+// 第1490题  第90题
+{ Q: "男，16岁。全身高度水肿3周。实验室检查：血白蛋白降低，血脂增高；尿蛋白(+++)，尿红细胞(+)。诊断为肾病综合征。主要的治疗措施是", options: ["A.血液透析", "B.糖皮质激素", "C.降压药", "D.利尿药", "E.限制水、钠摄入"], answer: "B", explain: "肾病综合征首选糖皮质激素。" },
+// 第1491题  第91题
+{ Q: "男，16岁。全身高度水肿3周。实验室检查：血白蛋白降低，血脂增高；尿蛋白(+++)，尿红细胞(+)。诊断为肾病综合征。本病的饮食要求不包括", options: ["A.无氮质血症者正常量优质蛋白饮食", "B.明显水肿、高血压者限制水、钠摄入", "C.多食富含饱和脂肪酸的食物", "D.多食富含可溶性纤维的食物", "E.补充各种维生素和微量元素"], answer: "C", explain: "应低脂饮食，避免饱和脂肪酸。" },
+// 第1492题  第92题
+{ Q: "男，11个月。因发热、流涕2天来诊。查体：体温39.1℃，精神尚可，咽部充血，心、肺、腹未见异常。血常规：白细胞8.0×10⁹/L，分类：中性0.35，淋巴0.65。最可能的诊断是", options: ["A.急性支气管炎", "B.支气管肺炎", "C.急性感染性喉炎", "D.喘息性支气管炎", "E.急性上呼吸道感染"], answer: "E", explain: "上感表现为发热、流涕，白细胞正常或偏低。" },
+// 第1493题  第93题
+{ Q: "男，11个月。因发热、流涕2天来诊。查体：体温39.1℃，精神尚可，咽部充血，心、肺、腹未见异常。血常规：白细胞8.0×10⁹/L，分类：中性0.35，淋巴0.65。诊断为急性上呼吸道感染。常见的并发症不包括", options: ["A.喉炎", "B.中耳炎", "C.风湿热", "D.支气管炎", "E.咽后壁脓肿"], answer: "C", explain: "风湿热是链球菌感染后远期并发症。" },
+// 第1494题  第94题
+{ Q: "男，10岁。刺激性咳嗽、发热9天，伴胸痛，乏力。查体：体温38.3℃，双肺散在干啰音。胸部X线检查可见左肺下野淡斑片状阴影。最可能的诊断是", options: ["A.上呼吸道感染", "B.原发型肺结核", "C.金黄色葡萄球菌肺炎", "D.肺炎支原体肺炎", "E.支气管炎"], answer: "D", explain: "支原体肺炎表现为刺激性咳嗽，X线改变重而体征轻。" },
+// 第1495题  第95题
+{ Q: "男，10岁。刺激性咳嗽、发热9天，伴胸痛，乏力。查体：体温38.3℃，双肺散在干啰音。胸部X线检查可见左肺下野淡斑片状阴影。诊断为肺炎支原体肺炎。首选的药物是", options: ["A.青霉素", "B.头孢菌素类药物", "C.磺胺类药物", "D.大环内酯类药物", "E.阿昔洛韦"], answer: "D", explain: "支原体肺炎首选大环内酯类抗生素。" },
+// 第1496题  第96题
+{ Q: "男，10岁。刺激性咳嗽、发热9天，伴胸痛，乏力。查体：体温38.3℃，双肺散在干啰音。胸部X线检查可见左肺下野淡斑片状阴影。诊断为肺炎支原体肺炎。重症肺炎与轻症肺炎的主要不同是", options: ["A.呼吸困难较重", "B.咳嗽较频繁", "C.有肺部体征", "D.胸部X线检查可出现斑片状阴影", "E.是否伴有多器官功能障碍综合征"], answer: "E", explain: "重症肺炎有全身中毒症状及并发症。" },
+// 第1497题  第97题
+{ Q: "男，10岁。刺激性咳嗽、发热9天，伴胸痛，乏力。查体：体温38.3℃，双肺散在干啰音。胸部X线检查可见左肺下野淡斑片状阴影。诊断为肺炎支原体肺炎。若患儿发生心力衰竭，不妥的措施是", options: ["A.快速静脉补液", "B.静脉推注毛花苷丙", "C.静脉滴注利尿药", "D.立即给予镇静药", "E.立即给予吸氧"], answer: "A", explain: "心衰时应限制液体入量，快速补液加重心脏负担。" },
+// 第1498题  第98题
+{ Q: "某产妇，26岁。妊娠40周，剖宫产一女婴，体重3500g，术后子宫收缩好，阴道流血不多。护士按规定要求每天对产妇给予健康指导。产后第1天的生命体征变化正常的是", options: ["A.体温上升、脉搏略快、呼吸浅快、血压升高", "B.体温下降、脉搏略快、呼吸浅快、血压升高", "C.体温正常、脉搏略慢、呼吸深慢、血压下降", "D.体温下降、脉搏略慢、呼吸浅快、血压平稳", "E.体温正常、脉搏略慢、呼吸深慢、血压平稳"], answer: "E", explain: "产后24小时内体温正常或略高，脉搏略慢，呼吸深慢，血压平稳。" },
+// 第1499题  第99题
+{ Q: "某产妇，26岁。妊娠40周，剖宫产一女婴，体重3500g，术后子宫收缩好，阴道流血不多。护士按规定要求每天对产妇给予健康指导。关于产后2-3天生殖系统生理性调适的叙述，不正确的是", options: ["A.子宫每天下降1-2cm", "B.浆液恶露", "C.宫口仍能通过2指", "D.会阴轻度水肿可自行消退", "E.仅能分泌少量乳汁"], answer: "C", explain: "产后1周宫口关闭，不能通过2指。" },
+// 第1500题  第100题
+{ Q: "某产妇，26岁。妊娠40周，剖宫产一女婴，体重3500g，术后子宫收缩好，阴道流血不多。护士按规定要求每天对产妇给予健康指导。出院指导内容不妥的是", options: ["A.产后42天需要复查", "B.保证充足的睡眠", "C.哺乳期可不避孕", "D.安排适当的营养", "E.鼓励适当的活动"], answer: "C", explain: "哺乳期仍需避孕，以免意外怀孕。" },
+
+// ==================== 模拟 (第1501-1600题) ====================
+// 第1501题  第1题
+{ Q: "系统性红斑狼疮患者的护理措施不包括", options: ["A.避免日晒", "B.合理饮食", "C.避免过劳", "D.肥皂洗脸", "E.避免受凉"], answer: "D", explain: "SLE患者应用温水洗脸，避免刺激性物品。" },
+// 第1502题  第2题
+{ Q: "容量血管过度收缩时可出现", options: ["A.中心静脉压低，血压低", "B.中心静脉压低，血压正常", "C.中心静脉压正常，血压低", "D.中心静脉压高，血压低", "E.中心静脉压高，血压正常"], answer: "D", explain: "容量血管收缩，回心血量增加，CVP升高，但外周阻力增加，血压可能正常或升高。" },
+// 第1503题  第3题
+{ Q: "尿毒症患者护理措施错误的是", options: ["A.饮食清淡，易消化，优质低蛋白", "B.准确记录24小时出入液量", "C.给予心理支持，增强治疗信心", "D.皮肤瘙痒时用乙醇擦洗", "E.避免劳累，预防感染"], answer: "D", explain: "皮肤瘙痒应温水擦洗，乙醇刺激皮肤。" },
+// 第1504题  第4题
+{ Q: "来自胃肠道的卵巢转移性肿瘤，最多的是", options: ["A.肝癌", "B.胃癌", "C.胆囊癌", "D.胰头癌", "E.结肠癌"], answer: "B", explain: "卵巢库肯勃瘤多来自胃癌。" },
+// 第1505题  第5题
+{ Q: "必须立即处理的危急情况不包括", options: ["A.心脏骤停", "B.窒息", "C.大出血", "D.开放性气胸", "E.开放性骨折"], answer: "E", explain: "开放性骨折可稍延迟处理，先处理危及生命的伤情。" },
+// 第1506题  第6题
+{ Q: "为预防或减轻症状，易感儿接触水痘患儿后，给予水痘-带状疱疹免疫球蛋白的有效注射时间是", options: ["A.3天内", "B.5天内", "C.7天内", "D.10天内", "E.14天内"], answer: "A", explain: "接触后3天内注射免疫球蛋白有效。" },
+// 第1507题  第7题
+{ Q: "阴部受到外伤时，最易形成血肿的部位是", options: ["A.阴阜", "B.小阴唇", "C.大阴唇", "D.前庭大腺", "E.阴道前庭"], answer: "C", explain: "大阴唇皮下组织疏松，血管丰富，易形成血肿。" },
+// 第1508题  第8题
+{ Q: "女，65岁。因心前区疼痛30分钟，伴大汗淋漓、恶心，含服硝酸甘油后疼痛不缓解，即来院就诊。查体：血压90/60mmHg，心率100次/分。初步考虑为", options: ["A.心源性休克", "B.心绞痛", "C.急性心肌梗死", "D.急性肺水肿", "E.心律失常"], answer: "C", explain: "胸痛持续30分钟，硝酸甘油无效，考虑心梗。" },
+// 第1509题  第9题
+{ Q: "消化性溃疡患者宜少食多餐的意义是", options: ["A.中和胃酸", "B.减少胃液分泌", "C.防止饥饿不适感", "D.促进胃窦部扩张", "E.增加胃的饥饿性蠕动"], answer: "A", explain: "少食多餐可中和胃酸。" },
+// 第1510题  第10题
+{ Q: "耻骨联合前面隆起的脂肪垫被称为", options: ["A.阴蒂", "B.前庭球", "C.小阴唇", "D.大阴唇", "E.阴阜"], answer: "E", explain: "阴阜是耻骨联合前的脂肪垫。" },
+// 第1511题  第11题
+{ Q: "胎儿通过的骨盆各假想平面中点的连线称为", options: ["A.胎方位", "B.胎先露", "C.胎产式", "D.骨盆轴", "E.胎体轴"], answer: "D", explain: "骨盆轴是连接骨盆各平面中点的曲线。" },
+// 第1512题  第12题
+{ Q: "小儿营养不良的最初症状是", options: ["A.食欲减退", "B.消瘦", "C.体重不增或下降", "D.面部皮下脂肪减少", "E.疲乏、无力"], answer: "C", explain: "营养不良最早出现体重不增。" },
+// 第1513题  第13题
+{ Q: "脑梗死进行溶栓治疗的过程中，最常见的严重不良反应是", options: ["A.急性肾损伤", "B.肝损害", "C.心力衰竭", "D.广泛性出血", "E.脑水肿"], answer: "D", explain: "溶栓最严重的并发症是出血。" },
+// 第1514题  第14题
+{ Q: "男，37岁。因尿频、尿急、尿痛，发热入院，体温38.9℃，实验室检查：尿红细胞5-10个/HPF，白细胞满视野。护士健康教育内容不妥的是", options: ["A.避免劳累、感冒", "B.保持外阴清洁", "C.不穿紧身裤", "D.不宜多饮水", "E.少憋尿"], answer: "D", explain: "尿感应多饮水冲刷细菌。" },
+// 第1515题  第15题
+{ Q: "张力性气胸患者紧急行胸膜腔穿刺排气时，穿刺部位选择在", options: ["A.伤侧第2肋骨间锁骨中线处", "B.伤侧第2肋骨间腋中线处", "C.伤侧第2肋骨间腋后线处", "D.伤侧第3肋骨间锁骨中线处", "E.伤侧第3肋骨间腋后线处"], answer: "A", explain: "张力性气胸排气点在锁骨中线第2肋间。" },
+// 第1516题  第16题
+{ Q: "急性阑尾炎术后最常见的并发症是", options: ["A.出血", "B.切口感染", "C.粪瘘", "D.肺部感染", "E.粘连性肠梗阻"], answer: "B", explain: "切口感染是阑尾炎术后最常见并发症。" },
+// 第1517题  第17题
+{ Q: "男，50岁。突然出现意识丧失伴颈动脉搏动消失。心电图：完全不规则的大波浪状曲线，QRS波群与T波消失。为纠正酸中毒，除充分补液外，可给予的药物是", options: ["A.肾上腺素", "B.利多卡因", "C.钙剂", "D.阿托品", "E.碳酸氢钠"], answer: "E", explain: "室颤时应纠正酸中毒，给予碳酸氢钠。" },
+// 第1518题  第18题
+{ Q: "关于流行性脑脊髓膜炎皮疹的护理措施，错误的是", options: ["A.有大片瘀斑的皮肤应注意保护", "B.翻身时避免拖、拉、拽等动作", "C.瘀点迅速增多、大面积破溃时，应立即涂以抗生素软膏", "D.内衣应宽松柔软、勤换洗", "E.室内定时通风和空气消毒"], answer: "C", explain: "瘀斑破溃时应无菌处理，不可随意涂药。" },
+// 第1519题  第19题
+{ Q: "食管癌进展期主要的临床表现是", options: ["A.进行性吞咽困难", "B.进行性消瘦", "C.进食后呕吐", "D.进食后胸骨后疼痛", "E.进食后呛咳"], answer: "A", explain: "进行性吞咽困难是食管癌典型症状。" },
+// 第1520题  第20题
+{ Q: "在无保护性生活后服用紧急避孕药最迟时间不应晚于", options: ["A.24小时", "B.36小时", "C.48小时", "D.60小时", "E.72小时"], answer: "E", explain: "紧急避孕药应在72小时内服用。" },
+// 第1521题  第21题
+{ Q: "男，4个月。人工喂养，很少户外活动，平时易惊、多汗、睡眠少，近3天咳嗽、低热，今晨突然双眼上翻，面肌抽动，手足肌肉痉挛呈弓状。最紧急的护理措施是", options: ["A.遵医瞩肌内注射维生素D", "B.遵医瞩用镇静药、钙剂", "C.多晒太阳", "D.遵医瞩口服维生素D", "E.及时添加富含维生素D的食物"], answer: "B", explain: "惊厥发作时首先镇静补钙。" },
+// 第1522题  第22题
+{ Q: "子痫患者发生抽搐时应尽快控制，首选药物是", options: ["A.地西泮", "B.阿托品", "C.硫酸镁", "D.肼屈嗪", "E.冬眠合剂"], answer: "C", explain: "子痫首选硫酸镁控制抽搐。" },
+// 第1523题  第23题
+{ Q: "子宫内膜最适合受精卵着床的时期是", options: ["A.增殖期", "B.分泌期", "C.月经前期", "D.月经期", "E.月经后期"], answer: "B", explain: "分泌期子宫内膜营养丰富，适合着床。" },
+// 第1524题  第24题
+{ Q: "临产的重要标志是", options: ["A.见红", "B.规律宫缩", "C.胎膜破裂", "D.宫颈管逐渐消失", "E.阴道分泌物增多"], answer: "B", explain: "规律宫缩是临产标志。" },
+// 第1525题  第25题
+{ Q: "法洛四联症患儿出现缺氧发作时，与抢救无关的护理措施是", options: ["A.取膝胸卧位", "B.给予高浓度氧气吸入", "C.遵医嘱给予吗啡等药物", "D.给予抗生素预防感染", "E.密切观察情绪变化"], answer: "D", explain: "抗生素与缺氧发作抢救无关。" },
+// 第1526题  第26题
+{ Q: "对高钾血症引起的心律失常，须采取的紧急抢救措施是", options: ["A.50%葡萄糖注射液60ml，静脉注射", "B.0.9%氯化钠注射液20ml，静脉注射", "C.10%葡萄糖酸钙注射液20ml，稀释后静脉注射", "D.低分子右旋糖酐溶液500ml，静脉滴注", "E.碳酸氢钠溶液50-100ml，静脉滴注"], answer: "C", explain: "钙剂可拮抗高钾对心肌的抑制作用。" },
+// 第1527题  第27题
+{ Q: "第5腰椎棘突下至耻骨联合上缘中点的距离是", options: ["A.对角径", "B.髂棘间径", "C.髂间径", "D.骶耻外径", "E.出口横径"], answer: "D", explain: "骶耻外径是骨盆外测量重要径线。" },
+// 第1528题  第28题
+{ Q: "格列吡嗪的服药时间为", options: ["A.餐前半小时", "B.进餐时或餐后", "C.与第一口饭同时嚼服", "D.空腹", "E.餐后半小时"], answer: "A", explain: "格列吡嗪应餐前半小时服用。" },
+// 第1529题  第29题
+{ Q: "女，36岁。急性肾损伤少尿期第2天，尿量不足100ml。患者的饮食要求为", options: ["A.高脂饮食", "B.高蛋白饮食", "C.低蛋白饮食", "D.低碳水化合物饮食", "E.低脂饮食"], answer: "C", explain: "少尿期应限制蛋白质摄入。" },
+// 第1530题  第30题
+{ Q: "预防肠外营养感染性并发症的措施不包括", options: ["A.置管应严格无菌操作", "B.营养液在无菌环境中配制", "C.加强导管护理", "D.避免中心静脉导管的多用途性", "E.预防性应用抗生素"], answer: "E", explain: "预防性应用抗生素不能预防导管相关感染。" },
+// 第1531题  第31题
+{ Q: "可使阴道保持酸性环境的激素是", options: ["A.雌激素", "B.孕激素", "C.糖皮质激素", "D.垂体促性腺激素", "E.促性腺激素释放激素"], answer: "A", explain: "雌激素促进阴道上皮增生，维持酸性环境。" },
+// 第1532题  第32题
+{ Q: "女，42岁。反复尿频、尿急、尿痛8年，清洁中段尿培养菌落数>100000个/ml，经系统抗炎治疗效果不明显。最有价值的诊治措施是", options: ["A.久病体弱者应大力给予支持治疗，以提高抗病能力", "B.可能与休息不充分有关，应卧床休息", "C.中西医结合治疗以加强疗效", "D.寻找并去除导致发病的易感因素，尤其是解除尿路梗阻", "E.可能合并肾结核，应同时行试验性抗结核治疗"], answer: "D", explain: "反复尿路感染应查找并去除易感因素。" },
+// 第1533题  第33题
+{ Q: "对痰液黏稠而不易咳出的慢性支气管炎、肺气肿患者，保持呼吸道通畅的首选护理措施是", options: ["A.有效咳嗽、咳痰", "B.湿化和雾化", "C.胸部叩击", "D.体位引流", "E.机械吸痰"], answer: "B", explain: "湿化和雾化可稀释痰液，是首选措施。" },
+// 第1534题  第34题
+{ Q: "唐氏综合征的临床表现不包括", options: ["A.智能低下", "B.愚笨面容", "C.身体发育迟缓", "D.先天性心脏病", "E.尿液、汗液有鼠尿味"], answer: "E", explain: "鼠尿味是苯丙酮尿症的表现。" },
+// 第1535题  第35题
+{ Q: "诊断结核性脑膜炎的可靠依据是", options: ["A.脑脊液结核分枝杆菌培养", "B.腺苷脱氨酶活性测定", "C.抗结核抗体测定", "D.胸部X线检查", "E.结核菌素试验"], answer: "A", explain: "找到结核菌是确诊依据。" },
+// 第1536题  第36题
+{ Q: "35周早产儿，现出生后1个月。母乳喂养，首先应添加的辅食是", options: ["A.米汤", "B.菜汤", "C.鱼肝油", "D.水果汁", "E.蛋黄"], answer: "C", explain: "早产儿应首先补充维生素D。" },
+// 第1537题  第37题
+{ Q: "指导缺铁性贫血患者服用铁剂治疗时，错误的是", options: ["A.从小剂量开始", "B.在餐前服药", "C.避免与牛奶同服", "D.告知患者服药后有黑便", "E.血红蛋白恢复正常后仍需要用药"], answer: "B", explain: "铁剂应餐后服用，减少胃肠道刺激。" },
+// 第1538题  第38题
+{ Q: "甲状腺功能亢进症出现浸润性突眼的患者，夜间休息应取", options: ["A.平卧位", "B.高枕卧位", "C.侧卧位", "D.俯卧位", "E.端坐位"], answer: "B", explain: "高枕卧位可减轻眼部肿胀。" },
+// 第1539题  第39题
+{ Q: "食管癌术后，胸膜腔闭式引流液量多，由清亮转浑浊，最有可能发生", options: ["A.吻合口活动性出血", "B.乳糜胸", "C.食管吻合口瘘", "D.肺不张", "E.支气管胸膜瘘"], answer: "B", explain: "乳糜胸表现为引流液由清亮转浑浊。" },
+// 第1540题  第40题
+{ Q: "腹部空腔脏器破裂的主要临床表现是", options: ["A.腹腔内出血", "B.腹膜炎", "C.肠鸣音亢进", "D.血、尿淀粉酶升高", "E.腹腔穿刺抽出不凝血"], answer: "B", explain: "空腔脏器破裂致弥漫性腹膜炎。" },
+// 第1541题  第41题
+{ Q: "石膏绷带在干固前的护理应注意", options: ["A.给予抗生素，预防感染", "B.搬运时固定肢体，切忌抓捏", "C.石膏绷带的松紧适度", "D.尿路感染和结石", "E.皮肤过敏、水疱、糜烂"], answer: "B", explain: "石膏未干固时应用手掌平托。" },
+// 第1542题  第42题
+{ Q: "关于腹膜炎术后取半坐卧位的目的，不包括", options: ["A.减轻切口张力", "B.有利于脓肿局限于盆腔", "C.防止膈下感染", "D.利于肠蠕动恢复", "E.减轻疼痛"], answer: "D", explain: "半坐卧位不能促进肠蠕动。" },
+// 第1543题  第43题
+{ Q: "脱水患者补液原则中错误的是", options: ["A.先糖后盐", "B.先盐后糖", "C.先晶后胶", "D.见尿补钾", "E.先快后慢"], answer: "A", explain: "应先盐后糖，补充血容量。" },
+// 第1544题  第44题
+{ Q: "女，35岁。咳嗽、痰中带血，伴低热、盗汗2周。实验室检查：痰抗酸杆菌(+)。胸部X线检查：右肺斑片状阴影，融合形成空洞。对患者的健康教育，最重要的是", options: ["A.坚持正规抗结核治疗", "B.接种卡介苗", "C.给予高热量、高蛋白、高维生素、易消化饮食", "D.合理休息", "E.增加体育锻炼"], answer: "A", explain: "肺结核治疗关键是规律、全程用药。" },
+// 第1545题  第45题
+{ Q: "为婴儿接种麻疹疫苗，措施错误的是", options: ["A.认真核对小儿的姓名和年龄", "B.检查生物制品的批号、有效期", "C.选择上臂外侧皮下注射", "D.用2%碘酊消毒注射部位", "E.做好记录和预约工作"], answer: "D", explain: "麻疹疫苗为活疫苗，不能用碘酊消毒。" },
+// 第1546题  第46题
+{ Q: "急性上呼吸道感染患儿需要保持室内湿度", options: ["A.20%-30%", "B.30%-40%", "C.40%-50%", "D.50%-60%", "E.60%-70%"], answer: "E", explain: "上感患儿室内湿度应保持60%-70%。" },
+// 第1547题  第47题
+{ Q: "暴露疗法要求室温", options: ["A.16-20℃", "B.20-24℃", "C.24-28℃", "D.28-32℃", "E.32-36℃"], answer: "D", explain: "暴露疗法室温28-32℃。" },
+// 第1548题  第48题
+{ Q: "绝经综合征的护理措施，正确的是", options: ["A.常规采用激素替代疗法以减轻绝经过渡期症状", "B.激素替代疗法可以有效预防骨质疏松和血栓性疾病", "C.建议绝经过渡期妇女采用高蛋白、高热量饮食", "D.建议绝经过渡期妇女增加休息，减少活动量", "E.绝经过渡期妇女可以通过良好的自我调节达到平衡"], answer: "E", explain: "多数妇女可通过自我调节适应。" },
+// 第1549题  第49题
+{ Q: "慢性阻塞性肺疾病患者长期家庭氧疗的指征中不包括", options: ["A.PaO₂52mmHg，PaCO₂54mmHg", "B.PaO₂52mmHg，PaCO₂40mmHg", "C.SO₂90%，PaCO₂40mmHg", "D.PaO₂58mmHg，有肺动脉高压", "E.PaO₂58mmHg，有心力衰竭、水肿"], answer: "C", explain: "SO₂90%不是氧疗指征。" },
+// 第1550题  第50题
+{ Q: "前囟的正确测量方法是", options: ["A.对角连线", "B.对边中点连线", "C.邻边中点连线", "D.邻角连线", "E.测周径长度"], answer: "B", explain: "前囟测量对边中点连线。" },
+// 第1551题  第51题
+{ Q: "某孕妇，30岁。停经2个月，阴道少量流血5天，下腹隐痛。妇科检查：阴道少量暗红血液，宫口关闭，子宫如妊娠2个月大小，双侧附件（-）。尿妊娠试验(+)。最大可能是", options: ["A.先兆流产", "B.难免流产", "C.不全流产", "D.稽留流产", "E.异位妊娠"], answer: "A", explain: "宫口未开，符合先兆流产。" },
+// 第1552题  第52题
+{ Q: "重型肝炎患者的饮食指导不包括", options: ["A.低脂饮食", "B.低盐饮食", "C.高碳水化合物饮食", "D.高蛋白饮食", "E.高维生素饮食"], answer: "D", explain: "重型肝炎应限制蛋白质摄入。" },
+// 第1553题  第53题
+{ Q: "关于小儿肾脏的解剖特点，正确的是", options: ["A.年龄越小，肾相对越小", "B.婴儿期肾位置较高", "C.2岁以后肾达髂嵴以上", "D.3岁以后腹部触诊时容易触及肾", "E.4岁以后肾脏表面呈分叶状"], answer: "D", explain: "3岁后肾位置下降，易触及。" },
+// 第1554题  第54题
+{ Q: "急性腹膜炎的腹痛特点是", options: ["A.阵发性疼痛", "B.间歇性疼痛", "C.持续性疼痛", "D.转移性疼痛", "E.疼痛不明显"], answer: "C", explain: "急性腹膜炎为持续性剧烈疼痛。" },
+// 第1555题  第55题
+{ Q: "典型心绞痛发作的疼痛部位是", options: ["A.心前区", "B.心尖区", "C.胸骨后", "D.剑突下", "E.胸骨左前方"], answer: "C", explain: "心绞痛位于胸骨后。" },
+// 第1556题  第56题
+{ Q: "颅底骨折患者禁忌腰穿是为防止", options: ["A.颅内出血", "B.颅内压降低", "C.脑疝", "D.颅内感染", "E.头痛"], answer: "D", explain: "腰穿可使感染扩散到颅内。" },
+// 第1557题  第57题
+{ Q: "易发生产后出血的时间是产后", options: ["A.半小时内", "B.1小时内", "C.2小时内", "D.3小时内", "E.4小时内"], answer: "C", explain: "产后2小时内是产后出血高发期。" },
+// 第1558题  第58题
+{ Q: "急性阑尾炎的腹痛特点是", options: ["A.阵发性疼痛", "B.间歇性疼痛", "C.持续性疼痛", "D.转移性疼痛", "E.疼痛不明显"], answer: "D", explain: "急性阑尾炎典型腹痛为转移性右下腹痛。" },
+// 第1559题  第59题
+{ Q: "男，48岁。明显血尿，双下肢水肿3个月。查体：血压150/90mmHg。实验室检查：尿蛋白(++)，尿沉渣镜检红细胞4-8个/HPF，血肌酐增高。护理措施中，不正确的是", options: ["A.加强休息", "B.监测血压变化", "C.疾病知识指导", "D.优质低蛋白饮食", "E.多饮水，保持尿量>2500ml/d"], answer: "E", explain: "肾衰竭应限制液体入量，避免加重水肿。" },
+// 第1560题  第60题
+{ Q: "化脓性脑膜炎最常见的并发症是", options: ["A.脑积水", "B.颅内出血", "C.脑室管膜炎", "D.硬膜下积液", "E.癫痫"], answer: "D", explain: "硬膜下积液是化脓性脑膜炎最常见并发症。" },
+// 第1561题  第61题
+{ Q: "足月女婴，出生后第3天皮肤出现轻度黄染，一般情况良好，吸奶好，血清胆红素170μmol/L(10mg/dl)。最可能的诊断是", options: ["A.新生儿缺氧缺血性脑病", "B.新生儿颅内出血", "C.新生儿败血症", "D.生理性黄疸", "E.病理性黄疸"], answer: "D", explain: "足月儿生理性黄疸特点。" },
+// 第1562题  第62题
+{ Q: "足月女婴，出生后第3天皮肤出现轻度黄染，一般情况良好，吸奶好，血清胆红素170μmol/L(10mg/dl)。诊断为生理性黄疸。黄疸自然消退的时间是出生后", options: ["A.2天", "B.3-4天", "C.5-7天", "D.10-14天", "E.15-18天"], answer: "D", explain: "生理性黄疸足月儿10-14天消退。" },
+// 第1563题  第63题
+{ Q: "女，6个月。生长发育迟缓，多汗，哭闹时可出现一过性青紫，5天前出现发热、咳嗽、呼吸急促，心率增快。查体：胸骨左缘3、4肋间可闻及粗糙的收缩期杂音，双肺有细湿啰音，肝肋下4cm。最可能的诊断是", options: ["A.室间隔缺损合并呼吸衰竭", "B.室间隔缺损合并心力衰竭", "C.动脉导管未闭合并心力衰竭", "D.肺动脉狭窄合并心力衰竭", "E.房间隔缺损合并呼吸衰竭"], answer: "B", explain: "先心病史，出现心衰表现。" },
+// 第1564题  第64题
+{ Q: "女，6个月。生长发育迟缓，多汗，哭闹时可出现一过性青紫，5天前出现发热、咳嗽、呼吸急促，心率增快。查体：胸骨左缘3、4肋间可闻及粗糙的收缩期杂音，双肺有细湿啰音，肝肋下4cm。诊断为室间隔缺损合并心力衰竭。护理措施正确的是", options: ["A.低盐饮食，钠盐每天不超过2g", "B.输液速度每小时不超过10ml/kg", "C.保持患儿安静，烦躁哭闹时可遵医嘱给予镇静药", "D.控制水分摄入量，每天70ml/kg", "E.服用地高辛前测脉搏，脉搏<70次/分需要暂停用药并报告医生"], answer: "C", explain: "心衰患儿应保持安静，必要时镇静。" },
+// 第1565题  第65题
+{ Q: "女，6个月。生长发育迟缓，多汗，哭闹时可出现一过性青紫，5天前出现发热、咳嗽、呼吸急促，心率增快。查体：胸骨左缘3、4肋间可闻及粗糙的收缩期杂音，双肺有细湿啰音，肝肋下4cm。诊断为室间隔缺损合并心力衰竭。给予患儿面罩吸氧，氧流量2L/min，其氧浓度为", options: ["A.31%", "B.27%", "C.28%", "D.29%", "E.30%"], answer: "C", explain: "氧浓度=21+4×氧流量(L/min)=21+4×2=29%。" },
+// 第1566题  第66题
+{ Q: "女，65岁。结核病病史10年，未接受正规治疗。对社会人群危害最大，后果严重的肺结核类型是", options: ["A.原发型肺结核", "B.急性粟粒型肺结核", "C.亚急性及慢性血行播散型肺结核", "D.浸润性肺结核", "E.慢性纤维空洞性肺结核"], answer: "E", explain: "慢性纤维空洞性肺结核排菌量大，传染性强。" },
+// 第1567题  第67题
+{ Q: "女，65岁。结核病病史10年，未接受正规治疗。痰培养阳性的肺结核患者隔离方式是", options: ["A.消化道隔离", "B.呼吸道隔离", "C.血液隔离", "D.避免性生活", "E.体液隔离"], answer: "B", explain: "肺结核行呼吸道隔离。" },
+// 第1568题  第68题
+{ Q: "女，65岁。结核病病史10年，未接受正规治疗。预防结核病的措施不包括", options: ["A.建立结核病防治网", "B.定期胸部X线检查", "C.指导患者对痰及用物进行消毒处理", "D.易感人群接种卡介苗", "E.加强卫生宣教，介绍结核病相关知识"], answer: "B", explain: "定期胸透不是预防措施，是早期发现。" },
+// 第1569题  第69题
+{ Q: "女，50岁。跌倒时手掌着地致肱骨髁上骨折。查体：局部皮肤颜色青紫，外观完整。该骨折属于", options: ["A.闭合性骨折", "B.开放性骨折", "C.裂缝骨折", "D.压缩骨折", "E.骨骺分离"], answer: "A", explain: "皮肤完整为闭合性骨折。" },
+// 第1570题  第70题
+{ Q: "女，50岁。跌倒时手掌着地致肱骨髁上骨折。查体：局部皮肤颜色青紫，外观完整。诊断为闭合性骨折。骨折患者现场急救程序正确的是", options: ["A.妥善固定、包扎伤口、初步检查、平稳运送", "B.包扎伤口、妥善固定、初步检查、平稳运送", "C.平稳运送、包扎伤口、妥善固定、初步检查", "D.初步检查、包扎伤口、妥善固定、平稳运送", "E.妥善固定、初步检查、包扎伤口、平稳运送"], answer: "D", explain: "急救程序：初步检查→包扎→固定→运送。" },
+// 第1571题  第71题
+{ Q: "女，50岁。跌倒时手掌着地致肱骨髁上骨折。查体：局部皮肤颜色青紫，外观完整。诊断为闭合性骨折。术前患肢观察的重点内容不包括", options: ["A.手动动情况", "B.前臂肿胀程度", "C.肩关节活动情况", "D.手的感觉有无异常", "E.腕部有无桡动脉搏动"], answer: "C", explain: "肩关节活动与肱骨髁上骨折无关。" },
+// 第1572题  第72题
+{ Q: "女，44岁。怕热、多汗5年余，心率110次/分，体型消瘦。体检发现FT₃及FT₄增高。昨天突然体温达40℃，心率150次/分，恶心、呕吐、腹泻，大汗持续而昏睡，确诊为甲状腺功能亢进症伴甲状腺危象。判断甲状腺功能亢进症病情和治疗效果的重要指标是", options: ["A.情绪变化", "B.食欲变化", "C.体重变化", "D.心率变化", "E.脉率和脉压变化"], answer: "E", explain: "脉率和脉压是甲亢病情和治疗效果的重要指标。" },
+// 第1573题  第73题
+{ Q: "女，44岁。怕热、多汗5年余，心率110次/分，体型消瘦。体检发现FT₃及FT₄增高。昨天突然体温达40℃，心率150次/分，恶心、呕吐、腹泻，大汗持续而昏睡，确诊为甲状腺功能亢进症伴甲状腺危象。对甲状腺功能亢进症患者护理错误的是", options: ["A.给予高热量、高蛋白、高维生素饮食", "B.药物治疗期间应定期查血常规", "C.加强眼部护理", "D.手术前应做充分准备", "E.复方碘化钠溶液是抗甲状腺药物"], answer: "E", explain: "碘剂抑制甲状腺激素释放，不是抗甲状腺药物。" },
+// 第1574题  第74题
+{ Q: "女，44岁。怕热、多汗5年余，心率110次/分，体型消瘦。体检发现FT₃及FT₄增高。昨天突然体温达40℃，心率150次/分，恶心、呕吐、腹泻，大汗持续而昏睡，确诊为甲状腺功能亢进症伴甲状腺危象。该患者治疗首选", options: ["A.甲硫咪唑", "B.丙硫氧嘧啶", "C.卡比马唑", "D.普萘洛尔", "E.放射碘"], answer: "B", explain: "甲状腺危象首选丙硫氧嘧啶。" },
+// 第1575题  第75题
+{ Q: "女，40岁。性交后有接触性出血，检查有宫颈糜烂。要排除宫颈癌，应首选较简便的诊断性检查是", options: ["A.宫颈活组织检查", "B.宫腔镜检查", "C.诊断性刮宫", "D.宫颈锥切术", "E.后穹隆穿刺术"], answer: "A", explain: "宫颈活检是确诊宫颈癌的方法。" },
+// 第1576题  第76题
+{ Q: "女，40岁。性交后有接触性出血，检查有宫颈糜烂。要排除宫颈癌，应首选宫颈活检。处理措施错误的是", options: ["A.行阴道镜检查前先治疗炎症", "B.妊娠期慎做阴道镜检查，以免诱发流产、早产", "C.阴道镜检查时间一般在月经干净后3-7天", "D.月经前1周可做阴道镜检查", "E.所取标本应标记送检"], answer: "D", explain: "阴道镜检查应在月经干净后3-7天进行，月经前不宜。" },
+// 第1577题  第77题
+{ Q: "女，36岁。拟行诊断性刮宫。诊断性刮宫的适应证不包括", options: ["A.不孕症", "B.阴道排液", "C.子宫性闭经", "D.急性子宫颈炎", "E.异常子宫出血"], answer: "D", explain: "急性宫颈炎是诊刮禁忌证。" },
+// 第1578题  第78题
+{ Q: "女，36岁。拟行诊断性刮宫。为了解卵巢功能，刮取子宫内膜应在", options: ["A.月经前5天", "B.月经干净后5天", "C.两次月经中间", "D.月经周期第23天", "E.月经来潮12小时内"], answer: "E", explain: "了解卵巢功能应在月经来潮12小时内刮宫。" },
+// 第1579题  第79题
+{ Q: "女，36岁。拟行诊断性刮宫。关于诊断性刮宫的护理，正确的是", options: ["A.刮宫术前5天禁止性生活", "B.异常子宫出血患者应在月经干净后刮宫", "C.怀疑宫颈病变时，将子宫内膜和宫颈组织一并刮取送检", "D.刮宫术后2周到门诊复查", "E.刮宫术后1个月内禁止性生活"], answer: "E", explain: "诊刮术后1个月内禁止性生活。" },
+// 第1580题  第80题
+{ Q: "女，26岁。反复上腹部疼痛2年，好发于夜间，在外院诊断为“十二指肠溃疡”，正规药物治疗疗效欠佳，症状逐渐加重。1周前无明显诱因上腹部胀痛不适，进食后加重，3天前呕吐，呕吐物为宿食。对患者处理错误的是", options: ["A.禁饮、禁食，胃肠减压", "B.静脉补液，纠正水、电解质紊乱", "C.温盐水洗胃", "D.经非手术治疗无改善则应考虑手术", "E.立刻行胃大部切除术"], answer: "E", explain: "应先保守治疗，无效再考虑手术。" },
+// 第1581题  第81题
+{ Q: "女，26岁。反复上腹部疼痛2年，好发于夜间，在外院诊断为“十二指肠溃疡”，正规药物治疗疗效欠佳，症状逐渐加重。1周前无明显诱因上腹部胀痛不适，进食后加重，3天前呕吐，呕吐物为宿食。诊断为幽门梗阻。患者行毕Ⅱ式胃大部切除术，术后最严重的早期并发症是", options: ["A.胃出血", "B.十二指肠残端破裂", "C.输入袢梗阻", "D.吻合口梗阻", "E.倾倒综合征"], answer: "B", explain: "十二指肠残端破裂是最严重的早期并发症。" },
+// 第1582题  第82题
+{ Q: "女，26岁。反复上腹部疼痛2年，好发于夜间，在外院诊断为“十二指肠溃疡”，正规药物治疗疗效欠佳，症状逐渐加重。1周前无明显诱因上腹部胀痛不适，进食后加重，3天前呕吐，呕吐物为宿食。诊断为幽门梗阻。该患者行毕Ⅱ式胃大部切除术，术后进流质饮食3天，改为吃面条后，出现呕吐。最可能的原因是", options: ["A.胃肠吻合口梗阻", "B.肠梗阻", "C.胃排空障碍", "D.贲门梗阻", "E.水、电解质紊乱"], answer: "A", explain: "进食后呕吐，考虑吻合口梗阻。" },
+// 第1583题  第83题
+{ Q: "女，23岁。转移性右下腹痛1天，高热，体温39℃。诊断为急性化脓性阑尾炎。关于手术患者术前呼吸道的准备，不正确的是", options: ["A.术前2周戒烟", "B.指导患者行深呼吸训练", "C.指导患者行有效咳嗽训练", "D.腹部手术者行胸式呼吸训练", "E.术前3天常规预防性应用抗生素"], answer: "E", explain: "术前不常规预防性应用抗生素。" },
+// 第1584题  第84题
+{ Q: "女，23岁。转移性右下腹痛1天，高热，体温39℃。诊断为急性化脓性阑尾炎。手术人员穿好无菌手术衣，戴好无菌手套后，双手应放在", options: ["A.高举过头", "B.交叉腋下", "C.胸前", "D.腰部", "E.身体两侧"], answer: "C", explain: "无菌手应保持在胸前。" },
+// 第1585题  第85题
+{ Q: "女，23岁。转移性右下腹痛1天，高热，体温39℃。诊断为急性化脓性阑尾炎。术后切口裂开的处理方法不包括", options: ["A.安慰患者", "B.立即将内脏还纳", "C.无菌生理盐水纱布覆盖", "D.用腹带包扎", "E.送手术室缝合"], answer: "B", explain: "内脏脱出不可还纳，应覆盖后送手术室。" },
+// 第1586题  第86题
+{ Q: "女，18岁。停经46天。自行药物流产，服用米索前列醇1天后，突然出现下腹部剧烈疼痛，少量阴道流血，伴恶心、呕吐。查体：下腹部压痛、反跳痛，后穹隆饱满，宫颈举痛，宫体略大，质软。最可能的诊断是", options: ["A.输卵管妊娠破裂", "B.继发性腹腔妊娠", "C.宫角妊娠", "D.难免流产", "E.不全流产"], answer: "A", explain: "药物流产后出现腹腔内出血表现，考虑异位妊娠破裂。" },
+// 第1587题  第87题
+{ Q: "女，18岁。停经46天。自行药物流产，服用米索前列醇1天后，突然出现下腹部剧烈疼痛，少量阴道流血，伴恶心、呕吐。查体：下腹部压痛、反跳痛，后穹隆饱满，宫颈举痛，宫体略大，质软。诊断为输卵管妊娠破裂。应采取的护理措施不包括", options: ["A.严密监测患者生命体征", "B.立即建立静脉通道", "C.做好子宫切除术的准备", "D.行交叉配血试验，做好输血准备", "E.做好术前准备"], answer: "C", explain: "输卵管妊娠可行保留生育功能手术，不一定切除子宫。" },
+// 第1588题  第88题
+{ Q: "男，45岁。足部被铁钉扎伤后4天，出现张口受限、苦笑面容、肌肉强直、频繁抽搐。患者目前最主要的护理问题是", options: ["A.有体液不足的危险", "B.有窒息的危险", "C.尿潴留", "D.营养失调：低于机体需要量", "E.有受伤的危险"], answer: "B", explain: "破伤风可因喉痉挛导致窒息，为首优问题。" },
+// 第1589题  第89题
+{ Q: "男，45岁。足部被铁钉扎伤后4天，出现张口受限、苦笑面容、肌肉强直、频繁抽搐。诊断为破伤风。针对最主要的护理问题，应采取的处理措施不包括", options: ["A.详细记录痉挛发作的症状、次数和间隔时间", "B.必要时给予气管切开", "C.痉挛发作控制时，及时翻身、叩背，以利于排痰", "D.注意痉挛发作的前兆，以便及时调整药量", "E.频繁痉挛发作时，应经胃管进食"], answer: "E", explain: "频繁抽搐时不宜经胃管进食，以免误吸。" },
+// 第1590题  第90题
+{ Q: "男，45岁。足部被铁钉扎伤后4天，出现张口受限、苦笑面容、肌肉强直、频繁抽搐。诊断为破伤风。破伤风发作时控制并解除肌痉挛的措施不包括", options: ["A.新生儿破伤风时酌情使用盐酸洛贝林、尼可刹米", "B.痉挛发作频繁且不易控制者，可用2.5%硫喷妥钠缓慢静脉注射", "C.伴有低血压者应给予冬眠1号合剂缓慢静脉滴注", "D.根据病情交替使用镇静、解痉药物", "E.肌松药在气管插管、切开时应用比较安全"], answer: "A", explain: "洛贝林、尼可刹米是呼吸兴奋药，不用于解除痉挛。" },
+// 第1591题  第91题
+{ Q: "男，32岁。长期与苯接触，1年来全身乏力。血红蛋白60g/L，血小板38×10⁹/L，网织红细胞0.001。肝脾未触及，骨髓增生低下。可能的诊断是", options: ["A.再生障碍性贫血", "B.营养性缺铁性贫血", "C.营养性巨幼细胞贫血", "D.生理性贫血", "E.白血病"], answer: "A", explain: "全血细胞减少，骨髓增生低下，为再障。" },
+// 第1592题  第92题
+{ Q: "男，32岁。长期与苯接触，1年来全身乏力。血红蛋白60g/L，血小板38×10⁹/L，网织红细胞0.001。肝脾未触及，骨髓增生低下。诊断为再生障碍性贫血。治疗措施不正确的是", options: ["A.防治感染、出血及输血", "B.应用雄激素刺激骨髓造血", "C.应用免疫抑制药", "D.骨髓移植", "E.脾切除"], answer: "E", explain: "再障脾切除无效，因无脾功能亢进。" },
+// 第1593题  第93题
+{ Q: "男，31岁。饮酒后上腹部剧烈疼痛，伴呕吐、高热1天入院。查体：体温39.8℃，上腹部压痛明显。实验室检查：白细胞明显增多，血淀粉酶增高。腹部X线检查可见结肠切割征和肠麻痹征。该患者目前最主要的护理问题是", options: ["A.焦虑", "B.疼痛", "C.水、电解质紊乱", "D.体温过高", "E.潜在并发症：休克"], answer: "E", explain: "急性胰腺炎可并发休克，为潜在并发症。" },
+// 第1594题  第94题
+{ Q: "男，31岁。饮酒后上腹部剧烈疼痛，伴呕吐、高热1天入院。查体：体温39.8℃，上腹部压痛明显。实验室检查：白细胞明显增多，血淀粉酶增高。腹部X线检查可见结肠切割征和肠麻痹征。诊断为急性胰腺炎。遵医嘱密切观察该患者目前的脉搏、血压、神志及尿量变化，最主要的目的是", options: ["A.预防急性腹膜炎", "B.预防急性肾损伤", "C.预防低血容量性休克", "D.预防脓毒症", "E.预防肠穿孔"], answer: "C", explain: "观察生命体征预防休克。" },
+// 第1595题  第95题
+{ Q: "男，31岁。饮酒后上腹部剧烈疼痛，伴呕吐、高热1天入院。查体：体温39.8℃，上腹部压痛明显。实验室检查：白细胞明显增多，血淀粉酶增高。腹部X线检查可见结肠切割征和肠麻痹征。诊断为急性胰腺炎。患者禁食时每天的补液量为", options: ["A.500ml", "B.1000ml", "C.1500ml", "D.1800ml", "E.3000ml"], answer: "E", explain: "禁食时需补充3000ml/d液体。" },
+// 第1596题  第96题
+{ Q: "某孕妇，28岁。妊娠合并心脏病。若该孕妇发生早期心力衰竭，最可靠的诊断依据是", options: ["A.肺底部闻及少量湿啰音，咳嗽后消失", "B.心尖区间及Ⅱ级收缩期杂音", "C.心界扩大", "D.足踝部凹陷性水肿", "E.休息时心率>110次/分"], answer: "E", explain: "休息时心率>110次/分是早期心衰的可靠依据。" },
+// 第1597题  第97题
+{ Q: "某孕妇，28岁。妊娠合并心脏病。对该孕妇的处理方法是", options: ["A.立即剖宫产", "B.阴道试产", "C.催产素引产", "D.鼓励产妇用力", "E.加腹压助产"], answer: "B", explain: "心功能好的可阴道试产，避免过度用力。" },
+// 第1598题  第98题
+{ Q: "初孕妇，28岁。妊娠36周，今晨突然感觉有较多液体从阴道流出，咳嗽、打喷嚏时流液加重。考虑诊断为胎膜早破。可确诊胎膜早破的是", options: ["A.孕妇突感有较多液体自阴道流出", "B.行肛门检查时触不到前羊膜囊", "C.羊膜镜下见胎先露，看不到前羊膜囊", "D.阴道液pH6.5-7.5", "E.阴道液涂片镜检见羊齿状结晶"], answer: "E", explain: "羊齿状结晶可确诊胎膜早破。" },
+// 第1599题  第99题
+{ Q: "初孕妇，28岁。妊娠36周，今晨突然感觉有较多液体从阴道流出，咳嗽、打喷嚏时流液加重。考虑诊断为胎膜早破。关于胎膜早破的治疗原则，正确的是", options: ["A.卧床休息，抬高床头", "B.胎膜破裂后48小时给予抗生素预防感染", "C.若妊娠超过37周，在破膜12小时后应终止妊娠", "D.定时做阴道检查或肛门检查，了解有无脐带脱垂", "E.破膜发生在35周以前，可给予静脉滴注维生素C促胎肺成熟"], answer: "C", explain: "足月妊娠破膜后12-24小时未临产应终止妊娠。" },
+// 第1600题  第100题
+{ Q: "初孕妇，28岁。妊娠36周，今晨突然感觉有较多液体从阴道流出，咳嗽、打喷嚏时流液加重。考虑诊断为胎膜早破。该患者可能出现的并发症不包括", options: ["A.早产", "B.前置胎盘", "C.宫腔感染", "D.脐带脱垂", "E.胎儿窘迫"], answer: "B", explain: "前置胎盘是胎膜早破的病因，不是并发症。" }            ];
+
+            // ---------- 持久化存储键 ----------
+            const STORAGE_KEY = 'nurse_exam_data';
+            const LAST_STATE_KEY = 'nurse_last_state';
+            const TODAY_STATS_KEY = 'nurse_today_stats';
+            const FAVORITES_KEY = 'nurse_favorites';
+            const DAILY_STATS_KEY = 'nurse_daily_stats';
+
+            // 获取今日日期字符串 yyyy-mm-dd
+            function getTodayString() {
+                const d = new Date();
+                return `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+            }
+
+            // 初始化今日统计
+            let savedTodayStats = { date: getTodayString(), seconds: 0, count: 0 };
+            try {
+                const stored = localStorage.getItem(TODAY_STATS_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed.date === getTodayString()) savedTodayStats = parsed;
+                    else savedTodayStats = { date: getTodayString(), seconds: 0, count: 0 };
+                }
+            } catch (e) {}
+
+            // 初始化每日历史统计
+            let savedDailyStats = [];
+            try {
+                const stored = localStorage.getItem(DAILY_STATS_KEY);
+                if (stored) savedDailyStats = JSON.parse(stored);
+            } catch (e) {}
+
+            let savedSelections = {};
+            let savedWrongSet = [];
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    savedSelections = parsed.selections || {};
+                    savedWrongSet = parsed.wrongSet || [];
+                }
+            } catch (e) {}
+
+            // 初始化收藏
+            let savedFavorites = [];
+            try {
+                const stored = localStorage.getItem(FAVORITES_KEY);
+                if (stored) savedFavorites = JSON.parse(stored);
+            } catch (e) {}
+
+            let lastState = null;
+            try {
+                const saved = localStorage.getItem(LAST_STATE_KEY);
+                if (saved) lastState = JSON.parse(saved);
+            } catch (e) {}
+
+            const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vue;
+
+            const app = createApp({
+                setup() {
+                    // ---------- 基础数据 ----------
+                    const questions = ref(questionsData);
+                    const mode = ref('order');
+                    const index = ref(0);
+                    const showAnswer = ref(false);
+                    const userSelections = ref(savedSelections);
+                    const wrongSet = ref(new Set(savedWrongSet));
+                    const favorites = ref(new Set(savedFavorites));
+                    const jumpInput = ref(1);
+                    const searchKeyword = ref('');
+                    const searchResults = ref([]);
+                    const showWrongFeedback = ref(false);
+                    const wrongFeedback = ref({ answer: '', explain: '' });
+                    const examQuestions = ref([]);
+                    const examTimeLeft = ref(90 * 60);
+                    const examTimer = ref(null);
+                    const examFinished = ref(false);
+                    const examScore = ref(0);
+                    const showExamResult = ref(false);
+
+                    // 每日历史统计
+                    const dailyStats = ref(savedDailyStats);
+                    const statsPeriod = ref('week');
+                    let chartInstance = null;
+
+                    // 总题数
+                    const totalQuestions = computed(() => questions.value.length);
+
+                    // 今日累计统计
+                    const todayStats = ref(savedTodayStats);
+                    let timerInterval = null;
+
+                    // 格式化今日练习时间
+                    const formatTodayTime = computed(() => {
+                        const totalSec = todayStats.value.seconds;
+                        const hours = Math.floor(totalSec / 3600);
+                        const minutes = Math.floor((totalSec % 3600) / 60);
+                        const secs = totalSec % 60;
+                        if (hours > 0) return `${hours}小时${minutes}分钟`;
+                        if (minutes > 0) return `${minutes}分钟${secs}秒`;
+                        return `${secs}秒`;
+                    });
+
+                    const todayPracticeCount = computed(() => todayStats.value.count);
+
+                    // 收藏列表
+                    const favoritesList = computed(() => Array.from(favorites.value).sort((a, b) => a - b));
+
+                    // 总答题数、正确数、正确率
+                    const totalAnswers = computed(() => Object.keys(userSelections.value).length);
+                    const totalCorrect = computed(() => {
+                        let cnt = 0;
+                        for (let rawIdx in userSelections.value) {
+                            if (userSelections.value[rawIdx] === questions.value[rawIdx]?.answer) cnt++;
+                        }
+                        return cnt;
+                    });
+                    const totalCorrectRate = computed(() => totalAnswers.value ? (totalCorrect.value / totalAnswers.value * 100).toFixed(1) : 0);
+
+                    // 模式判断辅助
+                    const isStatsMode = computed(() => mode.value === 'stats');
+                    const isFavoriteMode = computed(() => mode.value === 'favorite');
+                    const isQuickMode = computed(() => mode.value === 'quick');
+
+                    // 保存今日统计
+                    function saveTodayStats() {
+                        localStorage.setItem(TODAY_STATS_KEY, JSON.stringify(todayStats.value));
+                    }
+
+                    // 启动计时器
+                    function startTimer() {
+                        if (timerInterval) clearInterval(timerInterval);
+                        timerInterval = setInterval(() => {
+                            todayStats.value.seconds++;
+                            saveTodayStats();
+                        }, 1000);
+                    }
+
+                    function stopTimer() {
+                        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+                    }
+
+                    onMounted(() => {
+                        startTimer();
+                        restoreLastState();
+                        updateDailyStats();
+                    });
+
+                    onUnmounted(() => {
+                        stopTimer();
+                    });
+
+                    // 更新每日历史统计
+                    function updateDailyStats() {
+                        const today = getTodayString();
+                        let found = dailyStats.value.find(d => d.date === today);
+                        if (!found) {
+                            found = { date: today, count: 0, correct: 0, seconds: 0 };
+                            dailyStats.value.push(found);
+                        }
+                        found.seconds = todayStats.value.seconds;
+                        localStorage.setItem(DAILY_STATS_KEY, JSON.stringify(dailyStats.value));
+                    }
+
+                    function saveAllStats() {
+                        saveTodayStats();
+                        localStorage.setItem(DAILY_STATS_KEY, JSON.stringify(dailyStats.value));
+                    }
+
+                    // 持久化存储
+                    watch([userSelections, wrongSet, favorites], () => {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                            selections: userSelections.value,
+                            wrongSet: Array.from(wrongSet.value)
+                        }));
+                        localStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.from(favorites.value)));
+                    }, { deep: true });
+
+                    // 过滤后的题目列表
+                    const filteredList = computed(() => {
+                        if (mode.value === 'wrong') return Array.from(wrongSet.value).map(idx => questions.value[idx]).filter(q => q);
+                        if (mode.value === 'favorite') return favoritesList.value.map(idx => questions.value[idx]).filter(q => q);
+                        if (mode.value === 'exam') return examQuestions.value;
+                        if (mode.value === 'quick') return questions.value;
+                        return questions.value;
+                    });
+
+                    const total = computed(() => filteredList.value.length);
+                    const currentQuestion = computed(() => filteredList.value[index.value]);
+                    const currentRawIndex = computed(() => {
+                        if (!currentQuestion.value) return -1;
+                        return questions.value.findIndex(q => q === currentQuestion.value);
+                    });
+                    const atFirst = computed(() => index.value === 0);
+                    const atLast = computed(() => index.value === total.value - 1);
+                    const answeredCount = computed(() => Object.keys(userSelections.value).length);
+                    const correctCount = computed(() => {
+                        let cnt = 0;
+                        for (let rawIdx in userSelections.value) {
+                            if (userSelections.value[rawIdx] === questions.value[rawIdx]?.answer) cnt++;
+                        }
+                        return cnt;
+                    });
+                    const wrongList = computed(() => Array.from(wrongSet.value).sort((a, b) => a - b));
+
+                    const formattedTime = computed(() => {
+                        const m = Math.floor(examTimeLeft.value / 60);
+                        const s = examTimeLeft.value % 60;
+                        return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                    });
+
+                    // 保存上次位置
+                    function saveLastState() {
+                        if (mode.value === 'order') {
+                            localStorage.setItem(LAST_STATE_KEY, JSON.stringify({ mode: mode.value, rawIndex: currentRawIndex.value }));
+                        }
+                    }
+                    watch([mode, index, currentRawIndex], saveLastState);
+
+                    function restoreLastState() {
+                        if (lastState && lastState.mode === 'order') {
+                            mode.value = 'order';
+                            const targetRaw = lastState.rawIndex;
+                            if (targetRaw >= 0 && targetRaw < questions.value.length) {
+                                const pos = filteredList.value.findIndex(q => questions.value[targetRaw] === q);
+                                if (pos !== -1) index.value = pos;
+                            }
+                        }
+                    }
+
+                    // 模拟考试随机抽题
+                    function pickRandomQuestions() {
+                        if (questions.value.length <= 100) return questions.value.slice();
+                        const shuffled = [...questions.value];
+                        for (let i = shuffled.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                        }
+                        return shuffled.slice(0, 100);
+                    }
+
+                    function startExam() {
+                        examQuestions.value = pickRandomQuestions();
+                        examTimeLeft.value = 90 * 60;
+                        examFinished.value = false;
+                        showExamResult.value = false;
+                        index.value = 0;
+                        if (examTimer.value) clearInterval(examTimer.value);
+                        examTimer.value = setInterval(() => {
+                            if (examTimeLeft.value > 0) examTimeLeft.value--;
+                            else finishExam();
+                        }, 1000);
+                    }
+
+                    function finishExam() {
+                        if (examFinished.value) return;
+                        if (examTimer.value) clearInterval(examTimer.value);
+                        const missed = examQuestions.value.filter(q => !userSelections.value[questions.value.findIndex(item => item === q)]);
+                        if (missed.length) {
+                            alert(`有 ${missed.length} 题未答，已加入错题本。`);
+                            const newSet = new Set(wrongSet.value);
+                            missed.forEach(q => newSet.add(questions.value.findIndex(item => item === q)));
+                            wrongSet.value = newSet;
+                        }
+                        examFinished.value = true;
+                        examScore.value = correctCount.value;
+                        showExamResult.value = true;
+                    }
+
+                    // 模式切换
+                    function switchMode(newMode) {
+                        mode.value = newMode;
+                        index.value = 0;
+                        showAnswer.value = false;
+                        showWrongFeedback.value = false;
+                        if (newMode === 'exam') startExam();
+                        else {
+                            if (examTimer.value) clearInterval(examTimer.value);
+                            examFinished.value = false;
+                            showExamResult.value = false;
+                        }
+                        if (newMode === 'stats') {
+                            nextTick(() => renderChart());
+                        }
+                    }
+
+                    // 题目导航
+                    function nextQuestion() {
+                        if (index.value < total.value - 1) { index.value++; showAnswer.value = false; showWrongFeedback.value = false; }
+                    }
+                    function previousQuestion() {
+                        if (index.value > 0) { index.value--; showAnswer.value = false; showWrongFeedback.value = false; }
+                    }
+                    function toggleAnswer() { showAnswer.value = !showAnswer.value; }
+
+                    // 选择选项
+                    function selectOption(opt) {
+                        if (isQuickMode.value) return;
+                        if (!currentQuestion.value) return;
+                        const rawIdx = currentRawIndex.value;
+                        if (rawIdx === -1) return;
+
+                        todayStats.value.count++;
+                        const today = getTodayString();
+                        let dayStat = dailyStats.value.find(d => d.date === today);
+                        if (!dayStat) {
+                            dayStat = { date: today, count: 0, correct: 0, seconds: 0 };
+                            dailyStats.value.push(dayStat);
+                        }
+                        dayStat.count++;
+                        const correctAns = questions.value[rawIdx]?.answer;
+                        if (opt === correctAns) {
+                            dayStat.correct++;
+                        }
+                        dayStat.seconds = todayStats.value.seconds;
+                        saveAllStats();
+
+                        userSelections.value[rawIdx] = opt;
+
+                        if (mode.value === 'order' || mode.value === 'random') {
+                            if (opt !== correctAns) {
+                                const newSet = new Set(wrongSet.value);
+                                newSet.add(rawIdx);
+                                wrongSet.value = newSet;
+                                wrongFeedback.value = { answer: correctAns, explain: questions.value[rawIdx]?.explain || '' };
+                                showWrongFeedback.value = true;
+                            } else {
+                                nextQuestion();
+                            }
+                        } else if (mode.value === 'exam' && !examFinished.value) {
+                            if (opt !== correctAns) {
+                                const newSet = new Set(wrongSet.value);
+                                newSet.add(rawIdx);
+                                wrongSet.value = newSet;
+                            }
+                        }
+                    }
+
+                    function dismissWrongFeedback() { showWrongFeedback.value = false; }
+
+                    // 标记错题
+                    function markWrong() {
+                        if (mode.value === 'exam' || !currentQuestion.value) return;
+                        const rawIdx = currentRawIndex.value;
+                        if (rawIdx === -1) return;
+                        const newSet = new Set(wrongSet.value);
+                        newSet.has(rawIdx) ? newSet.delete(rawIdx) : newSet.add(rawIdx);
+                        wrongSet.value = newSet;
+                    }
+
+                    // 随机跳题
+                    function randomJump() {
+                        if (total.value === 0) return;
+                        index.value = Math.floor(Math.random() * total.value);
+                        showAnswer.value = false;
+                        showWrongFeedback.value = false;
+                    }
+
+                    // 跳转到错题
+                    function jumpToWrongQuestion(rawId) {
+                        if (mode.value !== 'wrong') switchMode('wrong');
+                        const pos = filteredList.value.findIndex(q => questions.value[rawId] === q);
+                        if (pos !== -1) { index.value = pos; showAnswer.value = false; showWrongFeedback.value = false; }
+                    }
+
+                    // 清空错题本
+                    function clearWrongSet() { wrongSet.value = new Set(); }
+
+                    // 手动跳转
+                    function jumpToNumber() {
+                        if (mode.value !== 'order') { alert('仅顺序模式支持跳转'); return; }
+                        const num = jumpInput.value;
+                        if (num >= 1 && num <= total.value) { index.value = num - 1; showAnswer.value = false; showWrongFeedback.value = false; }
+                        else alert(`请输入1-${total.value}之间的题号`);
+                    }
+
+                    // 搜索
+                    function performSearch() {
+                        const kw = searchKeyword.value.trim().toLowerCase();
+                        if (!kw) { searchResults.value = []; return; }
+                        const res = [];
+                        questions.value.forEach((q, idx) => { if (q.Q.toLowerCase().includes(kw)) res.push({ rawIndex: idx, question: q }); });
+                        searchResults.value = res.slice(0, 20);
+                    }
+
+                    function goToSearchResult(rawIdx) {
+                        if (mode.value !== 'order') switchMode('order');
+                        const pos = filteredList.value.findIndex(q => questions.value[rawIdx] === q);
+                        if (pos !== -1) {
+                            index.value = pos;
+                            showAnswer.value = false;
+                            showWrongFeedback.value = false;
+                            searchKeyword.value = '';
+                            searchResults.value = [];
+                        }
+                    }
+
+                    // 收藏
+                    function isFavorite(rawIdx) {
+                        return favorites.value.has(rawIdx);
+                    }
+                    function toggleFavorite(rawIdx) {
+                        const newSet = new Set(favorites.value);
+                        if (newSet.has(rawIdx)) newSet.delete(rawIdx);
+                        else newSet.add(rawIdx);
+                        favorites.value = newSet;
+                    }
+                    function jumpToFavorite(rawId) {
+                        if (mode.value !== 'favorite') switchMode('favorite');
+                        const pos = filteredList.value.findIndex(q => questions.value[rawId] === q);
+                        if (pos !== -1) { index.value = pos; showAnswer.value = false; showWrongFeedback.value = false; }
+                    }
+
+                    // 语音朗读当前题目（只读题干、正确答案和解析）
+                    function speakCurrentQuestion() {
+                        if (!currentQuestion.value) return;
+                        const q = currentQuestion.value;
+                        let text = `第${index.value+1}题：${q.Q}。正确答案是${q.answer}。`;
+                        if (q.explain) {
+                            text += `解析：${q.explain}`;
+                        } else {
+                            text += `无解析。`;
+                        }
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'zh-CN';
+                        utterance.rate = 0.9;
+                        window.speechSynthesis.cancel();
+                        window.speechSynthesis.speak(utterance);
+                    }
+
+                    // 语音朗读全部（从头开始）
+                    function speakAllFromStart() {
+                        const list = filteredList.value;
+                        if (list.length === 0) return;
+                        speakAllFromIndex(0);
+                    }
+
+                    // 语音朗读全部（从当前题开始）
+                    function speakAllFromCurrent() {
+                        const list = filteredList.value;
+                        if (list.length === 0) return;
+                        speakAllFromIndex(index.value);
+                    }
+
+                    // 从指定索引开始连续朗读
+                    function speakAllFromIndex(startIdx) {
+                        const list = filteredList.value;
+                        if (list.length === 0) return;
+                        let current = startIdx;
+                        const synth = window.speechSynthesis;
+
+                        function speakNext() {
+                            if (current >= list.length) return;
+                            const q = list[current];
+                            let text = `第${current+1}题：${q.Q}。正确答案是${q.answer}。`;
+                            if (q.explain) {
+                                text += `解析：${q.explain}`;
+                            } else {
+                                text += `无解析。`;
+                            }
+                            const utterance = new SpeechSynthesisUtterance(text);
+                            utterance.lang = 'zh-CN';
+                            utterance.rate = 0.9;
+                            utterance.onend = () => {
+                                current++;
+                                speakNext();
+                            };
+                            synth.speak(utterance);
+                        }
+
+                        synth.cancel();
+                        speakNext();
+                    }
+
+                    // 停止语音朗读
+                    function stopSpeaking() {
+                        window.speechSynthesis.cancel();
+                    }
+
+                    // 统计图表渲染
+                    function renderChart() {
+                        const ctx = document.getElementById('statsChart')?.getContext('2d');
+                        if (!ctx) return;
+                        if (chartInstance) chartInstance.destroy();
+
+                        const days = statsPeriod.value === 'week' ? 7 : 30;
+                        const data = [];
+                        const labels = [];
+                        for (let i = days-1; i >= 0; i--) {
+                            const d = new Date();
+                            d.setDate(d.getDate() - i);
+                            const dateStr = `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+                            const stat = dailyStats.value.find(s => s.date === dateStr) || { count: 0, correct: 0 };
+                            data.push(stat.count);
+                            labels.push(`${d.getMonth()+1}/${d.getDate()}`);
+                        }
+
+                        chartInstance = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: '答题数',
+                                    data: data,
+                                    backgroundColor: '#2a7faa',
+                                    borderRadius: 6
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false }
+                                },
+                                scales: {
+                                    y: { beginAtZero: true, stepSize: 1 }
+                                }
+                            }
+                        });
+                    }
+
+                    return {
+                        questions, mode, index, showAnswer, userSelections, wrongSet, favorites, filteredList, total, currentQuestion, currentRawIndex,
+                        atFirst, atLast, answeredCount, correctCount, wrongList, examTimeLeft, examFinished, examScore, showExamResult, formattedTime,
+                        jumpInput, searchKeyword, searchResults, showWrongFeedback, wrongFeedback,
+                        switchMode, nextQuestion, previousQuestion, toggleAnswer, selectOption, dismissWrongFeedback,
+                        markWrong, randomJump, jumpToWrongQuestion, finishExam, clearWrongSet, jumpToNumber, performSearch, goToSearchResult,
+                        // 今日统计
+                        formatTodayTime, todayPracticeCount,
+                        // 总题数
+                        totalQuestions,
+                        // 收藏
+                        favoritesList, isFavorite, toggleFavorite, jumpToFavorite,
+                        // 模式判断
+                        isStatsMode, isFavoriteMode, isQuickMode,
+                        // 统计
+                        statsPeriod, dailyStats, totalAnswers, totalCorrect, totalCorrectRate, renderChart,
+                        // 语音
+                        speakCurrentQuestion, speakAllFromStart, speakAllFromCurrent, stopSpeaking
+                    };
+                }
+            });
+
+            app.mount('#app');
+        })();
+    </script>
+</body>
+</html>
