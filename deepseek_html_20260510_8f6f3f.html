@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中医体质分类与判定自测表</title>
+    <style>
+        :root {
+            --bg: #fdf8f3;
+            --card-bg: #ffffff;
+            --primary: #8b5e3c;
+            --primary-light: #c4956a;
+            --accent: #d4a574;
+            --accent-light: #f5efe6;
+            --text: #3d2b1f;
+            --text-light: #6b5d4f;
+            --border: #e0d3c5;
+            --danger: #b8453a;
+            --success: #5a7d5a;
+            --warning: #c4943a;
+            --shadow: 0 2px 16px rgba(139, 94, 60, 0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 20% 10%, rgba(212, 165, 116, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 90%, rgba(139, 94, 60, 0.06) 0%, transparent 60%);
+        }
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+        }
+        .header {
+            text-align: center;
+            padding: 36px 20px 24px;
+        }
+        .header .icon {
+            font-size: 48px;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 0.04em;
+        }
+        .header .subtitle {
+            font-size: 0.92rem;
+            color: var(--text-light);
+        }
+        .header .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--primary);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+        }
+        .gender-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 16px 0 10px;
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .gender-selector span {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        .gender-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 6px 16px;
+            border-radius: 20px;
+            transition: var(--transition);
+            background: #faf7f3;
+            border: 1.5px solid transparent;
+        }
+        .gender-option input {
+            display: none;
+        }
+        .gender-option.active {
+            background: var(--accent-light);
+            border-color: var(--primary);
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .main-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .tab-nav-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+        }
+        .tab-nav {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            gap: 0;
+            padding: 4px 8px;
+        }
+        .tab-btn {
+            flex-shrink: 0;
+            padding: 10px 14px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        .tab-btn:hover {
+            color: var(--primary);
+            background: rgba(139, 94, 60, 0.03);
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            font-weight: 700;
+            border-bottom-color: var(--primary);
+        }
+        .tab-btn .tab-letter {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            color: var(--primary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-right: 4px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .tab-btn.active .tab-letter {
+            background: var(--primary);
+            color: #fff;
+        }
+        .tab-btn.completed .tab-letter {
+            background: var(--success);
+            color: #fff;
+        }
+        .tab-btn.completed::after {
+            content: '✓';
+            font-size: 0.65rem;
+            color: var(--success);
+            margin-left: 2px;
+            font-weight: 700;
+        }
+        .tab-content-wrapper {
+            padding: 20px 20px 12px;
+            min-height: 300px;
+        }
+        .tab-panel {
+            display: none;
+            animation: fadeSlideIn 0.35s ease;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-panel-header {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px dashed var(--border);
+        }
+        .tab-panel-header h3 {
+            font-size: 1.15rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .type-tag {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--primary);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+        .question-count {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+        .gender-notice {
+            font-size: 0.8rem;
+            color: #b8453a;
+            background: #fef5f5;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .question-item {
+            margin-bottom: 14px;
+            padding: 14px 16px;
+            background: #fefcf9;
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+        .question-item:hover {
+            border-color: var(--border);
+        }
+        .question-item.answered {
+            border-color: #d4c8b8;
+            background: #fdfaf5;
+        }
+        .question-item.hidden-by-gender {
+            display: none;
+        }
+        .q-number {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            color: var(--primary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-align: center;
+            margin-right: 6px;
+        }
+        .q-text {
+            font-size: 0.93rem;
+            color: var(--text);
+            margin-bottom: 8px;
+            display: inline;
+        }
+        .q-reverse {
+            display: inline-block;
+            font-size: 0.7rem;
+            color: #c0392b;
+            background: #fef5f5;
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        .q-gender {
+            display: inline-block;
+            font-size: 0.7rem;
+            color: #8b5e3c;
+            background: #fdf5eb;
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        .radio-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .radio-option {
+            flex: 1;
+            min-width: 52px;
+            text-align: center;
+        }
+        .radio-option input {
+            display: none;
+        }
+        .radio-option label {
+            display: block;
+            padding: 8px 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            background: #faf7f3;
+            border: 1.5px solid #e8ddd0;
+            transition: var(--transition);
+            text-align: center;
+            white-space: nowrap;
+        }
+        .radio-option label:hover {
+            background: #f5ede2;
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        .radio-option input:checked+label {
+            background: #f0e6d8;
+            border-color: var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+            box-shadow: 0 1px 4px rgba(139, 94, 60, 0.15);
+        }
+        .score-num {
+            display: block;
+            font-size: 0.68rem;
+            color: #aaa;
+            margin-top: 1px;
+        }
+        .radio-option input:checked+label .score-num {
+            color: var(--primary);
+        }
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            padding: 16px 20px 20px;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--border);
+            background: #fefcf9;
+            position: sticky;
+            bottom: 0;
+        }
+        .btn {
+            padding: 11px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            transition: var(--transition);
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 3px 12px rgba(139, 94, 60, 0.25);
+        }
+        .btn-primary:hover {
+            background: #6b4530;
+        }
+        .btn-outline {
+            background: #fff;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--accent-light);
+        }
+        .btn-sm {
+            padding: 7px 16px;
+            font-size: 0.8rem;
+            border-radius: 20px;
+        }
+        .progress-bar-wrap {
+            background: #f0e8da;
+            border-radius: 10px;
+            height: 6px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+        .result-section {
+            display: none;
+            margin-top: 20px;
+            animation: fadeSlideIn 0.5s ease;
+        }
+        .result-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+        .result-card.primary-result {
+            border-left: 5px solid var(--primary);
+            background: linear-gradient(135deg, #fffdf9 0%, #fefaf4 100%);
+        }
+        .result-card.tendency-result {
+            border-left: 5px solid var(--warning);
+            background: #fffef9;
+        }
+        .result-badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .badge-yes { background: #fdf0e6; color: #8b3a1a; border: 1px solid #e8b896; }
+        .badge-tendency { background: #fef9ee; color: #8b6d2a; border: 1px solid #e8d896; }
+        .badge-pinghe { background: #edf7ed; color: #3a6b3a; border: 1px solid #a8d4a8; }
+        .feature-block {
+            margin-top: 10px;
+            padding: 12px 14px;
+            background: #fefcf9;
+            border-radius: var(--radius-sm);
+            border: 1px solid #f0e8da;
+            font-size: 0.88rem;
+        }
+        .feature-block strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .feature-block ul { margin: 4px 0 0 16px; }
+        .feature-block li { margin-bottom: 3px; }
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        .score-table th, .score-table td {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .score-table th { background: #fdf8f3; color: var(--primary); font-weight: 600; font-size: 0.78rem; }
+        .highlight-row { background: #fef9f2; font-weight: 600; }
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #3d2b1f;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 24px;
+            font-size: 0.85rem;
+            z-index: 999;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.2s forwards;
+            pointer-events: none;
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; }
+            to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+        @media (max-width: 640px) {
+            .header h1 { font-size: 1.35rem; }
+            .tab-btn { padding: 10px 10px; font-size: 0.75rem; }
+            .tab-content-wrapper { padding: 14px 10px 8px; }
+            .question-item { padding: 10px 10px; margin-bottom: 8px; }
+            .radio-option label { font-size: 0.7rem; padding: 6px 2px; }
+            .btn { padding: 9px 16px; font-size: 0.8rem; }
+            .score-table { font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="icon">🌿</span>
+            <h1>中医体质分类与判定自测表</h1>
+            <p class="subtitle">中华中医药学会标准 · 9类体质综合评估</p>
+            <span class="badge">依据《中医体质分类判定标准》</span>
+        </div>
+
+        <!-- 性别选择器（全局） -->
+        <div class="gender-selector" id="genderSelector">
+            <span>⚥ 您的性别：</span>
+            <label class="gender-option" id="genderMaleOption">
+                <input type="radio" name="globalGender" value="male" onchange="setGlobalGender('male')"> 男性
+            </label>
+            <label class="gender-option" id="genderFemaleOption">
+                <input type="radio" name="globalGender" value="female" onchange="setGlobalGender('female')"> 女性
+            </label>
+        </div>
+
+        <div class="main-card" id="mainCard">
+            <div class="tab-nav-wrapper">
+                <div class="tab-nav" id="tabNav">
+                    <button class="tab-btn active" data-tab="tab-pinghe" data-index="0"><span class="tab-letter">A</span>平和质</button>
+                    <button class="tab-btn" data-tab="tab-qixu" data-index="1"><span class="tab-letter">B</span>气虚质</button>
+                    <button class="tab-btn" data-tab="tab-yangxu" data-index="2"><span class="tab-letter">C</span>阳虚质</button>
+                    <button class="tab-btn" data-tab="tab-yinxu" data-index="3"><span class="tab-letter">D</span>阴虚质</button>
+                    <button class="tab-btn" data-tab="tab-tanshi" data-index="4"><span class="tab-letter">E</span>痰湿质</button>
+                    <button class="tab-btn" data-tab="tab-shire" data-index="5"><span class="tab-letter">F</span>湿热质</button>
+                    <button class="tab-btn" data-tab="tab-xueyu" data-index="6"><span class="tab-letter">G</span>血瘀质</button>
+                    <button class="tab-btn" data-tab="tab-qiyu" data-index="7"><span class="tab-letter">H</span>气郁质</button>
+                    <button class="tab-btn" data-tab="tab-tebing" data-index="8"><span class="tab-letter">I</span>特禀质</button>
+                </div>
+            </div>
+
+            <div class="progress-bar-wrap" style="margin-top:10px;">
+                <div class="progress-bar-fill" id="progressBar" style="width:0%;"></div>
+            </div>
+            <p class="progress-text" id="progressText">已作答：0 / 67 题</p>
+
+            <div class="tab-content-wrapper" id="tabContentWrapper">
+                <div class="tab-panel active" id="tab-pinghe"><div id="questions-pinghe"></div></div>
+                <div class="tab-panel" id="tab-qixu"><div id="questions-qixu"></div></div>
+                <div class="tab-panel" id="tab-yangxu"><div id="questions-yangxu"></div></div>
+                <div class="tab-panel" id="tab-yinxu"><div id="questions-yinxu"></div></div>
+                <div class="tab-panel" id="tab-tanshi"><div id="questions-tanshi"></div></div>
+                <div class="tab-panel" id="tab-shire"><div id="questions-shire"></div></div>
+                <div class="tab-panel" id="tab-xueyu"><div id="questions-xueyu"></div></div>
+                <div class="tab-panel" id="tab-qiyu"><div id="questions-qiyu"></div></div>
+                <div class="tab-panel" id="tab-tebing"><div id="questions-tebing"></div></div>
+            </div>
+
+            <div class="action-bar" id="actionBar">
+                <button class="btn btn-outline btn-sm" id="btnPrev" disabled>◀ 上一项</button>
+                <button class="btn btn-outline btn-sm" id="btnNext">下一项 ▶</button>
+                <span style="flex:1;"></span>
+                <button class="btn btn-outline btn-sm" id="btnReset">🔄 重置全部</button>
+                <button class="btn btn-primary" id="btnSubmit">📊 提交问卷，查看结果</button>
+            </div>
+        </div>
+        <div class="result-section" id="resultSection"></div>
+    </div>
+    <div id="toastContainer"></div>
+
+    <script>
+        (function() {
+            // ---------- 体质数据 ----------
+            const constitutionData = {
+                pinghe: {
+                    id: 'pinghe', letter: 'A', name: '平和质', questionCount: 8,
+                    reverseIndices: [1,2,3,4,6,7],
+                    questions: [
+                        '您精力充沛吗？','您容易疲乏吗？','您说话声音低弱无力吗？','您感到闷闷不乐、情绪低沉吗？',
+                        '您比一般人耐受不了寒冷（冬天的寒冷，夏天的冷空调、电扇等）吗？','您能适应外界自然和社会环境的变化吗？',
+                        '您容易失眠吗？','您容易忘事（健忘）吗？'
+                    ],
+                    features: {
+                        总体特征:'阴阳气血调和，以体态适中、面色红润、精力充沛等为主要特征。',形体特征:'体形匀称健壮。',
+                        常见表现:'面色、肤色润泽，头发稠密有光泽，目光有神，鼻色明润，嗅觉通利，唇色红润，不易疲劳，精力充沛，耐受寒热，睡眠良好，胃纳佳，二便正常，舌色淡红，苔薄白，脉和缓有力。',
+                        心理特征:'性格随和开朗。',发病倾向:'平素患病较少。',对外界环境适应能力:'对自然环境和社会环境适应能力较强。'
+                    },
+                    advice: '饮食有节制，不要常吃过冷过热或不干净的食物，粗细粮食要合理搭配。保持规律作息，适度运动。'
+                },
+                qixu: {
+                    id: 'qixu', letter: 'B', name: '气虚质', questionCount: 8, reverseIndices: [],
+                    questions: [
+                        '您容易疲乏吗？','您容易气短（呼吸短促，接不上气）吗？','您容易心慌吗？','您容易头晕或站起时晕眩吗？',
+                        '您比别人容易感冒吗？','您喜欢安静、懒得说话吗？','您说话声音低弱无力吗？','您活动量稍大就容易出虚汗吗？'
+                    ],
+                    features: {
+                        总体特征:'元气不足，以疲乏、气短、自汗等气虚表现为主要特征。',形体特征:'肌肉松软不实。',
+                        常见表现:'平素语音低弱，气短懒言，容易疲乏，精神不振，易出汗，舌淡红，舌边有齿痕，脉弱。',
+                        心理特征:'性格内向，不喜冒险。',发病倾向:'易患感冒、内脏下垂等病；病后康复缓慢。',对外界环境适应能力:'不耐受风、寒、暑、湿邪。'
+                    },
+                    advice: '多食用具有益气健脾作用的食物，如黄豆、白扁豆、鸡肉、香菇、大枣、桂圆、蜂蜜等。少食空心菜、生萝卜等耗气之品。避免过度劳累，适合散步、太极拳等温和运动。'
+                },
+                yangxu: {
+                    id: 'yangxu', letter: 'C', name: '阳虚质', questionCount: 7, reverseIndices: [],
+                    questions: [
+                        '您手脚发凉吗？','您胃脘部、背部或腰膝部怕冷吗？','您感到怕冷、衣服比别人穿得多吗？',
+                        '您冬天更怕冷，夏天不喜欢吹电扇、空调吗？','您比别人容易患感冒吗？','您吃（喝）凉的东西会感到不舒服或怕吃（喝）凉的吗？',
+                        '您受凉或吃（喝）凉的东西后，容易腹泻、拉肚子吗？'
+                    ],
+                    features: {
+                        总体特征:'阳气不足，以畏寒怕冷、手足不温等虚寒表现为主要特征。',形体特征:'肌肉松软不实。',
+                        常见表现:'平素畏冷，手足不温，喜热饮食，精神不振，舌淡胖嫩，脉沉迟。',心理特征:'性格多沉静、内向。',
+                        发病倾向:'易患痰饮、肿胀、泄泻等病；感邪易从寒化。',对外界环境适应能力:'耐夏不耐冬；易感风、寒、湿邪。'
+                    },
+                    advice: '平时可多食牛肉、羊肉、韭菜、生姜等温阳之品，少食梨、西瓜、荸荠等生冷寒凉食物，少饮绿茶。注意保暖，尤其腰腹部和足部。适合艾灸、温灸等温热调理。'
+                },
+                yinxu: {
+                    id: 'yinxu', letter: 'D', name: '阴虚质', questionCount: 8, reverseIndices: [],
+                    questions: [
+                        '您感到手脚心发热吗？','您感觉身体、脸上发热吗？','您皮肤或口唇干吗？','您口唇的颜色比一般人红吗？',
+                        '您容易便秘或大便干燥吗？','您面部两颧潮红或偏红吗？','您感到眼睛干涩吗？','您感到口干咽燥、总想喝水吗？'
+                    ],
+                    features: {
+                        总体特征:'阴液亏少，以口燥咽干、手足心热等虚热表现为主要特征。',形体特征:'体形偏瘦。',
+                        常见表现:'手足心热，口燥咽干，鼻微干，喜冷饮，大便干燥，舌红少津，脉细数。',心理特征:'性情急躁，外向好动，活泼。',
+                        发病倾向:'易患虚劳、失精、不寐等病；感邪易从热化。',对外界环境适应能力:'耐冬不耐夏；不耐受暑、热、燥邪。'
+                    },
+                    advice: '多食瘦猪肉、鸭肉、绿豆、冬瓜、银耳、梨等甘凉滋润之品，少食羊肉、韭菜、辣椒、葵花子等性温燥烈之品。适合太极拳、太极剑、气功等柔和运动。避免熬夜，保持充足睡眠。'
+                },
+                tanshi: {
+                    id: 'tanshi', letter: 'E', name: '痰湿质', questionCount: 8, reverseIndices: [],
+                    questions: [
+                        '您感到胸闷或腹部胀满吗？','您感到身体沉重不轻松或不爽快吗？','您腹部肥满松软吗？','您有额部油脂分泌多的现象吗？',
+                        '您上眼睑比别人肿（上眼睑有轻微隆起的现象）吗？','您嘴里有黏黏的感觉吗？','您平时痰多，特别是感到咽喉部总有痰堵着吗？',
+                        '您舌苔厚腻或有舌苔厚厚的感觉吗？'
+                    ],
+                    features: {
+                        总体特征:'痰湿凝聚，以形体肥胖、腹部肥满、口黏苔腻等痰湿表现为主要特征。',形体特征:'体形肥胖，腹部肥满松软。',
+                        常见表现:'面部皮肤油脂较多，多汗且黏，胸闷，痰多，口黏腻或甜，喜食肥甘甜黏，苔腻，脉滑。',心理特征:'性格偏温和、稳重，多善于忍耐。',
+                        发病倾向:'易患消渴、中风、胸痹等病。',对外界环境适应能力:'对梅雨季节及湿重环境适应能力差。'
+                    },
+                    advice: '饮食应以清淡为主，可多食冬瓜、薏苡仁、赤小豆、山药等健脾利湿之品。少食肥甘厚腻、甜食。因体形肥胖，易于困倦，故应根据自己的具体情况循序渐进，长期坚持运动锻炼，如快走、游泳等。'
+                },
+                shire: {
+                    id: 'shire', letter: 'F', name: '湿热质', questionCount: 7, reverseIndices: [],
+                    questions: [
+                        '您面部或鼻部有油腻感或者油亮发光吗？','您脸上容易生痤疮或皮肤容易生疮疖吗？','您感到口苦或嘴里有异味吗？',
+                        '您大便黏滞不爽、有解不尽的感觉吗？','您小便时尿道有发热感、尿色浓（深）吗？',
+                        '您带下色黄（白带颜色发黄）吗？（限女性回答）','您的阴囊潮湿吗？（限男性回答）'
+                    ],
+                    genderMap: { 5: 'female', 6: 'male' }, // 索引5女性，索引6男性
+                    features: {
+                        总体特征:'湿热内蕴，以面垢油光、口苦、苔黄腻等湿热表现为主要特征。',形体特征:'形体中等或偏瘦。',
+                        常见表现:'面垢油光，易生痤疮，口苦口干，身重困倦，大便黏滞不畅或燥结，小便短黄，男性易阴囊潮湿，女性易带下增多，舌质偏红，苔黄腻，脉滑数。',
+                        心理特征:'容易心烦急躁。',发病倾向:'易患疮疖、黄疸、热淋等病。',对外界环境适应能力:'对夏末秋初湿热气候，湿重或气温偏高环境较难适应。'
+                    },
+                    advice: '饮食以清淡为主，可多食赤小豆、绿豆、芹菜、黄瓜、藕、薏苡仁等甘寒的食物。少食辛温助热的食物。适合中长跑、游泳、爬山、各种球类、武术等运动。保持二便通畅。'
+                },
+                xueyu: {
+                    id: 'xueyu', letter: 'G', name: '血瘀质', questionCount: 7, reverseIndices: [],
+                    questions: [
+                        '您的皮肤在不知不觉中会出现青紫瘀斑（皮下出血）吗？','您的两颧部有细微血丝吗？','您身体上有哪里疼痛吗？',
+                        '您面色晦黯或容易出现褐斑吗？','您会出现黑眼圈吗？','您容易忘事（健忘）吗？','您口唇颜色偏黯吗？'
+                    ],
+                    features: {
+                        总体特征:'血行不畅，以肤色晦黯、舌质紫黯等血瘀表现为主要特征。',形体特征:'胖瘦均见。',
+                        常见表现:'肤色晦黯，色素沉着，容易出现瘀斑，口唇黯淡，舌黯或有瘀点，舌下络脉紫黯或增粗，脉涩。',心理特征:'易烦，健忘。',
+                        发病倾向:'易患癥瘕及痛证、血证等。',对外界环境适应能力:'不耐受寒邪。'
+                    },
+                    advice: '多食山楂、醋、玫瑰花、黑豆、海带等活血化瘀之品，少食肥肉等滋腻之品。可参加各种舞蹈、步行健身法、徒手健身操等。注意保暖，避免寒冷刺激。保持心情舒畅。'
+                },
+                qiyu: {
+                    id: 'qiyu', letter: 'H', name: '气郁质', questionCount: 7, reverseIndices: [],
+                    questions: [
+                        '您感到闷闷不乐、情绪低沉吗？','您精神紧张、焦虑不安吗？','您多愁善感、感情脆弱吗？','您容易感到害怕或受到惊吓吗？',
+                        '您胁肋部或乳房胀痛吗？','您无缘无故叹气吗？','您咽喉部有异物感，且吐之不出、咽之不下吗？'
+                    ],
+                    features: {
+                        总体特征:'气机郁滞，以神情抑郁、忧虑脆弱等气郁表现为主要特征。',形体特征:'形体瘦者为多。',
+                        常见表现:'神情抑郁，情感脆弱，烦闷不乐，舌淡红，苔薄白，脉弦。',心理特征:'性格内向不稳定、敏感多虑。',
+                        发病倾向:'易患脏躁、梅核气、百合病及郁证等。',对外界环境适应能力:'对精神刺激适应能力较差；不适应阴雨天气。'
+                    },
+                    advice: '多食黄花菜、海带、山楂、玫瑰花、柑橘等具有行气、解郁、消食、醒神作用的食物。不要总待在家里，要多参加群众性的体育运动项目，如球类、跑步、登山等。多与亲友交流，保持心情舒畅。'
+                },
+                tebing: {
+                    id: 'tebing', letter: 'I', name: '特禀质', questionCount: 7, reverseIndices: [],
+                    questions: [
+                        '您没有感冒也会打喷嚏吗？','您没有感冒也会鼻塞、流鼻涕吗？','您有因季节变化、温度变化或异味等原因而咳喘的现象吗？',
+                        '您容易过敏（对药物、食物、气味、花粉或在季节交替、气候变化时）吗？','您的皮肤容易起荨麻疹（风团、风疹块、风疙瘩）吗？',
+                        '您的皮肤因过敏出现过紫癜（紫红色瘀点、瘀斑）吗？','您的皮肤一抓就红，并出现抓痕吗？'
+                    ],
+                    features: {
+                        总体特征:'先天失常，以生理缺陷、过敏反应等为主要特征。',形体特征:'过敏体质者一般无特殊；先天禀赋异常者或有畸形，或有生理缺陷。',
+                        常见表现:'过敏体质者常见哮喘、风团、咽痒、鼻塞、喷嚏等；患遗传性疾病者有垂直遗传、先天性、家族性特征。',心理特征:'随禀质不同情况各异。',
+                        发病倾向:'过敏体质者易患哮喘、荨麻疹、花粉症及药物过敏等；遗传性疾病如血友病、先天愚型等。',对外界环境适应能力:'适应能力差，如过敏体质者对易致过敏季节适应能力差，易引发宿疾。'
+                    },
+                    advice: '多食益气固表的食物，如黄芪、山药、红枣等，少食荞麦（含致敏物质荞麦荧光素）、蚕豆等。居室宜通风良好。保持室内清洁，被褥、床单要经常洗晒，可防止对尘螨过敏。避免接触过敏原。'
+                }
+            };
+
+            const typeOrder = ['pinghe','qixu','yangxu','yinxu','tanshi','shire','xueyu','qiyu','tebing'];
+            let answers = {};
+            let globalGender = null; // 'male' 或 'female'
+
+            // DOM元素
+            const tabNav = document.getElementById('tabNav');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const resultSection = document.getElementById('resultSection');
+            const btnPrev = document.getElementById('btnPrev');
+            const btnNext = document.getElementById('btnNext');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnReset = document.getElementById('btnReset');
+            const mainCard = document.getElementById('mainCard');
+            const toastContainer = document.getElementById('toastContainer');
+            const genderFemaleOption = document.getElementById('genderFemaleOption');
+            const genderMaleOption = document.getElementById('genderMaleOption');
+
+            let currentTabIndex = 0;
+            const totalTabs = typeOrder.length;
+
+            // 设置全局性别
+            window.setGlobalGender = function(gender) {
+                globalGender = gender;
+                // 更新样式
+                if (gender === 'male') {
+                    genderMaleOption.classList.add('active');
+                    genderFemaleOption.classList.remove('active');
+                } else {
+                    genderFemaleOption.classList.add('active');
+                    genderMaleOption.classList.remove('active');
+                }
+                // 清除湿热质中与当前性别不符的题目答案
+                if (constitutionData.shire && constitutionData.shire.genderMap) {
+                    Object.entries(constitutionData.shire.genderMap).forEach(([qIndex, requiredGender]) => {
+                        const key = 'shire_q' + qIndex;
+                        if (requiredGender !== gender && answers[key]) {
+                            delete answers[key];
+                        }
+                    });
+                }
+                // 重新渲染湿热质题目，并更新进度
+                renderSingleTypeQuestions('shire');
+                updateProgress();
+                updateTabCompletionStatus();
+                // 若当前在湿热质tab，刷新显示
+                if (typeOrder[currentTabIndex] === 'shire') {
+                    document.getElementById('tab-shire').classList.add('active');
+                }
+            };
+
+            // 渲染单个体质类型的题目
+            function renderSingleTypeQuestions(typeId) {
+                const config = constitutionData[typeId];
+                const container = document.getElementById('questions-' + typeId);
+                if (!container) return;
+                let html = '';
+                config.questions.forEach((qText, qIndex) => {
+                    const isReverse = config.reverseIndices && config.reverseIndices.includes(qIndex);
+                    let genderRequired = null;
+                    if (config.genderMap && config.genderMap[qIndex] !== undefined) {
+                        genderRequired = config.genderMap[qIndex];
+                    }
+                    const answerKey = typeId + '_q' + qIndex;
+                    // 根据性别决定是否隐藏题目
+                    let hiddenClass = '';
+                    if (genderRequired && globalGender && genderRequired !== globalGender) {
+                        hiddenClass = 'hidden-by-gender';
+                    }
+                    html += `
+                    <div class="question-item ${hiddenClass}" id="q-item-${answerKey}" data-key="${answerKey}">
+                        <span class="q-number">${qIndex + 1}</span>
+                        <span class="q-text">${qText}</span>
+                        ${isReverse ? '<span class="q-reverse">*逆向计分</span>' : ''}
+                        ${genderRequired ? '<span class="q-gender">' + (genderRequired === 'female' ? '限女性' : '限男性') + '</span>' : ''}
+                        <div class="radio-group">
+                            ${[1,2,3,4,5].map(score => {
+                                const labels = ['没有（根本不）','很少（有一点）','有时（有些）','经常（相当）','总是（非常）'];
+                                return `
+                                <div class="radio-option">
+                                    <input type="radio" name="${answerKey}" id="${answerKey}_${score}" value="${score}"
+                                        ${answers[answerKey] === score ? 'checked' : ''}
+                                        onchange="handleAnswerChange('${answerKey}', ${score}, '${typeId}', ${qIndex})">
+                                    <label for="${answerKey}_${score}">${score}<span class="score-num">${labels[score-1]}</span></label>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
+
+            function renderAllQuestions() {
+                typeOrder.forEach(typeId => renderSingleTypeQuestions(typeId));
+            }
+
+            // 答案变更
+            window.handleAnswerChange = function(answerKey, score, typeId, qIndex) {
+                answers[answerKey] = score;
+                const qItem = document.getElementById('q-item-' + answerKey);
+                if (qItem) qItem.classList.add('answered');
+                updateProgress();
+                updateTabCompletionStatus();
+            };
+
+            function updateTabCompletionStatus() {
+                typeOrder.forEach(typeId => {
+                    const config = constitutionData[typeId];
+                    let allAnswered = true;
+                    let effectiveCount = 0;
+                    for (let i = 0; i < config.questionCount; i++) {
+                        const key = typeId + '_q' + i;
+                        // 判断该题是否因性别隐藏，隐藏的不计入完成
+                        let genderRequired = null;
+                        if (config.genderMap && config.genderMap[i] !== undefined) {
+                            genderRequired = config.genderMap[i];
+                        }
+                        if (genderRequired && globalGender && genderRequired !== globalGender) {
+                            continue; // 跳过不适用的题目
+                        }
+                        effectiveCount++;
+                        if (!answers[key]) {
+                            allAnswered = false;
+                        }
+                    }
+                    const tabBtn = document.querySelector(`.tab-btn[data-tab="tab-${typeId}"]`);
+                    if (tabBtn) {
+                        tabBtn.classList.toggle('completed', allAnswered && effectiveCount > 0);
+                    }
+                });
+            }
+
+            function updateProgress() {
+                let totalQuestions = 0;
+                let answeredCount = 0;
+                typeOrder.forEach(typeId => {
+                    const config = constitutionData[typeId];
+                    for (let i = 0; i < config.questionCount; i++) {
+                        let genderRequired = null;
+                        if (config.genderMap && config.genderMap[i] !== undefined) {
+                            genderRequired = config.genderMap[i];
+                        }
+                        // 跳过不适用的题目
+                        if (genderRequired && globalGender && genderRequired !== globalGender) {
+                            continue;
+                        }
+                        totalQuestions++;
+                        if (answers[typeId + '_q' + i]) answeredCount++;
+                    }
+                });
+                const pct = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0;
+                progressBar.style.width = pct + '%';
+                progressText.textContent = `已作答：${answeredCount} / ${totalQuestions} 题`;
+            }
+
+            // Tab切换
+            function switchTab(index) {
+                if (index < 0 || index >= totalTabs) return;
+                currentTabIndex = index;
+                const typeId = typeOrder[index];
+                const tabId = 'tab-' + typeId;
+                document.querySelectorAll('.tab-btn').forEach((btn, i) => btn.classList.toggle('active', i === index));
+                document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.toggle('active', panel.id === tabId));
+                btnPrev.disabled = (index === 0);
+                btnNext.textContent = (index === totalTabs - 1) ? '完成 ▶' : '下一项 ▶';
+                const activeBtn = document.querySelector('.tab-btn.active');
+                if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                document.getElementById('tabContentWrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            tabNav.addEventListener('click', (e) => {
+                const btn = e.target.closest('.tab-btn');
+                if (!btn) return;
+                const index = parseInt(btn.getAttribute('data-index'));
+                if (!isNaN(index)) switchTab(index);
+            });
+            btnPrev.addEventListener('click', () => { if (currentTabIndex > 0) switchTab(currentTabIndex - 1); });
+            btnNext.addEventListener('click', () => {
+                if (currentTabIndex < totalTabs - 1) switchTab(currentTabIndex + 1);
+                else handleSubmit();
+            });
+
+            // 计算转化分（考虑性别隐藏题目）
+            function calculateTransformScore(typeId) {
+                const config = constitutionData[typeId];
+                let rawScore = 0;
+                let effectiveN = 0;
+                for (let i = 0; i < config.questionCount; i++) {
+                    let genderRequired = null;
+                    if (config.genderMap && config.genderMap[i] !== undefined) {
+                        genderRequired = config.genderMap[i];
+                    }
+                    if (genderRequired && globalGender && genderRequired !== globalGender) {
+                        continue; // 不计分
+                    }
+                    effectiveN++;
+                    const key = typeId + '_q' + i;
+                    let score = answers[key] || 1;
+                    score = parseInt(score);
+                    if (config.reverseIndices && config.reverseIndices.includes(i)) {
+                        score = 6 - score;
+                    }
+                    rawScore += score;
+                }
+                if (effectiveN === 0) return { rawScore: 0, transformScore: 0, questionCount: 0 };
+                const transformScore = Math.round(((rawScore - effectiveN) / (effectiveN * 4)) * 100);
+                return { rawScore, transformScore, questionCount: effectiveN };
+            }
+
+            function judgeConstitution(scores) {
+                const pingheScore = scores['pinghe'] ? scores['pinghe'].transformScore : 0;
+                const partialScores = {};
+                typeOrder.forEach(typeId => {
+                    if (typeId !== 'pinghe' && scores[typeId]) {
+                        partialScores[typeId] = scores[typeId].transformScore;
+                    }
+                });
+                const yesTypes = [], tendencyTypes = [];
+                Object.entries(partialScores).forEach(([typeId, score]) => {
+                    if (score >= 40) yesTypes.push(typeId);
+                    else if (score >= 30) tendencyTypes.push(typeId);
+                });
+                let pingheResult = '否';
+                if (pingheScore >= 60) {
+                    const allBelow30 = Object.values(partialScores).every(s => s < 30);
+                    const allBelow40 = Object.values(partialScores).every(s => s < 40);
+                    if (allBelow30) pingheResult = '是';
+                    else if (allBelow40) pingheResult = '基本是';
+                }
+                return { scores, pingheResult, pingheScore, yesTypes, tendencyTypes, partialScores };
+            }
+
+            function handleSubmit() {
+                if (!globalGender) {
+                    showToast('⚠️ 请先选择您的性别');
+                    return;
+                }
+                let allAnswered = true;
+                const unansweredList = [];
+                typeOrder.forEach(typeId => {
+                    const config = constitutionData[typeId];
+                    for (let i = 0; i < config.questionCount; i++) {
+                        let genderRequired = null;
+                        if (config.genderMap && config.genderMap[i] !== undefined) {
+                            genderRequired = config.genderMap[i];
+                        }
+                        if (genderRequired && globalGender && genderRequired !== globalGender) continue;
+                        if (!answers[typeId + '_q' + i]) {
+                            allAnswered = false;
+                            unansweredList.push(`${config.name}第${i+1}题`);
+                        }
+                    }
+                });
+                if (!allAnswered) {
+                    const msg = unansweredList.length <= 5 ? '请完成以下题目：' + unansweredList.join('、') : `还有 ${unansweredList.length} 道题目未作答。`;
+                    showToast('⚠️ ' + msg);
+                    if (unansweredList.length > 0) {
+                        const first = unansweredList[0];
+                        for (let i = 0; i < typeOrder.length; i++) {
+                            if (first.includes(constitutionData[typeOrder[i]].name)) { switchTab(i); break; }
+                        }
+                    }
+                    return;
+                }
+                const allScores = {};
+                typeOrder.forEach(typeId => { allScores[typeId] = calculateTransformScore(typeId); });
+                const judgment = judgeConstitution(allScores);
+                renderResults(judgment);
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function renderResults(judgment) {
+                const { scores, pingheResult, pingheScore, yesTypes, tendencyTypes } = judgment;
+                let html = '';
+                let mainTitle = '', mainBadgeClass = '';
+                if (yesTypes.length > 0) {
+                    mainTitle = `主要体质：<strong>${yesTypes.map(t=>constitutionData[t].name).join('、')}</strong>`;
+                    mainBadgeClass = 'badge-yes';
+                } else if (pingheResult === '是') {
+                    mainTitle = '您的体质为：<strong>平和质</strong>（正常体质）';
+                    mainBadgeClass = 'badge-pinghe';
+                } else if (pingheResult === '基本是') {
+                    mainTitle = `基本是<strong>平和质</strong>，有<strong>${tendencyTypes.map(t=>constitutionData[t].name).join('、')}</strong>倾向`;
+                    mainBadgeClass = 'badge-tendency';
+                } else if (tendencyTypes.length > 0) {
+                    mainTitle = `体质倾向：<strong>${tendencyTypes.map(t=>constitutionData[t].name).join('、')}</strong>`;
+                    mainBadgeClass = 'badge-tendency';
+                } else {
+                    mainTitle = '体质特征不显著，建议咨询专业中医师';
+                }
+                html += `<div class="result-card primary-result"><h3>📋 综合判定结果</h3><span class="result-badge ${mainBadgeClass}">${mainTitle}</span>`;
+                if (pingheResult === '是') html += '<p style="margin-top:8px;color:#5a7d5a;">🎉 恭喜！您的体质属于平和质，是健康的体质状态，请继续保持良好的生活习惯。</p>';
+                if (pingheResult === '基本是') html += '<p style="margin-top:8px;color:#c4943a;">⚠️ 您基本属于平和质，但有偏颇倾向，建议关注并适当调理。</p>';
+                if (yesTypes.length > 0) html += '<p style="margin-top:8px;color:#b8453a;">⚠️ 您存在偏颇体质，建议根据以下特征进行针对性调理，必要时咨询专业中医师。</p>';
+                html += '</div>';
+
+                html += `<div class="result-card"><h3>📊 各体质转化分一览</h3><div style="overflow-x:auto;"><table class="score-table"><thead><tr><th>体质类型</th><th>代号</th><th>原始分</th><th>转化分</th><th>判定结果</th></tr></thead><tbody>`;
+                typeOrder.forEach(typeId => {
+                    const config = constitutionData[typeId];
+                    const s = scores[typeId];
+                    let judgeText = '', rowClass = '';
+                    if (typeId === 'pinghe') {
+                        judgeText = pingheResult==='是'?'✅ 是':(pingheResult==='基本是'?'🔶 基本是':'❌ 否');
+                        if(pingheResult==='是') rowClass='highlight-row';
+                    } else {
+                        if(yesTypes.includes(typeId)){ judgeText='✅ 是'; rowClass='highlight-row'; }
+                        else if(tendencyTypes.includes(typeId)){ judgeText='🔶 倾向是'; rowClass='highlight-row'; }
+                        else judgeText='否';
+                    }
+                    html += `<tr class="${rowClass}"><td style="text-align:left;">${config.name}</td><td>${config.letter}型</td><td>${s.rawScore}</td><td><strong>${s.transformScore}</strong></td><td>${judgeText}</td></tr>`;
+                });
+                html += `</tbody></table></div><p style="font-size:0.75rem;color:#999;margin-top:8px;">*平和质判定：转化分≥60且其他8种体质转化分均＜30为“是”；转化分≥60且其他8种均＜40为“基本是”。<br>*偏颇体质判定：转化分≥40为“是”；30~39为“倾向是”；＜30为“否”。</p></div>`;
+
+                const detailTypes = [...yesTypes];
+                if (yesTypes.length===0 && pingheResult==='是') detailTypes.push('pinghe');
+                if (yesTypes.length===0 && pingheResult==='基本是') { detailTypes.push('pinghe'); tendencyTypes.forEach(t=>{if(!detailTypes.includes(t)) detailTypes.push(t);}); }
+                if (yesTypes.length===0 && pingheResult==='否' && tendencyTypes.length>0) { tendencyTypes.forEach(t=>{if(!detailTypes.includes(t)) detailTypes.push(t);}); }
+
+                detailTypes.forEach(typeId => {
+                    const config = constitutionData[typeId];
+                    const isPrimary = yesTypes.includes(typeId) || (typeId==='pinghe' && pingheResult==='是');
+                    html += `
+                    <div class="result-card ${isPrimary?'primary-result':'tendency-result'}">
+                        <h3>${config.name}（${config.letter}型）</h3>
+                        <span class="result-badge ${isPrimary?'badge-yes':'badge-tendency'}">${isPrimary?'主要体质':'倾向体质'}</span>
+                        <div class="feature-block"><strong>🏷️ 体质特征</strong><ul>${Object.entries(config.features).map(([k,v])=>`<li><em>${k}：</em>${v}</li>`).join('')}</ul></div>
+                        <div class="feature-block" style="margin-top:8px;"><strong>💡 日常调节建议</strong><p style="margin-top:4px;">${config.advice}</p></div>
+                    </div>`;
+                });
+                resultSection.innerHTML = html;
+                resultSection.style.display = 'block';
+            }
+
+            btnSubmit.addEventListener('click', handleSubmit);
+            btnReset.addEventListener('click', () => {
+                if (confirm('确定要重置全部问卷答案吗？此操作不可恢复。')) {
+                    answers = {};
+                    globalGender = null;
+                    genderMaleOption.classList.remove('active');
+                    genderFemaleOption.classList.remove('active');
+                    document.querySelectorAll('input[name="globalGender"]').forEach(r => r.checked = false);
+                    resultSection.style.display = 'none';
+                    resultSection.innerHTML = '';
+                    renderAllQuestions();
+                    updateProgress();
+                    updateTabCompletionStatus();
+                    switchTab(0);
+                    showToast('✅ 已重置全部答案');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            function showToast(msg) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = msg;
+                toastContainer.appendChild(toast);
+                setTimeout(() => toast.remove(), 2600);
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && e.ctrlKey) { e.preventDefault(); if(currentTabIndex>0) switchTab(currentTabIndex-1); }
+                else if (e.key === 'ArrowRight' && e.ctrlKey) { e.preventDefault(); if(currentTabIndex<totalTabs-1) switchTab(currentTabIndex+1); }
+            });
+
+            // 初始化
+            renderAllQuestions();
+            updateProgress();
+            switchTab(0);
+            resultSection.style.display = 'none';
+        })();
+    </script>
+</body>
+</html>
